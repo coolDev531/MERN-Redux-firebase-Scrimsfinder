@@ -2,37 +2,54 @@ const db = require('../db/connection');
 const faker = require('faker');
 const Scrim = require('../models/scrim');
 const setHours = require('../utils/setHours');
+const sample = require('../utils/sample');
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
+class Player {
+  constructor(name, role, rank) {
+    this.name = name;
+    this.role = role;
+    this.rank = rank;
+  }
+}
 const main = async () => {
   const roles = ['Top', 'Jungle', 'Mid', 'ADC', 'Support'];
+
+  const ranks = [
+    'Diamond 2',
+    'Platinum 1',
+    'Silver 3',
+    'Bronze 1',
+    'Gold 2',
+    'Master',
+  ];
 
   const teamOnePlayers = [
     {
       name: 'GitCat',
       role: 'Top',
-      Rank: 'Diamond I',
+      rank: 'Diamond I',
     },
     {
       name: 'AmumuCrying',
       role: 'Jungle',
-      Rank: 'Silver 2',
+      rank: 'Silver 2',
     },
     {
       name: 'Azuru',
       role: 'Mid',
-      Rank: 'Platinum II',
+      rank: 'Platinum II',
     },
     {
       name: 'Cailtyn Bot',
       role: 'ADC',
-      Rank: 'Challenger',
+      rank: 'Challenger',
     },
     {
       name: 'EloInflatedYummiOTP',
       role: 'Support',
-      Rank: 'Platinum 1',
+      rank: 'Platinum 1',
     },
   ];
 
@@ -40,6 +57,7 @@ const main = async () => {
     roles.map((role) => ({
       name: faker.name.firstName(),
       role: role,
+      rank: sample(ranks),
     })),
   ];
 

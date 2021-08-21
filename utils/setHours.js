@@ -1,3 +1,10 @@
+/**
+ * @method setHours
+ * takes a date and moves it's current time to chosen time in 2nd param.
+ * @param {Date} dt // the date value to convert.
+ * @param {String} h // hours to move to, for example: 3:30am, 9:15pm, etc.
+ * @return {Date}
+ */
 function setHours(dt, h) {
   var s = /(\d+):(\d+)(.+)/.exec(h);
   dt.setHours(s[3] === 'pm' ? 12 + parseInt(s[1], 10) : parseInt(s[1], 10));
