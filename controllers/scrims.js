@@ -1,4 +1,4 @@
-const Scrim = require('../models/transportationType');
+const Scrim = require('../models/scrim');
 const db = require('../db/connection');
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
@@ -37,6 +37,7 @@ const createScrim = async (req, res) => {
 };
 
 const updateScrim = async (req, res) => {
+  // for changing times, players or casters joining.
   const { id } = req.params;
   await Scrim.findByIdAndUpdate(id, req.body, { new: true }, (error, scrim) => {
     if (error) {
