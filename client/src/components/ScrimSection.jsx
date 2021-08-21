@@ -9,14 +9,10 @@ export default function ScrimSection({ scrim, idx, getNewScrimsData }) {
   const [playerEntered, setPlayerEntered] = useState(false);
 
   useEffect(() => {
-    console.log({ playerEntered });
-  }, [playerEntered]);
-  useEffect(() => {
-    const teams = [...teamOne, teamTwo];
+    const teams = [...teamOne, ...teamTwo];
 
     let foundPlayer = teams.find((player) => player.name === currentUser.name);
 
-    console.log({ foundPlayer });
     return foundPlayer
       ? setPlayerEntered(foundPlayer)
       : setPlayerEntered(false);
@@ -79,11 +75,12 @@ export default function ScrimSection({ scrim, idx, getNewScrimsData }) {
     let teamMovingTo = e.target.parentNode.classList[1];
     let currentTeam = playerEntered.team;
     let teamArr = teamMovingTo === 'teamOne' ? teamOne : teamTwo;
-    let isSwappingTeams = compareArrays(currentTeam.value, teamArr) === false;
 
-    if (isSwappingTeams) {
+    // if is swapping teams
+    if (compareArrays(currentTeam.value, teamArr) === false) {
       console.log(`swapping teams for summoner ${currentUser.name}`);
-      const playerData = {
+
+      let newPlayerData = {
         ...currentUser,
         role,
       };
@@ -91,15 +88,24 @@ export default function ScrimSection({ scrim, idx, getNewScrimsData }) {
       let [teamLeft, teamJoined] = swapPlayer(
         currentTeam.value,
         teamArr,
-        playerData
+        newPlayerData
       );
+
+      newPlayerData = {
+        ...newPlayerData,
+        team: { name: teamMovingTo, value: teamJoined },
+      };
 
       let teamLeavingName = teamMovingTo === 'teamOne' ? 'teamTwo' : 'teamOne';
 
       const scrimData = {
         ...scrim,
         [teamLeavingName]: teamLeft,
-        [teamMovingTo]: teamJoined,
+        [teamMovingTo]: [
+          ...teamJoined.map((player) =>
+            player.name === newPlayerData.name ? { ...newPlayerData } : player
+          ),
+        ],
       };
 
       const updatedScrim = await updateScrim(scrim._id, scrimData);
