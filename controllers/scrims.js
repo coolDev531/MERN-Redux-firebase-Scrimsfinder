@@ -1,9 +1,10 @@
 const Scrim = require('../models/scrim');
 const db = require('../db/connection');
+const sample = require('../utils/sample');
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-const getAllScrims = async (req, res) => {
+const getAllScrims = async (_req, res) => {
   try {
     const scrims = await Scrim.find();
     res.json(scrims);
@@ -37,26 +38,41 @@ const createScrim = async (req, res) => {
   }
 };
 
-const createScrimOnInterval = async () => {
-  console.log('creating scrim...');
-  const scrim = new Scrim();
-  await scrim.save();
-  console.log('lobby created: ', scrim);
-};
-
 const updateScrim = async (req, res) => {
   // for changing times, players or casters joining.
-  console.log(req.body);
+
   const { id } = req.params;
-  await Scrim.findByIdAndUpdate(id, req.body, { new: true }, (error, scrim) => {
-    if (error) {
-      return res.status(500).json({ error: error.message });
+  const { teamOne, teamTwo } = req.body;
+
+  let requestBody = {
+    ...req.body,
+  };
+
+  if (teamOne.length === 5 && teamTwo.length === 5) {
+    requestBody.lobbyHost = sample([...teamOne, ...teamTwo]);
+  } else {
+    requestBody.lobbyHost = null;
+  }
+
+  await Scrim.findByIdAndUpdate(
+    id,
+    requestBody,
+    { new: true },
+    (error, scrim) => {
+      if (error) {
+        return res.status(500).json({ error: error.message });
+      }
+      if (!scrim) {
+        return res.status(404).json(scrim);
+      }
+
+      if (scrim.teamOne.length === 5 && scrim.teamTwo.length === 5) {
+        scrim.lobbyCaptain === 'testing123';
+        scrim.save();
+      }
+      res.status(200).json(scrim);
     }
-    if (!scrim) {
-      return res.status(404).json(scrim);
-    }
-    res.status(200).json(scrim);
-  });
+  );
 };
 
 const deleteScrim = async (req, res) => {
@@ -78,5 +94,4 @@ module.exports = {
   createScrim,
   updateScrim,
   deleteScrim,
-  createScrimOnInterval,
 };

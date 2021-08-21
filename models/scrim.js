@@ -7,6 +7,7 @@ const Scrim = new Schema(
     teamTwo: { type: Array, default: [] },
     casters: { type: Array, default: [] },
     gameStartTime: { type: Date, default: Date.now(), required: true },
+    lobbyHost: { type: Object, default: null },
   },
   { timestamps: true }
 );
