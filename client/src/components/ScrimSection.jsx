@@ -1,12 +1,46 @@
 import { useContext, useEffect, useState } from 'react';
 import { CurrentUserContext } from '../context/currentUser';
 import { updateScrim } from '../services/scrims';
+import CountdownTimer from './CountdownTimer';
+
+const compareArrays = (arr1, arr2) => {
+  if (arr1.length !== arr2.length) return false;
+
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr1[i].name !== arr2[i].name) return false;
+  }
+
+  // If all elements were same.
+  return true;
+};
+
+const compareDates = (scrim) => {
+  let currentTime = new Date().getTime();
+  let gameStartTime = new Date(scrim.gameStartTime).getTime();
+
+  if (currentTime < gameStartTime) {
+    return -1;
+  } else if (currentTime > gameStartTime) {
+    return 1;
+  } else {
+    return 0;
+  }
+};
 
 export default function ScrimSection({ scrim, idx, getNewScrimsData }) {
-  const { teamOne, teamTwo, casters } = scrim;
-
   const [currentUser] = useContext(CurrentUserContext);
   const [playerEntered, setPlayerEntered] = useState(false);
+  const [gameStarted, setGameStarted] = useState(false);
+
+  const { teamOne, teamTwo, casters } = scrim;
+
+  useEffect(() => {
+    let gameHasStarted = compareDates(scrim) > 0;
+
+    if (gameHasStarted) {
+      setGameStarted(gameHasStarted);
+    }
+  }, [scrim]);
 
   useEffect(() => {
     const teams = [...teamOne, ...teamTwo];
@@ -51,25 +85,14 @@ export default function ScrimSection({ scrim, idx, getNewScrimsData }) {
     }
   };
 
-  const compareArrays = (arr1, arr2) => {
-    if (arr1.length !== arr2.length) return false;
-
-    for (let i = 0; i < arr1.length; i++) {
-      if (arr1[i].name !== arr2[i].name) return false;
-    }
-
-    // If all elements were same.
-    return true;
-  };
-
-  function swapPlayer(currentTeam, movingTeam, movingPlayer) {
+  const swapPlayer = (currentTeam, movingTeam, movingPlayer) => {
     const indexToRemove = currentTeam.findIndex(
       (p) => p && p.name === movingPlayer.name
     );
     if (indexToRemove > -1) currentTeam.splice(indexToRemove, 1);
     movingTeam = [...movingTeam, movingPlayer];
     return [currentTeam, movingTeam];
-  }
+  };
 
   const swapRole = async (e, teamStr, role) => {
     let teamMovingTo = e.target.parentNode.classList[1];
@@ -151,6 +174,13 @@ export default function ScrimSection({ scrim, idx, getNewScrimsData }) {
           {new Date(scrim.gameStartTime).toLocaleString([], excludeSeconds)}
         </h2>
 
+        <CountdownTimer
+          gameStarted={gameStarted}
+          setGameStarted={setGameStarted}
+          scrim={scrim}
+        />
+
+        {gameStarted ? 'GAMESTARTED!' : 'still waiting...'}
         <h2>Casters: {casters.map((caster) => caster).join(' & ')}</h2>
       </div>
       <div className="teams-container" style={{ display: 'flex', gap: '10%' }}>
@@ -158,7 +188,7 @@ export default function ScrimSection({ scrim, idx, getNewScrimsData }) {
           <h4>Team One:</h4>
           {teamOneRoles.map((teamRole, key) => {
             const player = teamOne.find((player) =>
-              player.role.includes(teamRole)
+              player?.role?.includes(teamRole)
             );
 
             if (player) {
@@ -191,7 +221,7 @@ export default function ScrimSection({ scrim, idx, getNewScrimsData }) {
           <h4>Team Two:</h4>
           {teamTwoRoles.map((teamRole, key) => {
             const player = teamTwo.find((player) =>
-              player.role.includes(teamRole)
+              player?.role?.includes(teamRole)
             );
 
             if (player) {
