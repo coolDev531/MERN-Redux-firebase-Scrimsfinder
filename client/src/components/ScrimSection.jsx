@@ -20,22 +20,52 @@ export default function ScrimSection({ scrim, idx }) {
       <div className="teams-container" style={{ display: 'flex', gap: '10%' }}>
         <div className="team-container team-container--teamOne">
           <h4>Team One:</h4>
-          {teamOne.map((player, key) => (
-            <div className="scrim__section-playerBox" key={key}>
-              {player.role}: &nbsp;
-              {player.name}
-            </div>
-          ))}
+          {teamOneRoles.map((teamRole, key) => {
+            const player = teamOne.find((player) =>
+              player.role.includes(teamRole)
+            );
+
+            if (player) {
+              return (
+                <div className="scrim__section-playerBox" key={key}>
+                  {player?.role ?? ''}: &nbsp;
+                  {player?.name ?? ''}
+                </div>
+              );
+            }
+
+            return (
+              <div className="scrim__section-playerBox" key={key}>
+                {teamRole}
+                <button>join</button>
+              </div>
+            );
+          })}
         </div>
 
         <div className="team-container team-container--teamTwo">
           <h4>Team Two:</h4>
-          {teamTwo.map((player, key) => (
-            <div className="scrim__section-playerBox" key={key}>
-              {player.role}: &nbsp;
-              {player.name}
-            </div>
-          ))}
+          {teamTwoRoles.map((teamRole, key) => {
+            const player = teamTwo.find((player) =>
+              player.role.includes(teamRole)
+            );
+
+            if (player) {
+              return (
+                <div className="scrim__section-playerBox" key={key}>
+                  {player?.role ?? ''}: &nbsp;
+                  {player?.name ?? ''}
+                </div>
+              );
+            }
+
+            return (
+              <div className="scrim__section-playerBox" key={key}>
+                {teamRole}
+                <button>join</button>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
