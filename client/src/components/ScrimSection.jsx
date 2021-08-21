@@ -1,10 +1,31 @@
-export default function ScrimSection({ scrim, idx }) {
+import { useContext } from 'react';
+import { CurrentUserContext } from '../context/currentUser';
+import { updateScrim } from '../services/scrims';
+
+export default function ScrimSection({ scrim, idx, getNewScrimsData }) {
+  const [currentUser] = useContext(CurrentUserContext);
+
   const teamOneRoles = ['Top', 'Jungle', 'Mid', 'ADC', 'Support'];
   const teamTwoRoles = ['Top', 'Jungle', 'Mid', 'ADC', 'Support'];
 
   const { teamOne, teamTwo, casters } = scrim;
 
   const excludeSeconds = { hour: '2-digit', minute: '2-digit' };
+
+  const joinTeam = async (teamStr, role) => {
+    const teamArr = teamStr === 'teamOne' ? teamOne : teamTwo;
+
+    const scrimData = {
+      ...scrim,
+      [teamStr]: [...teamArr, { ...currentUser, role }],
+    };
+
+    const updatedScrim = await updateScrim(scrim._id, scrimData);
+
+    if (updatedScrim) {
+      getNewScrimsData();
+    }
+  };
 
   return (
     <div className="one-scrim-container" style={{ padding: '10px' }}>
@@ -37,7 +58,9 @@ export default function ScrimSection({ scrim, idx }) {
             return (
               <div className="scrim__section-playerBox" key={key}>
                 {teamRole}
-                <button>join</button>
+                <button onClick={() => joinTeam('teamOne', teamRole)}>
+                  join
+                </button>
               </div>
             );
           })}
@@ -53,8 +76,8 @@ export default function ScrimSection({ scrim, idx }) {
             if (player) {
               return (
                 <div className="scrim__section-playerBox" key={key}>
-                  {player?.role ?? ''}: &nbsp;
-                  {player?.name ?? ''}
+                  {player?.role}: &nbsp;
+                  {player?.name}
                 </div>
               );
             }
@@ -62,7 +85,9 @@ export default function ScrimSection({ scrim, idx }) {
             return (
               <div className="scrim__section-playerBox" key={key}>
                 {teamRole}
-                <button>join</button>
+                <button onClick={() => joinTeam('teamTwo', teamRole)}>
+                  join
+                </button>
               </div>
             );
           })}

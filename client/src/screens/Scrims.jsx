@@ -7,15 +7,17 @@ import { getAllScrims } from './../services/scrims';
 export default function Scrims() {
   const [currentUser] = useContext(CurrentUserContext);
   const [scrims, setScrims] = useState([]);
+  const [fetch, toggleFetch] = useState(false);
 
   useEffect(() => {
     const fetchScrims = async () => {
+      console.log('fetching scrims');
       const scrimsData = await getAllScrims();
       setScrims(scrimsData);
     };
 
     fetchScrims();
-  }, []);
+  }, [fetch]);
 
   return (
     <div>
@@ -25,7 +27,12 @@ export default function Scrims() {
 
       <div id="scrims-container">
         {scrims.map((scrim, idx) => (
-          <ScrimSection scrim={scrim} key={idx} idx={idx} />
+          <ScrimSection
+            scrim={scrim}
+            key={idx}
+            idx={idx}
+            getNewScrimsData={() => toggleFetch((prev) => !prev)}
+          />
         ))}
       </div>
     </div>
