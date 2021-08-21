@@ -14,6 +14,13 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '3px',
     padding: '0rem 1rem',
   },
+
+  timerLoading: {
+    display: 'flex',
+    justifyContent: 'center',
+    width: '25%',
+    height: '20px',
+  },
 }));
 
 function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
@@ -104,7 +111,7 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
       <div className={classes.timer}>
         {timerDays !== '00' && (
           <>
-            <section aria-label={'timer-days'}>
+            <section aria-label="timer-days">
               <p>{timerDays}</p>
               <p>
                 <small>Days</small>
@@ -115,7 +122,7 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
         )}
         {timerHours !== '00' && (
           <>
-            <section aria-label={'timer-hours'}>
+            <section aria-label="timer-hours">
               <p>{timerHours}</p>
               <p>
                 <small>Hours</small>
@@ -124,14 +131,14 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
             <p>:</p>
           </>
         )}
-        <section>
+        <section aria-label="timer-minutes">
           <p>{timerMinutes}</p>
           <p>
             <small>Minutes</small>
           </p>
         </section>
         <p>:</p>
-        <section>
+        <section aria-label="timer-seconds">
           <p>{timerSeconds}</p>
           <p>
             <small>Seconds</small>

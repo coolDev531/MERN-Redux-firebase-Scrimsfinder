@@ -10,8 +10,8 @@ export default function Intro() {
     region: '',
   });
   const [rankData, setRankData] = useState({
-    rankDivision: '',
-    rankNumber: 0,
+    rankDivision: 'Iron',
+    rankNumber: '4',
   });
   const [currentUser, setCurrentUser] = useContext(CurrentUserContext);
 
@@ -24,20 +24,6 @@ export default function Intro() {
     }));
   };
 
-  useEffect(() => {
-    setUserData((prevState) => ({
-      ...prevState,
-      rank: [
-        rankData?.rankDivision ?? '',
-        rankData?.rankNumber?.toString() ?? '',
-      ].join(' '),
-    }));
-  }, [rankData]);
-
-  useEffect(() => {
-    console.log({ userData, rankData });
-  }, [userData, rankData]);
-
   const divisionsWithNumbers = [
     'Iron',
     'Bronze',
@@ -46,6 +32,33 @@ export default function Intro() {
     'Platinum',
     'Diamond',
   ];
+
+  useEffect(() => {
+    let rankResult = [rankData?.rankDivision ?? '', rankData?.rankNumber].join(
+      ' '
+    );
+
+    rankResult =
+      rankResult[rankResult.length - 1] === ' '
+        ? rankResult.slice(-1)
+        : rankResult;
+
+    console.log({ rankResult });
+    setUserData((prevState) => ({
+      ...prevState,
+      rank:
+        divisionsWithNumbers.includes(rankData.rankDivision) &&
+        rankData?.rankNumber !== '0'
+          ? rankResult
+          : rankData.rankDivision,
+    }));
+
+    // eslint-disable-next-line
+  }, [rankData]);
+
+  useEffect(() => {
+    console.log({ userData, rankData });
+  }, [userData, rankData]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -70,6 +83,7 @@ export default function Intro() {
           value={userData.name}
           onChange={(e) => handleChange(e, setUserData)}
           placeholder="summoner name"
+          required
         />
         <label htmlFor="rankDivision">Rank</label>
         <select
@@ -100,7 +114,7 @@ export default function Intro() {
             required={divisionsWithNumbers.includes(rankData.rankDivision)}
             value={rankData.rankNumber}
             onChange={(e) => handleChange(e, setRankData)}>
-            <option selected disabled hidden>
+            <option selected disabled>
               select rank number
             </option>
             <option value={4}>4</option>
