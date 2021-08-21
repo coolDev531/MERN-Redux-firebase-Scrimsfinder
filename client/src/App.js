@@ -1,9 +1,10 @@
-import "./App.css";
+import './App.css';
 
 function App() {
   return (
     <div className="App">
-      { /* get hacking! */ }
+      {/* get hacking! */}
+      League of Legends Scrim Finder
     </div>
   );
 }

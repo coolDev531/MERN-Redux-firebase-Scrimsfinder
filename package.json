@@ -12,6 +12,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@material-ui/core": "^4.12.3",
+    "@material-ui/icons": "^4.11.2",
+    "axios": "^0.21.1",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
@@ -20,7 +23,6 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
-    "jest": "^27.0.6",
     "nodemon": "^2.0.12",
     "supertest": "^6.1.6"
   }
