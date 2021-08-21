@@ -46,13 +46,11 @@ const main = async () => {
     },
   ];
 
-  const teamTwoPlayers = [
-    roles.map((role) => ({
-      name: faker.name.firstName(),
-      role: role,
-      rank: sample(ranks),
-    })),
-  ];
+  const teamTwoPlayers = [...roles].map((role) => ({
+    name: faker.name.firstName(),
+    role: role,
+    rank: sample(ranks),
+  }));
 
   const scrims = [
     {
@@ -60,6 +58,7 @@ const main = async () => {
       teamTwo: teamTwoPlayers,
       casters: ['jimmy', 'bob'],
       gameStartTime: setHours(new Date(), '3:00pm'),
+      lobbyHost: sample([...teamOnePlayers, ...teamTwoPlayers]),
     },
 
     {
@@ -67,6 +66,7 @@ const main = async () => {
       teamTwo: teamTwoPlayers,
       casters: ['YummiFan', 'AurelionSolNerfPls'],
       gameStartTime: setHours(new Date(), '9:15pm'),
+      lobbyHost: sample([...teamOnePlayers, ...teamTwoPlayers]),
     },
   ];
 
