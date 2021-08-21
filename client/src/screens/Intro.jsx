@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import { CurrentUserContext } from '../context/currentUser';
+import { Redirect } from 'react-router-dom';
 
 export default function Intro() {
   const [userData, setUserData] = useState({
@@ -7,11 +9,11 @@ export default function Intro() {
     rank: '',
     region: '',
   });
-
   const [rankData, setRankData] = useState({
     rankDivision: '',
     rankNumber: 0,
   });
+  const [currentUser, setCurrentUser] = useContext(CurrentUserContext);
 
   const handleChange = ({ target }, setter) => {
     const { name, value } = target;
@@ -45,11 +47,23 @@ export default function Intro() {
     'Diamond',
   ];
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('submited!');
+    localStorage.setItem('currentUser', JSON.stringify(userData));
+    setCurrentUser(userData);
+  };
+
+  if (currentUser) {
+    console.log('redirecting to /');
+    return <Redirect to="/" />;
+  }
+
   return (
     <div>
       <h1>Welcome to LoL scrim finder, please fill in your details:</h1>
 
-      <form>
+      <form onSubmit={handleSubmit}>
         <input
           type="text"
           name="name"
@@ -57,7 +71,7 @@ export default function Intro() {
           onChange={(e) => handleChange(e, setUserData)}
           placeholder="summoner name"
         />
-        <label htmlFor="rankDivision">Rank Division</label>
+        <label htmlFor="rankDivision">Rank</label>
         <select
           name="rankDivision"
           required
@@ -83,7 +97,7 @@ export default function Intro() {
         {divisionsWithNumbers.includes(rankData.rankDivision) && (
           <select
             name="rankNumber"
-            required
+            required={divisionsWithNumbers.includes(rankData.rankDivision)}
             value={rankData.rankNumber}
             onChange={(e) => handleChange(e, setRankData)}>
             <option selected disabled hidden>
@@ -95,8 +109,26 @@ export default function Intro() {
             <option value={1}>1</option>
           </select>
         )}
+
+        <label htmlFor="region">Region</label>
+        <select
+          name="region"
+          value={userData.region}
+          onChange={(e) => handleChange(e, setUserData)}
+          required>
+          <option selected disabled hidden>
+            Select Region
+          </option>
+          {['NA', 'EUW', 'EUNE', 'LAN'].map((region) => (
+            <option value={region}>{region}</option>
+          ))}
+        </select>
+        <button type="submit">Submit</button>
       </form>
-      <p>*ALPHA STAGE: all games are considered NA games*</p>
+      <p>
+        *ALPHA STAGE: all currently games will be considered NA games, but
+        please pick your region for next updates.*
+      </p>
     </div>
   );
 }

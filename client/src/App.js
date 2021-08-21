@@ -1,19 +1,22 @@
 import './App.css';
-import { CurrentUserContext } from './services/context/currentUser';
+import { useEffect } from 'react';
+import { CurrentUserContext } from './context/currentUser';
 import { useContext } from 'react';
-import Intro from './screens/Intro';
+import AppRouter from './navigation/AppRouter';
+import { useHistory } from 'react-router-dom';
 
 function App() {
   const [currentUser] = useContext(CurrentUserContext);
+  const { push } = useHistory();
 
-  return (
-    <div className="App">
-      {/* get hacking! */}
-      {JSON.stringify(currentUser)}
-      <Intro />
-      League of Legends Scrim Finder
-    </div>
-  );
+  useEffect(() => {
+    if (!currentUser) {
+      return push('user-setup');
+    }
+    // eslint-disable-next-line
+  }, [currentUser]);
+
+  return <AppRouter />;
 }
 
 export default App;
