@@ -9,10 +9,14 @@ export default function ScrimSection({ scrim, idx, getNewScrimsData }) {
   const [playerEntered, setPlayerEntered] = useState(false);
 
   useEffect(() => {
+    console.log({ playerEntered });
+  }, [playerEntered]);
+  useEffect(() => {
     const teams = [...teamOne, teamTwo];
 
     let foundPlayer = teams.find((player) => player.name === currentUser.name);
 
+    console.log({ foundPlayer });
     return foundPlayer
       ? setPlayerEntered(foundPlayer)
       : setPlayerEntered(false);
@@ -26,9 +30,22 @@ export default function ScrimSection({ scrim, idx, getNewScrimsData }) {
   const joinTeam = async (teamStr, role) => {
     const teamArr = teamStr === 'teamOne' ? teamOne : teamTwo;
 
+    const playerData = { ...currentUser, role };
+
+    const newPlayer = {
+      ...currentUser,
+      role,
+      team: { name: teamStr, value: [...teamArr, playerData] },
+    };
+
     const scrimData = {
       ...scrim,
-      [teamStr]: [...teamArr, { ...currentUser, role }],
+      [teamStr]: [
+        ...teamArr,
+        {
+          ...newPlayer,
+        },
+      ],
     };
 
     const updatedScrim = await updateScrim(scrim._id, scrimData);
@@ -38,21 +55,84 @@ export default function ScrimSection({ scrim, idx, getNewScrimsData }) {
     }
   };
 
-  const swapRole = async (teamStr, role) => {
-    const currentRole = playerEntered.role;
-    let teamArr = teamStr === 'teamOne' ? teamOne : teamTwo;
+  const compareArrays = (arr1, arr2) => {
+    if (arr1.length !== arr2.length) return false;
 
-    let filtered = teamArr.filter((player) => player.role !== currentRole);
+    for (let i = 0; i < arr1.length; i++) {
+      if (arr1[i].name !== arr2[i].name) return false;
+    }
 
-    const scrimData = {
-      ...scrim,
-      [teamStr]: [...filtered, { ...currentUser, role }],
-    };
+    // If all elements were same.
+    return true;
+  };
 
-    const updatedScrim = await updateScrim(scrim._id, scrimData);
+  function swapPlayer(currentTeam, movingTeam, movingPlayer) {
+    const indexToRemove = currentTeam.findIndex(
+      (p) => p && p.name === movingPlayer.name
+    );
+    if (indexToRemove > -1) currentTeam.splice(indexToRemove, 1);
+    movingTeam = [...movingTeam, movingPlayer];
+    return [currentTeam, movingTeam];
+  }
 
-    if (updatedScrim) {
-      getNewScrimsData();
+  const swapRole = async (e, teamStr, role) => {
+    let teamMovingTo = e.target.parentNode.classList[1];
+    let currentTeam = playerEntered.team;
+    let teamArr = teamMovingTo === 'teamOne' ? teamOne : teamTwo;
+    let isSwappingTeams = compareArrays(currentTeam.value, teamArr) === false;
+
+    if (isSwappingTeams) {
+      console.log(`swapping teams for summoner ${currentUser.name}`);
+      const playerData = {
+        ...currentUser,
+        role,
+      };
+
+      let [teamLeft, teamJoined] = swapPlayer(
+        currentTeam.value,
+        teamArr,
+        playerData
+      );
+
+      let teamLeavingName = teamMovingTo === 'teamOne' ? 'teamTwo' : 'teamOne';
+
+      const scrimData = {
+        ...scrim,
+        [teamLeavingName]: teamLeft,
+        [teamMovingTo]: teamJoined,
+      };
+
+      const updatedScrim = await updateScrim(scrim._id, scrimData);
+
+      if (updatedScrim) {
+        console.log('updating with swapped data');
+        getNewScrimsData();
+      }
+
+      return;
+    } else {
+      let filtered = [...teamArr].filter(
+        (player) => player.name !== currentUser.name
+      );
+
+      const playerData = { ...currentUser, role };
+
+      const newPlayer = {
+        ...currentUser,
+        role,
+        team: { name: teamStr, value: [...filtered, playerData] },
+      };
+
+      const scrimData = {
+        ...scrim,
+        [teamStr]: [...filtered, { ...newPlayer }],
+      };
+
+      const updatedScrim = await updateScrim(scrim._id, scrimData);
+
+      if (updatedScrim) {
+        getNewScrimsData();
+      }
     }
   };
 
@@ -77,7 +157,7 @@ export default function ScrimSection({ scrim, idx, getNewScrimsData }) {
 
             if (player) {
               return (
-                <div className="scrim__section-playerBox" key={key}>
+                <div className="scrim__section-playerBox teamOne" key={key}>
                   {player?.role ?? ''}: &nbsp;
                   {player?.name ?? ''}
                 </div>
@@ -85,14 +165,14 @@ export default function ScrimSection({ scrim, idx, getNewScrimsData }) {
             }
 
             return (
-              <div className="scrim__section-playerBox" key={key}>
+              <div className="scrim__section-playerBox teamOne" key={key}>
                 {teamRole}
                 {!playerEntered ? (
                   <button onClick={() => joinTeam('teamOne', teamRole)}>
                     join
                   </button>
                 ) : (
-                  <button onClick={() => swapRole('teamOne', teamRole)}>
+                  <button onClick={(e) => swapRole(e, 'teamOne', teamRole)}>
                     swap
                   </button>
                 )}
@@ -110,7 +190,7 @@ export default function ScrimSection({ scrim, idx, getNewScrimsData }) {
 
             if (player) {
               return (
-                <div className="scrim__section-playerBox" key={key}>
+                <div className="scrim__section-playerBox teamTwo" key={key}>
                   {player?.role}: &nbsp;
                   {player?.name}
                 </div>
@@ -118,14 +198,14 @@ export default function ScrimSection({ scrim, idx, getNewScrimsData }) {
             }
 
             return (
-              <div className="scrim__section-playerBox" key={key}>
+              <div className="scrim__section-playerBox teamTwo" key={key}>
                 {teamRole}
                 {!playerEntered ? (
                   <button onClick={() => joinTeam('teamTwo', teamRole)}>
                     join
                   </button>
                 ) : (
-                  <button onClick={() => swapRole('teamTwo', teamRole)}>
+                  <button onClick={(e) => swapRole(e, 'teamTwo', teamRole)}>
                     swap
                   </button>
                 )}
