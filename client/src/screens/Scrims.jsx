@@ -1,4 +1,5 @@
 import { useContext, useState, useEffect } from 'react';
+import ScrimSection from '../components/ScrimSection';
 import { CurrentUserContext } from '../context/currentUser';
 import { mockScrims } from '../mocks/scrims.mock';
 
@@ -18,12 +19,7 @@ export default function Scrims() {
 
       <div id="scrims-container">
         {scrims.map((scrim) => (
-          <div class="one-scrim-container">
-            <h1>scrim</h1>
-            <h2>
-              Game Start: {new Date(scrim.gameStartTime).toLocaleString()}
-            </h2>
-          </div>
+          <ScrimSection scrim={scrim} />
         ))}
       </div>
     </div>
