@@ -6,13 +6,6 @@ const sample = require('../utils/sample');
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-class Player {
-  constructor(name, role, rank) {
-    this.name = name;
-    this.role = role;
-    this.rank = rank;
-  }
-}
 const main = async () => {
   const roles = ['Top', 'Jungle', 'Mid', 'ADC', 'Support'];
 

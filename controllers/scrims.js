@@ -30,14 +30,23 @@ const createScrim = async (req, res) => {
     const scrim = new Scrim(req.body);
     await scrim.save();
     res.status(201).json(scrim);
+    console.log('lobby created: ', scrim);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: error.message });
   }
 };
 
+const createScrimOnInterval = async () => {
+  console.log('creating scrim...');
+  const scrim = new Scrim();
+  await scrim.save();
+  console.log('lobby created: ', scrim);
+};
+
 const updateScrim = async (req, res) => {
   // for changing times, players or casters joining.
+  console.log(req.body);
   const { id } = req.params;
   await Scrim.findByIdAndUpdate(id, req.body, { new: true }, (error, scrim) => {
     if (error) {
@@ -69,4 +78,5 @@ module.exports = {
   createScrim,
   updateScrim,
   deleteScrim,
+  createScrimOnInterval,
 };
