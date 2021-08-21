@@ -24,8 +24,8 @@ export default function Scrims() {
       {currentUser && <pre>{JSON.stringify(currentUser, null, 2)}</pre>}
 
       <div id="scrims-container">
-        {scrims.map((scrim, key) => (
-          <ScrimSection scrim={scrim} key={key} />
+        {scrims.map((scrim, idx) => (
+          <ScrimSection scrim={scrim} key={idx} idx={idx} />
         ))}
       </div>
     </div>

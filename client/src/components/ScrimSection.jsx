@@ -1,18 +1,22 @@
-export default function ScrimSection({ scrim }) {
+export default function ScrimSection({ scrim, idx }) {
   const teamOneRoles = ['Top', 'Jungle', 'Mid', 'ADC', 'Support'];
   const teamTwoRoles = ['Top', 'Jungle', 'Mid', 'ADC', 'Support'];
 
-  const { teamOne, teamTwo } = scrim;
+  const { teamOne, teamTwo, casters } = scrim;
 
   const excludeSeconds = { hour: '2-digit', minute: '2-digit' };
 
   return (
     <div className="one-scrim-container" style={{ padding: '10px' }}>
-      <h1>scrim</h1>
-      <h2>
-        Game Start:{' '}
-        {new Date(scrim.gameStartTime).toLocaleString([], excludeSeconds)}
-      </h2>
+      <div className="scrim__metadata">
+        <h1>scrim {idx + 1}</h1>
+        <h2>
+          Game Start:&nbsp;
+          {new Date(scrim.gameStartTime).toLocaleString([], excludeSeconds)}
+        </h2>
+
+        <h2>Casters: {casters.map((caster) => caster).join(' & ')}</h2>
+      </div>
       <div className="teams-container" style={{ display: 'flex', gap: '10%' }}>
         <div className="team-container team-container--teamOne">
           <h4>Team One:</h4>
