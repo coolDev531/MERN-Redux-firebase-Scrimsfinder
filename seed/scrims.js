@@ -39,7 +39,7 @@ const main = async () => {
   const teamTwoPlayers = [
     roles.map((role) => ({
       name: faker.name.firstName(),
-      role: roles,
+      role: role,
     })),
   ];
 
