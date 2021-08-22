@@ -5,4 +5,8 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
   },
+  icon: {
+    color: 'white',
+    cursor: 'pointer',
+  },
 }));

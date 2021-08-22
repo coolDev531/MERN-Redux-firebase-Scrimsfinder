@@ -31,7 +31,8 @@ export default function Scrims() {
               scrim={scrim}
               key={idx}
               idx={idx}
-              getNewScrimsData={() => toggleFetch((prev) => !prev)}
+              toggleFetch={toggleFetch}
+              setScrims={setScrims}
             />
             <div className="page-break"></div>
           </>

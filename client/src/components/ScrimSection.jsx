@@ -4,17 +4,7 @@ import { updateScrim } from '../services/scrims';
 import CountdownTimer from './CountdownTimer';
 import ExitIcon from '@material-ui/icons/ExitToApp';
 import { useScrimSectionStyles } from '../styles/scrimSection.styles';
-
-const compareArrays = (arr1, arr2) => {
-  if (arr1.length !== arr2.length) return false;
-
-  for (let i = 0; i < arr1.length; i++) {
-    if (arr1[i].name !== arr2[i].name) return false;
-  }
-
-  // If all elements were same.
-  return true;
-};
+import ScrimPlayersData from './ScrimTeamsData';
 
 const compareDates = (scrim) => {
   let currentTime = new Date().getTime();
@@ -29,16 +19,7 @@ const compareDates = (scrim) => {
   }
 };
 
-const swapPlayer = (currentTeam, movingTeam, movingPlayer) => {
-  const indexToRemove = currentTeam.findIndex(
-    (p) => p && p.name === movingPlayer.name
-  );
-  if (indexToRemove > -1) currentTeam.splice(indexToRemove, 1);
-  movingTeam = [...movingTeam, movingPlayer];
-  return [currentTeam, movingTeam];
-};
-
-export default function ScrimSection({ scrim, idx, getNewScrimsData }) {
+export default function ScrimSection({ scrim, idx, toggleFetch }) {
   const [currentUser] = useContext(CurrentUserContext);
   const [playerEntered, setPlayerEntered] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
@@ -65,118 +46,7 @@ export default function ScrimSection({ scrim, idx, getNewScrimsData }) {
       : setPlayerEntered(false);
   }, [scrim, currentUser.name, teamOne, teamTwo]);
 
-  const teamOneRoles = ['Top', 'Jungle', 'Mid', 'ADC', 'Support'];
-  const teamTwoRoles = ['Top', 'Jungle', 'Mid', 'ADC', 'Support'];
-
   const excludeSeconds = { hour: '2-digit', minute: '2-digit' };
-
-  const joinTeam = async (teamStr, role) => {
-    const teamArr = teamStr === 'teamOne' ? teamOne : teamTwo;
-
-    const playerData = { ...currentUser, role };
-
-    const newPlayer = {
-      ...currentUser,
-      role,
-      team: { name: teamStr, value: [...teamArr, playerData] },
-    };
-
-    const scrimData = {
-      ...scrim,
-      [teamStr]: [
-        ...teamArr,
-        {
-          ...newPlayer,
-        },
-      ],
-    };
-
-    const updatedScrim = await updateScrim(scrim._id, scrimData);
-
-    if (updatedScrim) {
-      getNewScrimsData();
-    }
-  };
-
-  const swapRole = async (teamJoiningName, role) => {
-    let currentTeam = playerEntered.team;
-    let teamArr = teamJoiningName === 'teamOne' ? teamOne : teamTwo;
-    let scrimData = {};
-
-    // if is swapping teams
-    if (compareArrays(currentTeam.value, teamArr) === false) {
-      console.log(`swapping teams for summoner ${currentUser.name}`);
-
-      let newPlayerData = {
-        ...currentUser,
-        role,
-      };
-
-      let [teamLeft, teamJoined] = swapPlayer(
-        currentTeam.value,
-        teamArr,
-        newPlayerData
-      );
-
-      newPlayerData = {
-        ...newPlayerData,
-        team: { name: teamJoiningName, value: teamJoined },
-      };
-
-      let teamLeavingName =
-        teamJoiningName === 'teamOne' ? 'teamTwo' : 'teamOne';
-
-      scrimData = {
-        ...scrim,
-        [teamLeavingName]: teamLeft,
-        [teamJoiningName]: [
-          ...teamJoined.map((player) =>
-            player.name === newPlayerData.name ? { ...newPlayerData } : player
-          ),
-        ],
-      };
-    } else {
-      let filtered = [...teamArr].filter(
-        (player) => player.name !== currentUser.name
-      );
-
-      const playerData = { ...currentUser, role };
-
-      const newPlayer = {
-        ...currentUser,
-        role,
-        team: { name: teamJoiningName, value: [...filtered, playerData] },
-      };
-
-      scrimData = {
-        ...scrim,
-        [teamJoiningName]: [...filtered, { ...newPlayer }],
-      };
-    }
-
-    const updatedScrim = await updateScrim(scrim._id, scrimData);
-
-    if (updatedScrim) {
-      console.log('updating with swapped data');
-      getNewScrimsData();
-    }
-  };
-
-  const leaveGame = async (teamLeaving) => {
-    let teamArr = teamLeaving === 'teamOne' ? teamOne : teamTwo;
-    const scrimData = {
-      ...scrim,
-      [teamLeaving]: teamArr.filter(
-        (player) => player.name !== playerEntered.name
-      ),
-    };
-
-    const updatedScrim = await updateScrim(scrim._id, scrimData);
-
-    if (updatedScrim) {
-      getNewScrimsData();
-    }
-  };
 
   return (
     <div className="page-section one-scrim__container">
@@ -198,101 +68,37 @@ export default function ScrimSection({ scrim, idx, getNewScrimsData }) {
           {gameStarted ? 'GAMESTARTED!' : 'still waiting...'}
           <h2>Casters: {casters.map((caster) => caster).join(' & ')}</h2>
         </div>
+
         <div
           className="teams-container"
           style={{ display: 'flex', gap: '10%' }}>
-          <div className="team-container team-container--teamOne">
-            <h4>Team One:</h4>
-            {teamOneRoles.map((teamRole, key) => {
-              const player = teamOne.find((player) =>
-                player?.role?.includes(teamRole)
-              );
+          <ScrimPlayersData
+            teamOne={teamOne}
+            teamTwo={teamTwo}
+            teamData={{
+              teamRoles: ['Top', 'Jungle', 'Mid', 'ADC', 'Support'],
+              teamName: 'teamOne',
+              teamTitleName: 'Team One',
+              teamArray: teamOne,
+            }}
+            scrim={scrim}
+            playerEntered={playerEntered}
+            getNewScrimsData={() => toggleFetch((prevState) => !prevState)}
+          />
 
-              const isCurrentUser = teamOne.find((player) =>
-                player?.name?.includes(currentUser.name)
-              );
-
-              if (player) {
-                return (
-                  <div className="scrim__section-playerBox teamOne" key={key}>
-                    {player?.role ?? ''}: &nbsp;
-                    {player?.name ?? ''}
-                    {isCurrentUser && (
-                      <ExitIcon
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => leaveGame('teamOne')}
-                      />
-                    )}
-                  </div>
-                );
-              }
-
-              return (
-                <div className="scrim__section-playerBox teamOne" key={key}>
-                  {teamRole}
-                  {!playerEntered ? (
-                    <button onClick={() => joinTeam('teamOne', teamRole)}>
-                      join
-                    </button>
-                  ) : (
-                    <>
-                      <button onClick={(e) => swapRole('teamOne', teamRole)}>
-                        swap
-                      </button>
-                    </>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="team-container team-container--teamTwo">
-            <h4>Team Two:</h4>
-            {teamTwoRoles.map((teamRole, key) => {
-              const player = teamTwo.find((player) =>
-                player?.role?.includes(teamRole)
-              );
-
-              const isCurrentUser = teamTwo.find((player) =>
-                player?.name?.includes(currentUser?.name)
-              );
-
-              if (player) {
-                return (
-                  <div className="scrim__section-playerBox teamTwo" key={key}>
-                    {player?.role}: &nbsp;
-                    {player?.name}
-                    {/* <button onClick={(e) => leaveGame(e, 'teamTwo', teamRole)}>
-                    Leave
-                  </button> */}
-                    {isCurrentUser && (
-                      <ExitIcon
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => leaveGame('teamTwo')}
-                      />
-                    )}
-                  </div>
-                );
-              }
-
-              return (
-                <div className="scrim__section-playerBox teamTwo" key={key}>
-                  {teamRole}
-                  {!playerEntered ? (
-                    <button onClick={() => joinTeam('teamTwo', teamRole)}>
-                      join
-                    </button>
-                  ) : (
-                    <>
-                      <button onClick={(e) => swapRole('teamTwo', teamRole)}>
-                        swap
-                      </button>
-                    </>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+          <ScrimPlayersData
+            teamOne={teamOne}
+            teamTwo={teamTwo}
+            teamData={{
+              teamRoles: ['Top', 'Jungle', 'Mid', 'ADC', 'Support'],
+              teamName: 'teamTwo',
+              teamTitleName: 'Team Two',
+              teamArray: teamTwo,
+            }}
+            scrim={scrim}
+            playerEntered={playerEntered}
+            getNewScrimsData={() => toggleFetch((prevState) => !prevState)}
+          />
         </div>
       </div>
     </div>
