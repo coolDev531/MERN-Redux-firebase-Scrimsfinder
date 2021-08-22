@@ -24,6 +24,3 @@ export function toIsoString(date) {
     pad(tzo % 60)
   );
 }
-
-var dt = new Date();
-console.log(toIsoString(dt));

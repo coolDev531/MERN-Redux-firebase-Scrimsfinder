@@ -4,9 +4,28 @@ const sample = require('../utils/sample');
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
+const getSortedScrims = (scrims, property) => {
+  const sortedScrims = [...scrims].sort((a, b) => {
+    const date1 = new Date(a[property]).getTime();
+    const date2 = new Date(b[property]).getTime();
+
+    if (date1 < date2) {
+      return -1;
+    } else if (date1 > date2) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+  return sortedScrims;
+};
+
 const getAllScrims = async (_req, res) => {
   try {
-    const scrims = await Scrim.find();
+    const scrims = await Scrim.find({}, { sort: ['datefield', 'asc'] }).toArray(
+      function (err, docs) {}
+    );
+
     res.json(scrims);
   } catch (error) {
     res.status(500).json({ error: error.message });
