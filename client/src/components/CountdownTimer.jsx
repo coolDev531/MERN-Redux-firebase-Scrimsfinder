@@ -1,5 +1,4 @@
 import React, { Fragment, useState, useEffect } from 'react';
-// import './CountdownTimer.css';
 import { makeStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
@@ -8,11 +7,13 @@ const useStyles = makeStyles((theme) => ({
     background: 'rgb(0, 0, 0, 0.9)',
     color: '#fff',
     fontSize: '22px',
-    display: 'grid',
-    gridTemplateColumns: 'repeat(7, 1fr)',
+    display: 'flex',
     textAlign: 'center',
     borderRadius: '3px',
     padding: '0rem 1rem',
+    '@supports (gap: 10px)': {
+      gap: '10px',
+    },
   },
 
   timerLoading: {
@@ -29,6 +30,7 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
   const [timerHours, setTimerHours] = useState('00');
   const [timerMinutes, setTimerMinutes] = useState('00');
   const [timerSeconds, setTimerSeconds] = useState('00');
+
   const classes = useStyles();
 
   let interval = null;

@@ -26,12 +26,15 @@ export default function Scrims() {
 
       <div id="scrims-container">
         {scrims.map((scrim, idx) => (
-          <ScrimSection
-            scrim={scrim}
-            key={idx}
-            idx={idx}
-            getNewScrimsData={() => toggleFetch((prev) => !prev)}
-          />
+          <>
+            <ScrimSection
+              scrim={scrim}
+              key={idx}
+              idx={idx}
+              getNewScrimsData={() => toggleFetch((prev) => !prev)}
+            />
+            <div className="page-break"></div>
+          </>
         ))}
       </div>
     </div>
