@@ -3,6 +3,7 @@ import { CurrentUserContext } from '../context/currentUser';
 import { updateScrim } from '../services/scrims';
 import CountdownTimer from './CountdownTimer';
 import ExitIcon from '@material-ui/icons/ExitToApp';
+import { useScrimSectionStyles } from '../styles/scrimSection.styles';
 
 const compareArrays = (arr1, arr2) => {
   if (arr1.length !== arr2.length) return false;
@@ -41,6 +42,8 @@ export default function ScrimSection({ scrim, idx, getNewScrimsData }) {
   const [currentUser] = useContext(CurrentUserContext);
   const [playerEntered, setPlayerEntered] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
+
+  const classes = useScrimSectionStyles();
 
   const { teamOne, teamTwo, casters } = scrim;
 
@@ -95,10 +98,11 @@ export default function ScrimSection({ scrim, idx, getNewScrimsData }) {
     }
   };
 
-  const swapRole = async (teamStr, role) => {
+  const swapRole = async (teamJoiningName, role) => {
     let currentTeam = playerEntered.team;
-    let teamArr = teamStr === 'teamOne' ? teamOne : teamTwo;
+    let teamArr = teamJoiningName === 'teamOne' ? teamOne : teamTwo;
     let scrimData = {};
+
     // if is swapping teams
     if (compareArrays(currentTeam.value, teamArr) === false) {
       console.log(`swapping teams for summoner ${currentUser.name}`);
@@ -116,15 +120,16 @@ export default function ScrimSection({ scrim, idx, getNewScrimsData }) {
 
       newPlayerData = {
         ...newPlayerData,
-        team: { name: teamStr, value: teamJoined },
+        team: { name: teamJoiningName, value: teamJoined },
       };
 
-      let teamLeavingName = teamStr === 'teamOne' ? 'teamTwo' : 'teamOne';
+      let teamLeavingName =
+        teamJoiningName === 'teamOne' ? 'teamTwo' : 'teamOne';
 
       scrimData = {
         ...scrim,
         [teamLeavingName]: teamLeft,
-        [teamStr]: [
+        [teamJoiningName]: [
           ...teamJoined.map((player) =>
             player.name === newPlayerData.name ? { ...newPlayerData } : player
           ),
@@ -140,12 +145,12 @@ export default function ScrimSection({ scrim, idx, getNewScrimsData }) {
       const newPlayer = {
         ...currentUser,
         role,
-        team: { name: teamStr, value: [...filtered, playerData] },
+        team: { name: teamJoiningName, value: [...filtered, playerData] },
       };
 
       scrimData = {
         ...scrim,
-        [teamStr]: [...filtered, { ...newPlayer }],
+        [teamJoiningName]: [...filtered, { ...newPlayer }],
       };
     }
 
@@ -177,17 +182,18 @@ export default function ScrimSection({ scrim, idx, getNewScrimsData }) {
     <div className="one-scrim-container" style={{ padding: '10px' }}>
       <div className="scrim__metadata">
         <h1>scrim {idx + 1}</h1>
-        <h2>
-          Game Start:&nbsp;
-          {new Date(scrim.gameStartTime).toLocaleString([], excludeSeconds)}
-        </h2>
+        <div className={classes.gameMetaInfo}>
+          <h2>
+            Game Start:&nbsp;
+            {new Date(scrim.gameStartTime).toLocaleString([], excludeSeconds)}
+          </h2>
 
-        <CountdownTimer
-          gameStarted={gameStarted}
-          setGameStarted={setGameStarted}
-          scrim={scrim}
-        />
-
+          <CountdownTimer
+            gameStarted={gameStarted}
+            setGameStarted={setGameStarted}
+            scrim={scrim}
+          />
+        </div>
         {gameStarted ? 'GAMESTARTED!' : 'still waiting...'}
         <h2>Casters: {casters.map((caster) => caster).join(' & ')}</h2>
       </div>

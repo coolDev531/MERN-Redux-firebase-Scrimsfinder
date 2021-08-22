@@ -1,0 +1,35 @@
+.inner-column {
+  display: block;
+  width: 98%;
+  max-width: 1100px;
+  margin-right: auto;
+  margin-left: auto;
+  padding: 10px;
+  border: 2px solid red;
+}
+
+.page-section {
+  border: 4px solid blue;
+  scroll-margin-top: 2em;
+}
+
+.page-content {
+  flex-grow: 1;
+}
+
+picture {
+  display: block;
+}
+
+picture img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.page-break {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding: 20px;
+}

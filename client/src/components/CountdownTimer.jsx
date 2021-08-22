@@ -69,7 +69,6 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
 
   /* eslint eqeqeq: 0 */
   // disable == warning in react.
-
   useEffect(() => {
     if (
       isTimerStarted &&
@@ -106,10 +105,11 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
       </div>
     );
   }
+
   return (
     <Fragment>
       <div className={classes.timer}>
-        {timerDays !== '00' && (
+        {timerDays != '00' && (
           <>
             <section aria-label="timer-days">
               <p>{timerDays}</p>
@@ -120,7 +120,7 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
             <p>:</p>
           </>
         )}
-        {timerHours !== '00' && (
+        {timerHours != '00' && (
           <>
             <section aria-label="timer-hours">
               <p>{timerHours}</p>
@@ -131,13 +131,17 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
             <p>:</p>
           </>
         )}
-        <section aria-label="timer-minutes">
-          <p>{timerMinutes}</p>
-          <p>
-            <small>Minutes</small>
-          </p>
-        </section>
-        <p>:</p>
+        {timerMinutes != '00' && (
+          <>
+            <section aria-label="timer-minutes">
+              <p>{timerMinutes}</p>
+              <p>
+                <small>Minutes</small>
+              </p>
+            </section>
+            <p>:</p>
+          </>
+        )}
         <section aria-label="timer-seconds">
           <p>{timerSeconds}</p>
           <p>

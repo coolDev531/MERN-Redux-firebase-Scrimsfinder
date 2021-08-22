@@ -16,7 +16,11 @@ function App() {
     // eslint-disable-next-line
   }, [currentUser]);
 
-  return <AppRouter />;
+  return (
+    <main className="page-content">
+      <AppRouter />
+    </main>
+  );
 }
 
 export default App;
