@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { CurrentUserContext } from '../context/currentUser';
 import { updateScrim } from '../services/scrims';
 import CountdownTimer from './CountdownTimer';
+import ExitIcon from '@material-ui/icons/ExitToApp';
 
 const compareArrays = (arr1, arr2) => {
   if (arr1.length !== arr2.length) return false;
@@ -94,11 +95,10 @@ export default function ScrimSection({ scrim, idx, getNewScrimsData }) {
     }
   };
 
-  const swapRole = async (e, teamStr, role) => {
-    let teamMovingTo = e.target.parentNode.classList[1];
+  const swapRole = async (teamStr, role) => {
     let currentTeam = playerEntered.team;
-    let teamArr = teamMovingTo === 'teamOne' ? teamOne : teamTwo;
-
+    let teamArr = teamStr === 'teamOne' ? teamOne : teamTwo;
+    let scrimData = {};
     // if is swapping teams
     if (compareArrays(currentTeam.value, teamArr) === false) {
       console.log(`swapping teams for summoner ${currentUser.name}`);
@@ -116,29 +116,20 @@ export default function ScrimSection({ scrim, idx, getNewScrimsData }) {
 
       newPlayerData = {
         ...newPlayerData,
-        team: { name: teamMovingTo, value: teamJoined },
+        team: { name: teamStr, value: teamJoined },
       };
 
-      let teamLeavingName = teamMovingTo === 'teamOne' ? 'teamTwo' : 'teamOne';
+      let teamLeavingName = teamStr === 'teamOne' ? 'teamTwo' : 'teamOne';
 
-      const scrimData = {
+      scrimData = {
         ...scrim,
         [teamLeavingName]: teamLeft,
-        [teamMovingTo]: [
+        [teamStr]: [
           ...teamJoined.map((player) =>
             player.name === newPlayerData.name ? { ...newPlayerData } : player
           ),
         ],
       };
-
-      const updatedScrim = await updateScrim(scrim._id, scrimData);
-
-      if (updatedScrim) {
-        console.log('updating with swapped data');
-        getNewScrimsData();
-      }
-
-      return;
     } else {
       let filtered = [...teamArr].filter(
         (player) => player.name !== currentUser.name
@@ -152,21 +143,21 @@ export default function ScrimSection({ scrim, idx, getNewScrimsData }) {
         team: { name: teamStr, value: [...filtered, playerData] },
       };
 
-      const scrimData = {
+      scrimData = {
         ...scrim,
         [teamStr]: [...filtered, { ...newPlayer }],
       };
+    }
 
-      const updatedScrim = await updateScrim(scrim._id, scrimData);
+    const updatedScrim = await updateScrim(scrim._id, scrimData);
 
-      if (updatedScrim) {
-        getNewScrimsData();
-      }
+    if (updatedScrim) {
+      console.log('updating with swapped data');
+      getNewScrimsData();
     }
   };
 
-  const leaveGame = async (e, teamStr, role) => {
-    const teamLeaving = e.target.parentNode.classList[1];
+  const leaveGame = async (teamLeaving) => {
     let teamArr = teamLeaving === 'teamOne' ? teamOne : teamTwo;
     const scrimData = {
       ...scrim,
@@ -208,11 +199,21 @@ export default function ScrimSection({ scrim, idx, getNewScrimsData }) {
               player?.role?.includes(teamRole)
             );
 
+            const isCurrentUser = teamOne.find((player) =>
+              player?.name?.includes(currentUser.name)
+            );
+
             if (player) {
               return (
                 <div className="scrim__section-playerBox teamOne" key={key}>
                   {player?.role ?? ''}: &nbsp;
                   {player?.name ?? ''}
+                  {isCurrentUser && (
+                    <ExitIcon
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => leaveGame('teamOne')}
+                    />
+                  )}
                 </div>
               );
             }
@@ -226,10 +227,7 @@ export default function ScrimSection({ scrim, idx, getNewScrimsData }) {
                   </button>
                 ) : (
                   <>
-                    <button onClick={(e) => leaveGame(e, 'teamTwo', teamRole)}>
-                      Leave Team
-                    </button>
-                    <button onClick={(e) => swapRole(e, 'teamOne', teamRole)}>
+                    <button onClick={(e) => swapRole('teamOne', teamRole)}>
                       swap
                     </button>
                   </>
@@ -246,11 +244,24 @@ export default function ScrimSection({ scrim, idx, getNewScrimsData }) {
               player?.role?.includes(teamRole)
             );
 
+            const isCurrentUser = teamTwo.find((player) =>
+              player?.name?.includes(currentUser?.name)
+            );
+
             if (player) {
               return (
                 <div className="scrim__section-playerBox teamTwo" key={key}>
                   {player?.role}: &nbsp;
                   {player?.name}
+                  {/* <button onClick={(e) => leaveGame(e, 'teamTwo', teamRole)}>
+                    Leave
+                  </button> */}
+                  {isCurrentUser && (
+                    <ExitIcon
+                      style={{ cursor: 'pointer' }}
+                      onClick={(e) => leaveGame('teamTwo')}
+                    />
+                  )}
                 </div>
               );
             }
@@ -264,10 +275,7 @@ export default function ScrimSection({ scrim, idx, getNewScrimsData }) {
                   </button>
                 ) : (
                   <>
-                    <button onClick={(e) => leaveGame(e, 'teamTwo', teamRole)}>
-                      Leave Team
-                    </button>
-                    <button onClick={(e) => swapRole(e, 'teamTwo', teamRole)}>
+                    <button onClick={(e) => swapRole('teamTwo', teamRole)}>
                       swap
                     </button>
                   </>
