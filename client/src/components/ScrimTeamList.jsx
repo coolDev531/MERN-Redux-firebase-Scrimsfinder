@@ -188,7 +188,7 @@ export default function ScrimTeamList({
                     primary={
                       <a
                         className="link"
-                        href={`https://${currentUser.region}.op.gg/summoner/userName=${playerAssigned?.name}`}
+                        href={`https://${playerAssigned.region}.op.gg/summoner/userName=${playerAssigned?.name}`}
                         target="_blank"
                         rel="noreferrer">
                         {playerAssigned?.name}

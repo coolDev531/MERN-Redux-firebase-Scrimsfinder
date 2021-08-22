@@ -14,8 +14,14 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
   },
   teamsContainer: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))',
+    gridTemplateColumns: '1fr 2fr 1fr',
     gridGap: '20px',
+    backgroundImage:
+      'url(https://pa1.narvii.com/5779/8d76b2b8112e6aa9494a93f0ca6bbffe96e2f6c3_hq.gif)',
+    // height: '50%',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'cover',
   },
 
   teamList: {
@@ -31,14 +37,12 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
 
   teamsVersusSeparator: {
     // width: '50%',
-    // backgroundImage:
-    //   'url(https://pa1.narvii.com/5779/8d76b2b8112e6aa9494a93f0ca6bbffe96e2f6c3_hq.gif)',
-    // height: '50%',
-    // backgroundPosition: 'center',
-    // backgroundRepeat: 'no-repeat',
-    // backgroundSize: 'cover',
+
     // textAlign: 'center',
-    position: 'relative',
+
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   inline: {
     display: 'inline',

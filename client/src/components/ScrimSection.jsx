@@ -149,13 +149,13 @@ export default function ScrimSection({ scrim, idx, toggleFetch }) {
           <div className={classes.teamsVersusSeparator}>
             {/* <h1>VS</h1> */}
 
-            {/* <img
-              src={
-                'https://pa1.narvii.com/5779/8d76b2b8112e6aa9494a93f0ca6bbffe96e2f6c3_hq.gif'
-              }
-            /> */}
-            <div>
-              <h2>Game starting in...</h2>
+            <div
+              style={{
+                background: 'rgba(255, 255, 255, 0.5)',
+                padding: '10px',
+                borderRadius: '4px',
+              }}>
+              <h2 className="text-black">Game starting in...</h2>
               <CountdownTimer
                 gameStarted={gameStarted}
                 setGameStarted={setGameStarted}
