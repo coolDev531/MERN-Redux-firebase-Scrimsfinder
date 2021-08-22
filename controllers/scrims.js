@@ -4,28 +4,9 @@ const sample = require('../utils/sample');
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-const getSortedScrims = (scrims, property) => {
-  const sortedScrims = [...scrims].sort((a, b) => {
-    const date1 = new Date(a[property]).getTime();
-    const date2 = new Date(b[property]).getTime();
-
-    if (date1 < date2) {
-      return -1;
-    } else if (date1 > date2) {
-      return 1;
-    } else {
-      return 0;
-    }
-  });
-  return sortedScrims;
-};
-
 const getAllScrims = async (_req, res) => {
   try {
-    const scrims = await Scrim.find({}, { sort: ['datefield', 'asc'] }).toArray(
-      function (err, docs) {}
-    );
-
+    const scrims = await Scrim.find();
     res.json(scrims);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -61,13 +42,18 @@ const updateScrim = async (req, res) => {
   // for changing times, players or casters joining.
 
   const { id } = req.params;
+  const scrim = await Scrim.findById(id);
+
   const { teamOne, teamTwo } = req.body;
 
   let requestBody = {
     ...req.body,
   };
 
-  if (teamOne.length === 5 && teamTwo.length === 5) {
+  if (scrim.lobbyHost !== null && scrim.lobbyName !== null) {
+    requestBody.lobbyHost = scrim.lobbyHost;
+    requestBody.lobbyName = scrim.lobbyName;
+  } else if (teamOne.length === 5 && teamTwo.length === 5) {
     const lobbyHost = sample([...teamOne, ...teamTwo]);
     requestBody.lobbyHost = lobbyHost;
     requestBody.lobbyName = `${lobbyHost.name}'s Lobby`;
