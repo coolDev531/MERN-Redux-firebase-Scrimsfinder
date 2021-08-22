@@ -179,116 +179,120 @@ export default function ScrimSection({ scrim, idx, getNewScrimsData }) {
   };
 
   return (
-    <div className="one-scrim-container" style={{ padding: '10px' }}>
-      <div className="scrim__metadata">
-        <h1>scrim {idx + 1}</h1>
-        <div className={classes.gameMetaInfo}>
-          <h2>
-            Game Start:&nbsp;
-            {new Date(scrim.gameStartTime).toLocaleString([], excludeSeconds)}
-          </h2>
+    <div className="page-section one-scrim__container">
+      <div className="inner-column">
+        <div className="scrim__metadata">
+          <h1>scrim {idx + 1}</h1>
+          <div className={classes.gameMetaInfo}>
+            <h2>
+              Game Start:&nbsp;
+              {new Date(scrim.gameStartTime).toLocaleString([], excludeSeconds)}
+            </h2>
 
-          <CountdownTimer
-            gameStarted={gameStarted}
-            setGameStarted={setGameStarted}
-            scrim={scrim}
-          />
+            <CountdownTimer
+              gameStarted={gameStarted}
+              setGameStarted={setGameStarted}
+              scrim={scrim}
+            />
+          </div>
+          {gameStarted ? 'GAMESTARTED!' : 'still waiting...'}
+          <h2>Casters: {casters.map((caster) => caster).join(' & ')}</h2>
         </div>
-        {gameStarted ? 'GAMESTARTED!' : 'still waiting...'}
-        <h2>Casters: {casters.map((caster) => caster).join(' & ')}</h2>
-      </div>
-      <div className="teams-container" style={{ display: 'flex', gap: '10%' }}>
-        <div className="team-container team-container--teamOne">
-          <h4>Team One:</h4>
-          {teamOneRoles.map((teamRole, key) => {
-            const player = teamOne.find((player) =>
-              player?.role?.includes(teamRole)
-            );
+        <div
+          className="teams-container"
+          style={{ display: 'flex', gap: '10%' }}>
+          <div className="team-container team-container--teamOne">
+            <h4>Team One:</h4>
+            {teamOneRoles.map((teamRole, key) => {
+              const player = teamOne.find((player) =>
+                player?.role?.includes(teamRole)
+              );
 
-            const isCurrentUser = teamOne.find((player) =>
-              player?.name?.includes(currentUser.name)
-            );
+              const isCurrentUser = teamOne.find((player) =>
+                player?.name?.includes(currentUser.name)
+              );
 
-            if (player) {
+              if (player) {
+                return (
+                  <div className="scrim__section-playerBox teamOne" key={key}>
+                    {player?.role ?? ''}: &nbsp;
+                    {player?.name ?? ''}
+                    {isCurrentUser && (
+                      <ExitIcon
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => leaveGame('teamOne')}
+                      />
+                    )}
+                  </div>
+                );
+              }
+
               return (
                 <div className="scrim__section-playerBox teamOne" key={key}>
-                  {player?.role ?? ''}: &nbsp;
-                  {player?.name ?? ''}
-                  {isCurrentUser && (
-                    <ExitIcon
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => leaveGame('teamOne')}
-                    />
+                  {teamRole}
+                  {!playerEntered ? (
+                    <button onClick={() => joinTeam('teamOne', teamRole)}>
+                      join
+                    </button>
+                  ) : (
+                    <>
+                      <button onClick={(e) => swapRole('teamOne', teamRole)}>
+                        swap
+                      </button>
+                    </>
                   )}
                 </div>
               );
-            }
+            })}
+          </div>
 
-            return (
-              <div className="scrim__section-playerBox teamOne" key={key}>
-                {teamRole}
-                {!playerEntered ? (
-                  <button onClick={() => joinTeam('teamOne', teamRole)}>
-                    join
-                  </button>
-                ) : (
-                  <>
-                    <button onClick={(e) => swapRole('teamOne', teamRole)}>
-                      swap
-                    </button>
-                  </>
-                )}
-              </div>
-            );
-          })}
-        </div>
+          <div className="team-container team-container--teamTwo">
+            <h4>Team Two:</h4>
+            {teamTwoRoles.map((teamRole, key) => {
+              const player = teamTwo.find((player) =>
+                player?.role?.includes(teamRole)
+              );
 
-        <div className="team-container team-container--teamTwo">
-          <h4>Team Two:</h4>
-          {teamTwoRoles.map((teamRole, key) => {
-            const player = teamTwo.find((player) =>
-              player?.role?.includes(teamRole)
-            );
+              const isCurrentUser = teamTwo.find((player) =>
+                player?.name?.includes(currentUser?.name)
+              );
 
-            const isCurrentUser = teamTwo.find((player) =>
-              player?.name?.includes(currentUser?.name)
-            );
-
-            if (player) {
-              return (
-                <div className="scrim__section-playerBox teamTwo" key={key}>
-                  {player?.role}: &nbsp;
-                  {player?.name}
-                  {/* <button onClick={(e) => leaveGame(e, 'teamTwo', teamRole)}>
+              if (player) {
+                return (
+                  <div className="scrim__section-playerBox teamTwo" key={key}>
+                    {player?.role}: &nbsp;
+                    {player?.name}
+                    {/* <button onClick={(e) => leaveGame(e, 'teamTwo', teamRole)}>
                     Leave
                   </button> */}
-                  {isCurrentUser && (
-                    <ExitIcon
-                      style={{ cursor: 'pointer' }}
-                      onClick={(e) => leaveGame('teamTwo')}
-                    />
+                    {isCurrentUser && (
+                      <ExitIcon
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => leaveGame('teamTwo')}
+                      />
+                    )}
+                  </div>
+                );
+              }
+
+              return (
+                <div className="scrim__section-playerBox teamTwo" key={key}>
+                  {teamRole}
+                  {!playerEntered ? (
+                    <button onClick={() => joinTeam('teamTwo', teamRole)}>
+                      join
+                    </button>
+                  ) : (
+                    <>
+                      <button onClick={(e) => swapRole('teamTwo', teamRole)}>
+                        swap
+                      </button>
+                    </>
                   )}
                 </div>
               );
-            }
-
-            return (
-              <div className="scrim__section-playerBox teamTwo" key={key}>
-                {teamRole}
-                {!playerEntered ? (
-                  <button onClick={() => joinTeam('teamTwo', teamRole)}>
-                    join
-                  </button>
-                ) : (
-                  <>
-                    <button onClick={(e) => swapRole('teamTwo', teamRole)}>
-                      swap
-                    </button>
-                  </>
-                )}
-              </div>
-            );
-          })}
+            })}
+          </div>
         </div>
       </div>
     </div>

@@ -1,7 +1,6 @@
 import { useContext, useState, useEffect } from 'react';
 import ScrimSection from '../components/ScrimSection';
 import { CurrentUserContext } from '../context/currentUser';
-import { mockScrims } from '../mocks/scrims.mock';
 import { getAllScrims } from './../services/scrims';
 
 export default function Scrims() {
