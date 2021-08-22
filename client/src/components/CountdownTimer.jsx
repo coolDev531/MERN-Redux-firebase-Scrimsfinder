@@ -4,13 +4,14 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 
 const useStyles = makeStyles((theme) => ({
   timer: {
-    background: 'rgb(0, 0, 0, 0.9)',
-    color: '#fff',
+    background: 'white',
+    color: '#000',
     fontSize: '22px',
     display: 'flex',
     textAlign: 'center',
     borderRadius: '3px',
     padding: '0rem 1rem',
+
     '@supports (gap: 10px)': {
       gap: '10px',
     },

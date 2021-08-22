@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, Fragment } from 'react';
 import { useScrimSectionStyles } from '../styles/scrimSection.styles';
 import { CurrentUserContext } from '../context/currentUser';
 import ExitIcon from '@material-ui/icons/ExitToApp';
@@ -174,12 +174,9 @@ export default function ScrimTeamList({
 
           if (playerAssigned) {
             return (
-              <>
+              <Fragment key={idx}>
                 {idx !== 0 ? <Divider component="div" /> : null}
-                <ListItem
-                  alignItems="center"
-                  className={classes.teamListItem}
-                  key={idx}>
+                <ListItem alignItems="center" className={classes.teamListItem}>
                   <ListItemAvatar>
                     <Avatar
                       alt={playerAssigned.role}
@@ -222,7 +219,7 @@ export default function ScrimTeamList({
 
                   {isCurrentUser && (
                     <ExitIcon
-                      className={classes.icon}
+                      className={classes.exitIcon}
                       onClick={() => leaveGame(teamName)}
                     />
                   )}
@@ -230,17 +227,14 @@ export default function ScrimTeamList({
                 {idx !== teamRoles.length - 1 ? (
                   <Divider component="li" />
                 ) : null}
-              </>
+              </Fragment>
             );
           } else
             return (
-              <>
+              <Fragment key={idx}>
                 {idx !== 0 ? <Divider component="div" /> : null}
 
-                <ListItem
-                  alignItems="center"
-                  className={classes.teamListItem}
-                  key={idx}>
+                <ListItem alignItems="center" className={classes.teamListItem}>
                   <ListItemText primary={teamRole} />
                   <ListItemAvatar>
                     <Avatar alt={teamRole} src={ROLE_IMAGES[teamRole]} />
@@ -260,7 +254,7 @@ export default function ScrimTeamList({
                 {idx !== teamRoles.length - 1 ? (
                   <Divider component="div" />
                 ) : null}
-              </>
+              </Fragment>
             );
         })}
       </List>

@@ -49,7 +49,13 @@ export default function ScrimSection({ scrim, idx, toggleFetch }) {
       : setPlayerEntered(false);
   }, [scrim, currentUser.name, teamOne, teamTwo]);
 
-  const excludeSeconds = { hour: '2-digit', minute: '2-digit' };
+  const excludeSeconds = {
+    month: '2-digit',
+    day: '2-digit',
+    year: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  };
 
   const joinCast = async () => {
     let foundPlayer = scrim.casters.find(
@@ -81,36 +87,47 @@ export default function ScrimSection({ scrim, idx, toggleFetch }) {
         <div className="scrim__metadata">
           <h1>scrim {idx + 1}</h1>
           <div className={classes.gameMetaInfo}>
-            <h2>
-              Game Start:&nbsp;
-              {new Date(scrim.gameStartTime).toLocaleString([], excludeSeconds)}
-            </h2>
+            <div className="ml-4">
+              <h2>
+                Game Start:&nbsp;
+                {new Date(scrim.gameStartTime).toLocaleString(
+                  [],
+                  excludeSeconds
+                )}
+              </h2>
 
-            <CountdownTimer
-              gameStarted={gameStarted}
-              setGameStarted={setGameStarted}
-              scrim={scrim}
-            />
-          </div>
-          {casters.length === 2 ? (
-            <h2>Casters {casters.map((caster) => caster).join(' & ')}</h2>
-          ) : (
-            <div className="d-flex align-center gap-20">
-              {casters.length === 0 ? <h2>No Casters</h2> : null}
-              {casters[0] && <h2>Current Casters: {casters[0]}</h2>}
+              <div className="casters-container">
+                {casters.length === 2 ? (
+                  <h2>Casters {casters.map((caster) => caster).join(' & ')}</h2>
+                ) : (
+                  <div className="d-flex align-center gap-20">
+                    {casters.length === 0 ? <h2>No Casters</h2> : null}
+                    {casters[0] && <h2>Current Casters: {casters[0]}</h2>}
 
-              <button
-                disabled={
-                  casters.length === MAX_CASTER_AMOUNT ||
-                  scrim.casters.find(
-                    (casterName) => casterName === currentUser.name
-                  )
-                }
-                onClick={joinCast}>
-                join casting
-              </button>
+                    <button
+                      disabled={
+                        casters.length === MAX_CASTER_AMOUNT ||
+                        scrim.casters.find(
+                          (casterName) => casterName === currentUser.name
+                        )
+                      }
+                      onClick={joinCast}>
+                      join casting
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
-          )}
+
+            {/* <div className="">
+              <h2>Game starting in...</h2>
+              <CountdownTimer
+                gameStarted={gameStarted}
+                setGameStarted={setGameStarted}
+                scrim={scrim}
+              />
+            </div> */}
+          </div>
         </div>
 
         <div className={classes.teamsContainer}>
@@ -129,9 +146,24 @@ export default function ScrimSection({ scrim, idx, toggleFetch }) {
             getNewScrimsData={() => toggleFetch((prevState) => !prevState)}
           />
 
-          <div className="teams__versus--separator">
-            <h1>VS</h1>
+          <div className={classes.teamsVersusSeparator}>
+            {/* <h1>VS</h1> */}
+
+            {/* <img
+              src={
+                'https://pa1.narvii.com/5779/8d76b2b8112e6aa9494a93f0ca6bbffe96e2f6c3_hq.gif'
+              }
+            /> */}
+            <div>
+              <h2>Game starting in...</h2>
+              <CountdownTimer
+                gameStarted={gameStarted}
+                setGameStarted={setGameStarted}
+                scrim={scrim}
+              />
+            </div>
           </div>
+
           {/* teamTwo */}
           <ScrimTeamList
             teamOne={teamOne}

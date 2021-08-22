@@ -12,7 +12,14 @@ export default function Scrims() {
     const fetchScrims = async () => {
       console.log('fetching scrims');
       const scrimsData = await getAllScrims();
-      setScrims(scrimsData);
+
+      const today = new Date().toLocaleDateString();
+      const todaysScrims = scrimsData.filter(
+        ({ gameStartTime }) =>
+          new Date(gameStartTime).toLocaleDateString() === today
+      );
+
+      setScrims(todaysScrims);
     };
 
     fetchScrims();
@@ -20,10 +27,17 @@ export default function Scrims() {
 
   return (
     <div>
-      <h1>home</h1>
-      <h2>welcome:</h2>
-      {currentUser && <pre>{JSON.stringify(currentUser, null, 2)}</pre>}
-
+      <div className="page-section">
+        <div className="inner-column">
+          <h1>home</h1>
+          <h2>welcome:</h2>
+          {currentUser && (
+            <pre className="text-white">
+              {JSON.stringify(currentUser, null, 2)}
+            </pre>
+          )}
+        </div>
+      </div>
       <div id="scrims-container">
         {scrims.map((scrim, idx) => (
           <Fragment key={idx}>
