@@ -13,4 +13,12 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
     display: 'flex',
     gap: '10%',
   },
+  teamList: {
+    width: '100%',
+    maxWidth: '36ch',
+    backgroundColor: theme.palette.background.paper,
+  },
+  inline: {
+    display: 'inline',
+  },
 }));

@@ -55,3 +55,15 @@ p {
 .gap-20 {
   gap: 20px;
 }
+
+.link {
+  color: inherit;
+  text-decoration: none;
+  transition: all 250ms ease-in-out;
+  display: inline-block;
+}
+
+.link:hover {
+  transform: scale(1.01);
+  text-decoration: underline;
+}

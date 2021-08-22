@@ -2,8 +2,8 @@ import { useContext, useEffect, useState } from 'react';
 import { CurrentUserContext } from '../context/currentUser';
 import CountdownTimer from './CountdownTimer';
 import { useScrimSectionStyles } from '../styles/scrimSection.styles';
-import ScrimPlayersData from './ScrimTeamsData';
 import { updateScrim } from '../services/scrims';
+import ScrimTeamData from './ScrimTeamData';
 
 const compareDates = (scrim) => {
   let currentTime = new Date().getTime();
@@ -114,7 +114,8 @@ export default function ScrimSection({ scrim, idx, toggleFetch }) {
         </div>
 
         <div className={classes.teamsContainer}>
-          <ScrimPlayersData
+          {/* teamOne */}
+          <ScrimTeamData
             teamOne={teamOne}
             teamTwo={teamTwo}
             teamData={{
@@ -128,7 +129,8 @@ export default function ScrimSection({ scrim, idx, toggleFetch }) {
             getNewScrimsData={() => toggleFetch((prevState) => !prevState)}
           />
 
-          <ScrimPlayersData
+          {/* teamTwo */}
+          <ScrimTeamData
             teamOne={teamOne}
             teamTwo={teamTwo}
             teamData={{
