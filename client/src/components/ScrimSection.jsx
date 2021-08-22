@@ -23,6 +23,7 @@ const MAX_CASTER_AMOUNT = 2;
 export default function ScrimSection({ scrim, idx, toggleFetch }) {
   const [currentUser] = useContext(CurrentUserContext);
   const [playerEntered, setPlayerEntered] = useState(false);
+  const [casterEntered, setCasterEntered] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
 
   const classes = useScrimSectionStyles();
@@ -44,6 +45,16 @@ export default function ScrimSection({ scrim, idx, toggleFetch }) {
 
     let foundPlayer = teams.find((player) => player.name === currentUser.name);
 
+    let foundCaster = scrim.casters.find(
+      (casterName) => casterName === currentUser.name
+    );
+
+    if (foundCaster) {
+      setCasterEntered(foundCaster);
+    } else {
+      setCasterEntered(false);
+    }
+
     return foundPlayer
       ? setPlayerEntered(foundPlayer)
       : setPlayerEntered(false);
@@ -58,11 +69,12 @@ export default function ScrimSection({ scrim, idx, toggleFetch }) {
   };
 
   const joinCast = async () => {
-    let foundPlayer = scrim.casters.find(
-      (casterName) => casterName === currentUser.name
-    );
+    if (playerEntered) {
+      alert("You're already in a team!");
+      return;
+    }
 
-    if (foundPlayer) return;
+    if (casterEntered) return;
     if (casters.length === MAX_CASTER_AMOUNT) return;
 
     const scrimData = {
@@ -81,6 +93,24 @@ export default function ScrimSection({ scrim, idx, toggleFetch }) {
     }
   };
 
+  const leaveCast = async () => {
+    const scrimData = {
+      ...scrim,
+      casters: scrim.casters.filter(
+        (caster) => caster.name !== casterEntered.name
+      ),
+    };
+
+    const updatedScrim = await updateScrim(scrim._id, scrimData);
+
+    if (updatedScrim) {
+      console.log(
+        `%removed ${currentUser.name} from the caster list for scrim: ${scrim._id}`,
+        'color: #99ff99'
+      );
+      getNewScrimsData();
+    }
+  };
   const cancelScrim = async () => {
     let deletedScrim = await deleteScrim(scrim._id);
 
@@ -122,19 +152,13 @@ export default function ScrimSection({ scrim, idx, toggleFetch }) {
                       onClick={joinCast}>
                       join casting
                     </button>
+                    {casterEntered && (
+                      <button onClick={leaveCast}>Leave cast</button>
+                    )}
                   </div>
                 )}
               </div>
             </div>
-
-            {/* <div className="">
-              <h2>Game starting in...</h2>
-              <CountdownTimer
-                gameStarted={gameStarted}
-                setGameStarted={setGameStarted}
-                scrim={scrim}
-              />
-            </div> */}
           </div>
         </div>
 
@@ -155,8 +179,6 @@ export default function ScrimSection({ scrim, idx, toggleFetch }) {
           />
 
           <div className={classes.teamsVersusSeparator}>
-            {/* <h1>VS</h1> */}
-
             <div
               style={{
                 background: 'rgba(255, 255, 255, 0.5)',
@@ -178,7 +200,9 @@ export default function ScrimSection({ scrim, idx, toggleFetch }) {
                 ) : (
                   <>
                     <h2 className="text-black">Not enough players</h2>
-                    <button onClick={cancelScrim}>Cancel event</button>
+                    {scrim.createdBy.name === currentUser.name ? (
+                      <button onClick={cancelScrim}>Cancel event</button>
+                    ) : null}
                   </>
                 ))}
             </div>
