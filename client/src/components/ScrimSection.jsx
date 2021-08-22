@@ -125,7 +125,7 @@ export default function ScrimSection({ scrim, idx, toggleFetch }) {
         <div className="scrim__metadata">
           <h1>scrim {idx + 1}</h1>
           <div className={classes.gameMetaInfo}>
-            <div className="ml-4">
+            <div>
               <h2>
                 Game Start:&nbsp;
                 {new Date(scrim.gameStartTime).toLocaleString(
