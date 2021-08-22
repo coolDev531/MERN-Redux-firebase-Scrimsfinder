@@ -64,6 +64,7 @@ const Scrim = new Schema(
     lobbyHost: { type: Object, default: null },
     lobbyPassword: { type: String, default: generatePassword() },
     lobbyName: { type: String, default: null },
+    createdBy: { type: Object, required: true },
   },
   { timestamps: true }
 );

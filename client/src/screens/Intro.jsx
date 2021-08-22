@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useState, useContext } from 'react';
 import { CurrentUserContext } from '../context/currentUser';
 import { Redirect } from 'react-router-dom';
@@ -47,7 +47,6 @@ export default function Intro() {
         ? rankResult.slice(-1)
         : rankResult;
 
-    console.log({ rankResult });
     setUserData((prevState) => ({
       ...prevState,
       rank:
@@ -60,16 +59,63 @@ export default function Intro() {
     // eslint-disable-next-line
   }, [rankData]);
 
-  useEffect(() => {
-    console.log({ userData, rankData });
-  }, [userData, rankData]);
+  const goNextStep = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (currentFormIndex === 2) return; // if final step, stop.
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('submited!');
-    localStorage.setItem('currentUser', JSON.stringify(userData));
-    setCurrentUser(userData);
-  };
+      if (document.querySelector('#form').checkValidity()) {
+        setCurrentFormIndex((prevState) => (prevState += 1));
+        setError(false);
+      } else {
+        const key =
+          Object.keys(userData)[currentFormIndex] === 'name'
+            ? 'summoner name'
+            : Object.keys(userData)[currentFormIndex];
+
+        setError(`${key} is empty!`);
+      }
+    },
+    [currentFormIndex, userData]
+  );
+
+  const handleSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
+
+      let yes = window.confirm(`Are you sure you want to create this account? \n
+      Name: ${userData.name} \n
+      Rank: ${userData.rank} \n
+      Region: ${userData.region}
+      `);
+
+      if (!yes) return;
+
+      console.log(
+        '%c user created with the name: ' + userData.name,
+        'color: lightgreen'
+      );
+      localStorage.setItem('currentUser', JSON.stringify(userData));
+      setCurrentUser(userData);
+
+      return;
+    },
+    [setCurrentUser, userData]
+  );
+
+  useEffect(() => {
+    const handleEnterKey = (e) => {
+      if (e.keyCode === 13) {
+        return currentFormIndex < 2 ? goNextStep(e) : handleSubmit(e);
+      }
+    };
+
+    document.addEventListener('keyup', handleEnterKey);
+
+    return () => {
+      document.removeEventListener('keyup', handleEnterKey);
+    };
+  }, [goNextStep, currentFormIndex, handleSubmit]);
 
   const nameForm = (
     <TextField
@@ -182,27 +228,12 @@ export default function Intro() {
             <button
               onClick={(e) => {
                 e.preventDefault();
+                if (currentFormIndex === 0) return;
                 setCurrentFormIndex((prevState) => (prevState -= 1));
               }}>
               Previous
             </button>
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                if (document.querySelector('#form').checkValidity()) {
-                  setCurrentFormIndex((prevState) => (prevState += 1));
-                  setError(false);
-                } else {
-                  const key =
-                    Object.keys(userData)[currentFormIndex] === 'name'
-                      ? 'summoner name'
-                      : Object.keys(userData)[currentFormIndex];
-
-                  setError(`${key} is empty!`);
-                }
-              }}>
-              Next
-            </button>
+            <button onClick={goNextStep}>Next</button>
           </>
         )}
       </form>

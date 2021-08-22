@@ -59,6 +59,7 @@ const main = async () => {
       casters: ['jimmy', 'bob'],
       gameStartTime: setHours(new Date(), '3:00pm'),
       lobbyHost: sample([...teamOnePlayers, ...teamTwoPlayers]),
+      createdBy: teamOnePlayers[0],
     },
 
     {
@@ -67,6 +68,7 @@ const main = async () => {
       casters: ['YummiFan', 'AurelionSolNerfPls'],
       gameStartTime: setHours(new Date(), '9:15pm'),
       lobbyHost: sample([...teamOnePlayers, ...teamTwoPlayers]),
+      createdBy: teamOnePlayers[3],
     },
   ];
 

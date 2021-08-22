@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { CurrentUserContext } from '../context/currentUser';
 import CountdownTimer from './CountdownTimer';
 import { useScrimSectionStyles } from '../styles/scrimSection.styles';
-import { updateScrim } from '../services/scrims';
+import { updateScrim, deleteScrim } from '../services/scrims';
 import ScrimTeamList from './ScrimTeamList';
 
 const compareDates = (scrim) => {
@@ -81,6 +81,14 @@ export default function ScrimSection({ scrim, idx, toggleFetch }) {
     }
   };
 
+  const cancelScrim = async () => {
+    let deletedScrim = await deleteScrim(scrim._id);
+
+    if (deletedScrim) {
+      getNewScrimsData();
+    }
+  };
+
   return (
     <div className="page-section one-scrim__container">
       <div className="inner-column">
@@ -155,12 +163,24 @@ export default function ScrimSection({ scrim, idx, toggleFetch }) {
                 padding: '10px',
                 borderRadius: '4px',
               }}>
-              <h2 className="text-black">Game starting in...</h2>
+              {!gameStarted && (
+                <h2 className="text-black">Game starting in...</h2>
+              )}
               <CountdownTimer
                 gameStarted={gameStarted}
                 setGameStarted={setGameStarted}
                 scrim={scrim}
               />
+
+              {gameStarted &&
+                (scrim.lobbyHost ? (
+                  <h2 className="text-black">Lobby host: {scrim.lobbyHost}</h2>
+                ) : (
+                  <>
+                    <h2 className="text-black">Not enough players</h2>
+                    <button onClick={cancelScrim}>Cancel event</button>
+                  </>
+                ))}
             </div>
           </div>
 
