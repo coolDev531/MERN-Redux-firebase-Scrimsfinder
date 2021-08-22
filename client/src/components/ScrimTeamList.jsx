@@ -32,7 +32,7 @@ const swapPlayer = (currentTeam, movingTeam, movingPlayer) => {
   return [currentTeam, movingTeam];
 };
 
-export default function ScrimTeamData({
+export default function ScrimTeamList({
   playerEntered,
   scrim,
   getNewScrimsData,
@@ -175,10 +175,10 @@ export default function ScrimTeamData({
           if (playerAssigned) {
             return (
               <>
-                {idx !== 0 ? <Divider variant="inset" component="li" /> : null}
+                {idx !== 0 ? <Divider component="div" /> : null}
                 <ListItem
-                  alignItems="flex-start"
-                  className={`scrim__section-playerBox ${teamName}`}
+                  alignItems="center"
+                  className={classes.teamListItem}
                   key={idx}>
                   <ListItemAvatar>
                     <Avatar
@@ -199,7 +199,7 @@ export default function ScrimTeamData({
                     }
                     secondary={
                       <>
-                        {'Role -'}
+                        {'Role - '}
                         <Typography
                           component="span"
                           variant="body2"
@@ -219,7 +219,7 @@ export default function ScrimTeamData({
                       </>
                     }
                   />
-                  {/* {playerAssigned?.name ?? ''} */}
+
                   {isCurrentUser && (
                     <ExitIcon
                       className={classes.icon}
@@ -228,29 +228,39 @@ export default function ScrimTeamData({
                   )}
                 </ListItem>
                 {idx !== teamRoles.length - 1 ? (
-                  <Divider variant="inset" component="li" />
+                  <Divider component="li" />
                 ) : null}
               </>
             );
           } else
             return (
-              <ListItem
-                alignItems="flex-start"
-                className={`scrim__section-playerBox ${teamName}`}
-                key={idx}>
-                {teamRole}
-                {!playerEntered ? (
-                  <button onClick={() => joinGame(teamName, teamRole)}>
-                    join
-                  </button>
-                ) : (
-                  <>
-                    <button onClick={() => handleSwap(teamName, teamRole)}>
-                      swap
+              <>
+                {idx !== 0 ? <Divider component="div" /> : null}
+
+                <ListItem
+                  alignItems="center"
+                  className={classes.teamListItem}
+                  key={idx}>
+                  <ListItemText primary={teamRole} />
+                  <ListItemAvatar>
+                    <Avatar alt={teamRole} src={ROLE_IMAGES[teamRole]} />
+                  </ListItemAvatar>
+                  {!playerEntered ? (
+                    <button onClick={() => joinGame(teamName, teamRole)}>
+                      join
                     </button>
-                  </>
-                )}
-              </ListItem>
+                  ) : (
+                    <>
+                      <button onClick={() => handleSwap(teamName, teamRole)}>
+                        swap
+                      </button>
+                    </>
+                  )}
+                </ListItem>
+                {idx !== teamRoles.length - 1 ? (
+                  <Divider component="div" />
+                ) : null}
+              </>
             );
         })}
       </List>

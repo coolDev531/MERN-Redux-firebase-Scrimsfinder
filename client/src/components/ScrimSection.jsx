@@ -3,7 +3,7 @@ import { CurrentUserContext } from '../context/currentUser';
 import CountdownTimer from './CountdownTimer';
 import { useScrimSectionStyles } from '../styles/scrimSection.styles';
 import { updateScrim } from '../services/scrims';
-import ScrimTeamData from './ScrimTeamData';
+import ScrimTeamList from './ScrimTeamList';
 
 const compareDates = (scrim) => {
   let currentTime = new Date().getTime();
@@ -115,7 +115,7 @@ export default function ScrimSection({ scrim, idx, toggleFetch }) {
 
         <div className={classes.teamsContainer}>
           {/* teamOne */}
-          <ScrimTeamData
+          <ScrimTeamList
             teamOne={teamOne}
             teamTwo={teamTwo}
             teamData={{
@@ -129,8 +129,11 @@ export default function ScrimSection({ scrim, idx, toggleFetch }) {
             getNewScrimsData={() => toggleFetch((prevState) => !prevState)}
           />
 
+          <div className="teams__versus--separator">
+            <h1>VS</h1>
+          </div>
           {/* teamTwo */}
-          <ScrimTeamData
+          <ScrimTeamList
             teamOne={teamOne}
             teamTwo={teamTwo}
             teamData={{
