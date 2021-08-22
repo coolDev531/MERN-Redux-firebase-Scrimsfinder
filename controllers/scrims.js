@@ -49,9 +49,12 @@ const updateScrim = async (req, res) => {
   };
 
   if (teamOne.length === 5 && teamTwo.length === 5) {
-    requestBody.lobbyHost = sample([...teamOne, ...teamTwo]);
+    const lobbyHost = sample([...teamOne, ...teamTwo]);
+    requestBody.lobbyHost = lobbyHost;
+    requestBody.lobbyName = `${lobbyHost.name}'s Lobby`;
   } else {
     requestBody.lobbyHost = null;
+    requestBody.lobbyName = null;
   }
 
   await Scrim.findByIdAndUpdate(
