@@ -9,4 +9,8 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
     color: 'white',
     cursor: 'pointer',
   },
+  teamsContainer: {
+    display: 'flex',
+    gap: '10%',
+  },
 }));

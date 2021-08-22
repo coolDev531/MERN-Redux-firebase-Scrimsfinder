@@ -43,3 +43,15 @@ h6,
 p {
   color: white;
 }
+
+.d-flex {
+  display: flex;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.gap-20 {
+  gap: 20px;
+}

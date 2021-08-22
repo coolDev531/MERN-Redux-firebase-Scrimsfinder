@@ -122,7 +122,10 @@ export default function ScrimPlayersData({
     const updatedScrim = await updateScrim(scrim._id, scrimData);
 
     if (updatedScrim) {
-      console.log('updating with swapped data');
+      console.log(
+        `%cswapped ${currentUser.name} in scrim: ${scrim._id}`,
+        'color: #99ff99'
+      );
       getNewScrimsData();
     }
   };
@@ -139,6 +142,10 @@ export default function ScrimPlayersData({
     const updatedScrim = await updateScrim(scrim._id, scrimData);
 
     if (updatedScrim) {
+      console.log(
+        `%cremoved ${currentUser.name} from scrim: ${scrim._id}`,
+        'color: #99ff99'
+      );
       getNewScrimsData();
     }
   };

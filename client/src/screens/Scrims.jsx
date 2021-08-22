@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState, useEffect, Fragment } from 'react';
 import ScrimSection from '../components/ScrimSection';
 import { CurrentUserContext } from '../context/currentUser';
 import { getAllScrims } from './../services/scrims';
@@ -26,16 +26,15 @@ export default function Scrims() {
 
       <div id="scrims-container">
         {scrims.map((scrim, idx) => (
-          <>
+          <Fragment key={idx}>
             <ScrimSection
               scrim={scrim}
-              key={idx}
               idx={idx}
               toggleFetch={toggleFetch}
               setScrims={setScrims}
             />
             <div className="page-break"></div>
-          </>
+          </Fragment>
         ))}
       </div>
     </div>

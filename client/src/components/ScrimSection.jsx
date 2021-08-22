@@ -1,10 +1,9 @@
 import { useContext, useEffect, useState } from 'react';
 import { CurrentUserContext } from '../context/currentUser';
-import { updateScrim } from '../services/scrims';
 import CountdownTimer from './CountdownTimer';
-import ExitIcon from '@material-ui/icons/ExitToApp';
 import { useScrimSectionStyles } from '../styles/scrimSection.styles';
 import ScrimPlayersData from './ScrimTeamsData';
+import { updateScrim } from '../services/scrims';
 
 const compareDates = (scrim) => {
   let currentTime = new Date().getTime();
@@ -19,6 +18,8 @@ const compareDates = (scrim) => {
   }
 };
 
+const MAX_CASTER_AMOUNT = 2;
+
 export default function ScrimSection({ scrim, idx, toggleFetch }) {
   const [currentUser] = useContext(CurrentUserContext);
   const [playerEntered, setPlayerEntered] = useState(false);
@@ -27,6 +28,8 @@ export default function ScrimSection({ scrim, idx, toggleFetch }) {
   const classes = useScrimSectionStyles();
 
   const { teamOne, teamTwo, casters } = scrim;
+
+  const getNewScrimsData = () => toggleFetch((prevState) => !prevState);
 
   useEffect(() => {
     let gameHasStarted = compareDates(scrim) > 0;
@@ -48,6 +51,30 @@ export default function ScrimSection({ scrim, idx, toggleFetch }) {
 
   const excludeSeconds = { hour: '2-digit', minute: '2-digit' };
 
+  const joinCast = async () => {
+    let foundPlayer = scrim.casters.find(
+      (casterName) => casterName === currentUser.name
+    );
+
+    if (foundPlayer) return;
+    if (casters.length === MAX_CASTER_AMOUNT) return;
+
+    const scrimData = {
+      ...scrim,
+      casters: [...scrim.casters, currentUser.name],
+    };
+
+    const updatedScrim = await updateScrim(scrim._id, scrimData);
+
+    if (updatedScrim) {
+      console.log(
+        `%cadded ${currentUser.name} as a caster for scrim: ${scrim._id}`,
+        'color: #99ff99'
+      );
+      getNewScrimsData();
+    }
+  };
+
   return (
     <div className="page-section one-scrim__container">
       <div className="inner-column">
@@ -65,13 +92,28 @@ export default function ScrimSection({ scrim, idx, toggleFetch }) {
               scrim={scrim}
             />
           </div>
-          {gameStarted ? 'GAMESTARTED!' : 'still waiting...'}
-          <h2>Casters: {casters.map((caster) => caster).join(' & ')}</h2>
+          {casters.length === 2 ? (
+            <h2>Casters {casters.map((caster) => caster).join(' & ')}</h2>
+          ) : (
+            <div className="d-flex align-center gap-20">
+              {casters.length === 0 ? <h2>No Casters</h2> : null}
+              {casters[0] && <h2>Current Casters: {casters[0]}</h2>}
+
+              <button
+                disabled={
+                  casters.length === MAX_CASTER_AMOUNT ||
+                  scrim.casters.find(
+                    (casterName) => casterName === currentUser.name
+                  )
+                }
+                onClick={joinCast}>
+                join casting
+              </button>
+            </div>
+          )}
         </div>
 
-        <div
-          className="teams-container"
-          style={{ display: 'flex', gap: '10%' }}>
+        <div className={classes.teamsContainer}>
           <ScrimPlayersData
             teamOne={teamOne}
             teamTwo={teamTwo}
@@ -97,7 +139,7 @@ export default function ScrimSection({ scrim, idx, toggleFetch }) {
             }}
             scrim={scrim}
             playerEntered={playerEntered}
-            getNewScrimsData={() => toggleFetch((prevState) => !prevState)}
+            getNewScrimsData={getNewScrimsData}
           />
         </div>
       </div>
