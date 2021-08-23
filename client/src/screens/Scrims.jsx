@@ -67,6 +67,14 @@ export default function Scrims() {
   // now for local storage, might not need in future
   delete userData.ADMIN_SECRET_KEY;
 
+  let allRegions = ['NA', 'EUW', 'EUNE', 'LAN'];
+
+  let selectRegions = [
+    currentUser.region,
+    ...allRegions.filter((r) => r !== currentUser.region),
+  ];
+
+  console.log({ selectRegions });
   return (
     <div>
       <div className="page-section welcome">
@@ -90,7 +98,7 @@ export default function Scrims() {
                 todaysScrims.filter((scrim) => scrim.scrimRegion === region)
               );
             }}>
-            {['NA', 'EUW', 'EUNE', 'LAN'].map((region) => (
+            {selectRegions.map((region) => (
               <MenuItem value={region}>{region}</MenuItem>
             ))}
           </Select>
