@@ -20,7 +20,7 @@ const getScrimById = async (req, res) => {
     if (scrim) {
       return res.json(scrim);
     }
-    res.status(404).json({ message: 'Lobby not found!' });
+    res.status(404).json({ message: 'Scrim not found!' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -31,7 +31,7 @@ const createScrim = async (req, res) => {
     const scrim = new Scrim(req.body);
     await scrim.save();
     res.status(201).json(scrim);
-    console.log('lobby created: ', scrim);
+    console.log('Scrim created: ', scrim);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: error.message });
