@@ -74,7 +74,6 @@ export default function Scrims() {
     ...allRegions.filter((r) => r !== currentUser.region),
   ];
 
-  console.log({ selectRegions });
   return (
     <div>
       <div className="page-section welcome">
@@ -93,6 +92,7 @@ export default function Scrims() {
             className="text-white"
             onChange={(e) => {
               const region = e.target.value;
+              toggleFetch((prev) => !prev);
               setScrimsRegion(region);
               setFilteredScrims(
                 todaysScrims.filter((scrim) => scrim.scrimRegion === region)
@@ -107,6 +107,7 @@ export default function Scrims() {
           </FormHelperText>
         </div>
       </div>
+      <div className="page-break" />
 
       <div id="scrims-container">
         {filteredScrims.map((scrim, idx) => (
@@ -117,7 +118,7 @@ export default function Scrims() {
               toggleFetch={toggleFetch}
               setScrims={setScrims}
             />
-            <div className="page-break"></div>
+            <div className="page-break" />
           </Fragment>
         ))}
       </div>

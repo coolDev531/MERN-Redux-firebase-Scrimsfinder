@@ -121,8 +121,8 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
 
   return (
     <div className="page-section one-scrim__container">
-      <div className="inner-column">
-        <div className="scrim__metadata">
+      <div className="inner-column border-white pd-0">
+        <div className="scrim__metadata pd-1">
           <h1>{scrim.createdBy?.name}'s Lobby</h1>
           <div className={classes.gameMetaInfo}>
             <div>

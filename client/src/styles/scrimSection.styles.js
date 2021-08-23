@@ -18,7 +18,7 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
     gridGap: '20px',
     backgroundImage:
       'url(https://pa1.narvii.com/5779/8d76b2b8112e6aa9494a93f0ca6bbffe96e2f6c3_hq.gif)',
-    // height: '50%',
+    padding: '10px',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
