@@ -2,6 +2,10 @@ import { useContext, useState, useEffect, Fragment, useMemo } from 'react';
 import ScrimSection from '../components/ScrimSection';
 import { CurrentUserContext } from '../context/currentUser';
 import { getAllScrims } from './../services/scrims';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import InputLabel from '@material-ui/core/InputLabel';
+import { FormHelperText } from '@material-ui/core';
 
 export default function Scrims() {
   const [currentUser] = useContext(CurrentUserContext);
@@ -74,19 +78,25 @@ export default function Scrims() {
               {JSON.stringify(userData, null, 2)}
             </pre>
           )}
-          {['NA', 'EUW', 'EUNE', 'LAN'].map((region) => (
-            <button
-              disabled={region === scrimsRegion}
-              onClick={() => {
-                setScrimsRegion(region);
+          <InputLabel className="text-white">Region</InputLabel>
 
-                setFilteredScrims(
-                  todaysScrims.filter((scrim) => scrim.scrimRegion === region)
-                );
-              }}>
-              browse {region} lobbies
-            </button>
-          ))}
+          <Select
+            value={scrimsRegion}
+            className="text-white"
+            onChange={(e) => {
+              const region = e.target.value;
+              setScrimsRegion(region);
+              setFilteredScrims(
+                todaysScrims.filter((scrim) => scrim.scrimRegion === region)
+              );
+            }}>
+            {['NA', 'EUW', 'EUNE', 'LAN'].map((region) => (
+              <MenuItem value={region}>{region}</MenuItem>
+            ))}
+          </Select>
+          <FormHelperText className="text-white">
+            Filter scrims by region
+          </FormHelperText>
         </div>
       </div>
 

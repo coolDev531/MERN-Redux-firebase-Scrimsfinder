@@ -237,10 +237,6 @@ export default function Intro() {
           </>
         )}
       </form>
-      <p>
-        *ALPHA STAGE: all currently games will be considered NA games, but
-        please pick your region for next updates.*
-      </p>
     </div>
   );
 }

@@ -77,7 +77,7 @@ p {
 }
 
 .text-white {
-  color: white;
+  color: white !important;
 }
 
 .ml-4 {
