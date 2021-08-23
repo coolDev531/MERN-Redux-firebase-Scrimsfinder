@@ -90,7 +90,7 @@ const deleteScrim = async (req, res) => {
     if (deleted) {
       return res.status(200).send(`Scrim with id: ${id} deleted`);
     }
-    throw new Error('Transportation type not found');
+    throw new Error('Scrim not found');
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

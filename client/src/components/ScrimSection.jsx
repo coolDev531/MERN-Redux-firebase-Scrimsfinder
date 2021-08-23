@@ -182,7 +182,9 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
           <div className={classes.teamsVersusSeparator}>
             <div
               style={{
-                background: 'rgba(255, 255, 255, 0.5)',
+                background: `rgba(255, 255, 255,${
+                  gameStarted ? '0.7' : '0.5'
+                })`,
                 padding: '10px',
                 borderRadius: '4px',
               }}>
@@ -199,10 +201,14 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
                 (scrim.teamOne.length === 5 && scrim.teamTwo.length === 5 ? (
                   <>
                     <h2 className="text-black">
-                      Lobby host: {scrim.lobbyHost}
+                      Lobby host/captain: {scrim.lobbyHost.name}
                     </h2>
-                    <h3>please make the lobby name: {scrim.lobbyName}</h3>
-                    <h3>with the password: {scrim.lobbyPassword}</h3>
+                    <h3 className="text-black">
+                      please make the lobby name: {scrim.lobbyName}
+                    </h3>
+                    <h3 className="text-black">
+                      with the password: {scrim.lobbyPassword}
+                    </h3>
                   </>
                 ) : (
                   <>
