@@ -5,6 +5,11 @@ import { Redirect } from 'react-router-dom';
 import TextField from '@material-ui/core/TextField';
 import Alert from '@material-ui/lab/Alert';
 
+const KEYCODES = {
+  ENTER: 13,
+  BACKSPACE: 8,
+};
+
 export default function Intro() {
   const [userData, setUserData] = useState({
     name: '',
@@ -79,6 +84,15 @@ export default function Intro() {
     [currentFormIndex, userData]
   );
 
+  const goPreviousStep = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (currentFormIndex === 0) return;
+      setCurrentFormIndex((prevState) => (prevState -= 1));
+    },
+    [currentFormIndex]
+  );
+
   const handleSubmit = useCallback(
     (e) => {
       e.preventDefault();
@@ -105,8 +119,13 @@ export default function Intro() {
 
   useEffect(() => {
     const handleEnterKey = (e) => {
-      if (e.keyCode === 13) {
+      if (e.keyCode === KEYCODES.ENTER) {
         return currentFormIndex < 2 ? goNextStep(e) : handleSubmit(e);
+      }
+
+      // if pressing backspace but even.target doesn't have a name (a.k.a isn't backspacing an input)
+      if (e.keyCode === KEYCODES.BACKSPACE && !e.target.name) {
+        goPreviousStep(e);
       }
     };
 
@@ -115,7 +134,7 @@ export default function Intro() {
     return () => {
       document.removeEventListener('keyup', handleEnterKey);
     };
-  }, [goNextStep, currentFormIndex, handleSubmit]);
+  }, [goNextStep, currentFormIndex, handleSubmit, goPreviousStep]);
 
   const nameForm = (
     <TextField
@@ -136,9 +155,6 @@ export default function Intro() {
         required
         value={rankData.rankDivision}
         onChange={(e) => handleChange(e, setRankData)}>
-        <option selected disabled>
-          Select Division
-        </option>
         {[
           'Unranked',
           'Iron',
@@ -182,9 +198,6 @@ export default function Intro() {
         value={userData.region}
         onChange={(e) => handleChange(e, setUserData)}
         required>
-        <option selected disabled>
-          Select Region
-        </option>
         {['NA', 'EUW', 'EUNE', 'LAN'].map((region) => (
           <option value={region}>{region}</option>
         ))}
@@ -215,24 +228,11 @@ export default function Intro() {
         {currentFormIndex === forms.length - 1 ? (
           <>
             <button type="submit">Create my account</button>
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                setCurrentFormIndex((prevState) => (prevState -= 1));
-              }}>
-              Previous
-            </button>
+            <button onClick={goPreviousStep}>Previous</button>
           </>
         ) : (
           <>
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                if (currentFormIndex === 0) return;
-                setCurrentFormIndex((prevState) => (prevState -= 1));
-              }}>
-              Previous
-            </button>
+            <button onClick={goPreviousStep}>Previous</button>
             <button onClick={goNextStep}>Next</button>
           </>
         )}

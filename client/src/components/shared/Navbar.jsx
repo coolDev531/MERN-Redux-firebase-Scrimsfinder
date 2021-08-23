@@ -59,8 +59,10 @@ export default function Navbar({
                 setScrimsRegion(region);
                 onSelectRegion(region);
               }}>
-              {selectRegions.map((region) => (
-                <MenuItem value={region}>{region}</MenuItem>
+              {selectRegions.map((region, key) => (
+                <MenuItem value={region} key={key}>
+                  {region}
+                </MenuItem>
               ))}
             </Select>
             <FormHelperText className="text-white">
