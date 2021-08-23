@@ -123,7 +123,7 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
     <div className="page-section one-scrim__container">
       <div className="inner-column">
         <div className="scrim__metadata">
-          <h1>{scrim.createdBy?.name}'s scrim</h1>
+          <h1>{scrim.createdBy?.name}'s Lobby</h1>
           <div className={classes.gameMetaInfo}>
             <div>
               <h2>
@@ -196,8 +196,14 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
               />
 
               {gameStarted &&
-                (scrim.lobbyHost ? (
-                  <h2 className="text-black">Lobby host: {scrim.lobbyHost}</h2>
+                (scrim.teamOne.length === 5 && scrim.teamTwo.length === 5 ? (
+                  <>
+                    <h2 className="text-black">
+                      Lobby host: {scrim.lobbyHost}
+                    </h2>
+                    <h3>please make the lobby name: {scrim.lobbyName}</h3>
+                    <h3>with the password: {scrim.lobbyPassword}</h3>
+                  </>
                 ) : (
                   <>
                     <h2 className="text-black">Not enough players</h2>
