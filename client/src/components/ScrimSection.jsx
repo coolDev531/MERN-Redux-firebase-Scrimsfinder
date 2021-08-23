@@ -20,7 +20,7 @@ const compareDates = (scrim) => {
 
 const MAX_CASTER_AMOUNT = 2;
 
-export default function ScrimSection({ scrim, idx, toggleFetch }) {
+export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
   const [currentUser] = useContext(CurrentUserContext);
   const [playerEntered, setPlayerEntered] = useState(false);
   const [casterEntered, setCasterEntered] = useState(false);
@@ -115,7 +115,7 @@ export default function ScrimSection({ scrim, idx, toggleFetch }) {
     let deletedScrim = await deleteScrim(scrim._id);
 
     if (deletedScrim) {
-      getNewScrimsData();
+      setScrims((prevState) => prevState.filter((s) => s._id !== scrim._id));
     }
   };
 
@@ -123,7 +123,7 @@ export default function ScrimSection({ scrim, idx, toggleFetch }) {
     <div className="page-section one-scrim__container">
       <div className="inner-column">
         <div className="scrim__metadata">
-          <h1>scrim {idx + 1}</h1>
+          <h1>{scrim.createdBy?.name}'s scrim</h1>
           <div className={classes.gameMetaInfo}>
             <div>
               <h2>
@@ -175,6 +175,7 @@ export default function ScrimSection({ scrim, idx, toggleFetch }) {
             }}
             scrim={scrim}
             playerEntered={playerEntered}
+            casterEntered={casterEntered}
             getNewScrimsData={() => toggleFetch((prevState) => !prevState)}
           />
 
@@ -202,6 +203,10 @@ export default function ScrimSection({ scrim, idx, toggleFetch }) {
                     <h2 className="text-black">Not enough players</h2>
                     {scrim.createdBy.name === currentUser.name ? (
                       <button onClick={cancelScrim}>Cancel event</button>
+                    ) : scrim.createdBy.name !== currentUser.name &&
+                      currentUser.ADMIN_SECRET_KEY ===
+                        process.env.REACT_APP_ADMIN_SECRET_KEY ? (
+                      <button onClick={cancelScrim}>Cancel event</button>
                     ) : null}
                   </>
                 ))}
@@ -220,6 +225,7 @@ export default function ScrimSection({ scrim, idx, toggleFetch }) {
             }}
             scrim={scrim}
             playerEntered={playerEntered}
+            casterEntered={casterEntered}
             getNewScrimsData={getNewScrimsData}
           />
         </div>

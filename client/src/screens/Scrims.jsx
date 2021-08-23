@@ -25,6 +25,13 @@ export default function Scrims() {
     fetchScrims();
   }, [fetch]);
 
+  let userData = {
+    ...currentUser,
+  };
+
+  // now for local storage, might not need in future
+  delete userData.ADMIN_SECRET_KEY;
+
   return (
     <div>
       <div className="page-section">
@@ -33,7 +40,7 @@ export default function Scrims() {
           <h2>welcome:</h2>
           {currentUser && (
             <pre className="text-white">
-              {JSON.stringify(currentUser, null, 2)}
+              {JSON.stringify(userData, null, 2)}
             </pre>
           )}
         </div>

@@ -36,10 +36,6 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
   },
 
   teamsVersusSeparator: {
-    // width: '50%',
-
-    // textAlign: 'center',
-
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',

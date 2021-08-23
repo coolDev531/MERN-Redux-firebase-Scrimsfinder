@@ -39,6 +39,7 @@ export default function ScrimTeamList({
   teamOne,
   teamTwo,
   teamData,
+  casterEntered,
 }) {
   const [currentUser] = useContext(CurrentUserContext);
   const classes = useScrimSectionStyles();
@@ -46,6 +47,10 @@ export default function ScrimTeamList({
   const { teamRoles, teamName, teamTitleName, teamArray } = teamData;
 
   const joinGame = async (teamJoiningName, role) => {
+    if (casterEntered) {
+      alert("You're already a caster for this game!");
+      return;
+    }
     const teamJoining = teamJoiningName === 'teamOne' ? teamOne : teamTwo;
 
     const playerData = { ...currentUser, role };
