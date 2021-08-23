@@ -121,12 +121,14 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
 
   return (
     <div className="page-section one-scrim__container">
-      <div className="inner-column border-white pd-0">
-        <div className="scrim__metadata pd-1">
-          <h1>{scrim.createdBy?.name}'s Lobby</h1>
+      <div className={classes.scrimBox}>
+        <div
+          className="scrim__metadata pd-1"
+          style={{ background: 'rgba(240,234,240,0.8)' }}>
+          <h1 className="text-black">{scrim.createdBy?.name}'s Lobby</h1>
           <div className={classes.gameMetaInfo}>
             <div>
-              <h2>
+              <h2 className="text-black">
                 Game Start:&nbsp;
                 {new Date(scrim.gameStartTime).toLocaleString(
                   [],
@@ -134,13 +136,21 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
                 )}
               </h2>
 
-              <div className="casters-container">
+              <div className="casters-container ">
                 {casters.length === 2 ? (
-                  <h2>Casters {casters.map((caster) => caster).join(' & ')}</h2>
+                  <h2 className="text-black">
+                    Casters {casters.map((caster) => caster).join(' & ')}
+                  </h2>
                 ) : (
                   <div className="d-flex align-center gap-20">
-                    {casters.length === 0 ? <h2>No Casters</h2> : null}
-                    {casters[0] && <h2>Current Casters: {casters[0]}</h2>}
+                    {casters.length === 0 ? (
+                      <h2 className="text-black">No Casters</h2>
+                    ) : null}
+                    {casters[0] && (
+                      <h2 className="text-black">
+                        Current Casters: {casters[0]}
+                      </h2>
+                    )}
 
                     <button
                       disabled={
