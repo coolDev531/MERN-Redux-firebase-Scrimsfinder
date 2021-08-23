@@ -1,18 +1,20 @@
 import React, { Fragment, useState, useEffect } from 'react';
-// import './CountdownTimer.css';
 import { makeStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
 const useStyles = makeStyles((theme) => ({
   timer: {
-    background: 'rgb(0, 0, 0, 0.9)',
-    color: '#fff',
+    background: 'white',
+    color: '#000',
     fontSize: '22px',
-    display: 'grid',
-    gridTemplateColumns: 'repeat(7, 1fr)',
+    display: 'flex',
     textAlign: 'center',
     borderRadius: '3px',
     padding: '0rem 1rem',
+
+    '@supports (gap: 10px)': {
+      gap: '10px',
+    },
   },
 
   timerLoading: {
@@ -29,6 +31,7 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
   const [timerHours, setTimerHours] = useState('00');
   const [timerMinutes, setTimerMinutes] = useState('00');
   const [timerSeconds, setTimerSeconds] = useState('00');
+
   const classes = useStyles();
 
   let interval = null;
@@ -69,7 +72,6 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
 
   /* eslint eqeqeq: 0 */
   // disable == warning in react.
-
   useEffect(() => {
     if (
       isTimerStarted &&
@@ -106,10 +108,11 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
       </div>
     );
   }
+
   return (
     <Fragment>
       <div className={classes.timer}>
-        {timerDays !== '00' && (
+        {timerDays != '00' && (
           <>
             <section aria-label="timer-days">
               <p>{timerDays}</p>
@@ -120,7 +123,7 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
             <p>:</p>
           </>
         )}
-        {timerHours !== '00' && (
+        {timerHours != '00' && (
           <>
             <section aria-label="timer-hours">
               <p>{timerHours}</p>
@@ -131,13 +134,17 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
             <p>:</p>
           </>
         )}
-        <section aria-label="timer-minutes">
-          <p>{timerMinutes}</p>
-          <p>
-            <small>Minutes</small>
-          </p>
-        </section>
-        <p>:</p>
+        {timerMinutes != '00' && (
+          <>
+            <section aria-label="timer-minutes">
+              <p>{timerMinutes}</p>
+              <p>
+                <small>Minutes</small>
+              </p>
+            </section>
+            <p>:</p>
+          </>
+        )}
         <section aria-label="timer-seconds">
           <p>{timerSeconds}</p>
           <p>

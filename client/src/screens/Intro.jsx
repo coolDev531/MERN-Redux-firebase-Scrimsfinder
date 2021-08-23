@@ -1,9 +1,14 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useState, useContext } from 'react';
 import { CurrentUserContext } from '../context/currentUser';
 import { Redirect } from 'react-router-dom';
 import TextField from '@material-ui/core/TextField';
 import Alert from '@material-ui/lab/Alert';
+
+const KEYCODES = {
+  ENTER: 13,
+  BACKSPACE: 8,
+};
 
 export default function Intro() {
   const [userData, setUserData] = useState({
@@ -47,7 +52,6 @@ export default function Intro() {
         ? rankResult.slice(-1)
         : rankResult;
 
-    console.log({ rankResult });
     setUserData((prevState) => ({
       ...prevState,
       rank:
@@ -60,16 +64,77 @@ export default function Intro() {
     // eslint-disable-next-line
   }, [rankData]);
 
-  useEffect(() => {
-    console.log({ userData, rankData });
-  }, [userData, rankData]);
+  const goNextStep = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (currentFormIndex === 2) return; // if final step, stop.
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('submited!');
-    localStorage.setItem('currentUser', JSON.stringify(userData));
-    setCurrentUser(userData);
-  };
+      if (document.querySelector('#form').checkValidity()) {
+        setCurrentFormIndex((prevState) => (prevState += 1));
+        setError(false);
+      } else {
+        const key =
+          Object.keys(userData)[currentFormIndex] === 'name'
+            ? 'summoner name'
+            : Object.keys(userData)[currentFormIndex];
+
+        setError(`${key} is empty!`);
+      }
+    },
+    [currentFormIndex, userData]
+  );
+
+  const goPreviousStep = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (currentFormIndex === 0) return;
+      setCurrentFormIndex((prevState) => (prevState -= 1));
+    },
+    [currentFormIndex]
+  );
+
+  const handleSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
+
+      let yes = window.confirm(`Are you sure you want to create this account? \n
+      Name: ${userData.name} \n
+      Rank: ${userData.rank} \n
+      Region: ${userData.region}
+      `);
+
+      if (!yes) return;
+
+      console.log(
+        '%c user created with the name: ' + userData.name,
+        'color: lightgreen'
+      );
+      localStorage.setItem('currentUser', JSON.stringify(userData));
+      setCurrentUser(userData);
+
+      return;
+    },
+    [setCurrentUser, userData]
+  );
+
+  useEffect(() => {
+    const handleEnterKey = (e) => {
+      if (e.keyCode === KEYCODES.ENTER) {
+        return currentFormIndex < 2 ? goNextStep(e) : handleSubmit(e);
+      }
+
+      // if pressing backspace but even.target doesn't have a name (a.k.a isn't backspacing an input)
+      if (e.keyCode === KEYCODES.BACKSPACE && !e.target.name) {
+        goPreviousStep(e);
+      }
+    };
+
+    document.addEventListener('keyup', handleEnterKey);
+
+    return () => {
+      document.removeEventListener('keyup', handleEnterKey);
+    };
+  }, [goNextStep, currentFormIndex, handleSubmit, goPreviousStep]);
 
   const nameForm = (
     <TextField
@@ -90,9 +155,6 @@ export default function Intro() {
         required
         value={rankData.rankDivision}
         onChange={(e) => handleChange(e, setRankData)}>
-        <option selected disabled>
-          Select Division
-        </option>
         {[
           'Unranked',
           'Iron',
@@ -136,9 +198,6 @@ export default function Intro() {
         value={userData.region}
         onChange={(e) => handleChange(e, setUserData)}
         required>
-        <option selected disabled>
-          Select Region
-        </option>
         {['NA', 'EUW', 'EUNE', 'LAN'].map((region) => (
           <option value={region}>{region}</option>
         ))}
@@ -169,47 +228,17 @@ export default function Intro() {
         {currentFormIndex === forms.length - 1 ? (
           <>
             <button type="submit">Create my account</button>
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                setCurrentFormIndex((prevState) => (prevState -= 1));
-              }}>
-              Previous
-            </button>
+            <button onClick={goPreviousStep}>Previous</button>
           </>
         ) : (
           <>
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                setCurrentFormIndex((prevState) => (prevState -= 1));
-              }}>
+            <button disabled={currentFormIndex === 0} onClick={goPreviousStep}>
               Previous
             </button>
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                if (document.querySelector('#form').checkValidity()) {
-                  setCurrentFormIndex((prevState) => (prevState += 1));
-                  setError(false);
-                } else {
-                  const key =
-                    Object.keys(userData)[currentFormIndex] === 'name'
-                      ? 'summoner name'
-                      : Object.keys(userData)[currentFormIndex];
-
-                  setError(`${key} is empty!`);
-                }
-              }}>
-              Next
-            </button>
+            <button onClick={goNextStep}>Next</button>
           </>
         )}
       </form>
-      <p>
-        *ALPHA STAGE: all currently games will be considered NA games, but
-        please pick your region for next updates.*
-      </p>
     </div>
   );
 }

@@ -20,7 +20,7 @@ const getScrimById = async (req, res) => {
     if (scrim) {
       return res.json(scrim);
     }
-    res.status(404).json({ message: 'Lobby not found!' });
+    res.status(404).json({ message: 'Scrim not found!' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -31,7 +31,7 @@ const createScrim = async (req, res) => {
     const scrim = new Scrim(req.body);
     await scrim.save();
     res.status(201).json(scrim);
-    console.log('lobby created: ', scrim);
+    console.log('Scrim created: ', scrim);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: error.message });
@@ -71,13 +71,9 @@ const updateScrim = async (req, res) => {
         return res.status(500).json({ error: error.message });
       }
       if (!scrim) {
-        return res.status(404).json(scrim);
+        return res.status(500).send('Scrim not found');
       }
 
-      if (scrim.teamOne.length === 5 && scrim.teamTwo.length === 5) {
-        scrim.lobbyCaptain === 'testing123';
-        scrim.save();
-      }
       res.status(200).json(scrim);
     }
   );
@@ -90,7 +86,7 @@ const deleteScrim = async (req, res) => {
     if (deleted) {
       return res.status(200).send(`Scrim with id: ${id} deleted`);
     }
-    throw new Error('Transportation type not found');
+    throw new Error('Scrim not found');
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

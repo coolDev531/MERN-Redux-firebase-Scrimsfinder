@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-function toIsoString(date) {
+const toIsoString = (date) => {
   date = new Date(date);
   var tzo = -date.getTimezoneOffset(),
     dif = tzo >= 0 ? '+' : '-',
@@ -27,7 +27,7 @@ function toIsoString(date) {
     ':' +
     pad(tzo % 60)
   );
-}
+};
 
 const generatePassword = () => {
   var pass = '';
@@ -44,7 +44,6 @@ const generatePassword = () => {
 };
 
 const getThirtyMinFromNow = () => {
-  console.log('SETTING DATE');
   let now = Date.now();
   let d1 = toIsoString(now);
   let d2 = new Date(d1);
@@ -65,6 +64,8 @@ const Scrim = new Schema(
     lobbyHost: { type: Object, default: null },
     lobbyPassword: { type: String, default: generatePassword() },
     lobbyName: { type: String, default: null },
+    scrimRegion: { type: String, default: 'NA', required: true },
+    createdBy: { type: Object, required: true },
   },
   { timestamps: true }
 );
