@@ -71,13 +71,9 @@ const updateScrim = async (req, res) => {
         return res.status(500).json({ error: error.message });
       }
       if (!scrim) {
-        return res.status(404).json(scrim);
+        return res.status(500).send('Scrim not found');
       }
 
-      if (scrim.teamOne.length === 5 && scrim.teamTwo.length === 5) {
-        scrim.lobbyCaptain === 'testing123';
-        scrim.save();
-      }
       res.status(200).json(scrim);
     }
   );
