@@ -43,10 +43,10 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
   useEffect(() => {
     const teams = [...teamOne, ...teamTwo];
 
-    let foundPlayer = teams.find((player) => player.name === currentUser.name);
+    let foundPlayer = teams.find((player) => player.name === currentUser?.name);
 
     let foundCaster = scrim.casters.find(
-      (casterName) => casterName === currentUser.name
+      (casterName) => casterName === currentUser?.name
     );
 
     if (foundCaster) {
@@ -79,7 +79,7 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
 
     const scrimData = {
       ...scrim,
-      casters: [...scrim.casters, currentUser.name],
+      casters: [...scrim.casters, currentUser?.name],
     };
 
     const updatedScrim = await updateScrim(scrim._id, scrimData);
@@ -146,7 +146,7 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
                       disabled={
                         casters.length === MAX_CASTER_AMOUNT ||
                         scrim.casters.find(
-                          (casterName) => casterName === currentUser.name
+                          (casterName) => casterName === currentUser?.name
                         )
                       }
                       onClick={joinCast}>
@@ -213,10 +213,10 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
                 ) : (
                   <>
                     <h2 className="text-black">Not enough players</h2>
-                    {scrim.createdBy.name === currentUser.name ? (
+                    {scrim.createdBy.name === currentUser?.name ? (
                       <button onClick={cancelScrim}>Cancel event</button>
-                    ) : scrim.createdBy.name !== currentUser.name &&
-                      currentUser.ADMIN_SECRET_KEY ===
+                    ) : scrim.createdBy.name !== currentUser?.name &&
+                      currentUser?.ADMIN_SECRET_KEY ===
                         process.env.REACT_APP_ADMIN_SECRET_KEY ? (
                       <button onClick={cancelScrim}>Cancel event</button>
                     ) : null}

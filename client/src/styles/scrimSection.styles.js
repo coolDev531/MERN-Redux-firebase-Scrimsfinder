@@ -28,6 +28,11 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
     width: '100%',
     maxWidth: '36ch',
     backgroundColor: theme.palette.background.paper,
+    opacity: '0.99',
+    transition: 'all 250ms ease-in-out',
+    '&:hover': {
+      opacity: '1',
+    },
   },
 
   teamListItem: {

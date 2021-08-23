@@ -115,7 +115,7 @@ export default function ScrimTeamList({
       };
     } else {
       let filtered = [...teamArr].filter(
-        (player) => player.name !== currentUser.name
+        (player) => player.name !== currentUser?.name
       );
 
       const playerData = { ...currentUser, role };
@@ -174,7 +174,7 @@ export default function ScrimTeamList({
           );
 
           const isCurrentUser = teamArray.find((player) =>
-            player?.name?.includes(currentUser.name)
+            player?.name?.includes(currentUser?.name)
           );
 
           if (playerAssigned) {

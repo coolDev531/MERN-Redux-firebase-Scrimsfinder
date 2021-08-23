@@ -20,7 +20,7 @@ function App() {
 
   useEffect(() => {
     if (!currentUser) {
-      return push('user-setup');
+      return push('./user-setup');
     }
     // eslint-disable-next-line
   }, [currentUser]);

@@ -105,3 +105,22 @@ p {
 .border-white {
   border: 1px solid #fff;
 }
+
+.justify-between {
+  justify-content: space-between !important;
+}
+
+.site-header {
+  top: 0;
+  z-index: 5;
+  background-color: black;
+  border-bottom: 1px solid white;
+}
+
+.direction-column {
+  flex-direction: column;
+}
+
+.mr-3 {
+  margin-right: 30px;
+}

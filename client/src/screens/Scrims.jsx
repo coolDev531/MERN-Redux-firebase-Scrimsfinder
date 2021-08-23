@@ -1,17 +1,16 @@
 import { useContext, useState, useEffect, Fragment, useMemo } from 'react';
 import ScrimSection from '../components/ScrimSection';
+import Navbar from '../components/shared/Navbar';
 import { CurrentUserContext } from '../context/currentUser';
 import { getAllScrims } from './../services/scrims';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import InputLabel from '@material-ui/core/InputLabel';
-import { FormHelperText } from '@material-ui/core';
 
 export default function Scrims() {
   const [currentUser] = useContext(CurrentUserContext);
   const [scrims, setScrims] = useState([]);
   const [filteredScrims, setFilteredScrims] = useState([]);
-  const [scrimsRegion, setScrimsRegion] = useState(currentUser.region);
+  const [scrimsRegion, setScrimsRegion] = useState(
+    () => currentUser?.region ?? 'NA'
+  );
   const [fetch, toggleFetch] = useState(false);
 
   const today = useMemo(() => new Date().toLocaleDateString(), []);
@@ -36,7 +35,7 @@ export default function Scrims() {
     };
 
     fetchScrims();
-  }, [fetch, currentUser.region, today]);
+  }, [fetch, currentUser?.region, today]);
 
   const todaysScrims = useMemo(
     () =>
@@ -67,46 +66,19 @@ export default function Scrims() {
   // now for local storage, might not need in future
   delete userData.ADMIN_SECRET_KEY;
 
-  let allRegions = ['NA', 'EUW', 'EUNE', 'LAN'];
-
-  let selectRegions = [
-    currentUser.region,
-    ...allRegions.filter((r) => r !== currentUser.region),
-  ];
-
   return (
     <div>
-      <div className="page-section welcome">
-        <div className="inner-column">
-          <h1>home</h1>
-          <h2>welcome:</h2>
-          {currentUser && (
-            <pre className="text-white">
-              {JSON.stringify(userData, null, 2)}
-            </pre>
-          )}
-          <InputLabel className="text-white">Region</InputLabel>
-
-          <Select
-            value={scrimsRegion}
-            className="text-white"
-            onChange={(e) => {
-              const region = e.target.value;
-              toggleFetch((prev) => !prev);
-              setScrimsRegion(region);
-              setFilteredScrims(
-                todaysScrims.filter((scrim) => scrim.scrimRegion === region)
-              );
-            }}>
-            {selectRegions.map((region) => (
-              <MenuItem value={region}>{region}</MenuItem>
-            ))}
-          </Select>
-          <FormHelperText className="text-white">
-            Filter scrims by region
-          </FormHelperText>
-        </div>
-      </div>
+      <Navbar
+        todaysScrims={todaysScrims}
+        scrimsRegion={scrimsRegion}
+        setScrimsRegion={setScrimsRegion}
+        onSelectRegion={(region) =>
+          setFilteredScrims(
+            todaysScrims.filter((scrim) => scrim.scrimRegion === region)
+          )
+        }
+        toggleFetch={toggleFetch}
+      />
       <div className="page-break" />
 
       <div id="scrims-container">
