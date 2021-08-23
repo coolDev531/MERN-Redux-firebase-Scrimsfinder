@@ -232,7 +232,9 @@ export default function Intro() {
           </>
         ) : (
           <>
-            <button onClick={goPreviousStep}>Previous</button>
+            <button disabled={currentFormIndex === 0} onClick={goPreviousStep}>
+              Previous
+            </button>
             <button onClick={goNextStep}>Next</button>
           </>
         )}
