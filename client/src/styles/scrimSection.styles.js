@@ -6,7 +6,7 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
   },
   exitIcon: {
-    color: '#000',
+    color: theme.primary,
     cursor: 'pointer',
     position: 'absolute',
     top: '16px',
