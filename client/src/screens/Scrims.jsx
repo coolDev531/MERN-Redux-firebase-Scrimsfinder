@@ -7,7 +7,7 @@ export default function Scrims() {
   const [currentUser] = useContext(CurrentUserContext);
   const [scrims, setScrims] = useState([]);
   const [filteredScrims, setFilteredScrims] = useState([]);
-  const [scrimsRegion, setScrimsRegion] = useState(() => currentUser.region);
+  const [scrimsRegion, setScrimsRegion] = useState(currentUser.region);
   const [fetch, toggleFetch] = useState(false);
 
   const today = useMemo(() => new Date().toLocaleDateString(), []);

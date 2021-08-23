@@ -105,7 +105,7 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
 
     if (updatedScrim) {
       console.log(
-        `%removed ${currentUser.name} from the caster list for scrim: ${scrim._id}`,
+        `%cremoved ${currentUser.name} from the caster list for scrim: ${scrim._id}`,
         'color: #99ff99'
       );
       getNewScrimsData();
