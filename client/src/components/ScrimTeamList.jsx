@@ -25,7 +25,7 @@ const compareArrays = (arr1, arr2) => {
 
 const swapPlayer = (currentTeam, movingTeam, movingPlayer) => {
   const indexToRemove = currentTeam.findIndex(
-    (p) => p && p.name === movingPlayer.name
+    (player) => player?.name === movingPlayer?.name
   );
   if (indexToRemove > -1) currentTeam.splice(indexToRemove, 1);
   movingTeam = [...movingTeam, movingPlayer];
@@ -173,8 +173,8 @@ export default function ScrimTeamList({
             player?.role?.includes(teamRole)
           );
 
-          const isCurrentUser = teamArray.find((player) =>
-            player?.name?.includes(currentUser?.name)
+          const isCurrentUser = teamArray.find(
+            (p) => p && p?.name === currentUser?.name
           );
 
           if (playerAssigned) {
@@ -203,14 +203,15 @@ export default function ScrimTeamList({
                       <>
                         {playerAssigned?.discord && (
                           <>
-                            Discord -
+                            Discord -&nbsp;
                             <Typography
                               component="span"
                               variant="body2"
                               className={classes.inline}
                               color="textPrimary">
-                              {playerAssigned?.role}
+                              {playerAssigned?.discord}
                             </Typography>
+                            <br />
                           </>
                         )}
                         {'Role - '}
