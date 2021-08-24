@@ -174,7 +174,7 @@ export default function ScrimTeamList({
           );
 
           const isCurrentUser = teamArray.find(
-            (p) => p && p?.name === currentUser?.name
+            (player) => player?.discord === currentUser?.discord
           );
 
           if (playerAssigned) {
