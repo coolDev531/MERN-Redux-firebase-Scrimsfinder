@@ -36,6 +36,11 @@ export default function Intro() {
   ];
 
   const handleErrors = useCallback(() => {
+    /* if the text input value is empty and the errors map doesn't have it as a key:
+    add it as a key and it's value as the message to the error map */
+
+    /* else if the text input value isn't empty and the key exists (input.name) in the errors map, remove it from the errors map */
+
     Object.entries(userData).map(([k, v]) =>
       v === ''
         ? !errors.has(k) &&
