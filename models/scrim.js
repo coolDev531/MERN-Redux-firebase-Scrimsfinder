@@ -54,6 +54,7 @@ const getThirtyMinFromNow = () => {
 const PlayerSchema = new Schema({
   name: { type: String, required: true },
   discord: { type: String, required: true },
+  role: { type: String, required: true },
   rank: { type: String, required: true },
   region: { type: String, required: true },
   team: { name: { type: String }, value: { type: Array } },
@@ -61,8 +62,8 @@ const PlayerSchema = new Schema({
 
 const Scrim = new Schema(
   {
-    teamOne: { type: Array, default: [] },
-    teamTwo: { type: Array, default: [] },
+    teamOne: { type: [PlayerSchema], default: [] },
+    teamTwo: { type: [PlayerSchema], default: [] },
     // right now casters is just array of strings (user.name)s
     casters: { type: Array, default: [] },
     gameStartTime: {
