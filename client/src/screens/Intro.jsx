@@ -111,6 +111,7 @@ export default function Intro() {
 
       let yes = window.confirm(`Are you sure you want to create this account? \n
       Name: ${userData.name} \n
+      Discord: ${userData.discord} \n
       Rank: ${userData.rank} \n
       Region: ${userData.region}
       `);

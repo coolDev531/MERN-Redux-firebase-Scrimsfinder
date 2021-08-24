@@ -39,6 +39,11 @@ export default function Navbar({
           <div className="d-flex mr-3">
             <Button
               onClick={() => {
+                let yes = window.confirm(
+                  "Are you sure you want to log out? \n you'll have to set-up all over again"
+                );
+                if (!yes) return;
+
                 history.push('./user-setup');
                 setCurrentUser(null);
               }}
