@@ -24,15 +24,7 @@ export default function Intro() {
   });
   const [currentUser, setCurrentUser] = useContext(CurrentUserContext);
   const [currentFormIndex, setCurrentFormIndex] = useState(0);
-  const [errors, setErrors] = useState({});
-  const handleChange = ({ target }, setter) => {
-    const { name, value } = target;
-
-    setter((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
+  const [errors, setErrors] = useState(new Map()); // using a map to keep unique errors.
 
   const divisionsWithNumbers = [
     'Iron',
@@ -42,6 +34,29 @@ export default function Intro() {
     'Platinum',
     'Diamond',
   ];
+
+  const handleErrors = useCallback(() => {
+    Object.entries(userData).map(([k, v]) =>
+      v === ''
+        ? !errors.has(k) &&
+          setErrors((prevState) => new Map(prevState.set(k, `${k} is empty!`)))
+        : errors.has(k) &&
+          setErrors((prevState) => {
+            let newState = new Map(prevState);
+            newState.delete(k);
+            return newState;
+          })
+    );
+  }, [errors, userData]);
+
+  const handleChange = ({ target }, setter) => {
+    const { name, value } = target;
+
+    setter((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
 
   useEffect(() => {
     const { rankNumber, rankDivision } = rankData;
@@ -55,7 +70,6 @@ export default function Intro() {
       ...prevState,
       rank: rankResult,
     }));
-
     // eslint-disable-next-line
   }, [rankData]);
 
@@ -66,21 +80,14 @@ export default function Intro() {
 
       if (document.querySelector('#form').checkValidity()) {
         setCurrentFormIndex((prevState) => (prevState += 1));
-        setErrors({});
+        setErrors(new Map());
       } else {
         // if the input value is empty, add it in the Map as an error.
-        // else: if the input value isn't empty and it was already in the map: remove it from the map.
-        Object.entries(userData).map(([k, v]) =>
-          v === ''
-            ? setErrors((prevState) => ({
-                ...prevState,
-                [k]: { message: `${k} is empty!` },
-              }))
-            : errors[k] && setErrors((prevState) => delete prevState[k])
-        );
+        // else: if the input value isn't empty and it was already in the map previously (already was an error): remove it from the map.
+        handleErrors();
       }
     },
-    [currentFormIndex, userData, errors]
+    [currentFormIndex, handleErrors]
   );
 
   const goPreviousStep = useCallback(
@@ -117,28 +124,24 @@ export default function Intro() {
   );
 
   useEffect(() => {
-    const handleEnterKey = (e) => {
-      if (e.keyCode === KEYCODES.ENTER) {
-        return currentFormIndex < 2 ? goNextStep(e) : handleSubmit(e);
-      }
-
-      // if pressing backspace but even.target doesn't have a name (a.k.a isn't backspacing an input)
-      if (e.keyCode === KEYCODES.BACKSPACE && !e.target.name) {
-        goPreviousStep(e);
+    const handleKeyUp = (e) => {
+      switch (e.keyCode) {
+        case KEYCODES.ENTER:
+          if (currentFormIndex === 2) return handleSubmit(e);
+          return goNextStep(e);
+        case KEYCODES.BACKSPACE:
+          // if pressing backspace but even.target doesn't have a name (a.k.a user isn't backspacing while typing on an input)
+          if (e.target.name) return;
+          return goPreviousStep(e);
+        default:
+          break;
       }
     };
-
-    document.addEventListener('keyup', handleEnterKey);
-
+    document.addEventListener('keyup', handleKeyUp);
     return () => {
-      document.removeEventListener('keyup', handleEnterKey);
+      document.removeEventListener('keyup', handleKeyUp);
     };
   }, [goNextStep, currentFormIndex, handleSubmit, goPreviousStep]);
-
-  useEffect(() => {
-    window.getErrors = () => console.log({ errors });
-    console.log({ errors });
-  }, [errors]);
 
   const nameForm = (
     <Grid item container justify="space-evenly">
@@ -236,11 +239,10 @@ export default function Intro() {
         <h1>Welcome to LoL scrim finder, please fill in your details:</h1>
 
         <Grid container direction="column" md={12}>
-          {Object.values(errors).map((error) => (
+          {[...errors.values()].map((error) => (
             <>
               <Alert severity="error">
-                Please correct the following error —{' '}
-                <strong>{error.message}</strong>
+                Please correct the following error — <strong>{error}</strong>
               </Alert>
               <br />
             </>
