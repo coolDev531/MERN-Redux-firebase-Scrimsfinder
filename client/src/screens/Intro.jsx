@@ -4,6 +4,7 @@ import { CurrentUserContext } from '../context/currentUser';
 import { Redirect } from 'react-router-dom';
 import TextField from '@material-ui/core/TextField';
 import Alert from '@material-ui/lab/Alert';
+import { Grid } from '@material-ui/core';
 
 const KEYCODES = {
   ENTER: 13,
@@ -15,6 +16,7 @@ export default function Intro() {
     name: '',
     rank: '',
     region: 'NA',
+    discord: '',
   });
   const [rankData, setRankData] = useState({
     rankDivision: 'Iron',
@@ -22,16 +24,7 @@ export default function Intro() {
   });
   const [currentUser, setCurrentUser] = useContext(CurrentUserContext);
   const [currentFormIndex, setCurrentFormIndex] = useState(0);
-  const [error, setError] = useState(false);
-
-  const handleChange = ({ target }, setter) => {
-    const { name, value } = target;
-
-    setter((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
+  const [errors, setErrors] = useState(new Map()); // using a map to keep unique errors.
 
   const divisionsWithNumbers = [
     'Iron',
@@ -42,25 +35,41 @@ export default function Intro() {
     'Diamond',
   ];
 
-  useEffect(() => {
-    let rankResult = [rankData?.rankDivision ?? '', rankData?.rankNumber].join(
-      ' '
+  const handleErrors = useCallback(() => {
+    Object.entries(userData).map(([k, v]) =>
+      v === ''
+        ? !errors.has(k) &&
+          setErrors((prevState) => new Map(prevState.set(k, `${k} is empty!`)))
+        : errors.has(k) &&
+          setErrors((prevState) => {
+            let newState = new Map(prevState);
+            newState.delete(k);
+            return newState;
+          })
     );
+  }, [errors, userData]);
 
-    rankResult =
-      rankResult[rankResult.length - 1] === ' '
-        ? rankResult.slice(-1)
-        : rankResult;
+  const handleChange = ({ target }, setter) => {
+    const { name, value } = target;
 
+    setter((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  useEffect(() => {
+    const { rankNumber, rankDivision } = rankData;
+    let isDivisionWithNumber = divisionsWithNumbers.includes(rankDivision);
+
+    let rankResult = isDivisionWithNumber
+      ? `${rankDivision} ${rankNumber}`
+      : rankDivision;
+    // doing this because number and division are separate selects.
     setUserData((prevState) => ({
       ...prevState,
-      rank:
-        divisionsWithNumbers.includes(rankData.rankDivision) &&
-        rankData?.rankNumber !== '0'
-          ? rankResult
-          : rankData.rankDivision,
+      rank: rankResult,
     }));
-
     // eslint-disable-next-line
   }, [rankData]);
 
@@ -71,17 +80,14 @@ export default function Intro() {
 
       if (document.querySelector('#form').checkValidity()) {
         setCurrentFormIndex((prevState) => (prevState += 1));
-        setError(false);
+        setErrors(new Map());
       } else {
-        const key =
-          Object.keys(userData)[currentFormIndex] === 'name'
-            ? 'summoner name'
-            : Object.keys(userData)[currentFormIndex];
-
-        setError(`${key} is empty!`);
+        // if the input value is empty, add it in the Map as an error.
+        // else: if the input value isn't empty and it was already in the map previously (already was an error): remove it from the map.
+        handleErrors();
       }
     },
-    [currentFormIndex, userData]
+    [currentFormIndex, handleErrors]
   );
 
   const goPreviousStep = useCallback(
@@ -118,33 +124,48 @@ export default function Intro() {
   );
 
   useEffect(() => {
-    const handleEnterKey = (e) => {
-      if (e.keyCode === KEYCODES.ENTER) {
-        return currentFormIndex < 2 ? goNextStep(e) : handleSubmit(e);
-      }
-
-      // if pressing backspace but even.target doesn't have a name (a.k.a isn't backspacing an input)
-      if (e.keyCode === KEYCODES.BACKSPACE && !e.target.name) {
-        goPreviousStep(e);
+    const handleKeyUp = (e) => {
+      switch (e.keyCode) {
+        case KEYCODES.ENTER:
+          if (currentFormIndex === 2) return handleSubmit(e);
+          return goNextStep(e);
+        case KEYCODES.BACKSPACE:
+          // if pressing backspace but even.target doesn't have a name (a.k.a user isn't backspacing while typing on an input)
+          if (e.target.name) return;
+          return goPreviousStep(e);
+        default:
+          break;
       }
     };
-
-    document.addEventListener('keyup', handleEnterKey);
-
+    document.addEventListener('keyup', handleKeyUp);
     return () => {
-      document.removeEventListener('keyup', handleEnterKey);
+      document.removeEventListener('keyup', handleKeyUp);
     };
   }, [goNextStep, currentFormIndex, handleSubmit, goPreviousStep]);
 
   const nameForm = (
-    <TextField
-      type="text"
-      name="name"
-      value={userData.name}
-      onChange={(e) => handleChange(e, setUserData)}
-      placeholder="summoner name"
-      required
-    />
+    <Grid item container justify="space-evenly">
+      <TextField
+        type="text"
+        name="name"
+        value={userData.name}
+        onChange={(e) => handleChange(e, setUserData)}
+        onKeyPress={(e) => {
+          // if user enters special characters don't do anything
+          if (!/^\w+$/.test(e.key)) e.preventDefault();
+        }}
+        placeholder="summoner name"
+        required
+      />
+      <TextField
+        type="text"
+        name="discord"
+        value={userData.discord}
+        onChange={(e) => handleChange(e, setUserData)}
+        placeholder="Discord (name and #)"
+        required
+      />
+    </Grid>
   );
 
   const divisionForm = (
@@ -213,32 +234,42 @@ export default function Intro() {
   }
 
   return (
-    <div>
-      <h1>Welcome to LoL scrim finder, please fill in your details:</h1>
+    <div className="page-section">
+      <div className="inner-column">
+        <h1>Welcome to LoL scrim finder, please fill in your details:</h1>
 
-      {error && (
-        <Alert severity="error">
-          Please correct the following error — <strong>{error}</strong>
-        </Alert>
-      )}
-      <form onSubmit={handleSubmit} id="form">
-        <h2>Step {currentFormIndex + 1}</h2>
-        {forms[currentFormIndex]}
+        <Grid container direction="column" md={12}>
+          {[...errors.values()].map((error) => (
+            <>
+              <Alert severity="error">
+                Please correct the following error — <strong>{error}</strong>
+              </Alert>
+              <br />
+            </>
+          ))}
+        </Grid>
 
-        {currentFormIndex === forms.length - 1 ? (
-          <>
-            <button type="submit">Create my account</button>
-            <button onClick={goPreviousStep}>Previous</button>
-          </>
-        ) : (
-          <>
-            <button disabled={currentFormIndex === 0} onClick={goPreviousStep}>
-              Previous
-            </button>
-            <button onClick={goNextStep}>Next</button>
-          </>
-        )}
-      </form>
+        <form onSubmit={handleSubmit} id="form">
+          <h2>Step {currentFormIndex + 1}</h2>
+          {forms[currentFormIndex]}
+
+          {currentFormIndex === forms.length - 1 ? (
+            <>
+              <button type="submit">Create my account</button>
+              <button onClick={goPreviousStep}>Previous</button>
+            </>
+          ) : (
+            <>
+              <button
+                disabled={currentFormIndex === 0}
+                onClick={goPreviousStep}>
+                Previous
+              </button>
+              <button onClick={goNextStep}>Next</button>
+            </>
+          )}
+        </form>
+      </div>
     </div>
   );
 }

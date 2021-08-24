@@ -201,6 +201,18 @@ export default function ScrimTeamList({
                     }
                     secondary={
                       <>
+                        {playerAssigned?.discord && (
+                          <>
+                            Discord -
+                            <Typography
+                              component="span"
+                              variant="body2"
+                              className={classes.inline}
+                              color="textPrimary">
+                              {playerAssigned?.role}
+                            </Typography>
+                          </>
+                        )}
                         {'Role - '}
                         <Typography
                           component="span"

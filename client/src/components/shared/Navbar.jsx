@@ -5,6 +5,7 @@ import { Button, FormHelperText } from '@material-ui/core';
 import { useContext } from 'react';
 import { CurrentUserContext } from '../../context/currentUser';
 import { useHistory } from 'react-router-dom';
+import { BOOTCAMP_LOL_SRC } from '../../utils/bootcampImg';
 
 export default function Navbar({
   toggleFetch,
@@ -25,8 +26,14 @@ export default function Navbar({
     <div className="page-section site-header">
       <div className="inner-column">
         <div className="d-flex align-center justify-between">
-          <div className="logo">
-            <h1>LoL Scrims Finder</h1>
+          <div className="logo d-flex align-center">
+            <img
+              src={BOOTCAMP_LOL_SRC}
+              alt="logo"
+              style={{ marginRight: '10px' }}
+            />
+            &nbsp;
+            <h1>Scrims finder</h1>
           </div>
 
           <div className="d-flex mr-3">

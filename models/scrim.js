@@ -51,6 +51,14 @@ const getThirtyMinFromNow = () => {
   return d2;
 };
 
+let ArrayWithUsers = [
+  {
+    name: String,
+    rank: String,
+    region: String,
+  },
+];
+
 const Scrim = new Schema(
   {
     teamOne: { type: Array, default: [] },
@@ -64,7 +72,7 @@ const Scrim = new Schema(
     lobbyHost: { type: Object, default: null },
     lobbyPassword: { type: String, default: generatePassword() },
     lobbyName: { type: String, default: null },
-    scrimRegion: { type: String, default: 'NA', required: true },
+    region: { type: String, default: 'NA', required: true },
     createdBy: { type: Object, required: true },
   },
   { timestamps: true }
