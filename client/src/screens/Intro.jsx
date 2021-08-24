@@ -43,22 +43,16 @@ export default function Intro() {
   ];
 
   useEffect(() => {
-    let rankResult = [rankData?.rankDivision ?? '', rankData?.rankNumber].join(
-      ' '
-    );
+    const { rankNumber, rankDivision } = rankData;
+    let isDivisionWithNumber = divisionsWithNumbers.includes(rankDivision);
 
-    rankResult =
-      rankResult[rankResult.length - 1] === ' '
-        ? rankResult.slice(-1)
-        : rankResult;
-
+    let rankResult = isDivisionWithNumber
+      ? `${rankDivision} ${rankNumber}`
+      : rankDivision;
+    // doing this because number and division are separate selects.
     setUserData((prevState) => ({
       ...prevState,
-      rank:
-        divisionsWithNumbers.includes(rankData.rankDivision) &&
-        rankData?.rankNumber !== '0'
-          ? rankResult
-          : rankData.rankDivision,
+      rank: rankResult,
     }));
 
     // eslint-disable-next-line
