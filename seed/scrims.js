@@ -63,6 +63,7 @@ const main = async () => {
     },
 
     {
+      region: 'EUW',
       teamOne: teamOnePlayers,
       teamTwo: teamTwoPlayers,
       casters: ['YummiFan', 'AurelionSolNerfPls'],

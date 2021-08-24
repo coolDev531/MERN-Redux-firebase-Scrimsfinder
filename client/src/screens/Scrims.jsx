@@ -5,15 +5,16 @@ import { CurrentUserContext } from '../context/currentUser';
 import { getAllScrims } from './../services/scrims';
 
 export default function Scrims() {
+  const today = useMemo(() => new Date().toLocaleDateString(), []);
+
   const [currentUser] = useContext(CurrentUserContext);
   const [scrims, setScrims] = useState([]);
+  const [scrimsFilterDate, setScrimsFilterDate] = useState(today);
   const [filteredScrims, setFilteredScrims] = useState([]);
   const [scrimsRegion, setScrimsRegion] = useState(
     () => currentUser?.region ?? 'NA'
   );
   const [fetch, toggleFetch] = useState(false);
-
-  const today = useMemo(() => new Date().toLocaleDateString(), []);
 
   useEffect(() => {
     const fetchScrims = async () => {
@@ -22,42 +23,37 @@ export default function Scrims() {
 
       setScrims(scrimsData);
 
-      const todaysScrims = scrimsData.filter(
+      const dateFilteredScrims = scrimsData.filter(
         ({ gameStartTime }) =>
-          new Date(gameStartTime).toLocaleDateString() === today
+          new Date(gameStartTime).toLocaleDateString() === scrimsFilterDate
       );
 
-      const filteredScrimsByDateAndRegion = todaysScrims.filter(
-        (scrim) => scrim.scrimRegion === currentUser.region
+      const filteredScrimsByDateAndRegion = dateFilteredScrims.filter(
+        (scrim) => scrim.region === currentUser.region
       );
 
       setFilteredScrims(filteredScrimsByDateAndRegion);
     };
 
     fetchScrims();
-  }, [fetch, currentUser?.region, today]);
+  }, [fetch, currentUser?.region, today, scrimsFilterDate]);
 
-  const todaysScrims = useMemo(
+  const dateFilteredScrims = useMemo(
     () =>
       scrims.filter(
         ({ gameStartTime }) =>
-          new Date(gameStartTime).toLocaleDateString() === today
+          new Date(gameStartTime).toLocaleDateString() === scrimsFilterDate
       ),
-    [scrims, today]
+    [scrims, scrimsFilterDate]
   );
 
   useEffect(() => {
-    const todaysScrims = scrims.filter(
-      ({ gameStartTime }) =>
-        new Date(gameStartTime).toLocaleDateString() === today
-    );
-
-    const filteredScrimsByDateAndRegion = todaysScrims.filter(
-      (scrim) => scrim.scrimRegion === scrimsRegion
+    const filteredScrimsByDateAndRegion = dateFilteredScrims.filter(
+      (scrim) => scrim.region === scrimsRegion
     );
 
     setFilteredScrims(filteredScrimsByDateAndRegion);
-  }, [scrims, scrimsRegion, today]);
+  }, [scrims, scrimsRegion, dateFilteredScrims]);
 
   let userData = {
     ...currentUser,
@@ -69,12 +65,11 @@ export default function Scrims() {
   return (
     <div>
       <Navbar
-        todaysScrims={todaysScrims}
         scrimsRegion={scrimsRegion}
         setScrimsRegion={setScrimsRegion}
         onSelectRegion={(region) =>
           setFilteredScrims(
-            todaysScrims.filter((scrim) => scrim.scrimRegion === region)
+            dateFilteredScrims.filter((scrim) => scrim.region === region)
           )
         }
         toggleFetch={toggleFetch}

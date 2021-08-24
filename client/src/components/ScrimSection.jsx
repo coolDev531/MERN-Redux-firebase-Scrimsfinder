@@ -125,7 +125,7 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
         <div
           className="scrim__metadata pd-1"
           style={{ background: 'rgba(240,234,240,0.8)' }}>
-          <h1 className="text-black">{scrim.createdBy?.name}'s Lobby</h1>
+          <h1 className="text-black">{scrim.createdBy.name}'s Lobby</h1>
           <div className={classes.gameMetaInfo}>
             <div>
               <h2 className="text-black">
