@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const axios = require('axios');
 const toIsoString = require('../utils/toIsoString');
 
 const generatePassword = () => {
