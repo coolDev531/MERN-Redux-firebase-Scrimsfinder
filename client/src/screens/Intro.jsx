@@ -4,6 +4,7 @@ import { CurrentUserContext } from '../context/currentUser';
 import { Redirect } from 'react-router-dom';
 import TextField from '@material-ui/core/TextField';
 import Alert from '@material-ui/lab/Alert';
+import { Grid } from '@material-ui/core';
 
 const KEYCODES = {
   ENTER: 13,
@@ -15,6 +16,7 @@ export default function Intro() {
     name: '',
     rank: '',
     region: 'NA',
+    discord: '',
   });
   const [rankData, setRankData] = useState({
     rankDivision: 'Iron',
@@ -22,8 +24,7 @@ export default function Intro() {
   });
   const [currentUser, setCurrentUser] = useContext(CurrentUserContext);
   const [currentFormIndex, setCurrentFormIndex] = useState(0);
-  const [error, setError] = useState(false);
-
+  const [errors, setErrors] = useState({});
   const handleChange = ({ target }, setter) => {
     const { name, value } = target;
 
@@ -65,17 +66,21 @@ export default function Intro() {
 
       if (document.querySelector('#form').checkValidity()) {
         setCurrentFormIndex((prevState) => (prevState += 1));
-        setError(false);
+        setErrors({});
       } else {
-        const key =
-          Object.keys(userData)[currentFormIndex] === 'name'
-            ? 'summoner name'
-            : Object.keys(userData)[currentFormIndex];
-
-        setError(`${key} is empty!`);
+        // if the input value is empty, add it in the Map as an error.
+        // else: if the input value isn't empty and it was already in the map: remove it from the map.
+        Object.entries(userData).map(([k, v]) =>
+          v === ''
+            ? setErrors((prevState) => ({
+                ...prevState,
+                [k]: { message: `${k} is empty!` },
+              }))
+            : errors[k] && setErrors((prevState) => delete prevState[k])
+        );
       }
     },
-    [currentFormIndex, userData]
+    [currentFormIndex, userData, errors]
   );
 
   const goPreviousStep = useCallback(
@@ -130,15 +135,34 @@ export default function Intro() {
     };
   }, [goNextStep, currentFormIndex, handleSubmit, goPreviousStep]);
 
+  useEffect(() => {
+    window.getErrors = () => console.log({ errors });
+    console.log({ errors });
+  }, [errors]);
+
   const nameForm = (
-    <TextField
-      type="text"
-      name="name"
-      value={userData.name}
-      onChange={(e) => handleChange(e, setUserData)}
-      placeholder="summoner name"
-      required
-    />
+    <Grid item container justify="space-evenly">
+      <TextField
+        type="text"
+        name="name"
+        value={userData.name}
+        onChange={(e) => handleChange(e, setUserData)}
+        onKeyPress={(e) => {
+          // if user enters special characters don't do anything
+          if (!/^\w+$/.test(e.key)) e.preventDefault();
+        }}
+        placeholder="summoner name"
+        required
+      />
+      <TextField
+        type="text"
+        name="discord"
+        value={userData.discord}
+        onChange={(e) => handleChange(e, setUserData)}
+        placeholder="Discord (name and #)"
+        required
+      />
+    </Grid>
   );
 
   const divisionForm = (
@@ -207,32 +231,43 @@ export default function Intro() {
   }
 
   return (
-    <div>
-      <h1>Welcome to LoL scrim finder, please fill in your details:</h1>
+    <div className="page-section">
+      <div className="inner-column">
+        <h1>Welcome to LoL scrim finder, please fill in your details:</h1>
 
-      {error && (
-        <Alert severity="error">
-          Please correct the following error — <strong>{error}</strong>
-        </Alert>
-      )}
-      <form onSubmit={handleSubmit} id="form">
-        <h2>Step {currentFormIndex + 1}</h2>
-        {forms[currentFormIndex]}
+        <Grid container direction="column" md={12}>
+          {Object.values(errors).map((error) => (
+            <>
+              <Alert severity="error">
+                Please correct the following error —{' '}
+                <strong>{error.message}</strong>
+              </Alert>
+              <br />
+            </>
+          ))}
+        </Grid>
 
-        {currentFormIndex === forms.length - 1 ? (
-          <>
-            <button type="submit">Create my account</button>
-            <button onClick={goPreviousStep}>Previous</button>
-          </>
-        ) : (
-          <>
-            <button disabled={currentFormIndex === 0} onClick={goPreviousStep}>
-              Previous
-            </button>
-            <button onClick={goNextStep}>Next</button>
-          </>
-        )}
-      </form>
+        <form onSubmit={handleSubmit} id="form">
+          <h2>Step {currentFormIndex + 1}</h2>
+          {forms[currentFormIndex]}
+
+          {currentFormIndex === forms.length - 1 ? (
+            <>
+              <button type="submit">Create my account</button>
+              <button onClick={goPreviousStep}>Previous</button>
+            </>
+          ) : (
+            <>
+              <button
+                disabled={currentFormIndex === 0}
+                onClick={goPreviousStep}>
+                Previous
+              </button>
+              <button onClick={goNextStep}>Next</button>
+            </>
+          )}
+        </form>
+      </div>
     </div>
   );
 }
