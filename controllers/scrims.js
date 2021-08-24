@@ -56,7 +56,7 @@ const updateScrim = async (req, res) => {
   } else if (teamOne.length === 5 && teamTwo.length === 5) {
     const lobbyHost = sample([...teamOne, ...teamTwo]);
     requestBody.lobbyHost = lobbyHost;
-    requestBody.lobbyName = `${lobbyHost.name}'s Lobby`;
+    requestBody.lobbyName = `Captain ${lobbyHost.name}'s Custom Scrim`;
   } else {
     requestBody.lobbyHost = null;
     requestBody.lobbyName = null;

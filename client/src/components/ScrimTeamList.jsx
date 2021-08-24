@@ -173,9 +173,7 @@ export default function ScrimTeamList({
             (player) => player?.role === teamRole
           );
 
-          const isCurrentUser = teamArray.find(
-            (player) => player?.name === currentUser?.name
-          );
+          const isCurrentUser = playerAssigned?.name === currentUser?.name;
 
           if (playerAssigned) {
             return (

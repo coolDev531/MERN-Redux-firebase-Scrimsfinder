@@ -119,6 +119,9 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
     }
   };
 
+  const teamOneDifference = 5 - teamOne.length;
+  const teamTwoDifference = 5 - teamTwo.length;
+
   return (
     <div className="page-section one-scrim__container">
       <div className={classes.scrimBox}>
@@ -223,6 +226,11 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
                 ) : (
                   <>
                     <h2 className="text-black">Not enough players</h2>
+                    <h5 className="text-black">
+                      Please get {teamOneDifference} players in team one <br />
+                      and {teamTwoDifference} players in team two <br />
+                      to unlock lobby name and password
+                    </h5>
                     {scrim.createdBy.name === currentUser?.name ? (
                       <button onClick={cancelScrim}>Cancel event</button>
                     ) : scrim.createdBy.name !== currentUser?.name &&
