@@ -11,28 +11,34 @@ export default function IntroForms({
   divisionsWithNumbers,
 }) {
   const nameForm = (
-    <Grid item container justify="space-evenly">
-      <TextField
-        type="text"
-        name="name"
-        value={userData.name}
-        onChange={(e) => handleChange(e, setUserData)}
-        onKeyPress={(e) => {
-          // if user enters special characters don't do anything
-          if (!/^\w+$/.test(e.key)) e.preventDefault();
-        }}
-        placeholder="summoner name"
-        required
-      />
-      <TextField
-        type="text"
-        name="discord"
-        value={userData.discord}
-        onChange={(e) => handleChange(e, setUserData)}
-        placeholder="Discord (name and #)"
-        required
-      />
-    </Grid>
+    <>
+      <Grid item sm={3}>
+        <TextField
+          type="text"
+          name="name"
+          value={userData.name}
+          onChange={(e) => handleChange(e, setUserData)}
+          onKeyPress={(e) => {
+            // if user enters special characters don't do anything
+            if (!/^\w+$/.test(e.key)) e.preventDefault();
+          }}
+          label="Summoner Name"
+          helperText="required"
+          required
+        />
+      </Grid>
+      <Grid item sm={4}>
+        <TextField
+          type="text"
+          name="discord"
+          value={userData.discord}
+          onChange={(e) => handleChange(e, setUserData)}
+          label="Discord (name and #)"
+          helperText="required"
+          required
+        />
+      </Grid>
+    </>
   );
 
   const divisionForm = (
@@ -95,5 +101,14 @@ export default function IntroForms({
 
   let forms = [nameForm, divisionForm, regionForm];
 
-  return forms[currentFormIndex];
+  return (
+    <Grid
+      container
+      justify="flex-start"
+      direction="row"
+      alignItems="center"
+      style={{ padding: '20px 0' }}>
+      {forms[currentFormIndex]}
+    </Grid>
+  );
 }

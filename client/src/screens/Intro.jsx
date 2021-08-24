@@ -3,7 +3,7 @@ import { useState, useContext } from 'react';
 import { CurrentUserContext } from '../context/currentUser';
 import { Redirect } from 'react-router-dom';
 import Alert from '@material-ui/lab/Alert';
-import { Grid } from '@material-ui/core';
+import { Button, Grid } from '@material-ui/core';
 import IntroForms from '../components/IntroForms';
 
 const KEYCODES = {
@@ -185,19 +185,41 @@ export default function Intro() {
           />
 
           {currentFormIndex === 2 ? (
-            <>
-              <button type="submit">Create my account</button>
-              <button onClick={goPreviousStep}>Previous</button>
-            </>
+            <Grid container item spacing={2}>
+              <Grid item>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={goPreviousStep}>
+                  Previous
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button variant="contained" color="primary" type="submit">
+                  Create my account
+                </Button>
+              </Grid>
+            </Grid>
           ) : (
-            <>
-              <button
-                disabled={currentFormIndex === 0}
-                onClick={goPreviousStep}>
-                Previous
-              </button>
-              <button onClick={goNextStep}>Next</button>
-            </>
+            <Grid container item spacing={2}>
+              <Grid item>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  disabled={currentFormIndex === 0}
+                  onClick={goPreviousStep}>
+                  Previous
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={goNextStep}>
+                  Next
+                </Button>
+              </Grid>
+            </Grid>
           )}
         </form>
       </div>

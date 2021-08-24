@@ -169,12 +169,12 @@ export default function ScrimTeamList({
 
       <List className={classes.teamList}>
         {teamRoles.map((teamRole, idx) => {
-          const playerAssigned = teamArray.find((player) =>
-            player?.role?.includes(teamRole)
+          const playerAssigned = teamArray.find(
+            (player) => player?.role === teamRole
           );
 
           const isCurrentUser = teamArray.find(
-            (player) => player?.discord === currentUser?.discord
+            (player) => player?.name === currentUser?.name
           );
 
           if (playerAssigned) {
