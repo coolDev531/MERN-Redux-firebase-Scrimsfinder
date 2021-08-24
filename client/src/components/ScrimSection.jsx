@@ -217,7 +217,7 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
                       Lobby host/captain: {scrim.lobbyHost.name}
                     </h2>
                     <h3 className="text-black">
-                      please make the lobby name: {scrim.lobbyName}
+                      please make the lobby name: <br />"{scrim.lobbyName}"
                     </h3>
                     <h3 className="text-black">
                       with the password: {scrim.lobbyPassword}
@@ -225,7 +225,10 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
                   </>
                 ) : (
                   <>
-                    <h2 className="text-black">Not enough players</h2>
+                    <h2 className="text-black">
+                      Not enough players:&nbsp;
+                      {`${teamOne.length + teamTwo.length}/10`}
+                    </h2>
                     <h5 className="text-black">
                       Please get {teamOneDifference} players in team one <br />
                       and {teamTwoDifference} players in team two <br />
