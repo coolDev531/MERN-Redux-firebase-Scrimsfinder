@@ -19,7 +19,6 @@ export default function Navbar({
   toggleFetch,
   setScrimsRegion,
   scrimsRegion,
-  onSelectRegion,
   scrimsDate,
   setScrimsDate,
 }) {
@@ -102,7 +101,6 @@ export default function Navbar({
                   const region = e.target.value;
                   toggleFetch((prev) => !prev);
                   setScrimsRegion(region); // set the navbar select value to selected region
-                  onSelectRegion(region); // filter the scrims
                 }}>
                 {selectRegions.map((region, key) => (
                   <MenuItem value={region} key={key}>

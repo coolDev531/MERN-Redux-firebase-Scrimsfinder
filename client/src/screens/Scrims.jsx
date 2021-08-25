@@ -60,6 +60,7 @@ export default function Scrims() {
     );
 
     setFilteredScrims(filteredScrimsByDateAndRegion);
+    // this runs everytime scrimsRegion and datefilteredScrims changes.
   }, [scrims, scrimsRegion, dateFilteredScrims]);
 
   let userData = {
@@ -74,11 +75,6 @@ export default function Scrims() {
       <Navbar
         scrimsRegion={scrimsRegion}
         setScrimsRegion={setScrimsRegion}
-        onSelectRegion={(region) =>
-          setFilteredScrims(
-            dateFilteredScrims.filter((scrim) => scrim.region === region)
-          )
-        }
         scrimsDate={scrimsDate}
         setScrimsDate={setScrimsDate}
         toggleFetch={toggleFetch}
