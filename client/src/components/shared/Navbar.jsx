@@ -63,48 +63,52 @@ export default function Navbar({
             <h2>Welcome: {currentUser?.name}</h2>
           </div>
 
-          <div id="nav__region-filter--container">
-            <InputLabel className="text-white">Region</InputLabel>
+          <div id="nav__selects--container" className="d-flex align-center">
+            <div id="nav__region-filter--container">
+              <InputLabel className="text-white">Region</InputLabel>
 
-            <Select
-              value={scrimsRegion}
-              className="text-white"
-              onChange={(e) => {
-                const region = e.target.value;
-                toggleFetch((prev) => !prev);
-                setScrimsRegion(region); // set the navbar select value to selected region
-                onSelectRegion(region); // filter the scrims
-              }}>
-              {selectRegions.map((region, key) => (
-                <MenuItem value={region} key={key}>
-                  {region}
-                </MenuItem>
-              ))}
-            </Select>
-            <FormHelperText className="text-white">
-              Filter scrims by region
-            </FormHelperText>
-          </div>
+              <Select
+                value={scrimsRegion}
+                className="text-white"
+                onChange={(e) => {
+                  const region = e.target.value;
+                  toggleFetch((prev) => !prev);
+                  setScrimsRegion(region); // set the navbar select value to selected region
+                  onSelectRegion(region); // filter the scrims
+                }}>
+                {selectRegions.map((region, key) => (
+                  <MenuItem value={region} key={key}>
+                    {region}
+                  </MenuItem>
+                ))}
+              </Select>
+              <FormHelperText className="text-white">
+                Filter scrims by region
+              </FormHelperText>
+            </div>
+            &nbsp; &nbsp;
+            <div id="nav__date-filter--container">
+              <TextField
+                id="date"
+                required
+                label="Scrims Date"
+                type="date"
+                name="scrimsFilterDate"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                value={moment(scrimsFilterDate).format('yyyy-MM-DD')}
+                onChange={(e) => {
+                  setScrimsFilterDate(
+                    new Date(e.target.value.replace('-', '/'))
+                  );
+                }}
+              />
 
-          <div id="nav__date-filter--container">
-            <TextField
-              id="date"
-              required
-              label="Scrims Date"
-              type="date"
-              name="scrimsFilterDate"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              value={moment(scrimsFilterDate).format('yyyy-MM-DD')}
-              onChange={(e) => {
-                setScrimsFilterDate(new Date(e.target.value.replace('-', '/')));
-              }}
-            />
-
-            <FormHelperText className="text-white">
-              Filter scrims by date
-            </FormHelperText>
+              <FormHelperText className="text-white">
+                Filter scrims by date
+              </FormHelperText>
+            </div>
           </div>
         </div>
       </div>
