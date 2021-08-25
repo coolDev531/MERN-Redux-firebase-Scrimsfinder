@@ -1,7 +1,7 @@
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
-import { Button, FormHelperText, TextField } from '@material-ui/core';
+import { Box, Button, FormHelperText, TextField } from '@material-ui/core';
 import { useContext } from 'react';
 import { CurrentUserContext } from '../../context/currentUser';
 import { useHistory } from 'react-router-dom';
@@ -86,7 +86,7 @@ export default function Navbar({
                 Filter scrims by region
               </FormHelperText>
             </div>
-            &nbsp; &nbsp;
+            <Box marginRight={4} />
             <div id="nav__date-filter--container">
               <TextField
                 id="date"
