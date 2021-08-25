@@ -1,17 +1,21 @@
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
-import { Button, FormHelperText } from '@material-ui/core';
+import { Button, FormHelperText, TextField } from '@material-ui/core';
 import { useContext } from 'react';
 import { CurrentUserContext } from '../../context/currentUser';
 import { useHistory } from 'react-router-dom';
 import { BOOTCAMP_LOL_SRC } from '../../utils/bootcampImg';
+import moment from 'moment';
+import 'moment-timezone';
 
 export default function Navbar({
   toggleFetch,
   setScrimsRegion,
   scrimsRegion,
   onSelectRegion,
+  scrimsFilterDate,
+  setScrimsFilterDate,
 }) {
   const [currentUser, setCurrentUser] = useContext(CurrentUserContext);
   const history = useHistory();
@@ -59,7 +63,7 @@ export default function Navbar({
             <h2>Welcome: {currentUser?.name}</h2>
           </div>
 
-          <div>
+          <div id="nav__region-filter--container">
             <InputLabel className="text-white">Region</InputLabel>
 
             <Select
@@ -79,6 +83,28 @@ export default function Navbar({
             </Select>
             <FormHelperText className="text-white">
               Filter scrims by region
+            </FormHelperText>
+          </div>
+
+          <div id="nav__date-filter--container">
+            <TextField
+              id="date"
+              required
+              label="Scrims Date"
+              type="date"
+              // className={classes.birthdayField}
+              name="scrimsFilterDate"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              value={scrimsFilterDate}
+              onChange={(e) => {
+                setScrimsFilterDate(new Date(e.target.value.replace('-', '/')));
+              }}
+            />
+
+            <FormHelperText className="text-white">
+              Filter scrims by date
             </FormHelperText>
           </div>
         </div>

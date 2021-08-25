@@ -20,8 +20,11 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "faker": "^5.5.3",
+    "moment": "^2.29.1",
+    "moment-timezone": "^0.5.33",
     "mongoose": "^5.13.7",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "react-moment": "^1.1.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.12",

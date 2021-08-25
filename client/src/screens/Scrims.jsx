@@ -40,10 +40,16 @@ export default function Scrims() {
 
   const dateFilteredScrims = useMemo(
     () =>
-      scrims.filter(
-        ({ gameStartTime }) =>
-          new Date(gameStartTime).toLocaleDateString() === scrimsFilterDate
-      ),
+      scrims.filter(({ gameStartTime }) => {
+        console.log(
+          new Date(gameStartTime).toLocaleDateString(),
+          new Date(scrimsFilterDate).toLocaleDateString()
+        );
+        return (
+          new Date(gameStartTime).toLocaleDateString() ===
+          new Date(scrimsFilterDate).toLocaleDateString()
+        );
+      }),
     [scrims, scrimsFilterDate]
   );
 
@@ -72,6 +78,8 @@ export default function Scrims() {
             dateFilteredScrims.filter((scrim) => scrim.region === region)
           )
         }
+        scrimsFilterDate={scrimsFilterDate}
+        setScrimsFilterDate={setScrimsFilterDate}
         toggleFetch={toggleFetch}
       />
       <div className="page-break" />
