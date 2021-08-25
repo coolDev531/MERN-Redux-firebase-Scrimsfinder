@@ -68,8 +68,8 @@ export default function Navbar({
               onChange={(e) => {
                 const region = e.target.value;
                 toggleFetch((prev) => !prev);
-                setScrimsRegion(region);
-                onSelectRegion(region);
+                setScrimsRegion(region); // set the navbar select value to selected region
+                onSelectRegion(region); // filter the scrims
               }}>
               {selectRegions.map((region, key) => (
                 <MenuItem value={region} key={key}>
