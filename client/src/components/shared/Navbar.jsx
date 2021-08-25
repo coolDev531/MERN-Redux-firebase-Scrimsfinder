@@ -1,7 +1,13 @@
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
-import { Box, Button, FormHelperText, TextField } from '@material-ui/core';
+import {
+  Box,
+  Button,
+  FormHelperText,
+  TextField,
+  Grid,
+} from '@material-ui/core';
 import { useContext } from 'react';
 import { CurrentUserContext } from '../../context/currentUser';
 import { useHistory } from 'react-router-dom';
@@ -14,8 +20,8 @@ export default function Navbar({
   setScrimsRegion,
   scrimsRegion,
   onSelectRegion,
-  scrimsFilterDate,
-  setScrimsFilterDate,
+  scrimsDate,
+  setScrimsDate,
 }) {
   const [currentUser, setCurrentUser] = useContext(CurrentUserContext);
   const history = useHistory();
@@ -58,12 +64,34 @@ export default function Navbar({
           </div>
         </div>
         <br />
-        <div className="d-flex align-center justify-between">
+        <Grid container direction="row" justify="space-between">
           <div>
             <h2>Welcome: {currentUser?.name}</h2>
           </div>
 
           <div id="nav__selects--container" className="d-flex align-center">
+            <div id="nav__date-filter--container">
+              <TextField
+                id="date"
+                required
+                label="Scrims Date"
+                type="date"
+                name="scrimsDate"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                value={moment(scrimsDate).format('yyyy-MM-DD')}
+                onChange={(e) => {
+                  setScrimsDate(new Date(e.target.value.replace('-', '/')));
+                }}
+              />
+
+              <FormHelperText className="text-white">
+                Filter scrims by date
+              </FormHelperText>
+            </div>
+            <Box marginRight={4} />
+
             <div id="nav__region-filter--container">
               <InputLabel className="text-white">Region</InputLabel>
 
@@ -86,31 +114,8 @@ export default function Navbar({
                 Filter scrims by region
               </FormHelperText>
             </div>
-            <Box marginRight={4} />
-            <div id="nav__date-filter--container">
-              <TextField
-                id="date"
-                required
-                label="Scrims Date"
-                type="date"
-                name="scrimsFilterDate"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                value={moment(scrimsFilterDate).format('yyyy-MM-DD')}
-                onChange={(e) => {
-                  setScrimsFilterDate(
-                    new Date(e.target.value.replace('-', '/'))
-                  );
-                }}
-              />
-
-              <FormHelperText className="text-white">
-                Filter scrims by date
-              </FormHelperText>
-            </div>
           </div>
-        </div>
+        </Grid>
       </div>
     </div>
   );

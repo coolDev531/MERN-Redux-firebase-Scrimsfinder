@@ -8,10 +8,13 @@ export default function Scrims() {
   const today = useMemo(() => new Date().toLocaleDateString(), []);
 
   const [currentUser] = useContext(CurrentUserContext);
+
   const [scrims, setScrims] = useState([]);
-  const [scrimsFilterDate, setScrimsFilterDate] = useState(today);
-  const [filteredScrims, setFilteredScrims] = useState([]);
+  const [filteredScrims, setFilteredScrims] = useState([]); // the array of filtered scrims
+
+  const [scrimsDate, setScrimsDate] = useState(today); // the value for the date to filter scrims by
   const [scrimsRegion, setScrimsRegion] = useState(
+    // the value for the region to filter scrims by
     () => currentUser?.region ?? 'NA'
   );
   const [fetch, toggleFetch] = useState(false);
@@ -25,32 +28,30 @@ export default function Scrims() {
 
       const dateFilteredScrims = scrimsData.filter(
         ({ gameStartTime }) =>
-          new Date(gameStartTime).toLocaleDateString() === scrimsFilterDate
+          new Date(gameStartTime).toLocaleDateString() === scrimsDate
       );
 
       const filteredScrimsByDateAndRegion = dateFilteredScrims.filter(
         (scrim) => scrim.region === currentUser.region
       );
 
+      // set filtered scrims by date and region
       setFilteredScrims(filteredScrimsByDateAndRegion);
     };
 
     fetchScrims();
-  }, [fetch, currentUser?.region, today, scrimsFilterDate]);
+  }, [fetch, currentUser?.region, today, scrimsDate]);
 
   const dateFilteredScrims = useMemo(
     () =>
       scrims.filter(({ gameStartTime }) => {
-        console.log(
-          new Date(gameStartTime).toLocaleDateString(),
-          new Date(scrimsFilterDate).toLocaleDateString()
-        );
+        //  if gameStartTime equals to the scrimsDate, show it.
         return (
           new Date(gameStartTime).toLocaleDateString() ===
-          new Date(scrimsFilterDate).toLocaleDateString()
+          new Date(scrimsDate).toLocaleDateString()
         );
       }),
-    [scrims, scrimsFilterDate]
+    [scrims, scrimsDate]
   );
 
   useEffect(() => {
@@ -78,8 +79,8 @@ export default function Scrims() {
             dateFilteredScrims.filter((scrim) => scrim.region === region)
           )
         }
-        scrimsFilterDate={scrimsFilterDate}
-        setScrimsFilterDate={setScrimsFilterDate}
+        scrimsDate={scrimsDate}
+        setScrimsDate={setScrimsDate}
         toggleFetch={toggleFetch}
       />
       <div className="page-break" />
