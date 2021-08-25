@@ -92,12 +92,11 @@ export default function Navbar({
               required
               label="Scrims Date"
               type="date"
-              // className={classes.birthdayField}
               name="scrimsFilterDate"
               InputLabelProps={{
                 shrink: true,
               }}
-              value={scrimsFilterDate}
+              value={moment(scrimsFilterDate).format('yyyy-MM-DD')}
               onChange={(e) => {
                 setScrimsFilterDate(new Date(e.target.value.replace('-', '/')));
               }}
