@@ -16,6 +16,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function CustomTooltip(props) {
   const classes = useStyles(props);
-
-  return <Tooltip arrow classes={classes} {...props} />;
+  // takes title prop to display text
+  return (
+    <Tooltip
+      arrow
+      classes={classes}
+      placement={props.placement ?? 'top'}
+      {...props}
+    />
+  );
 }

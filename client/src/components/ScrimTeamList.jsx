@@ -11,6 +11,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import { Typography } from '@material-ui/core';
 import { ROLE_IMAGES } from '../utils/roleImages';
+import Tooltip from '../components/shared/Tooltip';
 
 const compareArrays = (arr1, arr2) => {
   if (arr1.length !== arr2.length) return false;
@@ -234,10 +235,12 @@ export default function ScrimTeamList({
                   />
 
                   {isCurrentUser && (
-                    <ExitIcon
-                      className={classes.exitIcon}
-                      onClick={() => leaveGame(teamName)}
-                    />
+                    <Tooltip title="Leave">
+                      <ExitIcon
+                        className={classes.exitIcon}
+                        onClick={() => leaveGame(teamName)}
+                      />
+                    </Tooltip>
                   )}
                 </ListItem>
                 {idx !== teamRoles.length - 1 ? (
@@ -256,14 +259,18 @@ export default function ScrimTeamList({
                     <Avatar alt={teamRole} src={ROLE_IMAGES[teamRole]} />
                   </ListItemAvatar>
                   {!playerEntered ? (
-                    <button onClick={() => joinGame(teamName, teamRole)}>
-                      join
-                    </button>
+                    <Tooltip title="Join">
+                      <button onClick={() => joinGame(teamName, teamRole)}>
+                        join
+                      </button>
+                    </Tooltip>
                   ) : (
                     <>
-                      <button onClick={() => handleSwap(teamName, teamRole)}>
-                        swap
-                      </button>
+                      <Tooltip title="Swap">
+                        <button onClick={() => handleSwap(teamName, teamRole)}>
+                          swap
+                        </button>
+                      </Tooltip>
                     </>
                   )}
                 </ListItem>
