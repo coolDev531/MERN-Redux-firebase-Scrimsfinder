@@ -25,6 +25,13 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
     top: '16px',
     right: '5px',
   },
+  iconButton: {
+    color: theme.primary,
+    cursor: 'pointer',
+    position: 'absolute',
+    top: '16px',
+    right: '5px',
+  },
   teamsContainer: {
     display: 'grid',
     gridTemplateColumns: '1fr 2fr 1fr',

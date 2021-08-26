@@ -1,7 +1,6 @@
 import { useContext, Fragment } from 'react';
 import { useScrimSectionStyles } from '../styles/scrimSection.styles';
 import { CurrentUserContext } from '../context/currentUser';
-import ExitIcon from '@material-ui/icons/ExitToApp';
 import { updateScrim } from '../services/scrims';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -9,9 +8,13 @@ import Divider from '@material-ui/core/Divider';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
-import { Box, Grid, Typography } from '@material-ui/core';
+import { Grid, IconButton, Typography } from '@material-ui/core';
 import { RANK_IMAGES, ROLE_IMAGES } from '../utils/imageMaps';
 import Tooltip from '../components/shared/Tooltip';
+import SwapIcon from '@material-ui/icons/SwapHoriz';
+import JoinIcon from '@material-ui/icons/MeetingRoom';
+// import ExitIcon from '@material-ui/icons/ExitToApp';
+import ExitIcon from '@material-ui/icons/NoMeetingRoom';
 
 const compareArrays = (arr1, arr2) => {
   if (arr1.length !== arr2.length) return false;
@@ -251,10 +254,11 @@ export default function ScrimTeamList({
 
                   {isCurrentUser && (
                     <Tooltip title="Leave">
-                      <ExitIcon
-                        className={classes.exitIcon}
-                        onClick={() => leaveGame(teamName)}
-                      />
+                      <IconButton
+                        className={classes.iconButton}
+                        onClick={() => leaveGame(teamName)}>
+                        <ExitIcon />
+                      </IconButton>
                     </Tooltip>
                   )}
                 </ListItem>
@@ -269,22 +273,26 @@ export default function ScrimTeamList({
                 {idx !== 0 ? <Divider component="div" /> : null}
 
                 <ListItem alignItems="center" className={classes.teamListItem}>
-                  <ListItemText primary={teamRole} />
                   <ListItemAvatar>
                     <Avatar alt={teamRole} src={ROLE_IMAGES[teamRole]} />
                   </ListItemAvatar>
+                  <ListItemText primary={teamRole} />
                   {!playerEntered ? (
                     <Tooltip title="Join">
-                      <button onClick={() => joinGame(teamName, teamRole)}>
-                        join
-                      </button>
+                      <IconButton
+                        onClick={() => joinGame(teamName, teamRole)}
+                        className={classes.iconButton}>
+                        <JoinIcon />
+                      </IconButton>
                     </Tooltip>
                   ) : (
                     <>
                       <Tooltip title="Swap">
-                        <button onClick={() => handleSwap(teamName, teamRole)}>
-                          swap
-                        </button>
+                        <IconButton
+                          className={classes.iconButton}
+                          onClick={() => handleSwap(teamName, teamRole)}>
+                          <SwapIcon />
+                        </IconButton>
                       </Tooltip>
                     </>
                   )}
