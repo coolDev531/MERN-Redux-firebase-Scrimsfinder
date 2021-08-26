@@ -63,13 +63,6 @@ export default function Scrims() {
     // this runs everytime scrimsRegion and datefilteredScrims changes.
   }, [scrims, scrimsRegion, dateFilteredScrims]);
 
-  let userData = {
-    ...currentUser,
-  };
-
-  // now for local storage, might not need in future
-  delete userData.ADMIN_SECRET_KEY;
-
   return (
     <div>
       <Navbar
@@ -78,6 +71,7 @@ export default function Scrims() {
         scrimsDate={scrimsDate}
         setScrimsDate={setScrimsDate}
         toggleFetch={toggleFetch}
+        showDropdowns
       />
       <div className="page-break" />
 

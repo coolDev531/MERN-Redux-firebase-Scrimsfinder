@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import { useContext } from 'react';
 import { CurrentUserContext } from '../../context/currentUser';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { BOOTCAMP_LOL_SRC } from '../../utils/bootcampImg';
 import moment from 'moment';
 import 'moment-timezone';
@@ -21,11 +21,13 @@ export default function Navbar({
   scrimsRegion,
   scrimsDate,
   setScrimsDate,
+  showDropdowns,
 }) {
   const [currentUser, setCurrentUser] = useContext(CurrentUserContext);
   const history = useHistory();
-  let allRegions = ['NA', 'EUW', 'EUNE', 'LAN'];
+  const { pathname } = useLocation();
 
+  let allRegions = ['NA', 'EUW', 'EUNE', 'LAN'];
   let selectRegions = [
     currentUser?.region,
     ...allRegions.filter((r) => r !== currentUser?.region),
@@ -56,13 +58,25 @@ export default function Navbar({
           </div>
 
           <div className="d-flex mr-3">
-            <Button
-              className="mr-3"
-              variant="contained"
-              color="primary"
-              onClick={() => history.push('/scrims/new')}>
-              Create Scrim
-            </Button>
+            {pathname !== '/scrims/new' ? (
+              <>
+                <Button
+                  className="mr-3"
+                  variant="contained"
+                  color="primary"
+                  onClick={() => history.push('/scrims/new')}>
+                  Create Scrim
+                </Button>
+              </>
+            ) : (
+              <Button
+                className="mr-3"
+                variant="contained"
+                color="primary"
+                onClick={() => history.goBack()}>
+                Go Back
+              </Button>
+            )}
             <Box marginRight={2} />
             &nbsp;
             <Button
@@ -79,51 +93,53 @@ export default function Navbar({
             <h2>Welcome: {currentUser?.name}</h2>
           </div>
 
-          <div id="nav__selects--container" className="d-flex align-center">
-            <div id="nav__date-filter--container">
-              <TextField
-                id="date"
-                required
-                label="Scrims Date"
-                type="date"
-                name="scrimsDate"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                value={moment(scrimsDate).format('yyyy-MM-DD')}
-                onChange={(e) => {
-                  setScrimsDate(new Date(e.target.value.replace('-', '/')));
-                }}
-              />
+          {showDropdowns && (
+            <div id="nav__selects--container" className="d-flex align-center">
+              <div id="nav__date-filter--container">
+                <TextField
+                  id="date"
+                  required
+                  label="Scrims Date"
+                  type="date"
+                  name="scrimsDate"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  value={moment(scrimsDate).format('yyyy-MM-DD')}
+                  onChange={(e) => {
+                    setScrimsDate(new Date(e.target.value.replace('-', '/')));
+                  }}
+                />
 
-              <FormHelperText className="text-white">
-                Filter scrims by date
-              </FormHelperText>
+                <FormHelperText className="text-white">
+                  Filter scrims by date
+                </FormHelperText>
+              </div>
+              <Box marginRight={4} />
+
+              <div id="nav__region-filter--container">
+                <InputLabel className="text-white">Region</InputLabel>
+
+                <Select
+                  value={scrimsRegion}
+                  className="text-white"
+                  onChange={(e) => {
+                    const region = e.target.value;
+                    toggleFetch((prev) => !prev);
+                    setScrimsRegion(region); // set the navbar select value to selected region
+                  }}>
+                  {selectRegions.map((region, key) => (
+                    <MenuItem value={region} key={key}>
+                      {region}
+                    </MenuItem>
+                  ))}
+                </Select>
+                <FormHelperText className="text-white">
+                  Filter scrims by region
+                </FormHelperText>
+              </div>
             </div>
-            <Box marginRight={4} />
-
-            <div id="nav__region-filter--container">
-              <InputLabel className="text-white">Region</InputLabel>
-
-              <Select
-                value={scrimsRegion}
-                className="text-white"
-                onChange={(e) => {
-                  const region = e.target.value;
-                  toggleFetch((prev) => !prev);
-                  setScrimsRegion(region); // set the navbar select value to selected region
-                }}>
-                {selectRegions.map((region, key) => (
-                  <MenuItem value={region} key={key}>
-                    {region}
-                  </MenuItem>
-                ))}
-              </Select>
-              <FormHelperText className="text-white">
-                Filter scrims by region
-              </FormHelperText>
-            </div>
-          </div>
+          )}
         </Grid>
       </div>
     </div>
