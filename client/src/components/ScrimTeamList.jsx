@@ -10,7 +10,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import { Typography } from '@material-ui/core';
-import { ROLE_IMAGES } from '../utils/roleImages';
+import { ROLE_IMAGES } from '../utils/imageMaps';
 import Tooltip from '../components/shared/Tooltip';
 
 const compareArrays = (arr1, arr2) => {
