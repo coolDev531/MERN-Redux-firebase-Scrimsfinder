@@ -31,6 +31,16 @@ export default function Navbar({
     ...allRegions.filter((r) => r !== currentUser?.region),
   ];
 
+  const handleLogOut = () => {
+    let yes = window.confirm(
+      "Are you sure you want to log out? \n you'll have to set-up all over again"
+    );
+    if (!yes) return;
+
+    history.push('./user-setup');
+    setCurrentUser(null);
+  };
+
   return (
     <div className="page-section site-header">
       <div className="inner-column">
@@ -47,15 +57,16 @@ export default function Navbar({
 
           <div className="d-flex mr-3">
             <Button
-              onClick={() => {
-                let yes = window.confirm(
-                  "Are you sure you want to log out? \n you'll have to set-up all over again"
-                );
-                if (!yes) return;
-
-                history.push('./user-setup');
-                setCurrentUser(null);
-              }}
+              className="mr-3"
+              variant="contained"
+              color="primary"
+              onClick={() => history.push('/scrims/new')}>
+              Create Scrim
+            </Button>
+            <Box marginRight={2} />
+            &nbsp;
+            <Button
+              onClick={handleLogOut}
               variant="contained"
               color="secondary">
               Log Out
