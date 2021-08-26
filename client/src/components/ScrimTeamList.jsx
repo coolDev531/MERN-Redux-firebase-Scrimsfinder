@@ -9,8 +9,8 @@ import Divider from '@material-ui/core/Divider';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
-import { Typography } from '@material-ui/core';
-import { ROLE_IMAGES } from '../utils/imageMaps';
+import { Box, Grid, Typography } from '@material-ui/core';
+import { RANK_IMAGES, ROLE_IMAGES } from '../utils/imageMaps';
 import Tooltip from '../components/shared/Tooltip';
 
 const compareArrays = (arr1, arr2) => {
@@ -190,13 +190,28 @@ export default function ScrimTeamList({
 
                   <ListItemText
                     primary={
-                      <a
-                        className="link"
-                        href={`https://${playerAssigned.region}.op.gg/summoner/userName=${playerAssigned?.name}`}
-                        target="_blank"
-                        rel="noreferrer">
-                        {playerAssigned?.name}
-                      </a>
+                      <Grid container alignItems="center">
+                        <a
+                          className="link"
+                          href={`https://${playerAssigned.region}.op.gg/summoner/userName=${playerAssigned?.name}`}
+                          target="_blank"
+                          rel="noreferrer">
+                          {playerAssigned?.name}
+                        </a>
+                        &nbsp;
+                        <img
+                          width="25px"
+                          style={{ objectFit: 'cover' }}
+                          alt={playerAssigned.role}
+                          src={
+                            // replace number with empty string: Diamond 1 => Diamond
+                            // get rank image from images map by player.rank
+                            RANK_IMAGES[
+                              playerAssigned?.rank.replace(/[^a-z$]/gi, '')
+                            ]
+                          }
+                        />
+                      </Grid>
                     }
                     secondary={
                       <>
