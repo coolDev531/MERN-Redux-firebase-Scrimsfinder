@@ -1,7 +1,7 @@
-export const getSortedScrims = (scrims) => {
+export const getSortedScrims = (scrims, property) => {
   const sortedScrims = scrims.sort((a, b) => {
-    const date1 = new Date(a.gameStartTime).getTime();
-    const date2 = new Date(b.gameStartTime).getTime();
+    const date1 = new Date(a[property]).getTime();
+    const date2 = new Date(b[property]).getTime();
 
     if (date1 < date2) {
       return -1;
