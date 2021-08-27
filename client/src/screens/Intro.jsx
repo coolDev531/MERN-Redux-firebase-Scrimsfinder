@@ -17,6 +17,8 @@ export default function Intro() {
     rank: '',
     region: 'NA',
     discord: '',
+    // need to be admin to create scrims
+    adminKey: '',
   });
   const [rankData, setRankData] = useState({
     rankDivision: 'Iron',
@@ -109,6 +111,14 @@ export default function Intro() {
     (e) => {
       e.preventDefault();
 
+      let newUser = {
+        ...userData,
+        isAdmin:
+          userData.adminKey === process.env.REACT_APP_ADMIN_SECRET_KEY
+            ? true
+            : false,
+      };
+
       let yes = window.confirm(`Are you sure you want to create this account? \n
       Name: ${userData.name} \n
       Discord: ${userData.discord} \n
@@ -122,8 +132,9 @@ export default function Intro() {
         '%c user created with the name: ' + userData.name,
         'color: lightgreen'
       );
-      localStorage.setItem('currentUser', JSON.stringify(userData));
-      setCurrentUser(userData);
+
+      localStorage.setItem('currentUser', JSON.stringify(newUser));
+      setCurrentUser(newUser);
 
       return;
     },
@@ -156,73 +167,75 @@ export default function Intro() {
   }
 
   return (
-    <div className="page-section">
-      <div className="inner-column">
-        <h1>Welcome to LoL scrim finder, please fill in your details:</h1>
+    <main className="page-content">
+      <div className="page-section">
+        <div className="inner-column">
+          <h1>Welcome to LoL scrim finder, please fill in your details:</h1>
 
-        <Grid container direction="column" md={12}>
-          {[...errors.values()].map((error) => (
-            <>
-              <Alert severity="error">
-                Please correct the following error — <strong>{error}</strong>
-              </Alert>
-              <br />
-            </>
-          ))}
-        </Grid>
+          <Grid container direction="column" md={12}>
+            {[...errors.values()].map((error) => (
+              <>
+                <Alert severity="error">
+                  Please correct the following error — <strong>{error}</strong>
+                </Alert>
+                <br />
+              </>
+            ))}
+          </Grid>
 
-        <form onSubmit={handleSubmit} id="form">
-          <h2>Step {currentFormIndex + 1}</h2>
+          <form onSubmit={handleSubmit} id="form">
+            <h2>Step {currentFormIndex + 1}</h2>
 
-          <IntroForms
-            handleChange={handleChange}
-            currentFormIndex={currentFormIndex}
-            userData={userData}
-            setUserData={setUserData}
-            rankData={rankData}
-            setRankData={setRankData}
-            divisionsWithNumbers={divisionsWithNumbers}
-          />
+            <IntroForms
+              handleChange={handleChange}
+              currentFormIndex={currentFormIndex}
+              userData={userData}
+              setUserData={setUserData}
+              rankData={rankData}
+              setRankData={setRankData}
+              divisionsWithNumbers={divisionsWithNumbers}
+            />
 
-          {currentFormIndex === 2 ? (
-            <Grid container item spacing={2}>
-              <Grid item>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={goPreviousStep}>
-                  Previous
-                </Button>
+            {currentFormIndex === 2 ? (
+              <Grid container item spacing={2}>
+                <Grid item>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={goPreviousStep}>
+                    Previous
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button variant="contained" color="primary" type="submit">
+                    Create my account
+                  </Button>
+                </Grid>
               </Grid>
-              <Grid item>
-                <Button variant="contained" color="primary" type="submit">
-                  Create my account
-                </Button>
+            ) : (
+              <Grid container item spacing={2}>
+                <Grid item>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    disabled={currentFormIndex === 0}
+                    onClick={goPreviousStep}>
+                    Previous
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={goNextStep}>
+                    Next
+                  </Button>
+                </Grid>
               </Grid>
-            </Grid>
-          ) : (
-            <Grid container item spacing={2}>
-              <Grid item>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  disabled={currentFormIndex === 0}
-                  onClick={goPreviousStep}>
-                  Previous
-                </Button>
-              </Grid>
-              <Grid item>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={goNextStep}>
-                  Next
-                </Button>
-              </Grid>
-            </Grid>
-          )}
-        </form>
+            )}
+          </form>
+        </div>
       </div>
-    </div>
+    </main>
   );
 }

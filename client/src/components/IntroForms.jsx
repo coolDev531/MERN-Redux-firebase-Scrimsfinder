@@ -1,3 +1,6 @@
+import { FormHelperText, useMediaQuery, useTheme } from '@material-ui/core';
+import { Select } from '@material-ui/core';
+import { MenuItem } from '@material-ui/core';
 import { TextField } from '@material-ui/core';
 import { Grid } from '@material-ui/core';
 
@@ -12,7 +15,7 @@ export default function IntroForms({
 }) {
   const nameForm = (
     <>
-      <Grid item sm={3}>
+      <Grid item sm={4}>
         <TextField
           type="text"
           name="name"
@@ -38,50 +41,63 @@ export default function IntroForms({
           required
         />
       </Grid>
+      <Grid item sm={4}>
+        <TextField
+          type="text"
+          name="adminKey"
+          value={userData.adminKey || ''}
+          onChange={(e) => handleChange(e, setUserData)}
+          label="Admin key (if mod)"
+        />
+      </Grid>
     </>
   );
 
   const divisionForm = (
-    <>
-      <label htmlFor="rankDivision">Rank</label>
-      <select
-        name="rankDivision"
-        required
-        value={rankData.rankDivision}
-        onChange={(e) => handleChange(e, setRankData)}>
-        {[
-          'Unranked',
-          'Iron',
-          'Bronze',
-          'Silver',
-          'Gold',
-          'Platinum',
-          'Diamond',
-          'Master',
-          'Grandmaster',
-          'Challenger',
-        ].map((value) => (
-          <option value={value}>{value}</option>
-        ))}
-      </select>
-
+    <Grid item container alignItems="center" spacing={4}>
+      <Grid item>
+        <FormHelperText>Rank Division</FormHelperText>
+        <Select
+          name="rankDivision"
+          required
+          value={rankData.rankDivision}
+          onChange={(e) => handleChange(e, setRankData)}>
+          {[
+            'Unranked',
+            'Iron',
+            'Bronze',
+            'Silver',
+            'Gold',
+            'Platinum',
+            'Diamond',
+            'Master',
+            'Grandmaster',
+            'Challenger',
+          ].map((value) => (
+            <MenuItem value={value}>{value}</MenuItem>
+          ))}
+        </Select>
+      </Grid>
       {/* exclude this number select from divisions without numbers */}
       {divisionsWithNumbers.includes(rankData.rankDivision) && (
-        <select
-          name="rankNumber"
-          required={divisionsWithNumbers.includes(rankData.rankDivision)}
-          value={rankData.rankNumber}
-          onChange={(e) => handleChange(e, setRankData)}>
-          <option selected disabled>
-            select rank number
-          </option>
-          <option value={4}>4</option>
-          <option value={3}>3</option>
-          <option value={2}>2</option>
-          <option value={1}>1</option>
-        </select>
+        <Grid item>
+          <FormHelperText>rank number</FormHelperText>
+          <Select
+            name="rankNumber"
+            required={divisionsWithNumbers.includes(rankData.rankDivision)}
+            value={rankData.rankNumber}
+            onChange={(e) => handleChange(e, setRankData)}>
+            <MenuItem selected disabled>
+              select rank number
+            </MenuItem>
+            <MenuItem value={4}>4</MenuItem>
+            <MenuItem value={3}>3</MenuItem>
+            <MenuItem value={2}>2</MenuItem>
+            <MenuItem value={1}>1</MenuItem>
+          </Select>
+        </Grid>
       )}
-    </>
+    </Grid>
   );
 
   const regionForm = (
@@ -101,11 +117,14 @@ export default function IntroForms({
 
   let forms = [nameForm, divisionForm, regionForm];
 
+  const theme = useTheme();
+  const matchesSm = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
     <Grid
       container
       justify="flex-start"
-      direction="row"
+      direction={matchesSm ? 'column' : 'row'}
       alignItems="center"
       style={{ padding: '20px 0' }}>
       {forms[currentFormIndex]}
