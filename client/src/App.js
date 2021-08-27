@@ -35,9 +35,9 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
 
-      <main className="page-content">
-        <AppRouter />
-      </main>
+      {/* <main className="page-content"> */}
+      <AppRouter />
+      {/* </main> */}
     </ThemeProvider>
   );
 }

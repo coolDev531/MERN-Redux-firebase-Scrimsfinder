@@ -1,29 +1,27 @@
+import { useState, useEffect, useContext } from 'react';
 import Navbar from './../components/shared/Navbar';
-import { Grid, TextField, Input, Box } from '@material-ui/core';
-import { useState, useEffect } from 'react';
+import {
+  Grid,
+  TextField,
+  Box,
+  MenuItem,
+  FormHelperText,
+  Button,
+} from '@material-ui/core';
 import { Redirect } from 'react-router';
 import moment from 'moment';
 import 'moment-timezone';
 import { createScrim } from './../services/scrims';
-
-//  casters: { type: Array, default: [] },
-//   gameStartTime: {
-//     type: Date,
-//     default: getThirtyMinFromNow(),
-//     required: true,
-//   },
-//   lobbyHost: { type: Object, default: null },
-//   lobbyPassword: { type: String, default: generatePassword() },
-//   lobbyName: {
-//     type: String,
-//   },
-//   region: { type: String, default: 'NA', required: true },
-//   createdBy: { type: Object, required: true },
+import { CurrentUserContext } from '../context/currentUser';
+import { Select } from '@material-ui/core';
 
 export default function ScrimCreate() {
+  const [currentUser] = useContext(CurrentUserContext);
   const [scrimData, setScrimData] = useState({
     gameStartTime: new Date().toISOString(),
-    lobbyHost: null,
+    lobbyHost: currentUser,
+    region: currentUser.region,
+    createdBy: currentUser,
   });
 
   const [dateData, setDateData] = useState({
@@ -35,13 +33,6 @@ export default function ScrimCreate() {
   });
 
   const [isCreated, setCreated] = useState(false);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const createdScrim = await createScrim(scrimData);
-
-    setCreated({ createdScrim });
-  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -92,6 +83,21 @@ export default function ScrimCreate() {
     }));
   }, [dateData]);
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const scrimToCreate = {
+      ...scrimData,
+      lobbyHost: scrimData.lobbyHost === 'random' ? null : currentUser,
+    };
+
+    const createdScrim = await createScrim(scrimToCreate);
+
+    console.log({ createdScrim });
+
+    setCreated({ createdScrim });
+  };
+
   if (isCreated) {
     return <Redirect to="/" />;
   }
@@ -99,33 +105,109 @@ export default function ScrimCreate() {
   return (
     <>
       <Navbar />
-      <Grid container direction="column" justify="center" alignItems="center">
-        <form onSubmit={handleSubmit}>
-          <Grid item container direction="row" justify="space-evenly">
-            <Grid item>
-              <TextField
-                onChange={handleChange}
-                required
-                type="date"
-                name="gameStartDate"
-                label="Game start date  "
-                value={moment(dateData.gameStartDate).format('yyyy-MM-DD')}
-              />
-            </Grid>
-            <Box marginRight={2} />
-            <Grid item>
-              <TextField
-                onChange={handleChange}
-                required
-                label="Game start time"
-                type="time"
-                name="gameStartHours"
-                value={moment(scrimData.gameStartTime).format('hh:mm A')}
-              />
-            </Grid>
-          </Grid>
-        </form>
-      </Grid>
+      <main className="page-content">
+        <section className="page-section create-scrim">
+          <div className="inner-column">
+            <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+              <Grid
+                container
+                direction="column"
+                alignItems="center"
+                justify="center"
+                spacing={4}>
+                <Grid
+                  item
+                  container
+                  direction="row"
+                  alignItems="center"
+                  justify="center"
+                  spacing={2}>
+                  <Grid item>
+                    <FormHelperText className="text-white">
+                      Game Start Date
+                    </FormHelperText>
+                    <TextField
+                      onChange={handleChange}
+                      required
+                      type="date"
+                      name="gameStartDate"
+                      value={moment(dateData.gameStartDate).format(
+                        'yyyy-MM-DD'
+                      )}
+                    />
+                  </Grid>
+                  <Box marginRight={2} />
+                  <Grid item>
+                    <FormHelperText className="text-white">
+                      Game Start Time
+                    </FormHelperText>
+
+                    <TextField
+                      onChange={handleChange}
+                      required
+                      type="time"
+                      name="gameStartHours"
+                    />
+                  </Grid>
+                </Grid>
+
+                <Grid
+                  item
+                  container
+                  direction="row"
+                  alignItems="center"
+                  justify="center"
+                  spacing={2}>
+                  <Grid item>
+                    <Select
+                      label="region"
+                      name="region"
+                      value={scrimData.region}
+                      className="text-white"
+                      onChange={handleChange}>
+                      {['NA', 'EU', 'EUNE', 'LAN'].map((region, key) => (
+                        <MenuItem value={region} key={key}>
+                          {region}
+                        </MenuItem>
+                      ))}
+                    </Select>
+
+                    <FormHelperText className="text-white">
+                      The region this scrim will be hosted on
+                    </FormHelperText>
+                  </Grid>
+                  <Grid item>
+                    <Select
+                      name="lobbyHost"
+                      onChange={(e) =>
+                        setScrimData((prevState) => ({
+                          ...prevState,
+                          lobbyHost: e.target.value,
+                        }))
+                      }
+                      value={scrimData.lobbyHost}>
+                      {[currentUser, 'random'].map((value, key) => (
+                        <MenuItem value={value} key={key}>
+                          {value === currentUser
+                            ? 'I will host the lobby'
+                            : 'Choose a random player from the teams to host'}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    <FormHelperText className="text-white">
+                      Lobby host
+                    </FormHelperText>
+                  </Grid>
+                </Grid>
+
+                <Button variant="contained" color="primary" type="submit">
+                  Submit
+                </Button>
+              </Grid>
+            </form>
+          </div>
+        </section>
+      </main>
     </>
   );
 }

@@ -17,7 +17,6 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { BOOTCAMP_LOL_SRC } from '../../utils/bootcampImg';
 import moment from 'moment';
 import 'moment-timezone';
-import HideOnScroll from './HideOnScroll';
 
 const useStyles = makeStyles((theme) => ({
   offset: theme.mixins.offset,

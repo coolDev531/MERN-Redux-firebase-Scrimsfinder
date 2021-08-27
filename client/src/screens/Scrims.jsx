@@ -76,27 +76,29 @@ export default function Scrims() {
       />
       <div className="page-break" />
 
-      <div id="scrims-container">
-        {filteredScrims.length > 0 ? (
-          filteredScrims.map((scrim, idx) => (
-            <Fragment key={idx}>
-              <ScrimSection
-                scrim={scrim}
-                idx={idx}
-                toggleFetch={toggleFetch}
-                setScrims={setScrims}
-              />
-              <div className="page-break" />
-            </Fragment>
-          ))
-        ) : (
-          <>
-            <Typography align="center" variant="h2" component="h1">
-              No Scrims Found
-            </Typography>
-          </>
-        )}
-      </div>
+      <main className="page-content">
+        <div id="scrims-container">
+          {filteredScrims.length > 0 ? (
+            filteredScrims.map((scrim, idx) => (
+              <Fragment key={idx}>
+                <ScrimSection
+                  scrim={scrim}
+                  idx={idx}
+                  toggleFetch={toggleFetch}
+                  setScrims={setScrims}
+                />
+                <div className="page-break" />
+              </Fragment>
+            ))
+          ) : (
+            <>
+              <Typography align="center" variant="h2" component="h1">
+                No Scrims Found
+              </Typography>
+            </>
+          )}
+        </div>
+      </main>
     </div>
   );
 }
