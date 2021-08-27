@@ -7,6 +7,9 @@ import {
   FormHelperText,
   TextField,
   Grid,
+  makeStyles,
+  AppBar,
+  Toolbar,
 } from '@material-ui/core';
 import { useContext } from 'react';
 import { CurrentUserContext } from '../../context/currentUser';
@@ -14,6 +17,12 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { BOOTCAMP_LOL_SRC } from '../../utils/bootcampImg';
 import moment from 'moment';
 import 'moment-timezone';
+import HideOnScroll from './HideOnScroll';
+
+const useStyles = makeStyles((theme) => ({
+  offset: theme.mixins.offset,
+  toolbarDistance: theme.mixins.toolbar,
+}));
 
 export default function Navbar({
   toggleFetch,
@@ -26,6 +35,8 @@ export default function Navbar({
   const [currentUser, setCurrentUser] = useContext(CurrentUserContext);
   const history = useHistory();
   const { pathname } = useLocation();
+
+  const classes = useStyles();
 
   let allRegions = ['NA', 'EUW', 'EUNE', 'LAN'];
   let selectRegions = [
@@ -44,104 +55,114 @@ export default function Navbar({
   };
 
   return (
-    <div className="page-section site-header">
-      <div className="inner-column">
-        <div className="d-flex align-center justify-between">
-          <div className="logo d-flex align-center">
-            <img
-              src={BOOTCAMP_LOL_SRC}
-              alt="logo"
-              style={{ marginRight: '10px' }}
-            />
-            &nbsp;
-            <h1>Scrims finder</h1>
-          </div>
-
-          <div className="d-flex mr-3">
-            {pathname !== '/scrims/new' ? (
-              <>
-                <Button
-                  className="mr-3"
-                  variant="contained"
-                  color="primary"
-                  onClick={() => history.push('/scrims/new')}>
-                  Create Scrim
-                </Button>
-              </>
-            ) : (
-              <Button
-                className="mr-3"
-                variant="contained"
-                color="primary"
-                onClick={() => history.goBack()}>
-                Go Back
-              </Button>
-            )}
-            <Box marginRight={2} />
-            &nbsp;
-            <Button
-              onClick={handleLogOut}
-              variant="contained"
-              color="secondary">
-              Log Out
-            </Button>
-          </div>
-        </div>
-        <br />
-        <Grid container direction="row" justify="space-between">
-          <div>
-            <h2>Welcome: {currentUser?.name}</h2>
-          </div>
-
-          {showDropdowns && (
-            <div id="nav__selects--container" className="d-flex align-center">
-              <div id="nav__date-filter--container">
-                <TextField
-                  id="date"
-                  required
-                  label="Scrims Date"
-                  type="date"
-                  name="scrimsDate"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  value={moment(scrimsDate).format('yyyy-MM-DD')}
-                  onChange={(e) => {
-                    setScrimsDate(new Date(e.target.value.replace('-', '/')));
-                  }}
+    <>
+      <AppBar className="page-section site-header" position="sticky">
+        <Toolbar>
+          <div className="inner-column">
+            <div className="d-flex align-center justify-between">
+              <div className="logo d-flex align-center">
+                <img
+                  src={BOOTCAMP_LOL_SRC}
+                  alt="logo"
+                  style={{ marginRight: '10px' }}
                 />
-
-                <FormHelperText className="text-white">
-                  Filter scrims by date
-                </FormHelperText>
+                &nbsp;
+                <h1>Scrims finder</h1>
               </div>
-              <Box marginRight={4} />
 
-              <div id="nav__region-filter--container">
-                <InputLabel className="text-white">Region</InputLabel>
-
-                <Select
-                  value={scrimsRegion}
-                  className="text-white"
-                  onChange={(e) => {
-                    const region = e.target.value;
-                    toggleFetch((prev) => !prev);
-                    setScrimsRegion(region); // set the navbar select value to selected region
-                  }}>
-                  {selectRegions.map((region, key) => (
-                    <MenuItem value={region} key={key}>
-                      {region}
-                    </MenuItem>
-                  ))}
-                </Select>
-                <FormHelperText className="text-white">
-                  Filter scrims by region
-                </FormHelperText>
+              <div className="d-flex mr-3">
+                {pathname !== '/scrims/new' ? (
+                  <>
+                    <Button
+                      className="mr-3"
+                      variant="contained"
+                      color="primary"
+                      onClick={() => history.push('/scrims/new')}>
+                      Create Scrim
+                    </Button>
+                  </>
+                ) : (
+                  <Button
+                    className="mr-3"
+                    variant="contained"
+                    color="primary"
+                    onClick={() => history.goBack()}>
+                    Go Back
+                  </Button>
+                )}
+                <Box marginRight={2} />
+                &nbsp;
+                <Button
+                  onClick={handleLogOut}
+                  variant="contained"
+                  color="secondary">
+                  Log Out
+                </Button>
               </div>
             </div>
-          )}
-        </Grid>
-      </div>
-    </div>
+            <br />
+            <Grid container direction="row" justify="space-between">
+              <div>
+                <h2>Welcome: {currentUser?.name}</h2>
+              </div>
+
+              {showDropdowns && (
+                <div
+                  id="nav__selects--container"
+                  className="d-flex align-center">
+                  <div id="nav__date-filter--container">
+                    <TextField
+                      id="date"
+                      required
+                      label="Scrims Date"
+                      type="date"
+                      name="scrimsDate"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      value={moment(scrimsDate).format('yyyy-MM-DD')}
+                      onChange={(e) => {
+                        setScrimsDate(
+                          new Date(e.target.value.replace('-', '/'))
+                        );
+                      }}
+                    />
+
+                    <FormHelperText className="text-white">
+                      Filter scrims by date
+                    </FormHelperText>
+                  </div>
+                  <Box marginRight={4} />
+
+                  <div id="nav__region-filter--container">
+                    <InputLabel className="text-white">Region</InputLabel>
+
+                    <Select
+                      value={scrimsRegion}
+                      className="text-white"
+                      onChange={(e) => {
+                        const region = e.target.value;
+                        toggleFetch((prev) => !prev);
+                        setScrimsRegion(region); // set the navbar select value to selected region
+                      }}>
+                      {selectRegions.map((region, key) => (
+                        <MenuItem value={region} key={key}>
+                          {region}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    <FormHelperText className="text-white">
+                      Filter scrims by region
+                    </FormHelperText>
+                  </div>
+                </div>
+              )}
+            </Grid>
+          </div>
+        </Toolbar>
+      </AppBar>
+      <div className={classes.offset} />
+      <div className={classes.toolbarDistance} />
+    </>
   );
 }

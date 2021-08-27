@@ -1,3 +1,4 @@
+import { Typography } from '@material-ui/core';
 import { useContext, useState, useEffect, Fragment, useMemo } from 'react';
 import ScrimSection from '../components/ScrimSection';
 import Navbar from '../components/shared/Navbar';
@@ -76,17 +77,25 @@ export default function Scrims() {
       <div className="page-break" />
 
       <div id="scrims-container">
-        {filteredScrims.map((scrim, idx) => (
-          <Fragment key={idx}>
-            <ScrimSection
-              scrim={scrim}
-              idx={idx}
-              toggleFetch={toggleFetch}
-              setScrims={setScrims}
-            />
-            <div className="page-break" />
-          </Fragment>
-        ))}
+        {filteredScrims.length > 0 ? (
+          filteredScrims.map((scrim, idx) => (
+            <Fragment key={idx}>
+              <ScrimSection
+                scrim={scrim}
+                idx={idx}
+                toggleFetch={toggleFetch}
+                setScrims={setScrims}
+              />
+              <div className="page-break" />
+            </Fragment>
+          ))
+        ) : (
+          <>
+            <Typography align="center" variant="h2" component="h1">
+              No Scrims Found
+            </Typography>
+          </>
+        )}
       </div>
     </div>
   );
