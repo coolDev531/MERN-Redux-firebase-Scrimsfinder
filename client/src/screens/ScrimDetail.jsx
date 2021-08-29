@@ -1,5 +1,4 @@
 import { useState, useEffect, useContext } from 'react';
-import { Grid } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
 import ScrimSection from '../components/ScrimSection';
 import { getScrimById } from '../services/scrims';
@@ -25,12 +24,10 @@ export default function ScrimDetail() {
   return (
     <div>
       <Navbar showLess />
-      <main className="page-content" style={{ paddingBottom: '40px' }}>
-        <section className="page-section scrim">
-          <div id={`scrim-container ${scrim._id}`}>
-            <ScrimSection scrim={scrim} />
-          </div>
-        </section>
+      <main className="page-content">
+        <div id={`scrim-container ${scrim._id}`}>
+          <ScrimSection scrim={scrim} isInDetail />
+        </div>
       </main>
     </div>
   );

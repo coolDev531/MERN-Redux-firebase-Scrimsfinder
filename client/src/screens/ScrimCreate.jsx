@@ -99,6 +99,10 @@ export default function ScrimCreate() {
     setCreated({ createdScrim });
   };
 
+  if (process.env.REACT_APP_ADMIN_KEY !== currentUser.adminKey) {
+    return <Redirect to="/" />;
+  }
+
   if (isCreated) {
     return <Redirect to="/" />;
   }
