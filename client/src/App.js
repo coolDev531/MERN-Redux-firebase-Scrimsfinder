@@ -7,6 +7,7 @@ import { useHistory } from 'react-router-dom';
 import ThemeProvider from '@material-ui/styles/ThemeProvider';
 import { createTheme } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import Footer from './components/shared/Footer';
 
 const theme = createTheme({
   palette: {
@@ -35,9 +36,9 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
 
-      {/* <main className="page-content"> */}
       <AppRouter />
-      {/* </main> */}
+
+      <Footer />
     </ThemeProvider>
   );
 }
