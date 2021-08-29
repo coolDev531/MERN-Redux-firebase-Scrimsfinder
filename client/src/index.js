@@ -10,17 +10,15 @@ import ReactComment from './components/shared/ReactComment';
 import { creditsComment } from './creditsComment';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Router>
-      <ScrimsProvider>
-        <CurrentUserProvider>
-          {/* the only way I know to render a comment in react */}
-          <ReactComment text={creditsComment} trim={false} />
-          <App />
-        </CurrentUserProvider>
-      </ScrimsProvider>
-    </Router>
-  </React.StrictMode>,
+  <Router>
+    <ScrimsProvider>
+      <CurrentUserProvider>
+        {/* the only way I know to render a comment in react */}
+        <ReactComment text={creditsComment} trim={false} />
+        <App />
+      </CurrentUserProvider>
+    </ScrimsProvider>
+  </Router>,
   document.getElementById('root')
 );
 

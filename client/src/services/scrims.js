@@ -41,7 +41,8 @@ export const insertPlayerInScrim = async (id, scrim) => {
     const response = await api.put(`/scrims/${id}/insert-player`, scrim);
     return response.data;
   } catch (error) {
-    throw error;
+    const errorMsg = error.response.data.error;
+    alert(errorMsg);
   }
 };
 

@@ -41,6 +41,8 @@ export default function ScrimTeamList({
   const { teamRoles, teamName, teamTitleName, teamArray } = teamData;
 
   const joinGame = async (teamJoiningName, role) => {
+    getNewScrimsData();
+
     if (casterEntered) {
       alert("You're already a caster for this game!");
       return;
@@ -62,6 +64,8 @@ export default function ScrimTeamList({
   };
 
   const handleSwap = async (teamStr, role) => {
+    getNewScrimsData();
+
     let currentTeamName = playerEntered.team.name;
     const currentTeamArr = currentTeamName === 'teamOne' ? teamOne : teamTwo;
 

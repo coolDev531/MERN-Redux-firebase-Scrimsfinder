@@ -77,14 +77,13 @@ const getAvailableRoles = (team) => {
 
   for (const role of roles) {
     for (const player of team) {
-      console.log({ player, role });
       if (role === player.role) {
         takenRoles.add(role);
       }
     }
   }
 
-  return roles.filter((r) => !takenRoles.has(r)).join(' ');
+  return roles.filter((r) => !takenRoles.has(r)).join(', ');
 };
 
 const insertPlayerInScrim = async (req, res) => {
@@ -92,8 +91,6 @@ const insertPlayerInScrim = async (req, res) => {
 
   // beginning of session
   await session.withTransaction(async () => {
-    // return Customer.create([{ name: 'Test' }], { session: session })
-
     const { id } = req.params;
 
     const { playerData } = req.body;
@@ -168,10 +165,6 @@ const insertPlayerInScrim = async (req, res) => {
         : 'Team Two (Red Side)';
 
     if (spotTaken) {
-      console.log(
-        `spot taken! spots available for ${teamJoiningTitle}:  ${spotsAvailable}`
-      );
-
       return res.status(500).json({
         error: `spot taken! spots available for ${teamJoiningTitle}: ${spotsAvailable}`,
       });
@@ -189,6 +182,18 @@ const insertPlayerInScrim = async (req, res) => {
             return res.status(500).send('Scrim not found');
           }
 
+          const lobbyHost = scrim.lobbyHost ?? null;
+
+          if (lobbyHost !== null) {
+            scrim.lobbyHost = lobbyHost;
+          } else if (scrim.teamOne.length === 5 && scrim.teamTwo.length === 5) {
+            const result = sample([...scrim.teamOne, ...scrim.teamTwo]);
+            scrim.lobbyHost = result;
+          } else {
+            scrim.lobbyHost = null;
+          }
+
+          scrim.save();
           res.status(200).json(scrim);
         }
       );

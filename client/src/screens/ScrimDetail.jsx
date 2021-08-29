@@ -5,7 +5,6 @@ import { getScrimById } from '../services/scrims';
 import { ScrimsContext } from '../context/scrimsContext';
 import Navbar from '../components/shared/Navbar';
 import { Helmet } from 'react-helmet';
-import Moment from 'react-moment';
 
 export default function ScrimDetail() {
   const { id } = useParams();

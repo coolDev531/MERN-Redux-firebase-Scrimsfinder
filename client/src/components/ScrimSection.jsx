@@ -251,7 +251,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
             teamData={{
               teamRoles: ['Top', 'Jungle', 'Mid', 'ADC', 'Support'],
               teamName: 'teamOne',
-              teamTitleName: 'Team One',
+              teamTitleName: 'Team One (Blue Side)',
               teamArray: teamOne,
             }}
             scrim={scrim}
@@ -282,7 +282,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
                 (scrim.teamOne.length === 5 && scrim.teamTwo.length === 5 ? (
                   <>
                     <h2 className="text-black">
-                      Lobby host / captain: {scrim.lobbyHost.name}
+                      Lobby host / captain: {scrim.lobbyHost?.name}
                     </h2>
                     <h3 className="text-black">
                       please make the lobby name: <br />"{scrim.lobbyName}"
@@ -322,7 +322,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
             teamData={{
               teamRoles: ['Top', 'Jungle', 'Mid', 'ADC', 'Support'],
               teamName: 'teamTwo',
-              teamTitleName: 'Team Two',
+              teamTitleName: 'Team Two (Red Side)',
               teamArray: teamTwo,
             }}
             scrim={scrim}
