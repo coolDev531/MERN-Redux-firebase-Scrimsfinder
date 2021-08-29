@@ -126,7 +126,7 @@ export default function Scrims() {
                 </Fragment>
               ))}
               <div className="page-break" />
-              <div className="inner-column">
+              <div className="inner-column" style={{ marginTop: '20px' }}>
                 <>
                   {/* PREVIOUS SCRIMS */}
                   {previousScrims.length > 0 ? (
