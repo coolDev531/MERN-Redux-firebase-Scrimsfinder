@@ -104,7 +104,7 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted, teamWon }) {
   if (gameStarted) {
     return (
       <div className={classes.timer}>
-        <p>{!teamWon ? 'GAME STARTED' : `${teamWon} Won!`}</p>
+        <p>{!teamWon ? 'GAME IN PROGRESS' : `${teamWon} Won!`}</p>
       </div>
     );
   }
