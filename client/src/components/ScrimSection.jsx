@@ -8,7 +8,7 @@ import ScrimTeamList from './ScrimTeamList';
 import Moment from 'react-moment';
 import AdminArea from './shared/AdminArea';
 import { Box, Button, Grid } from '@material-ui/core';
-
+import { Link } from 'react-router-dom';
 // utils / services
 import { updateScrim, deleteScrim } from '../services/scrims';
 import { copyTextToClipboard } from '../utils/copyToClipboard';
@@ -151,7 +151,9 @@ export default function ScrimSection({ scrim }) {
             alignItems="center"
             justify="space-between">
             <Grid item>
-              <h1 className="text-black">{scrim.createdBy.name}'s Lobby</h1>
+              <Link className="link" style={{ textDecorationColor: '#000' }}>
+                <h1 className="text-black">{scrim.createdBy.name}'s Lobby</h1>
+              </Link>
             </Grid>
             <Grid item container sm={4} alignItems="center" justify="flex-end">
               <Button
