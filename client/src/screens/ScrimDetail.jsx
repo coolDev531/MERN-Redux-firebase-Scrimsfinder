@@ -4,6 +4,8 @@ import ScrimSection from '../components/ScrimSection';
 import { getScrimById } from '../services/scrims';
 import { ScrimsContext } from '../context/scrimsContext';
 import Navbar from '../components/shared/Navbar';
+import { Helmet } from 'react-helmet';
+import Moment from 'react-moment';
 
 export default function ScrimDetail() {
   const { id } = useParams();
@@ -23,6 +25,15 @@ export default function ScrimDetail() {
 
   return (
     <div>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>LoL Scrims Finder</title>
+        <meta
+          name="description"
+          content={`visit ${scrim.createdBy.name}'s scrim at LoL Scrims Finder!`}
+        />
+      </Helmet>
+
       <Navbar showLess />
       <main className="page-content">
         <div id={`scrim-container ${scrim._id}`}>
