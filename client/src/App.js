@@ -4,8 +4,7 @@ import { CurrentUserContext } from './context/currentUser';
 import { useContext } from 'react';
 import AppRouter from './navigation/AppRouter';
 import { useHistory } from 'react-router-dom';
-import ThemeProvider from '@material-ui/styles/ThemeProvider';
-import { createTheme } from '@material-ui/core';
+import { createTheme, ThemeProvider } from '@material-ui/core';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Footer from './components/shared/Footer';
 
