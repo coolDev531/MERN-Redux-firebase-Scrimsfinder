@@ -7,6 +7,8 @@ const ScrimsContext = createContext();
 function ScrimsProvider({ children }) {
   const [scrims, setScrims] = useState([]);
   const [fetch, toggleFetch] = useState(false);
+  const [scrimsLoaded, setScrimsLoaded] = useState(false);
+
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -15,13 +17,15 @@ function ScrimsProvider({ children }) {
       const scrimsData = await getAllScrims();
 
       setScrims(scrimsData);
+      setScrimsLoaded(true);
     };
 
     fetchScrims();
   }, [fetch, pathname]);
 
   return (
-    <ScrimsContext.Provider value={{ scrims, setScrims, fetch, toggleFetch }}>
+    <ScrimsContext.Provider
+      value={{ scrims, setScrims, fetch, toggleFetch, scrimsLoaded }}>
       {children}
     </ScrimsContext.Provider>
   );

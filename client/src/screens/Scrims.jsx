@@ -1,6 +1,7 @@
 import { Typography } from '@material-ui/core';
 import { useContext, useState, useEffect, Fragment, useMemo } from 'react';
 import ScrimSection from '../components/ScrimSection';
+import Loading from '../components/shared/Loading';
 import Navbar from '../components/shared/Navbar';
 import { CurrentUserContext } from '../context/currentUser';
 import { ScrimsContext } from '../context/scrimsContext';
@@ -10,7 +11,7 @@ export default function Scrims() {
 
   const [currentUser] = useContext(CurrentUserContext);
 
-  const { scrims, toggleFetch } = useContext(ScrimsContext);
+  const { scrims, toggleFetch, scrimsLoaded } = useContext(ScrimsContext);
 
   const [filteredScrims, setFilteredScrims] = useState([]); // the array of filtered scrims
 
@@ -58,6 +59,10 @@ export default function Scrims() {
     setFilteredScrims(filteredScrimsByDateAndRegion);
     // this runs everytime scrimsRegion and datefilteredScrims changes.
   }, [scrims, scrimsRegion, dateFilteredScrims]);
+
+  if (!scrimsLoaded) {
+    return <Loading text="Loading Scrims..." />;
+  }
 
   return (
     <div>
