@@ -71,6 +71,22 @@ const swapPlayer = (currentTeam, movingTeam, movingPlayer) => {
   return [currentTeam, movingTeam];
 };
 
+const getAvailableRoles = (team) => {
+  const roles = ['Top', 'Jungle', 'Mid', 'ADC', 'Support'];
+  const takenRoles = new Set();
+
+  for (const role of roles) {
+    for (const player of team) {
+      console.log({ player, role });
+      if (role === player.role) {
+        takenRoles.add(role);
+      }
+    }
+  }
+
+  return roles.filter((r) => !takenRoles.has(r)).join(' ');
+};
+
 const insertPlayerInScrim = async (req, res) => {
   const session = await Scrim.startSession();
 
@@ -89,29 +105,34 @@ const insertPlayerInScrim = async (req, res) => {
     const scrim = await Scrim.findById(id);
 
     const teamJoiningArr =
-      teamJoiningName === 'teamOne' ? scrim.teamOne : scrim.teamTwo;
+      teamJoiningName === 'teamOne' ? scrim._doc.teamOne : scrim._doc.teamTwo;
 
-    const spotTaken = scrim[teamJoiningName].find(
+    const spotTaken = scrim._doc[teamJoiningName].find(
       (player) => player.role === playerData.role
     );
 
-    const spotsAvailable = scrim[teamJoiningName].filter(
-      (player) => !player.role
-    );
+    const spotsAvailable = getAvailableRoles(teamJoiningArr);
 
     let newBody = {};
 
     if (isMoving) {
       if (isChangingTeams) {
-        const { currentTeamName, teamChangingTo } = req.body.swapData;
+        const { currentTeamName, teamChangingToName } = req.body.swapData;
         const teamLeavingName = currentTeamName;
 
         const currentTeamArray =
-          currentTeamName === 'teamOne' ? scrim.teamOne : scrim.teamTwo;
+          currentTeamName === 'teamOne'
+            ? scrim._doc.teamOne
+            : scrim._doc.teamTwo;
+
+        const teamChangingToArray =
+          teamChangingToName === 'teamOne'
+            ? scrim._doc.teamOne
+            : scrim._doc.teamTwo;
 
         let [teamLeft, teamJoined] = swapPlayer(
           currentTeamArray,
-          teamChangingTo,
+          teamChangingToArray,
           playerData
         );
 
@@ -141,13 +162,18 @@ const insertPlayerInScrim = async (req, res) => {
       };
     }
 
+    const teamJoiningTitle =
+      teamJoiningName === 'teamOne'
+        ? 'Team One (Blue Side)'
+        : 'Team Two (Red Side)';
+
     if (spotTaken) {
       console.log(
-        `spot taken! spots available for team ${playerData.team.name}: ${spotsAvailable}`
+        `spot taken! spots available for ${teamJoiningTitle}:  ${spotsAvailable}`
       );
 
       return res.status(500).json({
-        error: `spot taken! spots available for team ${playerData.team.name}: ${spotsAvailable}`,
+        error: `spot taken! spots available for ${teamJoiningTitle}: ${spotsAvailable}`,
       });
     } else {
       await Scrim.findByIdAndUpdate(
@@ -170,7 +196,6 @@ const insertPlayerInScrim = async (req, res) => {
   });
 
   // end of session
-  console.log({ session });
   session.endSession();
 };
 

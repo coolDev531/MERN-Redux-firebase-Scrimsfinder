@@ -88,7 +88,7 @@ export default function ScrimTeamList({
           isChangingTeams: true,
           isMoving: true,
           currentTeamName: playerEntered.team.name,
-          teamChangingTo: teamArr,
+          teamChangingToName: teamStr,
         },
       };
 

@@ -27,7 +27,7 @@ const getThirtyMinFromNow = () => {
 const PlayerSchema = new Schema({
   name: { type: String, required: true },
   discord: { type: String, required: true },
-  role: { type: String, required: true, unique: true },
+  role: { type: String, required: true },
   rank: { type: String, required: true },
   region: { type: String, required: true },
   team: { name: { type: String } },
