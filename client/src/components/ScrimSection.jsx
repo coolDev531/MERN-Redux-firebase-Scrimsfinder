@@ -5,6 +5,7 @@ import { useScrimSectionStyles } from '../styles/scrimSection.styles';
 import { updateScrim, deleteScrim } from '../services/scrims';
 import ScrimTeamList from './ScrimTeamList';
 import Moment from 'react-moment';
+import AdminArea from './shared/AdminArea';
 
 const compareDates = (scrim) => {
   let currentTime = new Date().getTime();
@@ -140,10 +141,10 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
                   excludeSeconds
                 )}
               </h2>
-              {process.env.REACT_APP_ADMIN_SECRET_KEY ===
-              currentUser.adminKey ? (
+              <AdminArea>
                 <button onClick={cancelScrim}>Cancel event</button>
-              ) : null}
+              </AdminArea>
+
               <div className="casters-container ">
                 {casters.length === 2 ? (
                   <h2 className="text-black">

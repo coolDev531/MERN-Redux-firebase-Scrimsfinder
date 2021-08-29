@@ -45,9 +45,10 @@ export default function IntroForms({
         <TextField
           type="text"
           name="adminKey"
-          value={userData.adminKey || ''}
+          value={userData.adminKey}
           onChange={(e) => handleChange(e, setUserData)}
           label="Admin key (if mod)"
+          helperText="not required"
         />
       </Grid>
     </>
