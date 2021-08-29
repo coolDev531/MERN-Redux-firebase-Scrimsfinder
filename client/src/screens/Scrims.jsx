@@ -5,6 +5,7 @@ import Loading from '../components/shared/Loading';
 import Navbar from '../components/shared/Navbar';
 import { CurrentUserContext } from '../context/currentUser';
 import { ScrimsContext } from '../context/scrimsContext';
+import { showEarliestFirst, showLatestFirst } from '../utils/getSortedScrims';
 
 const compareDates = (scrim) => {
   let currentTime = new Date().toISOString();
@@ -75,12 +76,18 @@ export default function Scrims() {
   }, [filteredScrimsByDateAndRegion]);
 
   let upcomingScrims = useMemo(
-    () => filteredScrims.filter((scrim) => compareDates(scrim) > -1),
+    () =>
+      showEarliestFirst(filteredScrims).filter(
+        (scrim) => compareDates(scrim) > -1
+      ),
     [filteredScrims]
   );
 
   let previousScrims = useMemo(
-    () => filteredScrims.filter((scrim) => compareDates(scrim) < 1),
+    () =>
+      showLatestFirst(
+        filteredScrims.filter((scrim) => compareDates(scrim) < 1)
+      ),
     [filteredScrims]
   );
 
