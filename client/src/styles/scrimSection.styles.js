@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core/';
+import { makeStyles } from '@material-ui/core';
 
 export const useScrimSectionStyles = makeStyles((theme) => ({
   scrimBox: {
