@@ -1,33 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-
-const toIsoString = (date) => {
-  date = new Date(date);
-  var tzo = -date.getTimezoneOffset(),
-    dif = tzo >= 0 ? '+' : '-',
-    pad = function (num) {
-      var norm = Math.floor(Math.abs(num));
-      return (norm < 10 ? '0' : '') + norm;
-    };
-
-  return (
-    date.getFullYear() +
-    '-' +
-    pad(date.getMonth() + 1) +
-    '-' +
-    pad(date.getDate()) +
-    'T' +
-    pad(date.getHours()) +
-    ':' +
-    pad(date.getMinutes()) +
-    ':' +
-    pad(date.getSeconds()) +
-    dif +
-    pad(tzo / 60) +
-    ':' +
-    pad(tzo % 60)
-  );
-};
+const toIsoString = require('../utils/toIsoString');
 
 const generatePassword = () => {
   var pass = '';
@@ -51,18 +24,20 @@ const getThirtyMinFromNow = () => {
   return d2;
 };
 
-let ArrayWithUsers = [
-  {
-    name: String,
-    rank: String,
-    region: String,
-  },
-];
+const PlayerSchema = new Schema({
+  name: { type: String, required: true },
+  discord: { type: String, required: true },
+  role: { type: String, required: true },
+  rank: { type: String, required: true },
+  region: { type: String, required: true },
+  team: { name: { type: String }, value: { type: Array } },
+});
 
 const Scrim = new Schema(
   {
-    teamOne: { type: Array, default: [] },
-    teamTwo: { type: Array, default: [] },
+    teamOne: { type: [PlayerSchema], default: [] },
+    teamTwo: { type: [PlayerSchema], default: [] },
+    // right now casters is just array of strings (user.name)s
     casters: { type: Array, default: [] },
     gameStartTime: {
       type: Date,
@@ -71,7 +46,9 @@ const Scrim = new Schema(
     },
     lobbyHost: { type: Object, default: null },
     lobbyPassword: { type: String, default: generatePassword() },
-    lobbyName: { type: String, default: null },
+    lobbyName: {
+      type: String,
+    },
     region: { type: String, default: 'NA', required: true },
     createdBy: { type: Object, required: true },
   },

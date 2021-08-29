@@ -111,10 +111,10 @@ p {
 }
 
 .site-header {
-  top: 0;
-  z-index: 5;
-  background-color: black;
-  border-bottom: 1px solid white;
+  top: 0 !important;
+  z-index: 5 !important;
+  background-color: black !important;
+  border-bottom: 1px solid white !important;
 }
 
 .direction-column {
@@ -123,4 +123,22 @@ p {
 
 .mr-3 {
   margin-right: 30px;
+}
+
+.MuiFormLabel-root.Mui-focused {
+  /* being lazy, overriding Mui styles here instead of createTheme */
+  color: #fbc02d !important;
+}
+
+.MuiInput-underline:after {
+  border-bottom-color: #fbc02d !important;
+}
+
+.centered {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  width: 100%;
 }

@@ -1,9 +1,21 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useMemo } from 'react';
 import { CurrentUserContext } from '../context/currentUser';
-import CountdownTimer from './CountdownTimer';
 import { useScrimSectionStyles } from '../styles/scrimSection.styles';
-import { updateScrim, deleteScrim } from '../services/scrims';
+
+//  components
+import CountdownTimer from './CountdownTimer';
 import ScrimTeamList from './ScrimTeamList';
+import Moment from 'react-moment';
+import AdminArea from './shared/AdminArea';
+import { Box, Button, Grid } from '@material-ui/core';
+import { Link } from 'react-router-dom';
+// utils / services
+import { updateScrim, deleteScrim } from '../services/scrims';
+import { copyTextToClipboard } from '../utils/copyToClipboard';
+
+// icons
+import ShareIcon from '@material-ui/icons/Share';
+import { ScrimsContext } from '../context/scrimsContext';
 
 const compareDates = (scrim) => {
   let currentTime = new Date().getTime();
@@ -20,17 +32,22 @@ const compareDates = (scrim) => {
 
 const MAX_CASTER_AMOUNT = 2;
 
-export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
+export default function ScrimSection({ scrim }) {
+  const { toggleFetch, setScrims } = useContext(ScrimsContext);
   const [currentUser] = useContext(CurrentUserContext);
   const [playerEntered, setPlayerEntered] = useState(false);
   const [casterEntered, setCasterEntered] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
-
   const classes = useScrimSectionStyles();
 
   const { teamOne, teamTwo, casters } = scrim;
 
   const getNewScrimsData = () => toggleFetch((prevState) => !prevState);
+
+  const gameUrl = useMemo(
+    () => `${window.location.origin}/scrims/${scrim._id}`,
+    [scrim._id]
+  );
 
   useEffect(() => {
     let gameHasStarted = compareDates(scrim) > 0;
@@ -59,14 +76,6 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
       ? setPlayerEntered(foundPlayer)
       : setPlayerEntered(false);
   }, [scrim, currentUser.name, teamOne, teamTwo]);
-
-  const excludeSeconds = {
-    month: '2-digit',
-    day: '2-digit',
-    year: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-  };
 
   const joinCast = async () => {
     if (playerEntered) {
@@ -111,7 +120,11 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
       getNewScrimsData();
     }
   };
-  const cancelScrim = async () => {
+
+  const handleDeleteScrim = async () => {
+    let yes = window.confirm('Are you sure you want to close this scrim?');
+    if (!yes) return;
+
     let deletedScrim = await deleteScrim(scrim._id);
 
     if (deletedScrim) {
@@ -119,21 +132,59 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
     }
   };
 
+  const teamOneDifference = 5 - teamOne.length;
+  const teamTwoDifference = 5 - teamTwo.length;
+
   return (
     <div className="page-section one-scrim__container">
       <div className={classes.scrimBox}>
-        <div
+        <Grid
+          item
+          container
+          direction="column"
           className="scrim__metadata pd-1"
           style={{ background: 'rgba(240,234,240,0.8)' }}>
-          <h1 className="text-black">{scrim.createdBy.name}'s Lobby</h1>
+          <Grid
+            item
+            container
+            direction="row"
+            alignItems="center"
+            justify="space-between">
+            <Grid item>
+              <Link className="link" style={{ textDecorationColor: '#000' }}>
+                <h1 className="text-black">{scrim.createdBy.name}'s Lobby</h1>
+              </Link>
+            </Grid>
+            <Grid item container sm={4} alignItems="center" justify="flex-end">
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  alert('copied scrim link to clipboard!');
+                  copyTextToClipboard(gameUrl);
+                }}>
+                <ShareIcon /> Share Link
+              </Button>
+
+              <AdminArea>
+                <Box marginRight={2} />
+                <Button
+                  color="secondary"
+                  variant="contained"
+                  onClick={handleDeleteScrim}>
+                  Close event
+                </Button>
+              </AdminArea>
+            </Grid>
+          </Grid>
+
           <div className={classes.gameMetaInfo}>
             <div>
               <h2 className="text-black">
                 Game Start:&nbsp;
-                {new Date(scrim.gameStartTime).toLocaleString(
-                  [],
-                  excludeSeconds
-                )}
+                <Moment format="MM/DD/yyyy | hh:mm A">
+                  {scrim.gameStartTime}
+                </Moment>
               </h2>
 
               <div className="casters-container ">
@@ -170,7 +221,7 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
               </div>
             </div>
           </div>
-        </div>
+        </Grid>
 
         <div className={classes.teamsContainer}>
           {/* teamOne */}
@@ -211,10 +262,10 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
                 (scrim.teamOne.length === 5 && scrim.teamTwo.length === 5 ? (
                   <>
                     <h2 className="text-black">
-                      Lobby host/captain: {scrim.lobbyHost.name}
+                      Lobby host / captain: {scrim.lobbyHost.name}
                     </h2>
                     <h3 className="text-black">
-                      please make the lobby name: {scrim.lobbyName}
+                      please make the lobby name: <br />"{scrim.lobbyName}"
                     </h3>
                     <h3 className="text-black">
                       with the password: {scrim.lobbyPassword}
@@ -222,13 +273,22 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
                   </>
                 ) : (
                   <>
-                    <h2 className="text-black">Not enough players</h2>
+                    <h2 className="text-black">
+                      Not enough players:&nbsp;
+                      {`${teamOne.length + teamTwo.length}/10`}
+                    </h2>
+                    <h5 className="text-black">
+                      Please get {teamOneDifference} players in team one <br />
+                      and {teamTwoDifference} players in team two <br />
+                      to unlock lobby name and password
+                    </h5>
                     {scrim.createdBy.name === currentUser?.name ? (
-                      <button onClick={cancelScrim}>Cancel event</button>
-                    ) : scrim.createdBy.name !== currentUser?.name &&
-                      currentUser?.ADMIN_SECRET_KEY ===
-                        process.env.REACT_APP_ADMIN_SECRET_KEY ? (
-                      <button onClick={cancelScrim}>Cancel event</button>
+                      <Button
+                        color="secondary"
+                        variant="contained"
+                        onClick={handleDeleteScrim}>
+                        Close event
+                      </Button>
                     ) : null}
                   </>
                 ))}

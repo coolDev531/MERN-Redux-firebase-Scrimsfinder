@@ -1,7 +1,6 @@
 import { useContext, Fragment } from 'react';
 import { useScrimSectionStyles } from '../styles/scrimSection.styles';
 import { CurrentUserContext } from '../context/currentUser';
-import ExitIcon from '@material-ui/icons/ExitToApp';
 import { updateScrim } from '../services/scrims';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -9,8 +8,13 @@ import Divider from '@material-ui/core/Divider';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
-import { Typography } from '@material-ui/core';
-import { ROLE_IMAGES } from '../utils/roleImages';
+import { Grid, IconButton, Typography } from '@material-ui/core';
+import { RANK_IMAGES, ROLE_IMAGES } from '../utils/imageMaps';
+import Tooltip from '../components/shared/Tooltip';
+import SwapIcon from '@material-ui/icons/SwapHoriz';
+import JoinIcon from '@material-ui/icons/MeetingRoom';
+// import ExitIcon from '@material-ui/icons/ExitToApp';
+import ExitIcon from '@material-ui/icons/NoMeetingRoom';
 
 const compareArrays = (arr1, arr2) => {
   if (arr1.length !== arr2.length) return false;
@@ -25,7 +29,7 @@ const compareArrays = (arr1, arr2) => {
 
 const swapPlayer = (currentTeam, movingTeam, movingPlayer) => {
   const indexToRemove = currentTeam.findIndex(
-    (p) => p && p.name === movingPlayer.name
+    (player) => player?.name === movingPlayer?.name
   );
   if (indexToRemove > -1) currentTeam.splice(indexToRemove, 1);
   movingTeam = [...movingTeam, movingPlayer];
@@ -169,13 +173,11 @@ export default function ScrimTeamList({
 
       <List className={classes.teamList}>
         {teamRoles.map((teamRole, idx) => {
-          const playerAssigned = teamArray.find((player) =>
-            player?.role?.includes(teamRole)
+          const playerAssigned = teamArray.find(
+            (player) => player?.role === teamRole
           );
 
-          const isCurrentUser = teamArray.find((player) =>
-            player?.name?.includes(currentUser?.name)
-          );
+          const isCurrentUser = playerAssigned?.name === currentUser?.name;
 
           if (playerAssigned) {
             return (
@@ -191,26 +193,42 @@ export default function ScrimTeamList({
 
                   <ListItemText
                     primary={
-                      <a
-                        className="link"
-                        href={`https://${playerAssigned.region}.op.gg/summoner/userName=${playerAssigned?.name}`}
-                        target="_blank"
-                        rel="noreferrer">
-                        {playerAssigned?.name}
-                      </a>
+                      <Grid container alignItems="center">
+                        <a
+                          className="link"
+                          href={`https://${playerAssigned.region}.op.gg/summoner/userName=${playerAssigned?.name}`}
+                          target="_blank"
+                          rel="noreferrer">
+                          {playerAssigned?.name}
+                        </a>
+                        &nbsp;
+                        <img
+                          width="25px"
+                          style={{ objectFit: 'cover' }}
+                          alt={playerAssigned.role}
+                          src={
+                            // replace number with empty string: Diamond 1 => Diamond
+                            // get rank image from images map by player.rank
+                            RANK_IMAGES[
+                              playerAssigned?.rank.replace(/[^a-z$]/gi, '')
+                            ]
+                          }
+                        />
+                      </Grid>
                     }
                     secondary={
                       <>
                         {playerAssigned?.discord && (
                           <>
-                            Discord -
+                            Discord -&nbsp;
                             <Typography
                               component="span"
                               variant="body2"
                               className={classes.inline}
                               color="textPrimary">
-                              {playerAssigned?.role}
+                              {playerAssigned?.discord}
                             </Typography>
+                            <br />
                           </>
                         )}
                         {'Role - '}
@@ -235,10 +253,13 @@ export default function ScrimTeamList({
                   />
 
                   {isCurrentUser && (
-                    <ExitIcon
-                      className={classes.exitIcon}
-                      onClick={() => leaveGame(teamName)}
-                    />
+                    <Tooltip title="Leave">
+                      <IconButton
+                        className={classes.iconButton}
+                        onClick={() => leaveGame(teamName)}>
+                        <ExitIcon />
+                      </IconButton>
+                    </Tooltip>
                   )}
                 </ListItem>
                 {idx !== teamRoles.length - 1 ? (
@@ -252,19 +273,27 @@ export default function ScrimTeamList({
                 {idx !== 0 ? <Divider component="div" /> : null}
 
                 <ListItem alignItems="center" className={classes.teamListItem}>
-                  <ListItemText primary={teamRole} />
                   <ListItemAvatar>
                     <Avatar alt={teamRole} src={ROLE_IMAGES[teamRole]} />
                   </ListItemAvatar>
+                  <ListItemText primary={teamRole} />
                   {!playerEntered ? (
-                    <button onClick={() => joinGame(teamName, teamRole)}>
-                      join
-                    </button>
+                    <Tooltip title="Join">
+                      <IconButton
+                        onClick={() => joinGame(teamName, teamRole)}
+                        className={classes.iconButton}>
+                        <JoinIcon />
+                      </IconButton>
+                    </Tooltip>
                   ) : (
                     <>
-                      <button onClick={() => handleSwap(teamName, teamRole)}>
-                        swap
-                      </button>
+                      <Tooltip title="Swap">
+                        <IconButton
+                          className={classes.iconButton}
+                          onClick={() => handleSwap(teamName, teamRole)}>
+                          <SwapIcon />
+                        </IconButton>
+                      </Tooltip>
                     </>
                   )}
                 </ListItem>

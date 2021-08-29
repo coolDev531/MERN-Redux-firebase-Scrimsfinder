@@ -11,6 +11,12 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 const theme = createTheme({
   palette: {
     type: 'dark',
+    primary: {
+      main: '#FBC02D',
+      contrastText: '#000',
+    },
+
+    // secondary: {},
   },
 });
 
@@ -29,9 +35,9 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
 
-      <main className="page-content">
-        <AppRouter />
-      </main>
+      {/* <main className="page-content"> */}
+      <AppRouter />
+      {/* </main> */}
     </ThemeProvider>
   );
 }

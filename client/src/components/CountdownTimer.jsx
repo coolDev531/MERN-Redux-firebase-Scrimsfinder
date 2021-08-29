@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     borderRadius: '3px',
     padding: '0rem 1rem',
-
+    justifyContent: 'center',
     '@supports (gap: 10px)': {
       gap: '10px',
     },

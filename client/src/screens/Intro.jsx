@@ -2,9 +2,9 @@ import { useEffect, useCallback } from 'react';
 import { useState, useContext } from 'react';
 import { CurrentUserContext } from '../context/currentUser';
 import { Redirect } from 'react-router-dom';
-import TextField from '@material-ui/core/TextField';
 import Alert from '@material-ui/lab/Alert';
-import { Grid } from '@material-ui/core';
+import { Button, Grid } from '@material-ui/core';
+import IntroForms from '../components/IntroForms';
 
 const KEYCODES = {
   ENTER: 13,
@@ -17,6 +17,8 @@ export default function Intro() {
     rank: '',
     region: 'NA',
     discord: '',
+    // need to be admin to create scrims
+    adminKey: '',
   });
   const [rankData, setRankData] = useState({
     rankDivision: 'Iron',
@@ -36,14 +38,20 @@ export default function Intro() {
   ];
 
   const handleErrors = useCallback(() => {
-    Object.entries(userData).map(([k, v]) =>
-      v === ''
-        ? !errors.has(k) &&
-          setErrors((prevState) => new Map(prevState.set(k, `${k} is empty!`)))
-        : errors.has(k) &&
+    /* if the text input value is empty and the errors map doesn't have it as a key:
+    add it as a key and it's value as the message to the error map */
+    Object.entries(userData).map(([key, value]) =>
+      value === ''
+        ? !errors.has(key) &&
+          setErrors(
+            (prevState) => new Map(prevState.set(key, `${key} is empty!`))
+          )
+        : errors.has(key) &&
           setErrors((prevState) => {
+            /* else if the text input value isn't empty and the key exists (input.name) in the errors map, 
+              remove it from the errors map */
             let newState = new Map(prevState);
-            newState.delete(k);
+            newState.delete(key);
             return newState;
           })
     );
@@ -103,8 +111,14 @@ export default function Intro() {
     (e) => {
       e.preventDefault();
 
+      let newUser = {
+        ...userData,
+        adminKey: userData.adminKey.trim(),
+      };
+
       let yes = window.confirm(`Are you sure you want to create this account? \n
       Name: ${userData.name} \n
+      Discord: ${userData.discord} \n
       Rank: ${userData.rank} \n
       Region: ${userData.region}
       `);
@@ -115,8 +129,9 @@ export default function Intro() {
         '%c user created with the name: ' + userData.name,
         'color: lightgreen'
       );
-      localStorage.setItem('currentUser', JSON.stringify(userData));
-      setCurrentUser(userData);
+
+      localStorage.setItem('currentUser', JSON.stringify(newUser));
+      setCurrentUser(newUser);
 
       return;
     },
@@ -143,133 +158,81 @@ export default function Intro() {
     };
   }, [goNextStep, currentFormIndex, handleSubmit, goPreviousStep]);
 
-  const nameForm = (
-    <Grid item container justify="space-evenly">
-      <TextField
-        type="text"
-        name="name"
-        value={userData.name}
-        onChange={(e) => handleChange(e, setUserData)}
-        onKeyPress={(e) => {
-          // if user enters special characters don't do anything
-          if (!/^\w+$/.test(e.key)) e.preventDefault();
-        }}
-        placeholder="summoner name"
-        required
-      />
-      <TextField
-        type="text"
-        name="discord"
-        value={userData.discord}
-        onChange={(e) => handleChange(e, setUserData)}
-        placeholder="Discord (name and #)"
-        required
-      />
-    </Grid>
-  );
-
-  const divisionForm = (
-    <>
-      <label htmlFor="rankDivision">Rank</label>
-      <select
-        name="rankDivision"
-        required
-        value={rankData.rankDivision}
-        onChange={(e) => handleChange(e, setRankData)}>
-        {[
-          'Unranked',
-          'Iron',
-          'Bronze',
-          'Silver',
-          'Gold',
-          'Platinum',
-          'Diamond',
-          'Master',
-          'Grandmaster',
-          'Challenger',
-        ].map((value) => (
-          <option value={value}>{value}</option>
-        ))}
-      </select>
-
-      {/* exclude this number select from divisions without numbers */}
-      {divisionsWithNumbers.includes(rankData.rankDivision) && (
-        <select
-          name="rankNumber"
-          required={divisionsWithNumbers.includes(rankData.rankDivision)}
-          value={rankData.rankNumber}
-          onChange={(e) => handleChange(e, setRankData)}>
-          <option selected disabled>
-            select rank number
-          </option>
-          <option value={4}>4</option>
-          <option value={3}>3</option>
-          <option value={2}>2</option>
-          <option value={1}>1</option>
-        </select>
-      )}
-    </>
-  );
-
-  const regionForm = (
-    <>
-      <label htmlFor="region">Region</label>
-      <select
-        name="region"
-        value={userData.region}
-        onChange={(e) => handleChange(e, setUserData)}
-        required>
-        {['NA', 'EUW', 'EUNE', 'LAN'].map((region) => (
-          <option value={region}>{region}</option>
-        ))}
-      </select>
-    </>
-  );
-
-  let forms = [nameForm, divisionForm, regionForm];
-
   if (currentUser) {
     console.log('redirecting to /');
     return <Redirect to="/" />;
   }
 
   return (
-    <div className="page-section">
-      <div className="inner-column">
-        <h1>Welcome to LoL scrim finder, please fill in your details:</h1>
+    <main className="page-content">
+      <div className="page-section">
+        <div className="inner-column">
+          <h1>Welcome to LoL scrim finder, please fill in your details:</h1>
 
-        <Grid container direction="column" md={12}>
-          {[...errors.values()].map((error) => (
-            <>
-              <Alert severity="error">
-                Please correct the following error — <strong>{error}</strong>
-              </Alert>
-              <br />
-            </>
-          ))}
-        </Grid>
+          <Grid container direction="column" md={12}>
+            {[...errors.values()].map((error) => (
+              <>
+                <Alert severity="error">
+                  Please correct the following error — <strong>{error}</strong>
+                </Alert>
+                <br />
+              </>
+            ))}
+          </Grid>
 
-        <form onSubmit={handleSubmit} id="form">
-          <h2>Step {currentFormIndex + 1}</h2>
-          {forms[currentFormIndex]}
+          <form onSubmit={handleSubmit} id="form">
+            <h2>Step {currentFormIndex + 1}</h2>
 
-          {currentFormIndex === forms.length - 1 ? (
-            <>
-              <button type="submit">Create my account</button>
-              <button onClick={goPreviousStep}>Previous</button>
-            </>
-          ) : (
-            <>
-              <button
-                disabled={currentFormIndex === 0}
-                onClick={goPreviousStep}>
-                Previous
-              </button>
-              <button onClick={goNextStep}>Next</button>
-            </>
-          )}
-        </form>
+            <IntroForms
+              handleChange={handleChange}
+              currentFormIndex={currentFormIndex}
+              userData={userData}
+              setUserData={setUserData}
+              rankData={rankData}
+              setRankData={setRankData}
+              divisionsWithNumbers={divisionsWithNumbers}
+            />
+
+            {currentFormIndex === 2 ? (
+              <Grid container item spacing={2}>
+                <Grid item>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={goPreviousStep}>
+                    Previous
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button variant="contained" color="primary" type="submit">
+                    Create my account
+                  </Button>
+                </Grid>
+              </Grid>
+            ) : (
+              <Grid container item spacing={2}>
+                <Grid item>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    disabled={currentFormIndex === 0}
+                    onClick={goPreviousStep}>
+                    Previous
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={goNextStep}>
+                    Next
+                  </Button>
+                </Grid>
+              </Grid>
+            )}
+          </form>
+        </div>
       </div>
-    </div>
+    </main>
   );
 }

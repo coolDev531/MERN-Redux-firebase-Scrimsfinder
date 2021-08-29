@@ -1,8 +1,26 @@
 const Scrim = require('../models/scrim');
 const db = require('../db/connection');
 const sample = require('../utils/sample');
+const axios = require('axios');
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
+const getWords = async () => {
+  const URL = 'https://random-word-api.herokuapp.com/word?number=50&swear=0';
+  return axios.get(URL).then(({ data }) => {
+    let wordsArr = new Array(...data);
+
+    let randomWordOne = sample(wordsArr),
+      randomWordTwo = sample(wordsArr);
+
+    return `${randomWordOne} ${randomWordTwo}`;
+  });
+};
+
+const getLobbyName = async () => {
+  const words = await getWords();
+  return String(words);
+};
 
 const getAllScrims = async (_req, res) => {
   try {
@@ -28,7 +46,13 @@ const getScrimById = async (req, res) => {
 
 const createScrim = async (req, res) => {
   try {
-    const scrim = new Scrim(req.body);
+    let requestBody = {
+      ...req.body,
+      lobbyName: await getLobbyName(),
+    };
+
+    const scrim = new Scrim(requestBody);
+
     await scrim.save();
     res.status(201).json(scrim);
     console.log('Scrim created: ', scrim);
@@ -50,16 +74,13 @@ const updateScrim = async (req, res) => {
     ...req.body,
   };
 
-  if (scrim.lobbyHost !== null && scrim.lobbyName !== null) {
+  if (scrim.lobbyHost !== null) {
     requestBody.lobbyHost = scrim.lobbyHost;
-    requestBody.lobbyName = scrim.lobbyName;
   } else if (teamOne.length === 5 && teamTwo.length === 5) {
     const lobbyHost = sample([...teamOne, ...teamTwo]);
     requestBody.lobbyHost = lobbyHost;
-    requestBody.lobbyName = `${lobbyHost.name}'s Lobby`;
   } else {
     requestBody.lobbyHost = null;
-    requestBody.lobbyName = null;
   }
 
   await Scrim.findByIdAndUpdate(
