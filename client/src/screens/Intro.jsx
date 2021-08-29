@@ -40,21 +40,24 @@ export default function Intro() {
   const handleErrors = useCallback(() => {
     /* if the text input value is empty and the errors map doesn't have it as a key:
     add it as a key and it's value as the message to the error map */
-    Object.entries(userData).map(([key, value]) =>
-      value === ''
-        ? !errors.has(key) &&
-          setErrors(
-            (prevState) => new Map(prevState.set(key, `${key} is empty!`))
-          )
-        : errors.has(key) &&
-          setErrors((prevState) => {
-            /* else if the text input value isn't empty and the key exists (input.name) in the errors map, 
+    Object.entries(userData)
+      // don't throw errors for adminKey
+      .filter(([k]) => k !== 'adminKey')
+      .map(([key, value]) =>
+        value === ''
+          ? !errors.has(key) &&
+            setErrors(
+              (prevState) => new Map(prevState.set(key, `${key} is empty!`))
+            )
+          : errors.has(key) &&
+            setErrors((prevState) => {
+              /* else if the text input value isn't empty and the key exists (input.name) in the errors map, 
               remove it from the errors map */
-            let newState = new Map(prevState);
-            newState.delete(key);
-            return newState;
-          })
-    );
+              let newState = new Map(prevState);
+              newState.delete(key);
+              return newState;
+            })
+      );
   }, [errors, userData]);
 
   const handleChange = ({ target }, setter) => {
