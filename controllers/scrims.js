@@ -72,95 +72,106 @@ const swapPlayer = (currentTeam, movingTeam, movingPlayer) => {
 };
 
 const insertPlayerInScrim = async (req, res) => {
-  const { id } = req.params;
+  const session = await Scrim.startSession();
 
-  const { playerData } = req.body;
-  const isMoving = req.body.swapData?.isMoving ?? false;
-  const isChangingTeams = req.body.swapData?.isChangingTeams ?? false;
+  // beginning of session
+  await session.withTransaction(async () => {
+    // return Customer.create([{ name: 'Test' }], { session: session })
 
-  const teamJoiningName = playerData.team.name;
+    const { id } = req.params;
 
-  const scrim = await Scrim.findById(id);
+    const { playerData } = req.body;
+    const isMoving = req.body.swapData?.isMoving ?? false;
+    const isChangingTeams = req.body.swapData?.isChangingTeams ?? false;
 
-  const teamJoiningArr =
-    teamJoiningName === 'teamOne' ? scrim.teamOne : scrim.teamTwo;
+    const teamJoiningName = playerData.team.name;
 
-  const spotTaken = scrim[teamJoiningName].find(
-    (player) => player.role === playerData.role
-  );
+    const scrim = await Scrim.findById(id);
 
-  const spotsAvailable = scrim[teamJoiningName].filter(
-    (player) => !player.role
-  );
+    const teamJoiningArr =
+      teamJoiningName === 'teamOne' ? scrim.teamOne : scrim.teamTwo;
 
-  let newBody = {};
+    const spotTaken = scrim[teamJoiningName].find(
+      (player) => player.role === playerData.role
+    );
 
-  if (isMoving) {
-    if (isChangingTeams) {
-      const { currentTeamName, teamChangingTo } = req.body.swapData;
-      const teamLeavingName = currentTeamName;
+    const spotsAvailable = scrim[teamJoiningName].filter(
+      (player) => !player.role
+    );
 
-      const currentTeamArray =
-        currentTeamName === 'teamOne' ? scrim.teamOne : scrim.teamTwo;
+    let newBody = {};
 
-      let [teamLeft, teamJoined] = swapPlayer(
-        currentTeamArray,
-        teamChangingTo,
-        playerData
-      );
+    if (isMoving) {
+      if (isChangingTeams) {
+        const { currentTeamName, teamChangingTo } = req.body.swapData;
+        const teamLeavingName = currentTeamName;
 
-      newBody = {
-        ...scrim._doc,
-        [teamLeavingName]: teamLeft,
-        [teamJoiningName]: [
-          ...teamJoined.map((player) =>
-            player.name === playerData.name ? { ...playerData } : player
-          ),
-        ],
-      };
+        const currentTeamArray =
+          currentTeamName === 'teamOne' ? scrim.teamOne : scrim.teamTwo;
+
+        let [teamLeft, teamJoined] = swapPlayer(
+          currentTeamArray,
+          teamChangingTo,
+          playerData
+        );
+
+        newBody = {
+          ...scrim._doc,
+          [teamLeavingName]: teamLeft,
+          [teamJoiningName]: [
+            ...teamJoined.map((player) =>
+              player.name === playerData.name ? { ...playerData } : player
+            ),
+          ],
+        };
+      } else {
+        let filtered = [...teamJoiningArr].filter(
+          (player) => player.name !== playerData.name
+        );
+
+        newBody = {
+          ...scrim._doc,
+          [teamJoiningName]: [...filtered, { ...playerData }],
+        };
+      }
     } else {
-      let filtered = [...teamJoiningArr].filter(
-        (player) => player.name !== playerData.name
-      );
-
       newBody = {
         ...scrim._doc,
-        [teamJoiningName]: [...filtered, { ...playerData }],
+        [teamJoiningName]: [...teamJoiningArr, playerData],
       };
     }
-  } else {
-    newBody = {
-      ...scrim._doc,
-      [teamJoiningName]: [...teamJoiningArr, playerData],
-    };
-  }
 
-  if (spotTaken) {
-    console.log(
-      `spot taken! spots available for team ${playerData.team.name}: ${spotsAvailable}`
-    );
+    if (spotTaken) {
+      console.log(
+        `spot taken! spots available for team ${playerData.team.name}: ${spotsAvailable}`
+      );
 
-    return res.status(500).json({
-      error: `spot taken! spots available for team ${playerData.team.name}: ${spotsAvailable}`,
-    });
-  } else {
-    await Scrim.findByIdAndUpdate(
-      id,
-      newBody,
-      { new: true },
-      (error, scrim) => {
-        if (error) {
-          return res.status(500).json({ error: error.message });
+      return res.status(500).json({
+        error: `spot taken! spots available for team ${playerData.team.name}: ${spotsAvailable}`,
+      });
+    } else {
+      await Scrim.findByIdAndUpdate(
+        id,
+        newBody,
+        { new: true },
+        (error, scrim) => {
+          if (error) {
+            return res.status(500).json({ error: error.message });
+          }
+
+          if (!scrim) {
+            return res.status(500).send('Scrim not found');
+          }
+
+          res.status(200).json(scrim);
         }
+      );
+    }
+  });
 
-        if (!scrim) {
-          return res.status(500).send('Scrim not found');
-        }
-
-        res.status(200).json(scrim);
-      }
-    );
-  }
+  // end of session
+  console.log({ session });
+  session.endSession();
 };
 
 const updateScrim = async (req, res) => {
