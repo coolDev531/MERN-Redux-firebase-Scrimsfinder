@@ -1,16 +1,13 @@
-export const getSortedScrims = (scrims, property) => {
-  const sortedScrims = scrims.sort((a, b) => {
-    const date1 = new Date(a[property]).getTime();
-    const date2 = new Date(b[property]).getTime();
+//  scrims sorting
 
-    if (date1 < date2) {
-      return -1;
-    } else if (date1 > date2) {
-      return 1;
-    } else {
-      return 0;
-    }
-  });
+export const showLatestFirst = (scrims) =>
+  scrims.sort(
+    (a, b) =>
+      new Date(b.gameStartTime).getTime() - new Date(a.gameStartTime).getTime()
+  );
 
-  return sortedScrims;
-};
+export const showEarliestFirst = (scrims) =>
+  scrims.sort(
+    (a, b) =>
+      new Date(a.gameStartTime).getTime() - new Date(b.gameStartTime).getTime()
+  );
