@@ -7,6 +7,7 @@ class ReactComment extends Component {
   };
 
   componentDidMount() {
+    //  can only use findDOMNode in class components
     let el = ReactDOM.findDOMNode(this);
     ReactDOM.unmountComponentAtNode(el);
     el.outerHTML = this.createComment();
