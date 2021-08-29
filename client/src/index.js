@@ -5,13 +5,16 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { CurrentUserProvider } from './context/currentUser';
+import { ScrimsProvider } from './context/scrimsContext';
 
 ReactDOM.render(
   <React.StrictMode>
     <Router>
-      <CurrentUserProvider>
-        <App />
-      </CurrentUserProvider>
+      <ScrimsProvider>
+        <CurrentUserProvider>
+          <App />
+        </CurrentUserProvider>
+      </ScrimsProvider>
     </Router>
   </React.StrictMode>,
   document.getElementById('root')

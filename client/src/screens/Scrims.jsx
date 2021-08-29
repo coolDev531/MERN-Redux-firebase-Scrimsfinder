@@ -3,6 +3,7 @@ import { useContext, useState, useEffect, Fragment, useMemo } from 'react';
 import ScrimSection from '../components/ScrimSection';
 import Navbar from '../components/shared/Navbar';
 import { CurrentUserContext } from '../context/currentUser';
+import { ScrimsContext } from '../context/scrimsContext';
 import { getAllScrims } from './../services/scrims';
 
 export default function Scrims() {
@@ -10,7 +11,8 @@ export default function Scrims() {
 
   const [currentUser] = useContext(CurrentUserContext);
 
-  const [scrims, setScrims] = useState([]);
+  const { scrims, setScrims, fetch, toggleFetch } = useContext(ScrimsContext);
+
   const [filteredScrims, setFilteredScrims] = useState([]); // the array of filtered scrims
 
   const [scrimsDate, setScrimsDate] = useState(today); // the value for the date to filter scrims by
@@ -18,16 +20,10 @@ export default function Scrims() {
     // the value for the region to filter scrims by
     () => currentUser?.region ?? 'NA'
   );
-  const [fetch, toggleFetch] = useState(false);
 
   useEffect(() => {
     const fetchScrims = async () => {
-      console.log('fetching scrims');
-      const scrimsData = await getAllScrims();
-
-      setScrims(scrimsData);
-
-      const dateFilteredScrims = scrimsData.filter(
+      const dateFilteredScrims = scrims.filter(
         ({ gameStartTime }) =>
           new Date(gameStartTime).toLocaleDateString() === scrimsDate
       );
@@ -41,7 +37,7 @@ export default function Scrims() {
     };
 
     fetchScrims();
-  }, [fetch, currentUser?.region, today, scrimsDate]);
+  }, [scrims, currentUser?.region, today, scrimsDate]);
 
   const dateFilteredScrims = useMemo(
     () =>
@@ -81,12 +77,7 @@ export default function Scrims() {
           {filteredScrims.length > 0 ? (
             filteredScrims.map((scrim, idx) => (
               <Fragment key={idx}>
-                <ScrimSection
-                  scrim={scrim}
-                  idx={idx}
-                  toggleFetch={toggleFetch}
-                  setScrims={setScrims}
-                />
+                <ScrimSection scrim={scrim} />
                 <div className="page-break" />
               </Fragment>
             ))

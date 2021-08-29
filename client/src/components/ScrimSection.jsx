@@ -15,6 +15,7 @@ import { copyTextToClipboard } from '../utils/copyToClipboard';
 
 // icons
 import ShareIcon from '@material-ui/icons/Share';
+import { ScrimsContext } from '../context/scrimsContext';
 
 const compareDates = (scrim) => {
   let currentTime = new Date().getTime();
@@ -31,12 +32,12 @@ const compareDates = (scrim) => {
 
 const MAX_CASTER_AMOUNT = 2;
 
-export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
+export default function ScrimSection({ scrim }) {
+  const { toggleFetch, setScrims } = useContext(ScrimsContext);
   const [currentUser] = useContext(CurrentUserContext);
   const [playerEntered, setPlayerEntered] = useState(false);
   const [casterEntered, setCasterEntered] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
-
   const classes = useScrimSectionStyles();
 
   const { teamOne, teamTwo, casters } = scrim;
@@ -120,8 +121,8 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
     }
   };
 
-  const cancelScrim = async () => {
-    let yes = window.confirm('Are you sure you want to cancel this scrim?');
+  const handleDeleteScrim = async () => {
+    let yes = window.confirm('Are you sure you want to close this scrim?');
     if (!yes) return;
 
     let deletedScrim = await deleteScrim(scrim._id);
@@ -168,8 +169,8 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
                 <Button
                   color="secondary"
                   variant="contained"
-                  onClick={cancelScrim}>
-                  Cancel event
+                  onClick={handleDeleteScrim}>
+                  Close event
                 </Button>
               </AdminArea>
             </Grid>
@@ -283,8 +284,8 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
                       <Button
                         color="secondary"
                         variant="contained"
-                        onClick={cancelScrim}>
-                        Cancel event
+                        onClick={handleDeleteScrim}>
+                        Close event
                       </Button>
                     ) : null}
                   </>

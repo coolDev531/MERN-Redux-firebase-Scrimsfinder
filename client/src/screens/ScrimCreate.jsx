@@ -168,7 +168,7 @@ export default function ScrimCreate() {
                       className="text-white"
                       onChange={handleChange}
                       fullWidth>
-                      {['NA', 'EU', 'EUNE', 'LAN'].map((region, key) => (
+                      {['NA', 'EUW', 'EUNE', 'LAN'].map((region, key) => (
                         <MenuItem value={region} key={key}>
                           {region}
                         </MenuItem>
