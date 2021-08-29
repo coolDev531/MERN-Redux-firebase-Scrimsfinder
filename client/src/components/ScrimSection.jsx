@@ -6,6 +6,7 @@ import { updateScrim, deleteScrim } from '../services/scrims';
 import ScrimTeamList from './ScrimTeamList';
 import Moment from 'react-moment';
 import AdminArea from './shared/AdminArea';
+import { Button, Grid } from '@material-ui/core';
 
 const compareDates = (scrim) => {
   let currentTime = new Date().getTime();
@@ -62,14 +63,6 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
       : setPlayerEntered(false);
   }, [scrim, currentUser.name, teamOne, teamTwo]);
 
-  const excludeSeconds = {
-    month: '2-digit',
-    day: '2-digit',
-    year: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-  };
-
   const joinCast = async () => {
     if (playerEntered) {
       alert("You're already in a team!");
@@ -115,6 +108,9 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
   };
 
   const cancelScrim = async () => {
+    let yes = window.confirm('Are you sure you want to delete this scrim?');
+    if (!yes) return;
+
     let deletedScrim = await deleteScrim(scrim._id);
 
     if (deletedScrim) {
@@ -128,22 +124,39 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
   return (
     <div className="page-section one-scrim__container">
       <div className={classes.scrimBox}>
-        <div
+        <Grid
+          item
+          container
+          direction="column"
           className="scrim__metadata pd-1"
           style={{ background: 'rgba(240,234,240,0.8)' }}>
-          <h1 className="text-black">{scrim.createdBy.name}'s Lobby</h1>
+          <Grid
+            item
+            container
+            direction="row"
+            alignItems="center"
+            justify="space-between">
+            <h1 className="text-black">{scrim.createdBy.name}'s Lobby</h1>
+            <AdminArea>
+              <Grid item>
+                <Button
+                  color="secondary"
+                  variant="contained"
+                  onClick={cancelScrim}>
+                  Cancel event
+                </Button>
+              </Grid>
+            </AdminArea>
+          </Grid>
+
           <div className={classes.gameMetaInfo}>
             <div>
               <h2 className="text-black">
                 Game Start:&nbsp;
-                {new Date(scrim.gameStartTime).toLocaleString(
-                  [],
-                  excludeSeconds
-                )}
+                <Moment format="MM/DD/yyyy | hh:mm A">
+                  {scrim.gameStartTime}
+                </Moment>
               </h2>
-              <AdminArea>
-                <button onClick={cancelScrim}>Cancel event</button>
-              </AdminArea>
 
               <div className="casters-container ">
                 {casters.length === 2 ? (
@@ -179,7 +192,7 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
               </div>
             </div>
           </div>
-        </div>
+        </Grid>
 
         <div className={classes.teamsContainer}>
           {/* teamOne */}
