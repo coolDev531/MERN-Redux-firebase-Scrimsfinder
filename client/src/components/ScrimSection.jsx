@@ -211,18 +211,30 @@ export default function ScrimSection({ scrim, isInDetail }) {
                       </h2>
                     )}
 
-                    <button
-                      disabled={
-                        casters.length === MAX_CASTER_AMOUNT ||
-                        scrim.casters.find(
-                          (casterName) => casterName === currentUser?.name
-                        )
-                      }
-                      onClick={joinCast}>
-                      join casting
-                    </button>
+                    {!scrim.casters.find(
+                      (casterName) => casterName === currentUser?.name
+                    ) && (
+                      <Button
+                        Button
+                        variant="contained"
+                        color="primary"
+                        disabled={
+                          casters.length === MAX_CASTER_AMOUNT ||
+                          scrim.casters.find(
+                            (casterName) => casterName === currentUser?.name
+                          )
+                        }
+                        onClick={joinCast}>
+                        join cast
+                      </Button>
+                    )}
                     {casterEntered && (
-                      <button onClick={leaveCast}>Leave cast</button>
+                      <Button
+                        color="secondary"
+                        variant="contained"
+                        onClick={leaveCast}>
+                        Leave cast
+                      </Button>
                     )}
                   </div>
                 )}
