@@ -262,6 +262,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
 
           <div className={classes.teamsVersusSeparator}>
             <div
+              className="lobby__info-box"
               style={{
                 background: `rgba(255, 255, 255,${
                   gameStarted ? '0.7' : '0.5'
@@ -272,24 +273,80 @@ export default function ScrimSection({ scrim, isInDetail }) {
               {!gameStarted && (
                 <h2 className="text-black">Game starting in...</h2>
               )}
+
               <CountdownTimer
                 gameStarted={gameStarted}
                 setGameStarted={setGameStarted}
                 scrim={scrim}
+                teamWon={scrim.teamWon}
               />
 
               {gameStarted &&
                 (scrim.teamOne.length === 5 && scrim.teamTwo.length === 5 ? (
                   <>
-                    <h2 className="text-black">
-                      Lobby host / captain: {scrim.lobbyHost?.name}
-                    </h2>
-                    <h3 className="text-black">
-                      please make the lobby name: <br />"{scrim.lobbyName}"
-                    </h3>
-                    <h3 className="text-black">
-                      with the password: {scrim.lobbyPassword}
-                    </h3>
+                    {!scrim.teamWon && (
+                      <>
+                        <h2 className="text-black">
+                          Lobby host / captain: {scrim.lobbyHost?.name}
+                        </h2>
+                        <h3 className="text-black">
+                          please make the lobby name: <br />"{scrim.lobbyName}"
+                        </h3>
+                        <h3 className="text-black">
+                          with the password: {scrim.lobbyPassword}
+                        </h3>
+                      </>
+                    )}
+
+                    {scrim.createdBy.name === currentUser.name &&
+                      !scrim.teamWon && (
+                        <Grid
+                          item
+                          container
+                          alignItems="center"
+                          direction
+                          row
+                          spacing={2}>
+                          <Grid item>
+                            <h3 className="text-black">Who won?</h3>
+                          </Grid>
+                          {['Team One (Blue Side)', 'Team Two (Red Side)'].map(
+                            (teamTitle, idx) => (
+                              <Grid item>
+                                <Button
+                                  style={{
+                                    backgroundColor: idx === 0 ? 'blue' : 'red',
+                                    color: '#fff',
+                                  }}
+                                  variant="contained"
+                                  onClick={async () => {
+                                    // set team won for scrim
+                                    let yes =
+                                      window.confirm(`Are you sure ${teamTitle} won this game? \n 
+                                  You cannot reverse this.
+                                  `);
+
+                                    if (!yes) return;
+
+                                    const scrimData = {
+                                      ...scrim,
+                                      teamWon: teamTitle,
+                                    };
+                                    const updatedScrim = await updateScrim(
+                                      scrim._id,
+                                      scrimData
+                                    );
+                                    if (updatedScrim) {
+                                      getNewScrimsData();
+                                    }
+                                  }}>
+                                  {teamTitle}
+                                </Button>
+                              </Grid>
+                            )
+                          )}
+                        </Grid>
+                      )}
                   </>
                 ) : (
                   <>
