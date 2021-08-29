@@ -1,13 +1,20 @@
 import { useContext, useEffect, useState, useMemo } from 'react';
 import { CurrentUserContext } from '../context/currentUser';
-import CountdownTimer from './CountdownTimer';
 import { useScrimSectionStyles } from '../styles/scrimSection.styles';
-import { updateScrim, deleteScrim } from '../services/scrims';
+
+//  components
+import CountdownTimer from './CountdownTimer';
 import ScrimTeamList from './ScrimTeamList';
 import Moment from 'react-moment';
 import AdminArea from './shared/AdminArea';
-import { Button, Grid } from '@material-ui/core';
+import { Box, Button, Grid } from '@material-ui/core';
+
+// utils / services
+import { updateScrim, deleteScrim } from '../services/scrims';
 import { copyTextToClipboard } from '../utils/copyToClipboard';
+
+// icons
+import ShareIcon from '@material-ui/icons/Share';
 
 const compareDates = (scrim) => {
   let currentTime = new Date().getTime();
@@ -145,21 +152,27 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
             <Grid item>
               <h1 className="text-black">{scrim.createdBy.name}'s Lobby</h1>
             </Grid>
-            <Grid item>
-              <button onClick={() => copyTextToClipboard(gameUrl)}>
-                Share game link
-              </button>
-            </Grid>
-            <AdminArea>
-              <Grid item>
+            <Grid item container sm={4} alignItems="center" justify="flex-end">
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  alert('copied scrim link to clipboard!');
+                  copyTextToClipboard(gameUrl);
+                }}>
+                <ShareIcon /> Share Link
+              </Button>
+
+              <AdminArea>
+                <Box marginRight={2} />
                 <Button
                   color="secondary"
                   variant="contained"
                   onClick={cancelScrim}>
                   Cancel event
                 </Button>
-              </Grid>
-            </AdminArea>
+              </AdminArea>
+            </Grid>
           </Grid>
 
           <div className={classes.gameMetaInfo}>
