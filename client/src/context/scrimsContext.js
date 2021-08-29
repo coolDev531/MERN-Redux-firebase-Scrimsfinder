@@ -14,10 +14,9 @@ function ScrimsProvider({ children }) {
   useEffect(() => {
     const fetchScrims = async () => {
       console.log('fetching scrims');
+
       const scrimsData = await getAllScrims();
-
       setScrims(scrimsData);
-
       setScrimsLoaded(true);
     };
 
