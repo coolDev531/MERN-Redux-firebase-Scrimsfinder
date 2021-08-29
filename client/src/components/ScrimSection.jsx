@@ -124,16 +124,6 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
   const teamOneDifference = 5 - teamOne.length;
   const teamTwoDifference = 5 - teamTwo.length;
 
-  console.log(
-    'env:',
-    process.env.REACT_APP_ADMIN_KEY.includes(currentUser.adminKey)
-  );
-
-  let result = [...process.env.REACT_APP_ADMIN_KEY].join('');
-  console.log(result.trim().includes(currentUser.adminKey.trim()), result);
-
-  console.log('user:', currentUser.adminKey);
-
   return (
     <div className="page-section one-scrim__container">
       <div className={classes.scrimBox}>
