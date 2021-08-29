@@ -6,6 +6,20 @@ import Navbar from '../components/shared/Navbar';
 import { CurrentUserContext } from '../context/currentUser';
 import { ScrimsContext } from '../context/scrimsContext';
 
+const compareDates = (scrim) => {
+  let currentTime = new Date().toISOString();
+  let gameStartTime = new Date(scrim.gameStartTime).getTime();
+  let now = new Date(currentTime).getTime();
+
+  if (gameStartTime < now) {
+    return -1;
+  } else if (gameStartTime > now) {
+    return 1;
+  } else {
+    return 0;
+  }
+};
+
 export default function Scrims() {
   const today = useMemo(() => new Date().toLocaleDateString(), []);
 
@@ -14,7 +28,6 @@ export default function Scrims() {
   const { scrims, toggleFetch, scrimsLoaded } = useContext(ScrimsContext);
 
   const [filteredScrims, setFilteredScrims] = useState([]); // the array of filtered scrims
-
   const [scrimsDate, setScrimsDate] = useState(today); // the value for the date to filter scrims by
   const [scrimsRegion, setScrimsRegion] = useState(
     // the value for the region to filter scrims by
@@ -51,14 +64,25 @@ export default function Scrims() {
     [scrims, scrimsDate]
   );
 
-  useEffect(() => {
-    const filteredScrimsByDateAndRegion = dateFilteredScrims.filter(
-      (scrim) => scrim.region === scrimsRegion
-    );
+  const filteredScrimsByDateAndRegion = useMemo(
+    () => dateFilteredScrims.filter((scrim) => scrim.region === scrimsRegion),
+    [dateFilteredScrims, scrimsRegion]
+  );
 
+  useEffect(() => {
     setFilteredScrims(filteredScrimsByDateAndRegion);
     // this runs everytime scrimsRegion and datefilteredScrims changes.
-  }, [scrims, scrimsRegion, dateFilteredScrims]);
+  }, [filteredScrimsByDateAndRegion]);
+
+  let upcomingScrims = useMemo(
+    () => filteredScrims.filter((scrim) => compareDates(scrim) > -1),
+    [filteredScrims]
+  );
+
+  let previousScrims = useMemo(
+    () => filteredScrims.filter((scrim) => compareDates(scrim) < 1),
+    [filteredScrims]
+  );
 
   if (!scrimsLoaded) {
     return <Loading text="Loading Scrims..." />;
@@ -77,14 +101,54 @@ export default function Scrims() {
       <div className="page-break" />
 
       <main className="page-content">
-        <div id="scrims-container">
+        <div id="scrims-container" className="page-section">
           {filteredScrims.length > 0 ? (
-            filteredScrims.map((scrim, idx) => (
-              <Fragment key={idx}>
-                <ScrimSection scrim={scrim} />
-                <div className="page-break" />
-              </Fragment>
-            ))
+            <>
+              <div className="inner-column">
+                <div
+                  style={{
+                    marginBottom: '40px',
+                    borderBottom: '1px solid white',
+                  }}>
+                  <Typography align="center" variant="h3" gutterBottom>
+                    {upcomingScrims.length > 0
+                      ? 'Upcoming scrims'
+                      : 'No upcoming scrims'}
+                  </Typography>
+                </div>
+              </div>
+
+              {/* UPCOMING SCRIMS */}
+              {upcomingScrims.map((scrim, idx) => (
+                <Fragment key={idx}>
+                  <ScrimSection scrim={scrim} />
+                  <div className="page-break" />
+                </Fragment>
+              ))}
+              <div className="page-break" />
+              <div className="inner-column">
+                <>
+                  {/* PREVIOUS SCRIMS */}
+                  {previousScrims.length > 0 ? (
+                    <div
+                      style={{
+                        marginBottom: '40px',
+                        borderBottom: '1px solid white',
+                      }}>
+                      <Typography align="center" variant="h3">
+                        Previous scrims
+                      </Typography>
+                    </div>
+                  ) : null}
+                  {previousScrims.map((scrim, idx) => (
+                    <Fragment key={idx}>
+                      <ScrimSection scrim={scrim} />
+                      <div className="page-break" />
+                    </Fragment>
+                  ))}
+                </>
+              </div>
+            </>
           ) : (
             <>
               <Typography align="center" variant="h2" component="h1">

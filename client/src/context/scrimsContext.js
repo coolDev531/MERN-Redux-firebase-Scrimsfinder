@@ -17,6 +17,7 @@ function ScrimsProvider({ children }) {
       const scrimsData = await getAllScrims();
 
       setScrims(scrimsData);
+
       setScrimsLoaded(true);
     };
 
@@ -25,7 +26,13 @@ function ScrimsProvider({ children }) {
 
   return (
     <ScrimsContext.Provider
-      value={{ scrims, setScrims, fetch, toggleFetch, scrimsLoaded }}>
+      value={{
+        scrims,
+        setScrims,
+        fetch,
+        toggleFetch,
+        scrimsLoaded,
+      }}>
       {children}
     </ScrimsContext.Provider>
   );
