@@ -36,6 +36,15 @@ export const updateScrim = async (id, scrim) => {
   }
 };
 
+export const insertPlayerInScrim = async (id, scrim) => {
+  try {
+    const response = await api.put(`/scrims/${id}/insert-player`, scrim);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const deleteScrim = async (id) => {
   try {
     const response = await api.delete(`/scrims/${id}`);

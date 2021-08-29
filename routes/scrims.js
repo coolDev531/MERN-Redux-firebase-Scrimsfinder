@@ -7,6 +7,7 @@ router.get('/scrims', controllers.getAllScrims); // GET
 router.post('/scrims', controllers.createScrim); // POST
 router.get('/scrims/:id', controllers.getScrimById); // GET
 router.put('/scrims/:id', controllers.updateScrim); // PUT
+router.put('/scrims/:id/insert-player', controllers.insertPlayerInScrim); // PUT
 router.delete('/scrims/:id', controllers.deleteScrim); // DELETE
 
 module.exports = router;

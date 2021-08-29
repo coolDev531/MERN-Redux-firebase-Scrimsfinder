@@ -62,6 +62,107 @@ const createScrim = async (req, res) => {
   }
 };
 
+const swapPlayer = (currentTeam, movingTeam, movingPlayer) => {
+  const indexToRemove = currentTeam.findIndex(
+    (player) => player?.name === movingPlayer?.name
+  );
+  if (indexToRemove > -1) currentTeam.splice(indexToRemove, 1);
+  movingTeam = [...movingTeam, movingPlayer];
+  return [currentTeam, movingTeam];
+};
+
+const insertPlayerInScrim = async (req, res) => {
+  const { id } = req.params;
+
+  const { playerData } = req.body;
+  const isMoving = req.body.swapData?.isMoving ?? false;
+  const isChangingTeams = req.body.swapData?.isChangingTeams ?? false;
+
+  const teamJoiningName = playerData.team.name;
+
+  const scrim = await Scrim.findById(id);
+
+  const teamJoiningArr =
+    teamJoiningName === 'teamOne' ? scrim.teamOne : scrim.teamTwo;
+
+  const spotTaken = scrim[teamJoiningName].find(
+    (player) => player.role === playerData.role
+  );
+
+  const spotsAvailable = scrim[teamJoiningName].filter(
+    (player) => !player.role
+  );
+
+  let newBody = {};
+
+  if (isMoving) {
+    if (isChangingTeams) {
+      const { currentTeamName, teamChangingTo } = req.body.swapData;
+      const teamLeavingName = currentTeamName;
+
+      const currentTeamArray =
+        currentTeamName === 'teamOne' ? scrim.teamOne : scrim.teamTwo;
+
+      let [teamLeft, teamJoined] = swapPlayer(
+        currentTeamArray,
+        teamChangingTo,
+        playerData
+      );
+
+      newBody = {
+        ...scrim._doc,
+        [teamLeavingName]: teamLeft,
+        [teamJoiningName]: [
+          ...teamJoined.map((player) =>
+            player.name === playerData.name ? { ...playerData } : player
+          ),
+        ],
+      };
+    } else {
+      let filtered = [...teamJoiningArr].filter(
+        (player) => player.name !== playerData.name
+      );
+
+      newBody = {
+        ...scrim._doc,
+        [teamJoiningName]: [...filtered, { ...playerData }],
+      };
+    }
+  } else {
+    newBody = {
+      ...scrim._doc,
+      [teamJoiningName]: [...teamJoiningArr, playerData],
+    };
+  }
+
+  if (spotTaken) {
+    console.log(
+      `spot taken! spots available for team ${playerData.team.name}: ${spotsAvailable}`
+    );
+
+    return res.status(500).json({
+      error: `spot taken! spots available for team ${playerData.team.name}: ${spotsAvailable}`,
+    });
+  } else {
+    await Scrim.findByIdAndUpdate(
+      id,
+      newBody,
+      { new: true },
+      (error, scrim) => {
+        if (error) {
+          return res.status(500).json({ error: error.message });
+        }
+
+        if (!scrim) {
+          return res.status(500).send('Scrim not found');
+        }
+
+        res.status(200).json(scrim);
+      }
+    );
+  }
+};
+
 const updateScrim = async (req, res) => {
   // for changing times, players or casters joining.
 
@@ -118,5 +219,6 @@ module.exports = {
   getScrimById,
   createScrim,
   updateScrim,
+  insertPlayerInScrim,
   deleteScrim,
 };

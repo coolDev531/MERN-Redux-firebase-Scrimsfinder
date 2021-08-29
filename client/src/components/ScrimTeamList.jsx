@@ -1,7 +1,7 @@
 import { useContext, Fragment } from 'react';
 import { useScrimSectionStyles } from '../styles/scrimSection.styles';
 import { CurrentUserContext } from '../context/currentUser';
-import { updateScrim } from '../services/scrims';
+import { insertPlayerInScrim, updateScrim } from '../services/scrims';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Divider from '@material-ui/core/Divider';
@@ -13,7 +13,6 @@ import { RANK_IMAGES, ROLE_IMAGES } from '../utils/imageMaps';
 import Tooltip from '../components/shared/Tooltip';
 import SwapIcon from '@material-ui/icons/SwapHoriz';
 import JoinIcon from '@material-ui/icons/MeetingRoom';
-// import ExitIcon from '@material-ui/icons/ExitToApp';
 import ExitIcon from '@material-ui/icons/NoMeetingRoom';
 
 const compareArrays = (arr1, arr2) => {
@@ -25,15 +24,6 @@ const compareArrays = (arr1, arr2) => {
 
   // If all elements were same.
   return true;
-};
-
-const swapPlayer = (currentTeam, movingTeam, movingPlayer) => {
-  const indexToRemove = currentTeam.findIndex(
-    (player) => player?.name === movingPlayer?.name
-  );
-  if (indexToRemove > -1) currentTeam.splice(indexToRemove, 1);
-  movingTeam = [...movingTeam, movingPlayer];
-  return [currentTeam, movingTeam];
 };
 
 export default function ScrimTeamList({
@@ -55,27 +45,16 @@ export default function ScrimTeamList({
       alert("You're already a caster for this game!");
       return;
     }
-    const teamJoining = teamJoiningName === 'teamOne' ? teamOne : teamTwo;
 
-    const playerData = { ...currentUser, role };
-
-    const newPlayer = {
-      ...currentUser,
-      role,
-      team: { name: teamJoiningName, value: [...teamJoining, playerData] },
+    const dataSending = {
+      playerData: {
+        ...currentUser,
+        role,
+        team: { name: teamJoiningName },
+      },
     };
 
-    const scrimData = {
-      ...scrim,
-      [teamJoiningName]: [
-        ...teamJoining,
-        {
-          ...newPlayer,
-        },
-      ],
-    };
-
-    const updatedScrim = await updateScrim(scrim._id, scrimData);
+    const updatedScrim = await insertPlayerInScrim(scrim._id, dataSending);
 
     if (updatedScrim) {
       getNewScrimsData();
@@ -83,11 +62,15 @@ export default function ScrimTeamList({
   };
 
   const handleSwap = async (teamStr, role) => {
-    let currentTeam = playerEntered.team;
+    let currentTeamName = playerEntered.team.name;
+    const currentTeamArr = currentTeamName === 'teamOne' ? teamOne : teamTwo;
+
     let teamArr = teamStr === 'teamOne' ? teamOne : teamTwo;
-    let scrimData = {};
+
+    let dataSending = {};
+
     // if is swapping teams
-    if (compareArrays(currentTeam.value, teamArr) === false) {
+    if (compareArrays(currentTeamArr, teamArr) === false) {
       console.log(`swapping teams for summoner ${currentUser.name}`);
 
       let newPlayerData = {
@@ -95,48 +78,42 @@ export default function ScrimTeamList({
         role,
       };
 
-      let [teamLeft, teamJoined] = swapPlayer(
-        currentTeam.value,
-        teamArr,
-        newPlayerData
-      );
+      dataSending = {
+        playerData: {
+          ...newPlayerData,
+          team: { name: teamStr },
+        },
+
+        swapData: {
+          isChangingTeams: true,
+          isMoving: true,
+          currentTeamName: playerEntered.team.name,
+          teamChangingTo: teamArr,
+        },
+      };
 
       newPlayerData = {
         ...newPlayerData,
-        team: { name: teamStr, value: teamJoined },
-      };
-
-      let teamLeavingName = teamStr === 'teamOne' ? 'teamTwo' : 'teamOne';
-
-      scrimData = {
-        ...scrim,
-        [teamLeavingName]: teamLeft,
-        [teamStr]: [
-          ...teamJoined.map((player) =>
-            player.name === newPlayerData.name ? { ...newPlayerData } : player
-          ),
-        ],
+        team: { name: teamStr },
       };
     } else {
-      let filtered = [...teamArr].filter(
-        (player) => player.name !== currentUser?.name
-      );
-
-      const playerData = { ...currentUser, role };
-
       const newPlayer = {
         ...currentUser,
         role,
-        team: { name: teamStr, value: [...filtered, playerData] },
+        team: { name: teamStr },
       };
 
-      scrimData = {
-        ...scrim,
-        [teamStr]: [...filtered, { ...newPlayer }],
+      dataSending = {
+        playerData: {
+          ...newPlayer,
+        },
+        swapData: {
+          isMoving: true,
+        },
       };
     }
 
-    const updatedScrim = await updateScrim(scrim._id, scrimData);
+    const updatedScrim = await insertPlayerInScrim(scrim._id, dataSending);
 
     if (updatedScrim) {
       console.log(

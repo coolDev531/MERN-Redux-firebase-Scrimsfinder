@@ -3,8 +3,6 @@ const mongoose = require('mongoose');
 let MONGODB_URI =
   process.env.PROD_MONGODB || 'mongodb://127.0.0.1:27017/scrimsdatabase';
 
-console.log({ MONGODB_URI });
-
 mongoose
   .connect(MONGODB_URI, { useUnifiedTopology: true, useNewUrlParser: true })
   .then(() => {
