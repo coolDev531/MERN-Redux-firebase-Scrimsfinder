@@ -108,7 +108,9 @@ export default function ScrimCreate() {
       <main className="page-content">
         <section className="page-section create-scrim">
           <div className="inner-column">
-            <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+            <form
+              onSubmit={handleSubmit}
+              style={{ width: '80%', marginLeft: 'auto', marginRight: 'auto' }}>
               <Grid
                 container
                 direction="column"
@@ -158,13 +160,14 @@ export default function ScrimCreate() {
                   alignItems="center"
                   justify="center"
                   spacing={2}>
-                  <Grid item>
+                  <Grid item xs={12} sm={2} md={2}>
                     <Select
                       label="region"
                       name="region"
                       value={scrimData.region}
                       className="text-white"
-                      onChange={handleChange}>
+                      onChange={handleChange}
+                      fullWidth>
                       {['NA', 'EU', 'EUNE', 'LAN'].map((region, key) => (
                         <MenuItem value={region} key={key}>
                           {region}
@@ -173,9 +176,10 @@ export default function ScrimCreate() {
                     </Select>
 
                     <FormHelperText className="text-white">
-                      The region this scrim will be hosted on
+                      Scrim region
                     </FormHelperText>
                   </Grid>
+
                   <Grid item>
                     <Select
                       name="lobbyHost"
@@ -199,10 +203,11 @@ export default function ScrimCreate() {
                     </FormHelperText>
                   </Grid>
                 </Grid>
-
-                <Button variant="contained" color="primary" type="submit">
-                  Submit
-                </Button>
+                <Grid item>
+                  <Button variant="contained" color="primary" type="submit">
+                    Submit
+                  </Button>
+                </Grid>
               </Grid>
             </form>
           </div>

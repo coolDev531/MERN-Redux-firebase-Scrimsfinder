@@ -108,7 +108,7 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
   };
 
   const cancelScrim = async () => {
-    let yes = window.confirm('Are you sure you want to delete this scrim?');
+    let yes = window.confirm('Are you sure you want to cancel this scrim?');
     if (!yes) return;
 
     let deletedScrim = await deleteScrim(scrim._id);
@@ -254,11 +254,12 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
                       to unlock lobby name and password
                     </h5>
                     {scrim.createdBy.name === currentUser?.name ? (
-                      <button onClick={cancelScrim}>Cancel event</button>
-                    ) : scrim.createdBy.name !== currentUser?.name &&
-                      currentUser?.ADMIN_SECRET_KEY ===
-                        process.env.REACT_APP_ADMIN_SECRET_KEY ? (
-                      <button onClick={cancelScrim}>Cancel event</button>
+                      <Button
+                        color="secondary"
+                        variant="contained"
+                        onClick={cancelScrim}>
+                        Cancel event
+                      </Button>
                     ) : null}
                   </>
                 ))}
