@@ -4,6 +4,7 @@ import ScrimSection from '../components/ScrimSection';
 import Navbar from '../components/shared/Navbar';
 import { CurrentUserContext } from '../context/currentUser';
 import { ScrimsContext } from '../context/scrimsContext';
+import { getSortedScrims } from '../utils/getSortedScrims';
 
 export default function Scrims() {
   const today = useMemo(() => new Date().toLocaleDateString(), []);
@@ -32,7 +33,10 @@ export default function Scrims() {
       );
 
       // set filtered scrims by date and region
-      setFilteredScrims(filteredScrimsByDateAndRegion);
+      setFilteredScrims(
+        getSortedScrims(filteredScrimsByDateAndRegion),
+        'gameStartTime'
+      );
     };
 
     fetchScrims();
@@ -55,7 +59,10 @@ export default function Scrims() {
       (scrim) => scrim.region === scrimsRegion
     );
 
-    setFilteredScrims(filteredScrimsByDateAndRegion);
+    setFilteredScrims(
+      getSortedScrims(filteredScrimsByDateAndRegion),
+      'gameStartTime'
+    );
     // this runs everytime scrimsRegion and datefilteredScrims changes.
   }, [scrims, scrimsRegion, dateFilteredScrims]);
 

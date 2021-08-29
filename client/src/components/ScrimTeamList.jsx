@@ -63,7 +63,7 @@ export default function ScrimTeamList({
     }
   };
 
-  const handleSwap = async (teamStr, role) => {
+  const handleMovePlayer = async (teamStr, role) => {
     getNewScrimsData();
 
     let currentTeamName = playerEntered.team.name;
@@ -250,7 +250,7 @@ export default function ScrimTeamList({
                   </ListItemAvatar>
                   <ListItemText primary={teamRole} />
                   {!playerEntered ? (
-                    <Tooltip title="Join">
+                    <Tooltip title={`Join: ${teamTitleName} as ${teamRole}`}>
                       <IconButton
                         onClick={() => joinGame(teamName, teamRole)}
                         className={classes.iconButton}>
@@ -259,10 +259,11 @@ export default function ScrimTeamList({
                     </Tooltip>
                   ) : (
                     <>
-                      <Tooltip title="Swap">
+                      <Tooltip
+                        title={`Move to: ${teamTitleName} as ${teamRole}`}>
                         <IconButton
                           className={classes.iconButton}
-                          onClick={() => handleSwap(teamName, teamRole)}>
+                          onClick={() => handleMovePlayer(teamName, teamRole)}>
                           <SwapIcon />
                         </IconButton>
                       </Tooltip>
