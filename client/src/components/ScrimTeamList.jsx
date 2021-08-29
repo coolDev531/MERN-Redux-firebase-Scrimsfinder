@@ -169,19 +169,23 @@ export default function ScrimTeamList({
                           rel="noreferrer">
                           {playerAssigned?.name}
                         </a>
-                        &nbsp;
-                        <img
-                          width="25px"
-                          style={{ objectFit: 'cover' }}
-                          alt={playerAssigned.role}
-                          src={
-                            // replace number with empty string: Diamond 1 => Diamond
-                            // get rank image from images map by player.rank
-                            RANK_IMAGES[
-                              playerAssigned?.rank.replace(/[^a-z$]/gi, '')
-                            ]
-                          }
-                        />
+                        {playerAssigned.rank !== 'Unranked' && (
+                          <>
+                            &nbsp;
+                            <img
+                              width="25px"
+                              style={{ objectFit: 'cover' }}
+                              alt={playerAssigned.role}
+                              src={
+                                // replace number with empty string: Diamond 1 => Diamond
+                                // get rank image from images map by player.rank
+                                RANK_IMAGES[
+                                  playerAssigned?.rank.replace(/[^a-z$]/gi, '')
+                                ]
+                              }
+                            />
+                          </>
+                        )}
                       </Grid>
                     }
                     secondary={
