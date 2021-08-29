@@ -28,7 +28,7 @@ export default function ScrimDetail() {
       <main className="page-content" style={{ paddingBottom: '40px' }}>
         <section className="page-section scrim">
           <div id={`scrim-container ${scrim._id}`}>
-            <ScrimSection scrim={scrim} />
+            <ScrimSection scrim={scrim} isInDetail />
           </div>
         </section>
       </main>

@@ -8,7 +8,7 @@ import ScrimTeamList from './ScrimTeamList';
 import Moment from 'react-moment';
 import AdminArea from './shared/AdminArea';
 import { Box, Button, Grid } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 // utils / services
 import { updateScrim, deleteScrim } from '../services/scrims';
 import { copyTextToClipboard } from '../utils/copyToClipboard';
@@ -32,14 +32,14 @@ const compareDates = (scrim) => {
 
 const MAX_CASTER_AMOUNT = 2;
 
-export default function ScrimSection({ scrim }) {
+export default function ScrimSection({ scrim, isInDetail }) {
   const { toggleFetch, setScrims } = useContext(ScrimsContext);
   const [currentUser] = useContext(CurrentUserContext);
   const [playerEntered, setPlayerEntered] = useState(false);
   const [casterEntered, setCasterEntered] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
   const classes = useScrimSectionStyles();
-
+  const history = useHistory();
   const { teamOne, teamTwo, casters } = scrim;
 
   const getNewScrimsData = () => toggleFetch((prevState) => !prevState);
@@ -129,6 +129,11 @@ export default function ScrimSection({ scrim }) {
 
     if (deletedScrim) {
       setScrims((prevState) => prevState.filter((s) => s._id !== scrim._id));
+
+      if (isInDetail) {
+        history.push('/');
+        getNewScrimsData();
+      }
     }
   };
 
@@ -151,7 +156,10 @@ export default function ScrimSection({ scrim }) {
             alignItems="center"
             justify="space-between">
             <Grid item>
-              <Link className="link" style={{ textDecorationColor: '#000' }}>
+              <Link
+                className="link"
+                style={{ textDecorationColor: '#000' }}
+                to={`/scrims/${scrim._id}`}>
                 <h1 className="text-black">{scrim.createdBy.name}'s Lobby</h1>
               </Link>
             </Grid>

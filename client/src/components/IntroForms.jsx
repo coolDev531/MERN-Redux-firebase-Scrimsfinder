@@ -47,8 +47,8 @@ export default function IntroForms({
           name="adminKey"
           value={userData.adminKey}
           onChange={(e) => handleChange(e, setUserData)}
-          label="Admin key (if mod)"
-          helperText="not required"
+          label="Admin key (not required)"
+          helperText="You'll need an admin key to create scrims/lobbies."
         />
       </Grid>
     </>

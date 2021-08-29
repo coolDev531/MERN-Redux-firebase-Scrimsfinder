@@ -17,6 +17,7 @@ import { Link, useHistory, useLocation } from 'react-router-dom';
 // import { BOOTCAMP_LOL_SRC } from '../../utils/bootcampImg';
 import moment from 'moment';
 import 'moment-timezone';
+import AdminArea from './AdminArea';
 
 const useStyles = makeStyles((theme) => ({
   offset: theme.mixins.offset,
@@ -75,7 +76,7 @@ export default function Navbar({
 
               <div className="d-flex mr-3">
                 {pathname !== '/scrims/new' ? (
-                  <>
+                  <AdminArea>
                     <Button
                       className="mr-3"
                       variant="contained"
@@ -83,7 +84,7 @@ export default function Navbar({
                       onClick={() => history.push('/scrims/new')}>
                       Create Scrim
                     </Button>
-                  </>
+                  </AdminArea>
                 ) : (
                   <Button
                     className="mr-3"
