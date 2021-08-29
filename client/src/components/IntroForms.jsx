@@ -82,7 +82,7 @@ export default function IntroForms({
       {/* exclude this number select from divisions without numbers */}
       {divisionsWithNumbers.includes(rankData.rankDivision) && (
         <Grid item>
-          <FormHelperText>rank number</FormHelperText>
+          <FormHelperText>Rank Number</FormHelperText>
           <Select
             name="rankNumber"
             required={divisionsWithNumbers.includes(rankData.rankDivision)}
