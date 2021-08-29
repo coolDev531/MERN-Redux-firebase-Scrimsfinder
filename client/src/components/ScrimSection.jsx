@@ -160,7 +160,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
                 className="link"
                 style={{ textDecorationColor: '#000' }}
                 to={`/scrims/${scrim._id}`}>
-                <h1 className="text-black">{scrim.createdBy.name}'s Lobby</h1>
+                <h1 className="text-black">{scrim.createdBy.name}'s Scrim</h1>
               </Link>
             </Grid>
             <Grid item container sm={4} alignItems="center" justify="flex-end">
