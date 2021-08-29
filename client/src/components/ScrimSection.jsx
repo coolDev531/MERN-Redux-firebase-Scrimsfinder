@@ -4,6 +4,7 @@ import CountdownTimer from './CountdownTimer';
 import { useScrimSectionStyles } from '../styles/scrimSection.styles';
 import { updateScrim, deleteScrim } from '../services/scrims';
 import ScrimTeamList from './ScrimTeamList';
+import Moment from 'react-moment';
 
 const compareDates = (scrim) => {
   let currentTime = new Date().getTime();
@@ -111,6 +112,7 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
       getNewScrimsData();
     }
   };
+
   const cancelScrim = async () => {
     let deletedScrim = await deleteScrim(scrim._id);
 
@@ -121,6 +123,16 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
 
   const teamOneDifference = 5 - teamOne.length;
   const teamTwoDifference = 5 - teamTwo.length;
+
+  console.log(
+    'env:',
+    process.env.REACT_APP_ADMIN_KEY.includes(currentUser.adminKey)
+  );
+
+  let result = [...process.env.REACT_APP_ADMIN_KEY].join('');
+  console.log(result.trim().includes(currentUser.adminKey.trim()), result);
+
+  console.log('user:', currentUser.adminKey);
 
   return (
     <div className="page-section one-scrim__container">
@@ -138,7 +150,10 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
                   excludeSeconds
                 )}
               </h2>
-
+              {process.env.REACT_APP_ADMIN_SECRET_KEY ===
+              currentUser.adminKey ? (
+                <button onClick={cancelScrim}>Cancel event</button>
+              ) : null}
               <div className="casters-container ">
                 {casters.length === 2 ? (
                   <h2 className="text-black">

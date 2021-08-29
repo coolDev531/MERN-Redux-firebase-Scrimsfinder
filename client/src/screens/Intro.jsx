@@ -113,10 +113,7 @@ export default function Intro() {
 
       let newUser = {
         ...userData,
-        isAdmin:
-          userData.adminKey === process.env.REACT_APP_ADMIN_SECRET_KEY
-            ? true
-            : false,
+        adminKey: userData.adminKey.trim(),
       };
 
       let yes = window.confirm(`Are you sure you want to create this account? \n

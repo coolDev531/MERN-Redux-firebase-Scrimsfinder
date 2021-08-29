@@ -101,18 +101,21 @@ export default function IntroForms({
   );
 
   const regionForm = (
-    <>
-      <label htmlFor="region">Region</label>
-      <select
+    <Grid item sm={12}>
+      <FormHelperText>Region</FormHelperText>
+      <Select
         name="region"
         value={userData.region}
         onChange={(e) => handleChange(e, setUserData)}
         required>
+        <MenuItem selected disabled>
+          select region
+        </MenuItem>
         {['NA', 'EUW', 'EUNE', 'LAN'].map((region) => (
-          <option value={region}>{region}</option>
+          <MenuItem value={region}>{region}</MenuItem>
         ))}
-      </select>
-    </>
+      </Select>
+    </Grid>
   );
 
   let forms = [nameForm, divisionForm, regionForm];

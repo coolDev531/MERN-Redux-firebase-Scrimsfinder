@@ -60,13 +60,14 @@ export default function Navbar({
           <div className="inner-column">
             <div className="d-flex align-center justify-between">
               <div className="logo d-flex align-center">
-                <img
+                {/* need license to use img */}
+                {/* <img
                   src={BOOTCAMP_LOL_SRC}
                   alt="logo"
                   style={{ marginRight: '10px' }}
-                />
+                /> */}
                 &nbsp;
-                <h1>Scrims finder</h1>
+                <h1>LoL Scrims finder</h1>
               </div>
 
               <div className="d-flex mr-3">
