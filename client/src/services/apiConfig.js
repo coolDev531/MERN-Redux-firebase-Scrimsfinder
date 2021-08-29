@@ -3,7 +3,7 @@ import axios from 'axios';
 let apiUrl;
 
 const apiUrls = {
-  production: 'https://lol-scrims-finder.herokuapp.com/api',
+  production: process.env.REACT_APP_API_URL,
   development: 'http://localhost:3000/api',
 };
 
