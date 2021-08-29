@@ -51,7 +51,7 @@ const Scrim = new Schema(
     },
     region: { type: String, default: 'NA', required: true },
     createdBy: { type: Object, required: true },
-    teamWon: { type: 'String' },
+    teamWon: { type: 'String', default: null },
   },
   { timestamps: true }
 );
