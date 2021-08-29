@@ -73,14 +73,10 @@ export default function ScrimTeamList({
     if (compareArrays(currentTeamArr, teamArr) === false) {
       console.log(`swapping teams for summoner ${currentUser.name}`);
 
-      let newPlayerData = {
-        ...currentUser,
-        role,
-      };
-
       dataSending = {
         playerData: {
-          ...newPlayerData,
+          ...currentUser,
+          role,
           team: { name: teamStr },
         },
 
@@ -91,21 +87,12 @@ export default function ScrimTeamList({
           teamChangingToName: teamStr,
         },
       };
-
-      newPlayerData = {
-        ...newPlayerData,
-        team: { name: teamStr },
-      };
     } else {
-      const newPlayer = {
-        ...currentUser,
-        role,
-        team: { name: teamStr },
-      };
-
       dataSending = {
         playerData: {
-          ...newPlayer,
+          ...currentUser,
+          role,
+          team: { name: teamStr },
         },
         swapData: {
           isMoving: true,
