@@ -13,8 +13,8 @@ import {
 } from '@material-ui/core';
 import { useContext } from 'react';
 import { CurrentUserContext } from '../../context/currentUser';
-import { useHistory, useLocation } from 'react-router-dom';
-import { BOOTCAMP_LOL_SRC } from '../../utils/bootcampImg';
+import { Link, useHistory, useLocation } from 'react-router-dom';
+// import { BOOTCAMP_LOL_SRC } from '../../utils/bootcampImg';
 import moment from 'moment';
 import 'moment-timezone';
 
@@ -30,6 +30,7 @@ export default function Navbar({
   scrimsDate,
   setScrimsDate,
   showDropdowns,
+  showLess,
 }) {
   const [currentUser, setCurrentUser] = useContext(CurrentUserContext);
   const history = useHistory();
@@ -67,7 +68,9 @@ export default function Navbar({
                   style={{ marginRight: '10px' }}
                 /> */}
                 &nbsp;
-                <h1>LoL Scrims finder</h1>
+                <Link to="/" className="link">
+                  <h1>LoL Scrims finder</h1>
+                </Link>
               </div>
 
               <div className="d-flex mr-3">
@@ -101,63 +104,65 @@ export default function Navbar({
               </div>
             </div>
             <br />
-            <Grid container direction="row" justify="space-between">
-              <div>
-                <h2>Welcome: {currentUser?.name}</h2>
-              </div>
-
-              {showDropdowns && (
-                <div
-                  id="nav__selects--container"
-                  className="d-flex align-center">
-                  <div id="nav__date-filter--container">
-                    <TextField
-                      id="date"
-                      required
-                      label="Scrims Date"
-                      type="date"
-                      name="scrimsDate"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      value={moment(scrimsDate).format('yyyy-MM-DD')}
-                      onChange={(e) => {
-                        setScrimsDate(
-                          new Date(e.target.value.replace('-', '/'))
-                        );
-                      }}
-                    />
-
-                    <FormHelperText className="text-white">
-                      Filter scrims by date
-                    </FormHelperText>
-                  </div>
-                  <Box marginRight={4} />
-
-                  <div id="nav__region-filter--container">
-                    <InputLabel className="text-white">Region</InputLabel>
-
-                    <Select
-                      value={scrimsRegion}
-                      className="text-white"
-                      onChange={(e) => {
-                        const region = e.target.value;
-                        toggleFetch((prev) => !prev);
-                        setScrimsRegion(region); // set the navbar select value to selected region
-                      }}>
-                      {selectRegions.map((region, key) => (
-                        <MenuItem value={region} key={key}>
-                          {region}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    <FormHelperText className="text-white">
-                      Filter scrims by region
-                    </FormHelperText>
-                  </div>
+            {!showLess && (
+              <Grid container direction="row" justify="space-between">
+                <div>
+                  <h2>Welcome: {currentUser?.name}</h2>
                 </div>
-              )}
-            </Grid>
+
+                {showDropdowns && (
+                  <div
+                    id="nav__selects--container"
+                    className="d-flex align-center">
+                    <div id="nav__date-filter--container">
+                      <TextField
+                        id="date"
+                        required
+                        label="Scrims Date"
+                        type="date"
+                        name="scrimsDate"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        value={moment(scrimsDate).format('yyyy-MM-DD')}
+                        onChange={(e) => {
+                          setScrimsDate(
+                            new Date(e.target.value.replace('-', '/'))
+                          );
+                        }}
+                      />
+
+                      <FormHelperText className="text-white">
+                        Filter scrims by date
+                      </FormHelperText>
+                    </div>
+                    <Box marginRight={4} />
+
+                    <div id="nav__region-filter--container">
+                      <InputLabel className="text-white">Region</InputLabel>
+
+                      <Select
+                        value={scrimsRegion}
+                        className="text-white"
+                        onChange={(e) => {
+                          const region = e.target.value;
+                          toggleFetch((prev) => !prev);
+                          setScrimsRegion(region); // set the navbar select value to selected region
+                        }}>
+                        {selectRegions.map((region, key) => (
+                          <MenuItem value={region} key={key}>
+                            {region}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      <FormHelperText className="text-white">
+                        Filter scrims by region
+                      </FormHelperText>
+                    </div>
+                  </div>
+                )}
+              </Grid>
+            )}
           </div>
         </Toolbar>
       </AppBar>

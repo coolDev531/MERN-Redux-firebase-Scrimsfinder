@@ -14,8 +14,10 @@ import 'moment-timezone';
 import { createScrim } from './../services/scrims';
 import { CurrentUserContext } from '../context/currentUser';
 import { Select } from '@material-ui/core';
+import { ScrimsContext } from '../context/scrimsContext';
 
 export default function ScrimCreate() {
+  const { toggleFetch } = useContext(ScrimsContext);
   const [currentUser] = useContext(CurrentUserContext);
   const [scrimData, setScrimData] = useState({
     gameStartTime: new Date().toISOString(),
@@ -23,7 +25,6 @@ export default function ScrimCreate() {
     region: currentUser.region,
     createdBy: currentUser,
   });
-
   const [dateData, setDateData] = useState({
     gameStartDate: new Date(),
     gameStartHours: [
@@ -93,7 +94,7 @@ export default function ScrimCreate() {
 
     const createdScrim = await createScrim(scrimToCreate);
 
-    console.log({ createdScrim });
+    toggleFetch((prevState) => !prevState);
 
     setCreated({ createdScrim });
   };

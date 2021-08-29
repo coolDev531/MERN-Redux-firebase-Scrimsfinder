@@ -4,14 +4,13 @@ import ScrimSection from '../components/ScrimSection';
 import Navbar from '../components/shared/Navbar';
 import { CurrentUserContext } from '../context/currentUser';
 import { ScrimsContext } from '../context/scrimsContext';
-import { getAllScrims } from './../services/scrims';
 
 export default function Scrims() {
   const today = useMemo(() => new Date().toLocaleDateString(), []);
 
   const [currentUser] = useContext(CurrentUserContext);
 
-  const { scrims, setScrims, fetch, toggleFetch } = useContext(ScrimsContext);
+  const { scrims, toggleFetch } = useContext(ScrimsContext);
 
   const [filteredScrims, setFilteredScrims] = useState([]); // the array of filtered scrims
 
