@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useMemo } from 'react';
 import { CurrentUserContext } from '../context/currentUser';
 import CountdownTimer from './CountdownTimer';
 import { useScrimSectionStyles } from '../styles/scrimSection.styles';
@@ -7,6 +7,7 @@ import ScrimTeamList from './ScrimTeamList';
 import Moment from 'react-moment';
 import AdminArea from './shared/AdminArea';
 import { Button, Grid } from '@material-ui/core';
+import { copyTextToClipboard } from '../utils/copyToClipboard';
 
 const compareDates = (scrim) => {
   let currentTime = new Date().getTime();
@@ -34,6 +35,11 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
   const { teamOne, teamTwo, casters } = scrim;
 
   const getNewScrimsData = () => toggleFetch((prevState) => !prevState);
+
+  const gameUrl = useMemo(
+    () => `${window.location.origin}/scrims/${scrim._id}`,
+    [scrim._id]
+  );
 
   useEffect(() => {
     let gameHasStarted = compareDates(scrim) > 0;
@@ -136,7 +142,14 @@ export default function ScrimSection({ scrim, toggleFetch, setScrims }) {
             direction="row"
             alignItems="center"
             justify="space-between">
-            <h1 className="text-black">{scrim.createdBy.name}'s Lobby</h1>
+            <Grid item>
+              <h1 className="text-black">{scrim.createdBy.name}'s Lobby</h1>
+            </Grid>
+            <Grid item>
+              <button onClick={() => copyTextToClipboard(gameUrl)}>
+                Share game link
+              </button>
+            </Grid>
             <AdminArea>
               <Grid item>
                 <Button
