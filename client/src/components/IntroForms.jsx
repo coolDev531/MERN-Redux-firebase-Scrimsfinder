@@ -22,8 +22,8 @@ export default function IntroForms({
           value={userData.name}
           onChange={(e) => handleChange(e, setUserData)}
           onKeyPress={(e) => {
-            // if user enters special characters don't do anything
-            if (!/^\w+$/.test(e.key)) e.preventDefault();
+            // if user enters special characters don't do anything, allow spaces
+            if (!/^[0-9a-zA-Z \b]+$/.test(e.key)) e.preventDefault();
           }}
           label="Summoner Name"
           helperText="required"
