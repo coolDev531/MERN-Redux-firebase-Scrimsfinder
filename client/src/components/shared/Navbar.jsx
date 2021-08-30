@@ -65,7 +65,7 @@ export default function Navbar({
     hideCurrentScrims = hideProps?.hideCurrentScrims,
     hideUpcomingScrims = hideProps?.hideUpcomingScrims,
     setHidePreviousScrims = hideProps?.setHidePreviousScrims,
-    setHideCurrentScrims = hideProps?.setHidePreviousScrims,
+    setHideCurrentScrims = hideProps?.setHideCurrentScrimssScrims,
     setHideUpcomingScrims = hideProps?.setHideUpcomingScrims;
 
   return (
