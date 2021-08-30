@@ -61,14 +61,12 @@ export default function Navbar({
     setCurrentUser(null);
   };
 
-  const {
-    hidePreviousScrims,
-    hideCurrentScrims,
-    hideUpcomingScrims,
-    setHidePreviousScrims,
-    setHideCurrentScrims,
-    setHideUpcomingScrims,
-  } = hideProps ?? null;
+  let hidePreviousScrims = hideProps?.hidePreviousScrims,
+    hideCurrentScrims = hideProps?.hideCurrentScrims,
+    hideUpcomingScrims = hideProps?.hideUpcomingScrims,
+    setHidePreviousScrims = hideProps?.setHidePreviousScrims,
+    setHideCurrentScrims = hideProps?.setHidePreviousScrims,
+    setHideUpcomingScrims = hideProps?.setHideUpcomingScrims;
 
   return (
     <>
