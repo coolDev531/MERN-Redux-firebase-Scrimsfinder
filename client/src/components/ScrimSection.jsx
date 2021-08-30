@@ -278,7 +278,6 @@ export default function ScrimSection({ scrim, isInDetail }) {
                 gameStarted={gameStarted}
                 setGameStarted={setGameStarted}
                 scrim={scrim}
-                teamWon={scrim.teamWon}
               />
 
               {gameStarted &&
@@ -298,7 +297,8 @@ export default function ScrimSection({ scrim, isInDetail }) {
                       </>
                     )}
 
-                    {scrim.createdBy.name === currentUser.name &&
+                    {(scrim.createdBy.name === currentUser.name ||
+                      scrim.lobbyHost.name === currentUser.name) &&
                       !scrim.teamWon && (
                         <Grid
                           item

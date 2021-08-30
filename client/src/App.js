@@ -21,13 +21,26 @@ const theme = createTheme({
 });
 
 function App() {
-  const [currentUser] = useContext(CurrentUserContext);
+  const [currentUser, setCurrentUser] = useContext(CurrentUserContext);
   const { push } = useHistory();
 
   useEffect(() => {
     if (!currentUser) {
       return push('./user-setup');
     }
+    // eslint-disable-next-line
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      window.setUser = (data) => {
+        setCurrentUser((prevState) => ({
+          ...prevState,
+          name: data,
+        }));
+      };
+    }
+
     // eslint-disable-next-line
   }, [currentUser]);
 

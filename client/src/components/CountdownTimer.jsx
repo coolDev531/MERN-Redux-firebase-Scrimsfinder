@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function CountdownTimer({ scrim, setGameStarted, gameStarted, teamWon }) {
+function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
   const [isTimerStarted, setIsTimerStarted] = useState(false);
   const [timerDays, setTimerDays] = useState('00');
   const [timerHours, setTimerHours] = useState('00');
@@ -104,7 +104,7 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted, teamWon }) {
   if (gameStarted) {
     return (
       <div className={classes.timer}>
-        <p>{!teamWon ? 'GAME IN PROGRESS' : `${teamWon} Won!`}</p>
+        <p>{!scrim.teamWon ? 'GAME IN PROGRESS' : `${scrim.teamWon} Won!`}</p>
       </div>
     );
   }
