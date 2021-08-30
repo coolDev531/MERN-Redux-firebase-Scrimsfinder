@@ -143,24 +143,28 @@ export default function Scrims() {
               {/* CURRENT SCRIMS */}
               {!hideCurrentScrims && (
                 <>
-                  <div className="inner-column">
-                    <div
-                      style={{
-                        marginBottom: '40px',
-                        borderBottom: '1px solid white',
-                      }}>
-                      <Typography align="center" variant="h3" gutterBottom>
-                        {currentScrims.length > 0 && 'Current scrims'}
-                      </Typography>
-                    </div>
-                  </div>
+                  {currentScrims.length > 0 ? (
+                    <>
+                      <div className="inner-column">
+                        <div
+                          style={{
+                            marginBottom: '40px',
+                            borderBottom: '1px solid white',
+                          }}>
+                          <Typography align="center" variant="h3" gutterBottom>
+                            {currentScrims.length > 0 && 'Current scrims'}
+                          </Typography>
+                        </div>
+                      </div>
 
-                  {currentScrims.map((scrim, idx) => (
-                    <Fragment key={idx}>
-                      <ScrimSection scrim={scrim} />
-                      <div className="page-break" />
-                    </Fragment>
-                  ))}
+                      {currentScrims.map((scrim, idx) => (
+                        <Fragment key={idx}>
+                          <ScrimSection scrim={scrim} />
+                          <div className="page-break" />
+                        </Fragment>
+                      ))}
+                    </>
+                  ) : null}
                   <div className="page-break" />
                 </>
               )}
@@ -195,7 +199,7 @@ export default function Scrims() {
               {/* UPCOMING SCRIMS END */}
 
               {/* PREVIOUS SCRIMS */}
-              {hidePreviousScrims && (
+              {!hidePreviousScrims && (
                 <div className="inner-column" style={{ marginTop: '20px' }}>
                   <>
                     {previousScrims.length > 0 ? (
