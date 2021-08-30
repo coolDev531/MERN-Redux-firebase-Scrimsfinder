@@ -319,7 +319,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
                           </Grid>
                           {['Team One (Blue Side)', 'Team Two (Red Side)'].map(
                             (teamTitle, idx) => (
-                              <Grid item>
+                              <Grid item key={idx}>
                                 <Button
                                   style={{
                                     backgroundColor: idx === 0 ? 'blue' : 'red',
