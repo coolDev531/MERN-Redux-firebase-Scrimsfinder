@@ -2,6 +2,7 @@ import React, { useState, createContext, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import useInterval from '../hooks/useInterval';
 import { getAllScrims } from './../services/scrims';
+import devLog from '../utils/devLog';
 
 const ScrimsContext = createContext();
 
@@ -14,6 +15,7 @@ function ScrimsProvider({ children }) {
 
   useEffect(() => {
     const fetchScrims = async () => {
+      devLog('fetching scrims');
       const scrimsData = await getAllScrims();
       setScrims(scrimsData);
       setScrimsLoaded(true);
@@ -23,6 +25,7 @@ function ScrimsProvider({ children }) {
   }, [fetch, pathname]);
 
   const loadScrims = async () => {
+    devLog('fetching scrims (interval)');
     const scrimsData = await getAllScrims();
     setScrims(scrimsData);
   };

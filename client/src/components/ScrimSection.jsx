@@ -155,7 +155,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
             container
             direction="row"
             alignItems="center"
-            justify="space-between">
+            justifyContent="space-between">
             <Grid item>
               <Link
                 className="link"
@@ -166,7 +166,12 @@ export default function ScrimSection({ scrim, isInDetail }) {
                 </h1>
               </Link>
             </Grid>
-            <Grid item container sm={4} alignItems="center" justify="flex-end">
+            <Grid
+              item
+              container
+              sm={4}
+              alignItems="center"
+              justifyContent="flex-end">
               <Button
                 variant="contained"
                 color="primary"
@@ -219,7 +224,6 @@ export default function ScrimSection({ scrim, isInDetail }) {
                 <div className="d-flex align-center gap-20">
                   {casters.length !== MAX_CASTER_AMOUNT && (
                     <Button
-                      Button
                       variant="contained"
                       color="primary"
                       disabled={

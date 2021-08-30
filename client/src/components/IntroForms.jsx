@@ -127,7 +127,7 @@ export default function IntroForms({
   return (
     <Grid
       container
-      justify="flex-start"
+      justifyContent="flex-start"
       direction={matchesSm ? 'column' : 'row'}
       alignItems="center"
       style={{ padding: '20px 0' }}>
