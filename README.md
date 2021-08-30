@@ -26,4 +26,18 @@ If you have an admin key, you can host a scrim/lobby. Then players just have to 
 # Some debates
 - Not sure if everyone should be able to make lobbies or only people with admin keys (trying to keep scrims amount low for the free-plan database)
 - Not sure if we should have full authentication with passwords and usernames (pros: removal of impersonation, reliable. cons: less plug and play, people more likely to get discouraged of using it)
- 
+
+
+-----------
+
+# Dev area
+
+ ## Back-end
+  Back-end is made using `Express` & `Node.js`, with `Mongoose` to connect to the `MongoDB` database.
+  
+ ## Front-End
+  Front-end is made using the `React` library and was bootstrapped using `Create-React-App`. It uses `@material-ui/core` as the UI framework.
+  
+ ## running it on your machine
+ - to run back-end, type in cmd: `yarn` to install latest-dependencies, then run the command: `npm run dev`.
+ - to run front-end, cd into `client` directory and run `yarn` to install dependencies, then run `yarn start` to run the server.
