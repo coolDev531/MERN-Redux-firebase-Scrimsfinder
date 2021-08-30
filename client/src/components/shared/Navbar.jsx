@@ -68,7 +68,7 @@ export default function Navbar({
     setHidePreviousScrims,
     setHideCurrentScrims,
     setHideUpcomingScrims,
-  } = hideProps;
+  } = hideProps ?? null;
 
   return (
     <>
