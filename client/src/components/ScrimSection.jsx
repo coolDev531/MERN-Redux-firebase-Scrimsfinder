@@ -10,7 +10,11 @@ import AdminArea from './shared/AdminArea';
 import { Box, Button, Grid } from '@material-ui/core';
 import { Link, useHistory } from 'react-router-dom';
 // utils / services
-import { updateScrim, deleteScrim } from '../services/scrims';
+import {
+  updateScrim,
+  deleteScrim,
+  removeCasterFromScrim,
+} from '../services/scrims';
 import { copyTextToClipboard } from '../utils/copyToClipboard';
 
 // icons
@@ -103,14 +107,11 @@ export default function ScrimSection({ scrim, isInDetail }) {
   };
 
   const leaveCast = async () => {
-    const scrimData = {
-      ...scrim,
-      casters: scrim.casters.filter(
-        (caster) => caster.name !== casterEntered.name
-      ),
-    };
+    getNewScrimsData();
 
-    const updatedScrim = await updateScrim(scrim._id, scrimData);
+    const updatedScrim = await removeCasterFromScrim(scrim._id, {
+      casterData: casterEntered,
+    });
 
     if (updatedScrim) {
       console.log(
@@ -214,19 +215,21 @@ export default function ScrimSection({ scrim, isInDetail }) {
                 )}
 
                 <div className="d-flex align-center gap-20">
-                  <Button
-                    Button
-                    variant="contained"
-                    color="primary"
-                    disabled={
-                      casters.length === MAX_CASTER_AMOUNT ||
-                      scrim.casters.find(
-                        (casterName) => casterName === currentUser?.name
-                      )
-                    }
-                    onClick={joinCast}>
-                    join cast
-                  </Button>
+                  {casters.length !== MAX_CASTER_AMOUNT && (
+                    <Button
+                      Button
+                      variant="contained"
+                      color="primary"
+                      disabled={
+                        casters.length === MAX_CASTER_AMOUNT ||
+                        scrim.casters.find(
+                          (casterName) => casterName === currentUser?.name
+                        )
+                      }
+                      onClick={joinCast}>
+                      join cast
+                    </Button>
+                  )}
 
                   {casterEntered && (
                     <Button

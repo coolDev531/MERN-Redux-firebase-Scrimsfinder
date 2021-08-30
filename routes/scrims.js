@@ -10,6 +10,7 @@ router.put('/scrims/:id', controllers.updateScrim); // PUT
 router.put('/scrims/:id/insert-player', controllers.insertPlayerInScrim); // PUT
 router.put('/scrims/:id/remove-player', controllers.removePlayerFromScrim); // PUT
 router.put('/scrims/:id/insert-caster', controllers.insertCasterInScrim); // PUT
+router.put('/scrims/:id/remove-caster', controllers.removeCasterFromScrim); // PUT
 router.delete('/scrims/:id', controllers.deleteScrim); // DELETE
 
 module.exports = router;

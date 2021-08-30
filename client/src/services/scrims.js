@@ -36,9 +36,9 @@ export const updateScrim = async (id, scrim) => {
   }
 };
 
-export const insertPlayerInScrim = async (id, scrim) => {
+export const insertPlayerInScrim = async (id, playerData) => {
   try {
-    const response = await api.put(`/scrims/${id}/insert-player`, scrim);
+    const response = await api.put(`/scrims/${id}/insert-player`, playerData);
     return response.data;
   } catch (error) {
     const errorMsg = error.response.data.error;
@@ -46,9 +46,9 @@ export const insertPlayerInScrim = async (id, scrim) => {
   }
 };
 
-export const removePlayerFromScrim = async (id, scrim) => {
+export const removePlayerFromScrim = async (id, playerData) => {
   try {
-    const response = await api.put(`/scrims/${id}/remove-player`, scrim);
+    const response = await api.put(`/scrims/${id}/remove-player`, playerData);
     return response.data;
   } catch (error) {
     const errorMsg = error.response.data.error;
@@ -56,9 +56,19 @@ export const removePlayerFromScrim = async (id, scrim) => {
   }
 };
 
-export const insertCasterInScrim = async (id, scrim) => {
+export const insertCasterInScrim = async (id, data) => {
   try {
-    const response = await api.put(`/scrims/${id}/insert-caster`, scrim);
+    const response = await api.put(`/scrims/${id}/insert-caster`, data);
+    return response.data;
+  } catch (error) {
+    const errorMsg = error.response.data.error;
+    alert(errorMsg);
+  }
+};
+
+export const removeCasterFromScrim = async (id, data) => {
+  try {
+    const response = await api.put(`/scrims/${id}/remove-caster`, data);
     return response.data;
   } catch (error) {
     const errorMsg = error.response.data.error;

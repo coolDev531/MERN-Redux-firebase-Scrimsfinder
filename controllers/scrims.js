@@ -328,6 +328,38 @@ const insertCasterInScrim = async (req, res) => {
   session.endSession();
 };
 
+const removeCasterFromScrim = async (req, res) => {
+  const session = await Scrim.startSession();
+  const { id } = req.params;
+  const { casterData } = req.body;
+
+  await session.withTransaction(async () => {
+    const scrim = await Scrim.findById(id);
+
+    const bodyData = {
+      ...scrim._doc,
+      casters: scrim._doc.casters.filter((caster) => caster !== casterData),
+    };
+
+    await Scrim.findByIdAndUpdate(
+      id,
+      bodyData,
+      { new: true },
+      (error, scrim) => {
+        if (error) {
+          return res.status(500).json({ error: error.message });
+        }
+        if (!scrim) {
+          return res.status(500).send('Scrim not found');
+        }
+
+        res.status(200).json(scrim);
+      }
+    );
+  });
+  session.endSession();
+};
+
 module.exports = {
   getAllScrims,
   getScrimById,
@@ -336,5 +368,6 @@ module.exports = {
   insertPlayerInScrim,
   deleteScrim,
   removePlayerFromScrim,
+  removeCasterFromScrim,
   insertCasterInScrim,
 };
