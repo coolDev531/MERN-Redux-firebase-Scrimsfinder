@@ -77,9 +77,11 @@ export default function ScrimSection({ scrim, isInDetail }) {
       setCasterEntered(false);
     }
 
-    return foundPlayer
-      ? setPlayerEntered(foundPlayer)
-      : setPlayerEntered(false);
+    if (foundPlayer) {
+      setPlayerEntered(foundPlayer);
+    } else {
+      setPlayerEntered(false);
+    }
   }, [scrim, currentUser.name, teamOne, teamTwo]);
 
   const joinCast = async () => {
