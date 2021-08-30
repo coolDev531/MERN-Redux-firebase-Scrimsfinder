@@ -161,8 +161,8 @@ export default function Scrims() {
                         </div>
                       </div>
 
-                      {currentScrims.map((scrim, idx) => (
-                        <Fragment key={idx}>
+                      {currentScrims.map((scrim) => (
+                        <Fragment key={scrim._id}>
                           <ScrimSection scrim={scrim} />
                           <div className="page-break" />
                         </Fragment>
@@ -191,8 +191,8 @@ export default function Scrims() {
                     </div>
                   </div>
 
-                  {upcomingScrims.map((scrim, idx) => (
-                    <Fragment key={idx}>
+                  {upcomingScrims.map((scrim) => (
+                    <Fragment key={scrim._id}>
                       <ScrimSection scrim={scrim} />
                       <div className="page-break" />
                     </Fragment>
@@ -218,8 +218,8 @@ export default function Scrims() {
                       </div>
                     </div>
                   ) : null}
-                  {previousScrims.map((scrim, idx) => (
-                    <Fragment key={idx}>
+                  {previousScrims.map((scrim) => (
+                    <Fragment key={scrim._id}>
                       <ScrimSection scrim={scrim} />
                       <div className="page-break" />
                     </Fragment>

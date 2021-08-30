@@ -282,7 +282,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
                 padding: '10px',
                 borderRadius: '4px',
               }}>
-              {!gameStarted && (
+              {gameStarted !== scrim._id && (
                 <h2 className="text-black">Game starting in...</h2>
               )}
 

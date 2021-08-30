@@ -91,9 +91,7 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
         'color: lightgreen'
       );
 
-      setTimeout(async () => {
-        getNewScrimsData();
-      }, 300);
+      getNewScrimsData();
     }
     //disabling dependency array warning, can't add the other dependencies it's yelling at me to add without breaking the functionality.
     // eslint-disable-next-line react-hooks/exhaustive-deps
