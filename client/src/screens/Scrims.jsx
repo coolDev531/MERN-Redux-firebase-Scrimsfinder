@@ -163,9 +163,9 @@ export default function Scrims() {
                           <div className="page-break" />
                         </Fragment>
                       ))}
+                      <div className="page-break" />
                     </>
                   ) : null}
-                  <div className="page-break" />
                 </>
               )}
               {/* CURRENT SCRIMS END */}

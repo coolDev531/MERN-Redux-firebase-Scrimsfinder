@@ -255,6 +255,48 @@ const deleteScrim = async (req, res) => {
   }
 };
 
+const removePlayerFromScrim = async (req, res) => {
+  const { playerData } = req.body;
+  const { id } = req.params;
+
+  const session = await Scrim.startSession();
+
+  // beginning of session
+  await session.withTransaction(async () => {
+    const teamLeavingName = playerData?.teamLeavingName;
+
+    const scrim = await Scrim.findById(id);
+
+    const teamLeavingArr =
+      teamLeavingName === 'teamOne' ? scrim._doc.teamOne : scrim._doc.teamTwo;
+
+    const scrimData = {
+      ...scrim._doc,
+      [teamLeavingName]: teamLeavingArr.filter(
+        (player) => player.name !== playerData.name
+      ),
+    };
+
+    await Scrim.findByIdAndUpdate(
+      id,
+      scrimData,
+      { new: true },
+      (error, scrim) => {
+        if (error) {
+          return res.status(500).json({ error: error.message });
+        }
+        if (!scrim) {
+          return res.status(500).send('Scrim not found');
+        }
+
+        res.status(200).json(scrim);
+      }
+    );
+  });
+
+  session.endSession();
+};
+
 module.exports = {
   getAllScrims,
   getScrimById,
@@ -262,4 +304,5 @@ module.exports = {
   updateScrim,
   insertPlayerInScrim,
   deleteScrim,
+  removePlayerFromScrim,
 };

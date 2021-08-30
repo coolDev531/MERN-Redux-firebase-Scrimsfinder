@@ -1,7 +1,7 @@
 import { useContext, Fragment } from 'react';
 import { useScrimSectionStyles } from '../styles/scrimSection.styles';
 import { CurrentUserContext } from '../context/currentUser';
-import { insertPlayerInScrim, updateScrim } from '../services/scrims';
+import { insertPlayerInScrim, removePlayerFromScrim } from '../services/scrims';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Divider from '@material-ui/core/Divider';
@@ -116,15 +116,15 @@ export default function ScrimTeamList({
   };
 
   const leaveGame = async (teamLeavingName) => {
-    let teamLeavingArr = teamLeavingName === 'teamOne' ? teamOne : teamTwo;
-    const scrimData = {
-      ...scrim,
-      [teamLeavingName]: teamLeavingArr.filter(
-        (player) => player.name !== playerEntered.name
-      ),
+    const dataSending = {
+      playerData: {
+        ...currentUser,
+        role: playerEntered.role,
+        teamLeavingName,
+      },
     };
 
-    const updatedScrim = await updateScrim(scrim._id, scrimData);
+    const updatedScrim = await removePlayerFromScrim(scrim._id, dataSending);
 
     if (updatedScrim) {
       console.log(
