@@ -200,9 +200,9 @@ export default function Scrims() {
 
               {/* PREVIOUS SCRIMS */}
               {!hidePreviousScrims && (
-                <div className="inner-column" style={{ marginTop: '20px' }}>
-                  <>
-                    {previousScrims.length > 0 ? (
+                <>
+                  {previousScrims.length > 0 ? (
+                    <div className="inner-column" style={{ marginTop: '20px' }}>
                       <div
                         style={{
                           marginBottom: '40px',
@@ -212,15 +212,15 @@ export default function Scrims() {
                           Previous scrims
                         </Typography>
                       </div>
-                    ) : null}
-                    {previousScrims.map((scrim, idx) => (
-                      <Fragment key={idx}>
-                        <ScrimSection scrim={scrim} />
-                        <div className="page-break" />
-                      </Fragment>
-                    ))}
-                  </>
-                </div>
+                    </div>
+                  ) : null}
+                  {previousScrims.map((scrim, idx) => (
+                    <Fragment key={idx}>
+                      <ScrimSection scrim={scrim} />
+                      <div className="page-break" />
+                    </Fragment>
+                  ))}
+                </>
               )}
             </>
           ) : (
