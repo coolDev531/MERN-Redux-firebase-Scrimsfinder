@@ -42,12 +42,14 @@ export default function Scrims() {
     // the value for the region to filter scrims by
     () => currentUser?.region ?? 'NA'
   );
+  window.moment = () => moment();
 
   useEffect(() => {
     const fetchScrims = async () => {
       const dateFilteredScrims = scrims.filter(
         ({ gameStartTime }) =>
-          new Date(gameStartTime).toLocaleDateString() === scrimsDate
+          new Date(gameStartTime).toLocaleDateString() ===
+          new Date(scrimsDate).toLocaleDateString()
       );
 
       const filteredScrimsByDateAndRegion = dateFilteredScrims.filter(
