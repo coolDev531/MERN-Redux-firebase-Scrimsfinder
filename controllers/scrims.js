@@ -259,41 +259,72 @@ const removePlayerFromScrim = async (req, res) => {
   const { playerData } = req.body;
   const { id } = req.params;
 
+  const teamLeavingName = playerData?.teamLeavingName;
+
+  const scrim = await Scrim.findById(id);
+
+  const teamLeavingArr =
+    teamLeavingName === 'teamOne' ? scrim._doc.teamOne : scrim._doc.teamTwo;
+
+  const scrimData = {
+    ...scrim._doc,
+    [teamLeavingName]: teamLeavingArr.filter(
+      (player) => player.name !== playerData.name
+    ),
+  };
+
+  await Scrim.findByIdAndUpdate(
+    id,
+    scrimData,
+    { new: true },
+    (error, scrim) => {
+      if (error) {
+        return res.status(500).json({ error: error.message });
+      }
+      if (!scrim) {
+        return res.status(500).send('Scrim not found');
+      }
+
+      res.status(200).json(scrim);
+    }
+  );
+};
+
+const insertCasterInScrim = async (req, res) => {
   const session = await Scrim.startSession();
+  const { id } = req.params;
+  const { casterData } = req.body;
 
-  // beginning of session
   await session.withTransaction(async () => {
-    const teamLeavingName = playerData?.teamLeavingName;
-
     const scrim = await Scrim.findById(id);
 
-    const teamLeavingArr =
-      teamLeavingName === 'teamOne' ? scrim._doc.teamOne : scrim._doc.teamTwo;
-
-    const scrimData = {
+    let bodyData = {
       ...scrim._doc,
-      [teamLeavingName]: teamLeavingArr.filter(
-        (player) => player.name !== playerData.name
-      ),
+      casters: [...scrim._doc.casters, casterData],
     };
 
-    await Scrim.findByIdAndUpdate(
-      id,
-      scrimData,
-      { new: true },
-      (error, scrim) => {
-        if (error) {
-          return res.status(500).json({ error: error.message });
-        }
-        if (!scrim) {
-          return res.status(500).send('Scrim not found');
-        }
+    if (scrim._doc.casters.length < 2) {
+      await Scrim.findByIdAndUpdate(
+        id,
+        bodyData,
+        { new: true },
+        (error, scrim) => {
+          if (error) {
+            return res.status(500).json({ error: error.message });
+          }
+          if (!scrim) {
+            return res.status(500).send('Scrim not found');
+          }
 
-        res.status(200).json(scrim);
-      }
-    );
+          res.status(200).json(scrim);
+        }
+      );
+    } else {
+      return res.status(500).json({
+        error: 'Caster spots full!',
+      });
+    }
   });
-
   session.endSession();
 };
 
@@ -305,4 +336,5 @@ module.exports = {
   insertPlayerInScrim,
   deleteScrim,
   removePlayerFromScrim,
+  insertCasterInScrim,
 };

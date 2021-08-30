@@ -16,6 +16,7 @@ import { copyTextToClipboard } from '../utils/copyToClipboard';
 // icons
 import ShareIcon from '@material-ui/icons/Share';
 import { ScrimsContext } from '../context/scrimsContext';
+import { insertCasterInScrim } from './../services/scrims';
 
 const compareDates = (scrim) => {
   let currentTime = new Date().getTime();
@@ -86,12 +87,11 @@ export default function ScrimSection({ scrim, isInDetail }) {
     if (casterEntered) return;
     if (casters.length === MAX_CASTER_AMOUNT) return;
 
-    const scrimData = {
-      ...scrim,
-      casters: [...scrim.casters, currentUser?.name],
-    };
+    getNewScrimsData();
 
-    const updatedScrim = await updateScrim(scrim._id, scrimData);
+    const updatedScrim = await insertCasterInScrim(scrim._id, {
+      casterData: currentUser.name,
+    });
 
     if (updatedScrim) {
       console.log(
@@ -210,34 +210,33 @@ export default function ScrimSection({ scrim, isInDetail }) {
                         Current Casters: {casters[0]}
                       </h2>
                     )}
-
-                    {!scrim.casters.find(
-                      (casterName) => casterName === currentUser?.name
-                    ) && (
-                      <Button
-                        Button
-                        variant="contained"
-                        color="primary"
-                        disabled={
-                          casters.length === MAX_CASTER_AMOUNT ||
-                          scrim.casters.find(
-                            (casterName) => casterName === currentUser?.name
-                          )
-                        }
-                        onClick={joinCast}>
-                        join cast
-                      </Button>
-                    )}
-                    {casterEntered && (
-                      <Button
-                        color="secondary"
-                        variant="contained"
-                        onClick={leaveCast}>
-                        Leave cast
-                      </Button>
-                    )}
                   </div>
                 )}
+
+                <div className="d-flex align-center gap-20">
+                  <Button
+                    Button
+                    variant="contained"
+                    color="primary"
+                    disabled={
+                      casters.length === MAX_CASTER_AMOUNT ||
+                      scrim.casters.find(
+                        (casterName) => casterName === currentUser?.name
+                      )
+                    }
+                    onClick={joinCast}>
+                    join cast
+                  </Button>
+
+                  {casterEntered && (
+                    <Button
+                      color="secondary"
+                      variant="contained"
+                      onClick={leaveCast}>
+                      Leave cast
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
