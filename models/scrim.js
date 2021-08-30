@@ -53,7 +53,7 @@ const Scrim = new Schema(
     createdBy: { type: Object, required: true },
     teamWon: { type: 'String', default: null },
   },
-  { timestamps: true }
+  { timestamps: true, optimisticConcurrency: true, versionKey: 'version' }
 );
 
 module.exports = mongoose.model('scrims', Scrim);

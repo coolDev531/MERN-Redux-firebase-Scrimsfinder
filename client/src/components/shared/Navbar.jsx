@@ -121,7 +121,11 @@ export default function Navbar({
               </div>
               <br />
               {!showLess && (
-                <Grid container direction="row" justify="space-between">
+                <Grid
+                  container
+                  alignItems="center"
+                  direction="row"
+                  justifyContent="space-between">
                   <div>
                     <h2>Welcome: {currentUser?.name}</h2>
                   </div>
@@ -188,7 +192,9 @@ export default function Navbar({
                           InputLabelProps={{
                             shrink: true,
                           }}
-                          value={moment(scrimsDate).format('yyyy-MM-DD')}
+                          value={moment(
+                            new Date(scrimsDate).toISOString()
+                          ).format('yyyy-MM-DD')}
                           onChange={(e) => {
                             setScrimsDate(
                               new Date(e.target.value.replace('-', '/'))

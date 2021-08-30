@@ -120,14 +120,14 @@ export default function ScrimCreate() {
                 container
                 direction="column"
                 alignItems="center"
-                justify="center"
+                justifyContent="center"
                 spacing={4}>
                 <Grid
                   item
                   container
                   direction="row"
                   alignItems="center"
-                  justify="center"
+                  justifyContent="center"
                   spacing={2}>
                   <Grid item>
                     <FormHelperText className="text-white">
@@ -138,9 +138,9 @@ export default function ScrimCreate() {
                       required
                       type="date"
                       name="gameStartDate"
-                      value={moment(dateData.gameStartDate).format(
-                        'yyyy-MM-DD'
-                      )}
+                      value={moment(
+                        new Date(dateData.gameStartDate.toISOString())
+                      ).format('yyyy-MM-DD')}
                     />
                   </Grid>
                   <Box marginRight={2} />
@@ -163,7 +163,7 @@ export default function ScrimCreate() {
                   container
                   direction="row"
                   alignItems="center"
-                  justify="center"
+                  justifyContent="center"
                   spacing={2}>
                   <Grid item xs={12} sm={2} md={2}>
                     <Select
