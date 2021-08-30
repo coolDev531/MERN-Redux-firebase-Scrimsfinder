@@ -139,7 +139,7 @@ export default function ScrimCreate() {
                       type="date"
                       name="gameStartDate"
                       value={moment(
-                        new Date(dateData.gameStartDate.toISOString())
+                        new Date(dateData.gameStartDate).toISOString()
                       ).format('yyyy-MM-DD')}
                     />
                   </Grid>
