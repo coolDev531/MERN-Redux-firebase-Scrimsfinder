@@ -6,6 +6,8 @@ import Navbar from '../components/shared/Navbar';
 import { CurrentUserContext } from '../context/currentUser';
 import { ScrimsContext } from '../context/scrimsContext';
 import { showEarliestFirst, showLatestFirst } from '../utils/getSortedScrims';
+import moment from 'moment';
+import 'moment-timezone';
 
 const compareDates = (scrim) => {
   let currentTime = new Date().toISOString();
@@ -22,7 +24,7 @@ const compareDates = (scrim) => {
 };
 
 export default function Scrims() {
-  const today = useMemo(() => new Date().toLocaleDateString(), []);
+  const today = useMemo(() => moment(), []);
 
   const [currentUser] = useContext(CurrentUserContext);
 

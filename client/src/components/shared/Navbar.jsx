@@ -192,7 +192,11 @@ export default function Navbar({
                           InputLabelProps={{
                             shrink: true,
                           }}
-                          value={moment(scrimsDate).format('yyyy-MM-DD')}
+                          value={
+                            moment(new Date(scrimsDate).toISOString()).format(
+                              'yyyy-MM-DD'
+                            ) || moment().format('yyyy-MM-DD')
+                          }
                           onChange={(e) => {
                             setScrimsDate(
                               new Date(e.target.value.replace('-', '/'))
