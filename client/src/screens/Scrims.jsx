@@ -126,6 +126,9 @@ export default function Scrims() {
         showDropdowns
         showCheckboxes
         hideProps={{
+          hidePreviousScrims,
+          hideCurrentScrims,
+          hideUpcomingScrims,
           setHidePreviousScrims,
           setHideCurrentScrims,
           setHideUpcomingScrims,

@@ -61,8 +61,14 @@ export default function Navbar({
     setCurrentUser(null);
   };
 
-  const { setHidePreviousScrims, setHideCurrentScrims, setHideUpcomingScrims } =
-    hideProps;
+  const {
+    hidePreviousScrims,
+    hideCurrentScrims,
+    hideUpcomingScrims,
+    setHidePreviousScrims,
+    setHideCurrentScrims,
+    setHideUpcomingScrims,
+  } = hideProps;
 
   return (
     <>
@@ -125,6 +131,7 @@ export default function Navbar({
                       <FormControlLabel
                         control={
                           <Checkbox
+                            checked={hideCurrentScrims}
                             color="primary"
                             onChange={() =>
                               setHideCurrentScrims((prevState) => !prevState)
@@ -139,6 +146,7 @@ export default function Navbar({
                       <FormControlLabel
                         control={
                           <Checkbox
+                            checked={hideUpcomingScrims}
                             color="primary"
                             onChange={() =>
                               setHideUpcomingScrims((prevState) => !prevState)
@@ -153,6 +161,7 @@ export default function Navbar({
                         control={
                           <Checkbox
                             color="primary"
+                            checked={hidePreviousScrims}
                             onChange={() =>
                               setHidePreviousScrims((prevState) => !prevState)
                             }
