@@ -297,6 +297,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
                       <>
                         {/* show lobby name and pswd only to players in lobby or admins */}
                         {playerEntered ||
+                        casterEntered ||
                         process.env.REACT_APP_ADMIN_KEY ===
                           currentUser.adminKey ? (
                           <>

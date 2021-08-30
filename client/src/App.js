@@ -39,6 +39,15 @@ function App() {
           name: data,
         }));
       };
+
+      window.setAdminKey = (data) => {
+        setCurrentUser((prevState) => ({
+          ...prevState,
+          adminKey: data,
+        }));
+      };
+
+      window.getEnv = () => console.log(process.env);
     }
 
     // eslint-disable-next-line
