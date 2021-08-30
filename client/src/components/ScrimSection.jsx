@@ -293,15 +293,25 @@ export default function ScrimSection({ scrim, isInDetail }) {
                   <>
                     {!scrim.teamWon && (
                       <>
-                        <h2 className="text-black">
-                          Lobby host / captain: {scrim.lobbyHost?.name}
-                        </h2>
-                        <h3 className="text-black">
-                          please make the lobby name: <br />"{scrim.lobbyName}"
-                        </h3>
-                        <h3 className="text-black">
-                          with the password: {scrim.lobbyPassword}
-                        </h3>
+                        {/* show lobby name and pswd only to players in lobby or admins */}
+                        {playerEntered ||
+                        process.env.REACT_APP_ADMIN_KEY ===
+                          currentUser.adminKey ? (
+                          <>
+                            <h2 className="text-black">
+                              Lobby host / captain: {scrim.lobbyHost?.name}
+                            </h2>
+                            <h3 className="text-black">
+                              please make the lobby name: <br />"
+                              {scrim.lobbyName}"
+                            </h3>
+                            <h3 className="text-black">
+                              with the password: {scrim.lobbyPassword}
+                            </h3>
+                          </>
+                        ) : (
+                          <></>
+                        )}
                       </>
                     )}
 
