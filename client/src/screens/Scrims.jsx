@@ -29,7 +29,13 @@ export default function Scrims() {
   const { scrims, toggleFetch, scrimsLoaded } = useContext(ScrimsContext);
 
   const [filteredScrims, setFilteredScrims] = useState([]); // the array of filtered scrims
+
   const [scrimsDate, setScrimsDate] = useState(today); // the value for the date to filter scrims by
+
+  const [hidePreviousScrims, setHidePreviousScrims] = useState(false);
+  const [hideCurrentScrims, setHideCurrentScrims] = useState(false);
+  const [hideUpcomingScrims, setHideUpcomingScrims] = useState(false);
+
   const [scrimsRegion, setScrimsRegion] = useState(
     // the value for the region to filter scrims by
     () => currentUser?.region ?? 'NA'
@@ -86,7 +92,21 @@ export default function Scrims() {
   let previousScrims = useMemo(
     () =>
       showLatestFirst(
-        filteredScrims.filter((scrim) => compareDates(scrim) < 1)
+        filteredScrims.filter(
+          // if the scrim has a winning team then it ended
+          (scrim) => compareDates(scrim) < 1 && scrim.teamWon
+        )
+      ),
+    [filteredScrims]
+  );
+
+  let currentScrims = useMemo(
+    () =>
+      showEarliestFirst(
+        filteredScrims.filter(
+          // scrims that have started but didn't end (don't have winning team)
+          (scrim) => compareDates(scrim) < 1 && !scrim.teamWon
+        )
       ),
     [filteredScrims]
   );
@@ -104,6 +124,12 @@ export default function Scrims() {
         setScrimsDate={setScrimsDate}
         toggleFetch={toggleFetch}
         showDropdowns
+        showCheckboxes
+        hideProps={{
+          setHidePreviousScrims,
+          setHideCurrentScrims,
+          setHideUpcomingScrims,
+        }}
       />
       <div className="page-break" />
 
@@ -111,50 +137,84 @@ export default function Scrims() {
         <div id="scrims-container" className="page-section">
           {filteredScrims.length > 0 ? (
             <>
-              <div className="inner-column">
-                <div
-                  style={{
-                    marginBottom: '40px',
-                    borderBottom: '1px solid white',
-                  }}>
-                  <Typography align="center" variant="h3" gutterBottom>
-                    {upcomingScrims.length > 0
-                      ? 'Upcoming scrims'
-                      : 'No upcoming scrims'}
-                  </Typography>
-                </div>
-              </div>
-
-              {/* UPCOMING SCRIMS */}
-              {upcomingScrims.map((scrim, idx) => (
-                <Fragment key={idx}>
-                  <ScrimSection scrim={scrim} />
-                  <div className="page-break" />
-                </Fragment>
-              ))}
-              <div className="page-break" />
-              <div className="inner-column" style={{ marginTop: '20px' }}>
+              {/* CURRENT SCRIMS */}
+              {!hideCurrentScrims && (
                 <>
-                  {/* PREVIOUS SCRIMS */}
-                  {previousScrims.length > 0 ? (
+                  <div className="inner-column">
                     <div
                       style={{
                         marginBottom: '40px',
                         borderBottom: '1px solid white',
                       }}>
-                      <Typography align="center" variant="h3">
-                        Previous scrims
+                      <Typography align="center" variant="h3" gutterBottom>
+                        {currentScrims.length > 0 && 'Current scrims'}
                       </Typography>
                     </div>
-                  ) : null}
-                  {previousScrims.map((scrim, idx) => (
+                  </div>
+
+                  {currentScrims.map((scrim, idx) => (
                     <Fragment key={idx}>
                       <ScrimSection scrim={scrim} />
                       <div className="page-break" />
                     </Fragment>
                   ))}
+                  <div className="page-break" />
                 </>
-              </div>
+              )}
+              {/* CURRENT SCRIMS END */}
+
+              {/* UPCOMING SCRIMS */}
+              {!hideUpcomingScrims && (
+                <>
+                  <div className="inner-column">
+                    <div
+                      style={{
+                        marginBottom: '40px',
+                        borderBottom: '1px solid white',
+                      }}>
+                      <Typography align="center" variant="h3" gutterBottom>
+                        {upcomingScrims.length > 0
+                          ? 'Upcoming scrims'
+                          : 'No upcoming scrims'}
+                      </Typography>
+                    </div>
+                  </div>
+
+                  {upcomingScrims.map((scrim, idx) => (
+                    <Fragment key={idx}>
+                      <ScrimSection scrim={scrim} />
+                      <div className="page-break" />
+                    </Fragment>
+                  ))}
+                  <div className="page-break" />
+                </>
+              )}
+              {/* UPCOMING SCRIMS END */}
+
+              {/* PREVIOUS SCRIMS */}
+              {hidePreviousScrims && (
+                <div className="inner-column" style={{ marginTop: '20px' }}>
+                  <>
+                    {previousScrims.length > 0 ? (
+                      <div
+                        style={{
+                          marginBottom: '40px',
+                          borderBottom: '1px solid white',
+                        }}>
+                        <Typography align="center" variant="h3">
+                          Previous scrims
+                        </Typography>
+                      </div>
+                    ) : null}
+                    {previousScrims.map((scrim, idx) => (
+                      <Fragment key={idx}>
+                        <ScrimSection scrim={scrim} />
+                        <div className="page-break" />
+                      </Fragment>
+                    ))}
+                  </>
+                </div>
+              )}
             </>
           ) : (
             <>

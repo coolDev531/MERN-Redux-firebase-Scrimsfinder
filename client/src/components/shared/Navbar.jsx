@@ -10,6 +10,9 @@ import {
   makeStyles,
   AppBar,
   Toolbar,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
 } from '@material-ui/core';
 import { useContext } from 'react';
 import { CurrentUserContext } from '../../context/currentUser';
@@ -32,6 +35,8 @@ export default function Navbar({
   setScrimsDate,
   showDropdowns,
   showLess,
+  showCheckboxes,
+  hideProps,
 }) {
   const [currentUser, setCurrentUser] = useContext(CurrentUserContext);
   const history = useHistory();
@@ -40,6 +45,7 @@ export default function Navbar({
   const classes = useStyles();
 
   let allRegions = ['NA', 'EUW', 'EUNE', 'LAN'];
+
   let selectRegions = [
     currentUser?.region,
     ...allRegions.filter((r) => r !== currentUser?.region),
@@ -54,6 +60,9 @@ export default function Navbar({
     history.push('./user-setup');
     setCurrentUser(null);
   };
+
+  const { setHidePreviousScrims, setHideCurrentScrims, setHideUpcomingScrims } =
+    hideProps;
 
   return (
     <>
@@ -110,7 +119,52 @@ export default function Navbar({
                 <div>
                   <h2>Welcome: {currentUser?.name}</h2>
                 </div>
+                {showCheckboxes && (
+                  <div className="d-flex align-center">
+                    <FormGroup row className="text-white">
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            color="primary"
+                            onChange={() =>
+                              setHideCurrentScrims((prevState) => !prevState)
+                            }
+                            name="hideCurrentScrims"
+                          />
+                        }
+                        label="Hide current scrims"
+                        labelPlacement="bottom"
+                      />
 
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            color="primary"
+                            onChange={() =>
+                              setHideUpcomingScrims((prevState) => !prevState)
+                            }
+                            name="hideUpcomingScrims"
+                          />
+                        }
+                        label="Hide upcoming scrims"
+                        labelPlacement="bottom"
+                      />
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            color="primary"
+                            onChange={() =>
+                              setHidePreviousScrims((prevState) => !prevState)
+                            }
+                            name="hidePreviousScrims"
+                          />
+                        }
+                        label="Hide Previous Scrims"
+                        labelPlacement="bottom"
+                      />
+                    </FormGroup>
+                  </div>
+                )}
                 {showDropdowns && (
                   <div
                     id="nav__selects--container"
