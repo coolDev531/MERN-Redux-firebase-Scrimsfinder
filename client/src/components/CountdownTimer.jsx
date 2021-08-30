@@ -84,7 +84,7 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
       timerSeconds == '00'
     ) {
       clearInterval(interval);
-      setGameStarted(true);
+      setGameStarted(scrim._id);
       setIsTimerStarted(false);
       console.log(
         `%cScrim starting for scrim: ${scrim?._id}`,

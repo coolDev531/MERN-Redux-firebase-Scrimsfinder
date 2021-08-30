@@ -43,8 +43,10 @@ export default function ScrimSection({ scrim, isInDetail }) {
   const [playerEntered, setPlayerEntered] = useState(false);
   const [casterEntered, setCasterEntered] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
+
   const classes = useScrimSectionStyles();
   const history = useHistory();
+
   const { teamOne, teamTwo, casters } = scrim;
 
   const getNewScrimsData = () => toggleFetch((prevState) => !prevState);
@@ -58,7 +60,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
     let gameHasStarted = compareDates(scrim) > 0;
 
     if (gameHasStarted) {
-      setGameStarted(gameHasStarted);
+      setGameStarted(scrim._id);
     }
   }, [scrim]);
 
@@ -275,7 +277,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
               className="lobby__info-box"
               style={{
                 background: `rgba(255, 255, 255,${
-                  gameStarted ? '0.7' : '0.5'
+                  gameStarted === scrim._id ? '0.7' : '0.5'
                 })`,
                 padding: '10px',
                 borderRadius: '4px',
@@ -290,7 +292,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
                 scrim={scrim}
               />
 
-              {gameStarted &&
+              {gameStarted === scrim._id &&
                 (scrim.teamOne.length === 5 && scrim.teamTwo.length === 5 ? (
                   <>
                     {!scrim.teamWon && (
