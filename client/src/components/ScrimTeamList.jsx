@@ -121,6 +121,7 @@ export default function ScrimTeamList({
         ...currentUser,
         role: playerEntered.role,
         teamLeavingName,
+        isLobbyHost: scrim.lobbyHost.name === playerEntered.name,
       },
     };
 

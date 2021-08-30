@@ -268,18 +268,12 @@ const removePlayerFromScrim = async (req, res) => {
 
   const teams = [...scrim._doc.teamOne, ...scrim._doc.teamTwo];
 
-  // if there's a lobbyHost and it's the player who is leaving;
-  if (scrim._doc.lobbyHost) {
-    if (teams.find((player) => player.name === playerData.name)) {
-      scrimData.lobbyHost === null;
-    }
-  }
-
   const scrimData = {
     ...scrim._doc,
     [teamLeavingName]: teamLeavingArr.filter(
       (player) => player.name !== playerData.name
     ),
+    lobbyHost: playerData.isLobbyHost ? null : scrim._doc.lobbyHost,
   };
 
   await Scrim.findByIdAndUpdate(
