@@ -32,6 +32,7 @@ function App() {
   }, [currentUser]);
 
   useEffect(() => {
+    //  dev mode testing commands
     if (process.env.NODE_ENV === 'development') {
       window.setUser = (data) => {
         setCurrentUser((prevState) => ({
