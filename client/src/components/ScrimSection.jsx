@@ -308,8 +308,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
                           item
                           container
                           alignItems="center"
-                          direction
-                          row
+                          direction="row"
                           spacing={2}>
                           <Grid item>
                             <h3 className="text-black">Who won?</h3>

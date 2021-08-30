@@ -1,5 +1,6 @@
 import React, { useState, createContext, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import useInterval from '../hooks/useInterval';
 import { getAllScrims } from './../services/scrims';
 
 const ScrimsContext = createContext();
@@ -13,8 +14,6 @@ function ScrimsProvider({ children }) {
 
   useEffect(() => {
     const fetchScrims = async () => {
-      console.log('fetching scrims');
-
       const scrimsData = await getAllScrims();
       setScrims(scrimsData);
       setScrimsLoaded(true);
@@ -22,6 +21,15 @@ function ScrimsProvider({ children }) {
 
     fetchScrims();
   }, [fetch, pathname]);
+
+  const loadScrims = async () => {
+    const scrimsData = await getAllScrims();
+    setScrims(scrimsData);
+  };
+
+  // load scrims every 10 seconds
+  const FETCH_INTERVAL = 10000;
+  useInterval(loadScrims, FETCH_INTERVAL);
 
   return (
     <ScrimsContext.Provider

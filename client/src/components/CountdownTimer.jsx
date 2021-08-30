@@ -1,6 +1,7 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment, useState, useEffect, useContext } from 'react';
 import { makeStyles } from '@material-ui/core';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import { ScrimsContext } from '../context/scrimsContext';
 
 const useStyles = makeStyles((theme) => ({
   timer: {
@@ -31,7 +32,9 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
   const [timerHours, setTimerHours] = useState('00');
   const [timerMinutes, setTimerMinutes] = useState('00');
   const [timerSeconds, setTimerSeconds] = useState('00');
+  const { toggleFetch } = useContext(ScrimsContext);
 
+  const getNewScrimsData = () => toggleFetch((prev) => !prev);
   const classes = useStyles();
 
   let interval = null;
@@ -83,6 +86,14 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
       clearInterval(interval);
       setGameStarted(true);
       setIsTimerStarted(false);
+      console.log(
+        `%cScrim starting for scrim: ${scrim?._id}`,
+        'color: lightgreen'
+      );
+
+      setTimeout(async () => {
+        getNewScrimsData();
+      }, 300);
     }
     //disabling dependency array warning, can't add the other dependencies it's yelling at me to add without breaking the functionality.
     // eslint-disable-next-line react-hooks/exhaustive-deps
