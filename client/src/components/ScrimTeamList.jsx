@@ -11,9 +11,13 @@ import Avatar from '@material-ui/core/Avatar';
 import { Grid, IconButton, Typography } from '@material-ui/core';
 import { RANK_IMAGES, ROLE_IMAGES } from '../utils/imageMaps';
 import Tooltip from '../components/shared/Tooltip';
+import AdminArea from './shared/AdminArea';
+
+// icons
 import SwapIcon from '@material-ui/icons/SwapHoriz';
 import JoinIcon from '@material-ui/icons/MeetingRoom';
 import ExitIcon from '@material-ui/icons/NoMeetingRoom';
+import KickIcon from '@material-ui/icons/HighlightOff';
 
 const compareArrays = (arr1, arr2) => {
   if (arr1.length !== arr2.length) return false;
@@ -121,7 +125,7 @@ export default function ScrimTeamList({
         ...currentUser,
         role: playerEntered.role,
         teamLeavingName,
-        isLobbyHost: scrim.lobbyHost.name === playerEntered.name,
+        isLobbyHost: scrim.lobbyHost?.name === playerEntered.name,
       },
     };
 
@@ -130,6 +134,29 @@ export default function ScrimTeamList({
     if (updatedScrim) {
       console.log(
         `%cremoved ${currentUser.name} from scrim: ${scrim._id}`,
+        'color: #99ff99'
+      );
+      getNewScrimsData();
+    }
+  };
+
+  const kickFromGame = async (playerToKick, teamLeavingName) => {
+    if (currentUser.adminKey !== process.env.REACT_APP_ADMIN_KEY) return;
+
+    const dataSending = {
+      playerData: {
+        ...playerToKick,
+        role: playerToKick.role,
+        teamLeavingName,
+        isLobbyHost: scrim.lobbyHost?.name === playerToKick.name,
+      },
+    };
+
+    const updatedScrim = await removePlayerFromScrim(scrim._id, dataSending);
+
+    if (updatedScrim) {
+      console.log(
+        `%ckicked ${currentUser.name} from scrim: ${scrim._id}`,
         'color: #99ff99'
       );
       getNewScrimsData();
@@ -225,7 +252,7 @@ export default function ScrimTeamList({
                     }
                   />
 
-                  {isCurrentUser && (
+                  {isCurrentUser ? (
                     <Tooltip title="Leave">
                       <IconButton
                         className={classes.iconButton}
@@ -233,6 +260,22 @@ export default function ScrimTeamList({
                         <ExitIcon />
                       </IconButton>
                     </Tooltip>
+                  ) : (
+                    <AdminArea>
+                      <Tooltip title={`Kick ${playerAssigned.name}`}>
+                        <IconButton
+                          className={classes.iconButton}
+                          onClick={() => {
+                            let yes = window.confirm(
+                              `Are you sure you want to kick ${playerAssigned.name}?`
+                            );
+                            if (!yes) return;
+                            kickFromGame(playerAssigned, teamName);
+                          }}>
+                          <KickIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </AdminArea>
                   )}
                 </ListItem>
                 {idx !== teamRoles.length - 1 ? (
