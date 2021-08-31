@@ -8,7 +8,8 @@ live deploy: https://lol-scrims-finder.netlify.app/
 messy spreadsheets. It is designed to be as plug and play as possible.
 If you have an admin key, you can host a scrim/lobby. Then players just have to click on the spot/role and team they want to play in, they can change roles/teams and leave the game. Once the countdown reaches 0 for the lobby, a password and name will appear and the lobby captain has to make it. Then enjoy the game!, at the end of the game the loobby captain has to say who won (he will have the choice in the lobby page / section).
 
-# MVP 
+# MVP
+
 - Plug and Play.
 - Be able to create and delete lobbies.
 - Countdown Timer with lobby name and password.
@@ -17,27 +18,50 @@ If you have an admin key, you can host a scrim/lobby. Then players just have to 
 - Desktop queries.
 
 # POST-MVP
+
 - Authentication (Maybe, trying to keep it plug and play...)
 - Use the Riot Live Client API for summoner data.
 - Be able to host tournaments with classic tourney-style functionality and interface.
 - Convert the webapp to an Electron GUI app.
 
-
 # Some debates
+
 - Not sure if everyone should be able to make lobbies or only people with admin keys (trying to keep scrims amount low for the free-plan database)
 - Not sure if we should have full authentication with passwords and usernames (pros: removal of impersonation, reliable. cons: less plug and play, people more likely to get discouraged of using it)
 
+<br />
 
------------
+# changelog
+
+### 8/29/2021
+
+- first app live deploy
+
+### 8/30/2021
+
+- tons of bug fixes that I can't even type in.
+
+### 8/31/2021
+
+- admins can now choose a custom lobby title when creating a scrim
+- Admins can now kick players from lobbies.
+- all api routes require an x-api-key (safer app).
+
+---
+
+<br />
 
 # Dev area
 
- ## Back-end
-  Back-end is made using `Express` & `Node.js`, with `Mongoose` to connect to the `MongoDB` database.
-  
- ## Front-End
-  Front-end is made using the `React` library and was bootstrapped using `Create-React-App`. It uses `@material-ui/core` as the UI framework.
-  
- ## running it on your machine
- - to run back-end, type in cmd: `yarn` to install latest-dependencies, then run the command: `npm run dev`.
- - to run front-end, cd into `client` directory and run `yarn` to install dependencies, then run `yarn start` to run the server.
+## Back-end
+
+Back-end is made using `Express` & `Node.js`, with `Mongoose` to connect to the `MongoDB` database.
+
+## Front-End
+
+Front-end is made using the `React` library and was bootstrapped using `Create-React-App`. It uses `@material-ui/core` as the UI framework.
+
+## running it on your machine
+
+- to run back-end, type in cmd: `yarn` to install latest-dependencies, then run the command: `npm run dev`.
+- to run front-end, cd into `client` directory and run `yarn` to install dependencies, then run `yarn start` to run the server.
