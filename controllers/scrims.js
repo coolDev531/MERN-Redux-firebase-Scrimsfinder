@@ -7,25 +7,21 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 const checkIfScrimIsToday = (scrim) => {
   let now = Date.now();
+  now.setHours(0, 0, 0, 0);
   let today = toIsoString(now);
 
-  today.setHours(0, 0, 0, 0);
-
   let scrimGameDay = new Date(scrim.gameStartTime).setHours(0, 0, 0, 0);
+  let scrimIso = toIsoString(scrimGameDay);
 
-  return today === scrimGameDay;
+  return today === scrimIso;
 };
 
 const checkIfScrimIsInACertainDate = (scrim, date) => {
-  let certainDate = new Date(date);
-
+  let certainDate = new Date(date).setHours(0, 0, 0, 0);
   certainDateIso = toIsoString(certainDate);
-  certainDateIso.setHours(0, 0, 0, 0);
 
-  let scrimGameDay = new Date(scrim.gameStartTime);
-
+  let scrimGameDay = new Date(scrim.gameStartTime).setHours(0, 0, 0, 0);
   let scrimIso = toIsoString(scrimGameDay);
-  scrimIso.setHours(0, 0, 0, 0);
 
   return certainDateIso === scrimIso;
 };
