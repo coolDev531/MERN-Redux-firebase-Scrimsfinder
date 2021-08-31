@@ -238,6 +238,8 @@ export default function ScrimSection({ scrim, isInDetail }) {
                         scrim.casters.find(
                           (casterName) => casterName === currentUser?.name
                         )
+                          ? true
+                          : false
                       }
                       onClick={joinCast}>
                       join cast
