@@ -319,9 +319,11 @@ export default function ScrimSection({ scrim, isInDetail }) {
                         )}
                       </>
                     )}
-
+                    {/* have buttons if is admin or created lobby or is lobby captain */}
                     {(scrim.createdBy.name === currentUser.name ||
-                      scrim.lobbyHost.name === currentUser.name) &&
+                      scrim.lobbyHost.name === currentUser.name ||
+                      currentUser.adminKey ===
+                        process.env.REACT_APP_ADMIN_KEY) &&
                       !scrim.teamWon && (
                         <Grid
                           item
