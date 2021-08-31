@@ -1,4 +1,4 @@
-import { useContext, Fragment } from 'react';
+import { useContext, Fragment, useMemo } from 'react';
 import { useScrimSectionStyles } from '../styles/scrimSection.styles';
 import { CurrentUserContext } from '../context/currentUser';
 import { insertPlayerInScrim, removePlayerFromScrim } from '../services/scrims';
@@ -41,6 +41,8 @@ export default function ScrimTeamList({
 }) {
   const [currentUser] = useContext(CurrentUserContext);
   const classes = useScrimSectionStyles();
+
+  const gameEnded = useMemo(() => scrim.teamWon, [scrim.teamWon]);
 
   const { teamRoles, teamName, teamTitleName, teamArray } = teamData;
 
@@ -140,7 +142,7 @@ export default function ScrimTeamList({
     }
   };
 
-  const kickFromGame = async (playerToKick, teamLeavingName) => {
+  const kickPlayerFromGame = async (playerToKick, teamLeavingName) => {
     if (currentUser.adminKey !== process.env.REACT_APP_ADMIN_KEY) return;
 
     const dataSending = {
@@ -252,31 +254,35 @@ export default function ScrimTeamList({
                     }
                   />
 
-                  {isCurrentUser ? (
-                    <Tooltip title="Leave">
-                      <IconButton
-                        className={classes.iconButton}
-                        onClick={() => leaveGame(teamName)}>
-                        <ExitIcon />
-                      </IconButton>
-                    </Tooltip>
-                  ) : (
-                    <AdminArea>
-                      <Tooltip title={`Kick ${playerAssigned.name}`}>
-                        <IconButton
-                          className={classes.iconButton}
-                          onClick={() => {
-                            let yes = window.confirm(
-                              `Are you sure you want to kick ${playerAssigned.name}?`
-                            );
-                            if (!yes) return;
-                            kickFromGame(playerAssigned, teamName);
-                          }}>
-                          <KickIcon />
-                        </IconButton>
-                      </Tooltip>
-                    </AdminArea>
-                  )}
+                  {isCurrentUser
+                    ? // don't let user leave if game has already ended
+                      !gameEnded && (
+                        <Tooltip title="Leave">
+                          <IconButton
+                            className={classes.iconButton}
+                            onClick={() => leaveGame(teamName)}>
+                            <ExitIcon />
+                          </IconButton>
+                        </Tooltip>
+                      )
+                    : // don't let admins kick if game has ended.
+                      !gameEnded && (
+                        <AdminArea>
+                          <Tooltip title={`Kick ${playerAssigned.name}`}>
+                            <IconButton
+                              className={classes.iconButton}
+                              onClick={() => {
+                                let yes = window.confirm(
+                                  `Are you sure you want to kick ${playerAssigned.name}?`
+                                );
+                                if (!yes) return;
+                                kickPlayerFromGame(playerAssigned, teamName);
+                              }}>
+                              <KickIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </AdminArea>
+                      )}
                 </ListItem>
                 {idx !== teamRoles.length - 1 ? (
                   <Divider component="li" />

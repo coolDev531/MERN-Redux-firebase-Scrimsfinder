@@ -44,6 +44,9 @@ export default function ScrimSection({ scrim, isInDetail }) {
   const [casterEntered, setCasterEntered] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
 
+  // if the scrim has a winning team, it means it has ended.
+  const gameEnded = useMemo(() => scrim.teamWon, [scrim.teamWon]);
+
   const classes = useScrimSectionStyles();
   const history = useHistory();
 
@@ -300,7 +303,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
               {gameStarted === scrim._id &&
                 (scrim.teamOne.length === 5 && scrim.teamTwo.length === 5 ? (
                   <>
-                    {!scrim.teamWon && (
+                    {!gameEnded && (
                       <>
                         {/* show lobby name and pswd only to players in lobby or admins */}
                         {playerEntered ||
@@ -325,11 +328,12 @@ export default function ScrimSection({ scrim, isInDetail }) {
                       </>
                     )}
                     {/* have buttons if is admin or created lobby or is lobby captain */}
+                    {/* don't show if game has ended */}
                     {(scrim.createdBy.name === currentUser.name ||
                       scrim.lobbyHost.name === currentUser.name ||
                       currentUser.adminKey ===
                         process.env.REACT_APP_ADMIN_KEY) &&
-                      !scrim.teamWon && (
+                      !gameEnded && (
                         <Grid
                           item
                           container
