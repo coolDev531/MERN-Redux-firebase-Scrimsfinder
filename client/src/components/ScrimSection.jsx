@@ -166,7 +166,10 @@ export default function ScrimSection({ scrim, isInDetail }) {
                 style={{ textDecorationColor: '#000' }}
                 to={`/scrims/${scrim._id}`}>
                 <h1 className="text-black">
-                  {scrim.createdBy.name}'s Scrim ({scrim.region})
+                  {/* if scrim has a title show title, else show createdby.name's scrim */}
+                  {`${scrim.title ?? `${scrim.createdBy.name}'s Scrim`} (${
+                    scrim.region
+                  })`}
                 </h1>
               </Link>
             </Grid>

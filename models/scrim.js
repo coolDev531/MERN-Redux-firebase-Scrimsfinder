@@ -39,6 +39,7 @@ const Scrim = new Schema(
     teamTwo: { type: [PlayerSchema], default: [] },
     // right now casters is just array of strings (user.name)s
     casters: { type: Array, default: [] },
+    title: { type: String },
     gameStartTime: {
       type: Date,
       default: getThirtyMinFromNow(),

@@ -24,6 +24,7 @@ export default function ScrimCreate() {
     lobbyHost: currentUser,
     region: currentUser.region,
     createdBy: currentUser,
+    title: '',
   });
   const [dateData, setDateData] = useState({
     gameStartDate: new Date(),
@@ -122,6 +123,20 @@ export default function ScrimCreate() {
                 alignItems="center"
                 justifyContent="center"
                 spacing={4}>
+                <Grid item sm={12}>
+                  <Grid item>
+                    <FormHelperText className="text-white">
+                      Scrim Title {`(example: ${currentUser.name}'s Scrim)`}
+                    </FormHelperText>
+                  </Grid>
+                  <TextField
+                    onChange={handleChange}
+                    required
+                    name="title"
+                    value={scrimData.title}
+                  />
+                </Grid>
+
                 <Grid
                   item
                   container
@@ -209,6 +224,7 @@ export default function ScrimCreate() {
                   </Grid>
                 </Grid>
                 <Grid item>
+                  <div className="page-break" />
                   <Button variant="contained" color="primary" type="submit">
                     Submit
                   </Button>
