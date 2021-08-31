@@ -46,6 +46,7 @@ If you have an admin key, you can host a scrim/lobby. Then players just have to 
 - admins can now choose a custom lobby title when creating a scrim
 - Admins can now kick players from lobbies.
 - all api routes require an x-api-key (safer app).
+- lobby names generated for scrims are now the amount of scrims created that day and in that region plus the one created. (previous word api brought weird names sometimes)
 
 ---
 

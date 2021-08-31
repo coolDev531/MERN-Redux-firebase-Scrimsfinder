@@ -4,6 +4,7 @@ const controllers = require('../controllers/scrims');
 const router = Router();
 
 router.get('/scrims', controllers.getAllScrims); // GET
+router.get('/scrims/today', controllers.getTodaysScrims); // GET
 router.post('/scrims', controllers.createScrim); // POST
 router.get('/scrims/:id', controllers.getScrimById); // GET
 router.put('/scrims/:id', controllers.updateScrim); // PUT

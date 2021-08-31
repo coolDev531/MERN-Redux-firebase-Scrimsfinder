@@ -1,31 +1,38 @@
 const Scrim = require('../models/scrim');
 const db = require('../db/connection');
 const sample = require('../utils/sample');
-const axios = require('axios');
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-const getWords = async () => {
-  const URL = 'https://random-word-api.herokuapp.com/word?number=50&swear=0';
-  return axios.get(URL).then(({ data }) => {
-    let wordsArr = new Array(...data);
+const checkIfScrimIsToday = (scrim) => {
+  let today = new Date().setHours(0, 0, 0, 0);
+  let scrimGameDay = new Date(scrim.gameStartTime).setHours(0, 0, 0, 0);
 
-    let randomWordOne = sample(wordsArr),
-      randomWordTwo = sample(wordsArr);
-
-    return `${randomWordOne} ${randomWordTwo}`;
-  });
+  return today === scrimGameDay;
 };
 
-const getLobbyName = async () => {
-  const words = await getWords();
-  return String(words);
+const getLobbyName = async (region) => {
+  const scrims = await Scrim.find();
+  const scrimsInRegion = scrims.filter((scrim) => scrim.region === region);
+  const todaysScrims = scrimsInRegion.filter(checkIfScrimIsToday);
+
+  return `Scrim ${todaysScrims.length + 1} Custom Game (${region})`;
 };
 
 const getAllScrims = async (_req, res) => {
   try {
     const scrims = await Scrim.find();
     res.json(scrims);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const getTodaysScrims = async (_req, res) => {
+  try {
+    const scrims = await Scrim.find();
+    const todaysScrims = scrims.filter(checkIfScrimIsToday);
+    res.json(todaysScrims);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -48,7 +55,7 @@ const createScrim = async (req, res) => {
   try {
     let requestBody = {
       ...req.body,
-      lobbyName: await getLobbyName(),
+      lobbyName: await getLobbyName(req.body?.region ?? 'NA'),
     };
 
     const scrim = new Scrim(requestBody);
@@ -365,6 +372,7 @@ const removeCasterFromScrim = async (req, res) => {
 
 module.exports = {
   getAllScrims,
+  getTodaysScrims,
   getScrimById,
   createScrim,
   updateScrim,
