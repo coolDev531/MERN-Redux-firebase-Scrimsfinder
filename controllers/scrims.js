@@ -11,12 +11,23 @@ const checkIfScrimIsToday = (scrim) => {
   return today === scrimGameDay;
 };
 
-const getLobbyName = async (region) => {
+const checkIfScrimIsInACertainDate = (scrim, date) => {
+  const certainDate = new Date(date).setHours(0, 0, 0, 0);
+  let scrimGameDay = new Date(scrim.gameStartTime).setHours(0, 0, 0, 0);
+
+  return certainDate === scrimGameDay;
+};
+
+const getLobbyName = async (region, createdScrimStartTime) => {
   const scrims = await Scrim.find();
   const scrimsInRegion = scrims.filter((scrim) => scrim.region === region);
-  const todaysScrims = scrimsInRegion.filter(checkIfScrimIsToday);
 
-  return `Scrim ${todaysScrims.length + 1} Custom Game (${region})`;
+  // get scrims that are made in THAT specific day.
+  const scrimsThatDay = scrimsInRegion.filter((scrim) =>
+    checkIfScrimIsInACertainDate(scrim, createdScrimStartTime)
+  );
+
+  return `Scrim ${scrimsThatDay.length + 1} Custom Game (${region})`;
 };
 
 const getAllScrims = async (_req, res) => {
@@ -55,7 +66,10 @@ const createScrim = async (req, res) => {
   try {
     let requestBody = {
       ...req.body,
-      lobbyName: await getLobbyName(req.body?.region ?? 'NA'),
+      lobbyName: await getLobbyName(
+        req.body?.region ?? 'NA',
+        req.body?.gameStartTime
+      ),
     };
 
     const scrim = new Scrim(requestBody);
