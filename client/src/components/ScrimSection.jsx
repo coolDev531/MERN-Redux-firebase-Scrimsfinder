@@ -210,7 +210,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
               <div className="casters-container ">
                 {casters.length === 2 ? (
                   <h2 className="text-black">
-                    Casters {casters.map((caster) => caster).join(' & ')}
+                    Casters: {casters.map((caster) => caster).join(' & ')}
                   </h2>
                 ) : (
                   <div className="d-flex align-center gap-20">
