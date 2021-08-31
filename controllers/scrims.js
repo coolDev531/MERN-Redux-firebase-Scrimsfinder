@@ -17,10 +17,17 @@ const checkIfScrimIsToday = (scrim) => {
 };
 
 const checkIfScrimIsInACertainDate = (scrim, date) => {
-  const certainDate = new Date(date).setHours(0, 0, 0, 0);
-  let scrimGameDay = new Date(scrim.gameStartTime).setHours(0, 0, 0, 0);
+  let certainDate = new Date(date);
 
-  return certainDate === scrimGameDay;
+  certainDateIso = toIsoString(certainDate);
+  certainDateIso.setHours(0, 0, 0, 0);
+
+  let scrimGameDay = new Date(scrim.gameStartTime);
+
+  let scrimIso = toIsoString(scrimGameDay);
+  scrimIso.setHours(0, 0, 0, 0);
+
+  return certainDateIso === scrimIso;
 };
 
 const getLobbyName = async (region, createdScrimStartTime) => {
