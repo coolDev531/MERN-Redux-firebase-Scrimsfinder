@@ -5,7 +5,6 @@ const PORT = process.env.PORT || 3000;
 const db = require('./db/connection');
 const scrimRoutes = require('./routes/scrims');
 const bodyParser = require('body-parser');
-const setHours = require('./utils/setHours');
 
 const app = express();
 

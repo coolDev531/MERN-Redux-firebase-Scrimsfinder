@@ -17,4 +17,7 @@ const api = axios.create({
   baseURL: apiUrl,
 });
 
+// make sure app calls the api with the key everytime
+api.defaults.headers.common['x-api-key'] = process.env.REACT_APP_API_KEY;
+
 export default api;
