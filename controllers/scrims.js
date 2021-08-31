@@ -7,8 +7,8 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 const checkIfScrimIsToday = (scrim) => {
   let now = Date.now();
-  now.setHours(0, 0, 0, 0);
-  let today = toIsoString(now);
+  let nowDate = new Date(now).setHours(0, 0, 0, 0);
+  let today = toIsoString(nowDate);
 
   let scrimGameDay = new Date(scrim.gameStartTime).setHours(0, 0, 0, 0);
   let scrimIso = toIsoString(scrimGameDay);
