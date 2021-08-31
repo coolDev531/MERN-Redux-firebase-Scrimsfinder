@@ -1,11 +1,16 @@
 const Scrim = require('../models/scrim');
 const db = require('../db/connection');
 const sample = require('../utils/sample');
+const toIsoString = require('../utils/toIsoString');
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 const checkIfScrimIsToday = (scrim) => {
-  let today = new Date().setHours(0, 0, 0, 0);
+  let now = Date.now();
+  let today = toIsoString(now);
+
+  today.setHours(0, 0, 0, 0);
+
   let scrimGameDay = new Date(scrim.gameStartTime).setHours(0, 0, 0, 0);
 
   return today === scrimGameDay;
