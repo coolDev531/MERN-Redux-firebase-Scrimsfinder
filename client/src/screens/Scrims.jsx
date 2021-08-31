@@ -8,6 +8,7 @@ import { ScrimsContext } from '../context/scrimsContext';
 import { showEarliestFirst, showLatestFirst } from '../utils/getSortedScrims';
 import moment from 'moment';
 import 'moment-timezone';
+import { compareDateWithCurrentTime } from './../utils/compareDateWithCurrentTime';
 
 const compareDates = (scrim) => {
   let currentTime = new Date().toISOString();
@@ -42,7 +43,6 @@ export default function Scrims() {
     // the value for the region to filter scrims by
     () => currentUser?.region ?? 'NA'
   );
-  window.moment = () => moment();
 
   useEffect(() => {
     const fetchScrims = async () => {
@@ -114,6 +114,15 @@ export default function Scrims() {
       ),
     [filteredScrims]
   );
+
+  useEffect(() => {
+    // if scrimsDate < currentTime
+    if (compareDateWithCurrentTime(scrimsDate) > 0) {
+      setHideUpcomingScrims(true);
+    } else {
+      setHideUpcomingScrims(false);
+    }
+  }, [scrimsDate]);
 
   if (!scrimsLoaded) {
     return <Loading text="Loading Scrims..." />;
