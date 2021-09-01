@@ -53,8 +53,6 @@ export default function ScrimEdit() {
 
   useEffect(() => {
     const prefillFormData = async () => {
-      console.log('testicles');
-
       const oneScrim = await getScrimById(id);
 
       const {
@@ -295,10 +293,10 @@ export default function ScrimEdit() {
                           lobbyHost: e.target.value,
                         }))
                       }
-                      value={scrimData.lobbyHost || currentUser}>
-                      {[currentUser, 'random'].map((value, key) => (
+                      value={scrimData.lobbyHost?.name || currentUser.name}>
+                      {[currentUser.name, 'random'].map((value, key) => (
                         <MenuItem value={value} key={key}>
-                          {value === currentUser
+                          {value === currentUser.name
                             ? 'I will host the lobby'
                             : 'Choose a random player from the teams to host'}
                         </MenuItem>
