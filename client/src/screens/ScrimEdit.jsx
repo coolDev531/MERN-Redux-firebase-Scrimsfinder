@@ -5,7 +5,6 @@ import { updateScrim, getScrimById } from '../services/scrims';
 import { ScrimsContext } from '../context/scrimsContext';
 import Navbar from './../components/shared/Navbar';
 import {
-  Box,
   Button,
   FormHelperText,
   Grid,
@@ -176,7 +175,7 @@ export default function ScrimEdit() {
 
     if (updatedScrim) {
       toggleFetch((prev) => !prev);
-      alert('updated Scrim ' + id);
+      console.log(`%c updated scrim: ${id}`, 'color: lightgreen');
       setUpdated(true);
     }
   };
@@ -362,6 +361,25 @@ export default function ScrimEdit() {
                     </FormHelperText>
                   </Grid>
                 </Grid>
+
+                <Grid item>
+                  <FormHelperText className="text-white">
+                    Who Won?
+                  </FormHelperText>
+                  <Select
+                    name="teamWon"
+                    value={scrimData.teamWon || ''}
+                    onChange={handleChange}>
+                    {['Team One (Blue Side)', 'Team Two (Red Side)'].map(
+                      (team, key) => (
+                        <MenuItem value={team} key={key}>
+                          {team}
+                        </MenuItem>
+                      )
+                    )}
+                  </Select>
+                </Grid>
+
                 <Grid item>
                   <div className="page-break" />
                   <Button variant="contained" color="primary" type="submit">
