@@ -253,34 +253,16 @@ const updateScrim = async (req, res) => {
 
   const { teamOne, teamTwo } = req.body;
 
-  let requestBody = {
-    ...req.body,
-  };
-
-  if (scrim.lobbyHost !== null) {
-    requestBody.lobbyHost = scrim.lobbyHost;
-  } else if (teamOne.length === 5 && teamTwo.length === 5) {
-    const lobbyHost = sample([...teamOne, ...teamTwo]);
-    requestBody.lobbyHost = lobbyHost;
-  } else {
-    requestBody.lobbyHost = null;
-  }
-
-  await Scrim.findByIdAndUpdate(
-    id,
-    requestBody,
-    { new: true },
-    (error, scrim) => {
-      if (error) {
-        return res.status(500).json({ error: error.message });
-      }
-      if (!scrim) {
-        return res.status(500).send('Scrim not found');
-      }
-
-      res.status(200).json(scrim);
+  await Scrim.findByIdAndUpdate(id, req.body, { new: true }, (error, scrim) => {
+    if (error) {
+      return res.status(500).json({ error: error.message });
     }
-  );
+    if (!scrim) {
+      return res.status(500).send('Scrim not found');
+    }
+
+    res.status(200).json(scrim);
+  });
 };
 
 const deleteScrim = async (req, res) => {

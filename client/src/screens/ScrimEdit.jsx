@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState, useEffect, useMemo } from 'react';
 import { CurrentUserContext } from '../context/currentUser';
 import { Redirect, useParams, useHistory } from 'react-router-dom';
 import { updateScrim, getScrimById } from '../services/scrims';
@@ -78,6 +78,8 @@ export default function ScrimEdit() {
         gameStartHours: [hours, minutes],
       }));
 
+      setLobbyHostObject(lobbyHost);
+
       setScrimData({
         region,
         title,
@@ -126,7 +128,18 @@ export default function ScrimEdit() {
     }
   };
 
-  const getLobbyHost = () => {
+  let teamsArr = useMemo(() => {
+    if (
+      [...(scrimData?.teamOne ?? []), ...(scrimData?.teamTwo ?? [])].length > 0
+    ) {
+      return [...(scrimData?.teamOne ?? []), ...(scrimData?.teamTwo ?? [])].map(
+        (item) => item
+      );
+    }
+    return [];
+  }, [scrimData]);
+
+  const getLobbyHost = async () => {
     const { teamOne, teamTwo } = scrimData;
 
     // if he didn't change values.
@@ -148,9 +161,9 @@ export default function ScrimEdit() {
         return null;
       }
     }
-    devLog('defaulting to null');
-    // return null if it doesn't match the data.
-    return null;
+
+    console.log(teamsArr.find((p) => p.name === scrimData.lobbyHost));
+    return teamsArr.find((p) => p.name === scrimData.lobbyHost);
   };
 
   const handleSubmit = async (e) => {
@@ -160,7 +173,7 @@ export default function ScrimEdit() {
 
     const dataSending = {
       ...scrimData,
-      lobbyHost: getLobbyHost(),
+      lobbyHost: await getLobbyHost(),
     };
 
     const updatedScrim = await updateScrim(id, dataSending);
@@ -185,10 +198,6 @@ export default function ScrimEdit() {
       gameStartTime: gameStartTime.toISOString(),
     }));
   }, [dateData]);
-
-  useEffect(() => {
-    devLog({ scrimData });
-  }, [scrimData]);
 
   //  if user doesn't have admin key, push to '/'
   if (process.env.REACT_APP_ADMIN_KEY !== currentUser.adminKey) {
@@ -306,20 +315,20 @@ export default function ScrimEdit() {
                         }))
                       }
                       value={scrimData.lobbyHost}>
-                      {[
-                        currentUser.name,
-                        'random',
-                        ...scrimData.teamOne,
-                        ...scrimData.teamTwo,
-                      ].map((value, key) => (
-                        <MenuItem value={value} key={key}>
-                          {value === currentUser.name
-                            ? 'I will host the lobby'
-                            : typeof value === 'object'
-                            ? value.name
-                            : 'Choose a random player from the teams to host'}
-                        </MenuItem>
-                      ))}
+                      {[currentUser.name, 'random', ...teamsArr].flatMap(
+                        (value, key) => {
+                          // console.log({ value });
+                          return (
+                            <MenuItem value={value?.name ?? value} key={key}>
+                              {value === currentUser.name
+                                ? 'I will host the lobby'
+                                : typeof value === 'object'
+                                ? value.name
+                                : 'Choose a random player from the teams to host'}
+                            </MenuItem>
+                          );
+                        }
+                      )}
                     </Select>
                     <FormHelperText className="text-white">
                       Lobby host
