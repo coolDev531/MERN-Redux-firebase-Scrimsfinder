@@ -361,13 +361,12 @@ export default function ScrimSection({ scrim, isInDetail }) {
 
                                     if (!yes) return;
 
-                                    const scrimData = {
-                                      ...scrim,
+                                    const dataSending = {
                                       teamWon: teamTitle,
                                     };
                                     const updatedScrim = await updateScrim(
                                       scrim._id,
-                                      scrimData
+                                      dataSending
                                     );
                                     if (updatedScrim) {
                                       getNewScrimsData();

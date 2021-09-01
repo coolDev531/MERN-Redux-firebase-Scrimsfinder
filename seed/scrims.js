@@ -22,38 +22,51 @@ const main = async () => {
     {
       name: 'GitCat',
       role: 'Top',
-      rank: 'Diamond I',
+      rank: 'Diamond 1',
+      region: 'NA',
+      discord: 'Test#123',
     },
     {
       name: 'AmumuCrying',
       role: 'Jungle',
       rank: 'Silver 2',
+      region: 'NA',
+      discord: 'Test#143',
     },
     {
       name: 'Azuru',
       role: 'Mid',
-      rank: 'Platinum II',
+      rank: 'Platinum 2',
+      region: 'NA',
+      discord: 'Test#113',
     },
     {
       name: 'Cailtyn Bot',
       role: 'ADC',
       rank: 'Challenger',
+      region: 'NA',
+      discord: 'Test#11123',
     },
     {
       name: 'EloInflatedYummiOTP',
       role: 'Support',
       rank: 'Platinum 1',
+      region: 'NA',
+      discord: 'Test#222',
     },
   ];
 
-  const teamTwoPlayers = [...roles].map((role) => ({
+  const teamTwoPlayers = [...roles].map((role, index) => ({
     name: faker.name.firstName(),
     role: role,
     rank: sample(ranks),
+    region: 'NA',
+    discord: `${faker.name.firstName()}#1${index}3`,
   }));
 
   const scrims = [
     {
+      lobbyName: 'testScrim 1',
       teamOne: teamOnePlayers,
       teamTwo: teamTwoPlayers,
       casters: ['jimmy', 'bob'],
@@ -63,6 +76,7 @@ const main = async () => {
     },
 
     {
+      lobbyName: 'testScrim 2',
       region: 'EUW',
       teamOne: teamOnePlayers,
       teamTwo: teamTwoPlayers,
