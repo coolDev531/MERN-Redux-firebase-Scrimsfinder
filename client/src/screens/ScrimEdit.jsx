@@ -1,41 +1,101 @@
-import { useState, useEffect, useContext } from 'react';
+import { useContext, useState, useEffect } from 'react';
+import { CurrentUserContext } from '../context/currentUser';
+import { Redirect, useParams, useHistory } from 'react-router-dom';
+import { updateScrim, getScrimById } from '../services/scrims';
+import { ScrimsContext } from '../context/scrimsContext';
 import Navbar from './../components/shared/Navbar';
 import {
-  Grid,
-  TextField,
   Box,
-  MenuItem,
-  FormHelperText,
   Button,
+  FormHelperText,
+  Grid,
+  MenuItem,
+  Select,
+  TextField,
 } from '@material-ui/core';
-import { Redirect } from 'react-router';
 import moment from 'moment';
 import 'moment-timezone';
-import { createScrim } from './../services/scrims';
-import { CurrentUserContext } from '../context/currentUser';
-import { Select } from '@material-ui/core';
-import { ScrimsContext } from '../context/scrimsContext';
-import { getMinutes } from './../utils/getMinutes';
+import { getDateAndTimeSeparated } from '../utils/getDateAndTimeSeparated';
 
-export default function ScrimCreate() {
-  const { toggleFetch } = useContext(ScrimsContext);
+/**
+ * @method sample
+ * @param {Array} array
+ * @return {String} takes an array of strings and returns a random element, the random element being a string.
+ */
+const sample = (array) => array[Math.floor(Math.random() * array.length)];
+
+export default function ScrimEdit() {
   const [currentUser] = useContext(CurrentUserContext);
+  const { toggleFetch } = useContext(ScrimsContext);
+
   const [scrimData, setScrimData] = useState({
-    gameStartTime: new Date().toISOString(),
-    lobbyHost: currentUser,
-    region: currentUser.region,
-    createdBy: currentUser,
+    teamWon: '',
+    region: '',
     title: '',
+    casters: [],
+    gameStartTime: new Date().toISOString(),
+    lobbyName: '',
+    lobbyPassword: '',
+    lobbyHost: null,
   });
+
   const [dateData, setDateData] = useState({
     gameStartDate: new Date(),
-    gameStartHours: [new Date().getHours().toString(), getMinutes(new Date())],
+    gameStartHours: [
+      new Date().getHours().toString(),
+      new Date().getMinutes().toString(),
+    ],
   });
 
-  const [isCreated, setCreated] = useState(false);
+  const { id } = useParams();
+  const history = useHistory();
+  const [isUpdated, setUpdated] = useState(false);
+
+  useEffect(() => {
+    const prefillFormData = async () => {
+      console.log('testicles');
+
+      const oneScrim = await getScrimById(id);
+
+      const {
+        region,
+        title,
+        lobbyName,
+        lobbyPassword,
+        gameStartTime,
+        teamOne,
+        teamTwo,
+      } = oneScrim;
+      const teamWon = oneScrim?.teamWon ?? null;
+      const lobbyHost = oneScrim?.lobbyHost ?? null;
+
+      const { date, hours, minutes } = getDateAndTimeSeparated(gameStartTime);
+
+      setDateData((prevState) => ({
+        ...prevState,
+        gameStartDate: date,
+        gameStartHours: [hours, minutes],
+      }));
+
+      setScrimData({
+        region,
+        title,
+        lobbyName,
+        lobbyPassword,
+        teamWon,
+        gameStartTime,
+        lobbyHost,
+        teamOne,
+        teamTwo,
+        previousLobbyHost: lobbyHost ?? null,
+      });
+    };
+    prefillFormData();
+  }, [history, id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     if (name === 'gameStartHours' && value) {
       let hoursResult = value?.split(':');
       const [hours, minutes] = hoursResult;
@@ -50,13 +110,9 @@ export default function ScrimCreate() {
       }));
     } else if (name === 'gameStartDate' && value) {
       let date = new Date(value);
-      // we're setting minutes to 0, hours to 0 and milliseconds to 0
       date.setMinutes(0, 0, 0);
 
-      // getTime() gives you the date's representation in milliseconds
-      /* we're using getTime and converting timezone offset to time, 1 minute has 60 seconds, 
-      to convert it to milliseconds you multiply it by a thousand */
-      date = new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000); // value doesn't get time zone offset so we're taking care of it here.
+      date = new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
       setDateData((prevState) => ({
         ...prevState,
         gameStartDate: date,
@@ -69,41 +125,68 @@ export default function ScrimCreate() {
     }
   };
 
-  useEffect(() => {
-    let [hours, minutes] = dateData.gameStartHours;
+  const getLobbyHost = () => {
+    const { teamOne, teamTwo } = scrimData;
 
-    let gameStartTime = dateData['gameStartDate'];
-
-    let selectedDate = new Date(gameStartTime) ?? new Date();
-    selectedDate.setHours(hours, minutes);
-
-    setScrimData((prevState) => ({
-      ...prevState,
-      gameStartTime: selectedDate.toISOString(),
-    }));
-  }, [dateData]);
+    // if he didn't change values.
+    if (scrimData.lobbyHost.name === scrimData.previousLobbyHost.name) {
+      return scrimData.previousLobbyHost;
+    } else if (scrimData.lobbyHost.name === currentUser.name) {
+      //  if lobby host is current User
+      return currentUser;
+    } else if (scrimData.lobbyHost === 'random') {
+      // if the lobby is full get a random player from the lobby to be the host.
+      if ([...teamOne, ...teamTwo].length === 10) {
+        return sample([...teamOne, ...teamTwo]);
+      } else {
+        // if lobby isn't full return null so it will generate a host on the backend.
+        return null;
+      }
+    }
+    // return null if it doesn't match the data.
+    return null;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let yes = window.confirm('are you sure you want to update this scrim?');
+    if (!yes) return;
 
-    const scrimToCreate = {
+    const dataSending = {
       ...scrimData,
-      lobbyHost: scrimData.lobbyHost === 'random' ? null : currentUser,
+      lobbyHost: getLobbyHost(),
     };
 
-    const createdScrim = await createScrim(scrimToCreate);
+    const updatedScrim = await updateScrim(id, dataSending);
 
-    toggleFetch((prevState) => !prevState);
-
-    setCreated({ createdScrim });
+    if (updatedScrim) {
+      toggleFetch((prev) => !prev);
+      alert('updated Scrim ' + id);
+      setUpdated(true);
+    }
   };
 
+  useEffect(() => {
+    let [hours, minutes] = dateData.gameStartHours;
+
+    let gameStartDate = dateData['gameStartDate'];
+
+    let gameStartTime = new Date(gameStartDate) ?? new Date();
+    gameStartTime.setHours(hours, minutes);
+
+    setScrimData((prevState) => ({
+      ...prevState,
+      gameStartTime: gameStartTime.toISOString(),
+    }));
+  }, [dateData]);
+
+  //  if user doesn't have admin key, push to '/'
   if (process.env.REACT_APP_ADMIN_KEY !== currentUser.adminKey) {
     return <Redirect to="/" />;
   }
 
-  if (isCreated) {
-    return <Redirect to="/" />;
+  if (isUpdated) {
+    return <Redirect to={`/scrims/${id}`} />;
   }
 
   return (
@@ -151,6 +234,10 @@ export default function ScrimCreate() {
                       required
                       type="date"
                       name="gameStartDate"
+                      // value={moment(
+                      //   new Date(dateData.gameStartDate).toISOString()
+                      // ).format('yyyy-MM-DD')}
+
                       value={moment(
                         new Date(dateData.gameStartDate).toISOString()
                       ).format('yyyy-MM-DD')}
@@ -167,7 +254,7 @@ export default function ScrimCreate() {
                       required
                       type="time"
                       name="gameStartHours"
-                      value={[...dateData.gameStartHours].join(':') || ''}
+                      value={[...dateData.gameStartHours].join(':')}
                     />
                   </Grid>
                 </Grid>
@@ -208,7 +295,7 @@ export default function ScrimCreate() {
                           lobbyHost: e.target.value,
                         }))
                       }
-                      value={scrimData.lobbyHost}>
+                      value={scrimData.lobbyHost || ''}>
                       {[currentUser, 'random'].map((value, key) => (
                         <MenuItem value={value} key={key}>
                           {value === currentUser
