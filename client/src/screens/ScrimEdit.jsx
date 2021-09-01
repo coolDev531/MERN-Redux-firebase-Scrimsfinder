@@ -16,6 +16,7 @@ import {
 import moment from 'moment';
 import 'moment-timezone';
 import { getDateAndTimeSeparated } from '../utils/getDateAndTimeSeparated';
+import devLog from '../utils/devLog';
 
 /**
  * @method sample
@@ -38,6 +39,8 @@ export default function ScrimEdit() {
     lobbyPassword: '',
     lobbyHost: null,
   });
+
+  const [lobbyHostObject, setLobbyHostObject] = useState({});
 
   const [dateData, setDateData] = useState({
     gameStartDate: new Date(),
@@ -82,9 +85,9 @@ export default function ScrimEdit() {
         lobbyPassword,
         teamWon,
         gameStartTime,
-        lobbyHost,
         teamOne,
         teamTwo,
+        lobbyHost: lobbyHost.name, // for input values not wanting objects, we will return the object in the submit.
         previousLobbyHost: lobbyHost ?? null,
       });
     };
@@ -127,20 +130,25 @@ export default function ScrimEdit() {
     const { teamOne, teamTwo } = scrimData;
 
     // if he didn't change values.
-    if (scrimData.lobbyHost.name === scrimData.previousLobbyHost.name) {
+    if (scrimData.lobbyHost === scrimData.previousLobbyHost.name) {
+      devLog('previous lobby host');
       return scrimData.previousLobbyHost;
-    } else if (scrimData.lobbyHost.name === currentUser.name) {
+    } else if (scrimData.lobbyHost === currentUser.name) {
       //  if lobby host is current User
+      devLog('current user');
       return currentUser;
     } else if (scrimData.lobbyHost === 'random') {
       // if the lobby is full get a random player from the lobby to be the host.
       if ([...teamOne, ...teamTwo].length === 10) {
+        devLog('getting random user to host');
         return sample([...teamOne, ...teamTwo]);
       } else {
+        devLog("team size isn't 10, returning null");
         // if lobby isn't full return null so it will generate a host on the backend.
         return null;
       }
     }
+    devLog('defaulting to null');
     // return null if it doesn't match the data.
     return null;
   };
@@ -177,6 +185,10 @@ export default function ScrimEdit() {
       gameStartTime: gameStartTime.toISOString(),
     }));
   }, [dateData]);
+
+  useEffect(() => {
+    devLog({ scrimData });
+  }, [scrimData]);
 
   //  if user doesn't have admin key, push to '/'
   if (process.env.REACT_APP_ADMIN_KEY !== currentUser.adminKey) {
@@ -293,11 +305,18 @@ export default function ScrimEdit() {
                           lobbyHost: e.target.value,
                         }))
                       }
-                      value={scrimData.lobbyHost?.name || currentUser.name}>
-                      {[currentUser.name, 'random'].map((value, key) => (
+                      value={scrimData.lobbyHost}>
+                      {[
+                        currentUser.name,
+                        'random',
+                        ...scrimData.teamOne,
+                        ...scrimData.teamTwo,
+                      ].map((value, key) => (
                         <MenuItem value={value} key={key}>
                           {value === currentUser.name
                             ? 'I will host the lobby'
+                            : typeof value === 'object'
+                            ? value.name
                             : 'Choose a random player from the teams to host'}
                         </MenuItem>
                       ))}
