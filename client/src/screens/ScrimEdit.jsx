@@ -40,8 +40,6 @@ export default function ScrimEdit() {
     lobbyHost: null,
   });
 
-  const [lobbyHostObject, setLobbyHostObject] = useState({});
-
   const [dateData, setDateData] = useState({
     gameStartDate: new Date(),
     gameStartHours: [
@@ -77,8 +75,6 @@ export default function ScrimEdit() {
         gameStartDate: date,
         gameStartHours: [hours, minutes],
       }));
-
-      setLobbyHostObject(lobbyHost);
 
       setScrimData({
         region,
@@ -243,38 +239,69 @@ export default function ScrimEdit() {
                   direction="row"
                   alignItems="center"
                   justifyContent="center"
-                  spacing={2}>
+                  spacing={4}>
                   <Grid item>
                     <FormHelperText className="text-white">
-                      Game Start Date
+                      Lobby Name (Custom Game creation name)
                     </FormHelperText>
                     <TextField
                       onChange={handleChange}
                       required
-                      type="date"
-                      name="gameStartDate"
-                      // value={moment(
-                      //   new Date(dateData.gameStartDate).toISOString()
-                      // ).format('yyyy-MM-DD')}
-
-                      value={moment(
-                        new Date(dateData.gameStartDate).toISOString()
-                      ).format('yyyy-MM-DD')}
+                      type="text"
+                      name="lobbyName"
+                      value={scrimData.lobbyName}
                     />
                   </Grid>
-                  <Box marginRight={2} />
                   <Grid item>
                     <FormHelperText className="text-white">
-                      Game Start Time
+                      Lobby Password
                     </FormHelperText>
-
                     <TextField
                       onChange={handleChange}
                       required
-                      type="time"
-                      name="gameStartHours"
-                      value={[...dateData.gameStartHours].join(':')}
+                      type="text"
+                      name="lobbyPassword"
+                      value={scrimData.lobbyPassword}
                     />
+                  </Grid>
+                </Grid>
+
+                <Grid
+                  item
+                  container
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="center"
+                  spacing={2}
+                  xs={6}>
+                  <Grid item container justifyContent="space-evenly">
+                    <Grid item>
+                      <FormHelperText className="text-white">
+                        Game Start Date
+                      </FormHelperText>
+                      <TextField
+                        onChange={handleChange}
+                        required
+                        type="date"
+                        name="gameStartDate"
+                        value={moment(
+                          new Date(dateData.gameStartDate).toISOString()
+                        ).format('yyyy-MM-DD')}
+                      />
+                    </Grid>
+                    <Grid item>
+                      <FormHelperText className="text-white">
+                        Game Start Time
+                      </FormHelperText>
+
+                      <TextField
+                        onChange={handleChange}
+                        required
+                        type="time"
+                        name="gameStartHours"
+                        value={[...dateData.gameStartHours].join(':')}
+                      />
+                    </Grid>
                   </Grid>
                 </Grid>
 

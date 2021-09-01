@@ -7,7 +7,7 @@ import CountdownTimer from './CountdownTimer';
 import ScrimTeamList from './ScrimTeamList';
 import Moment from 'react-moment';
 import AdminArea from './shared/AdminArea';
-import { Box, Button, Grid } from '@material-ui/core';
+import { Button, Grid } from '@material-ui/core';
 import { Link, useHistory } from 'react-router-dom';
 
 // utils / services
