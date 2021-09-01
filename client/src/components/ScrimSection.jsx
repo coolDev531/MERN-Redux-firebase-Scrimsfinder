@@ -9,6 +9,7 @@ import Moment from 'react-moment';
 import AdminArea from './shared/AdminArea';
 import { Box, Button, Grid } from '@material-ui/core';
 import { Link, useHistory } from 'react-router-dom';
+
 // utils / services
 import {
   updateScrim,
@@ -16,11 +17,12 @@ import {
   removeCasterFromScrim,
 } from '../services/scrims';
 import { copyTextToClipboard } from '../utils/copyToClipboard';
+import { ScrimsContext } from '../context/scrimsContext';
+import { insertCasterInScrim } from './../services/scrims';
 
 // icons
 import ShareIcon from '@material-ui/icons/Share';
-import { ScrimsContext } from '../context/scrimsContext';
-import { insertCasterInScrim } from './../services/scrims';
+import SettingsIcon from '@material-ui/icons/Settings';
 
 const compareDates = (scrim) => {
   let currentTime = new Date().getTime();
@@ -179,7 +181,8 @@ export default function ScrimSection({ scrim, isInDetail }) {
             <Grid
               item
               container
-              sm={4}
+              sm={8}
+              md={6}
               alignItems="center"
               justifyContent="flex-end">
               <Button
@@ -193,13 +196,32 @@ export default function ScrimSection({ scrim, isInDetail }) {
               </Button>
 
               <AdminArea>
-                <Box marginRight={2} />
-                <Button
-                  color="secondary"
-                  variant="contained"
-                  onClick={handleDeleteScrim}>
-                  Close event
-                </Button>
+                <Grid
+                  container
+                  direction="row"
+                  alignItems="center"
+                  xs={6}
+                  justifyContent="flex-end"
+                  spacing={2}>
+                  <Grid item>
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      onClick={() => history.push(`/scrims/${scrim._id}/edit`)}>
+                      <SettingsIcon />
+                      &nbsp; Edit
+                    </Button>
+                  </Grid>
+
+                  <Grid item>
+                    <Button
+                      color="secondary"
+                      variant="contained"
+                      onClick={handleDeleteScrim}>
+                      Close event
+                    </Button>
+                  </Grid>
+                </Grid>
               </AdminArea>
             </Grid>
           </Grid>
@@ -343,6 +365,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
                           <Grid item>
                             <h3 className="text-black">Who won?</h3>
                           </Grid>
+
                           {['Team One (Blue Side)', 'Team Two (Red Side)'].map(
                             (teamTitle, idx) => (
                               <Grid item key={idx}>
