@@ -38,12 +38,24 @@ const getLobbyName = async (region, createdScrimStartTime) => {
   return `Scrim ${scrimsThatDay.length + 1} Custom Game (${region})`;
 };
 
-const getAllScrims = async (_req, res) => {
-  try {
-    const scrims = await Scrim.find();
-    res.json(scrims);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+const getAllScrims = async (req, res) => {
+  const region = req.query?.region;
+  // /api/scrims?region=NA
+  if (region) {
+    try {
+      const scrims = await Scrim.find({ region: region });
+      res.json(scrims);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  } else {
+    // if no region, just get all scrims.
+    try {
+      const scrims = await Scrim.find();
+      res.json(scrims);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
   }
 };
 
