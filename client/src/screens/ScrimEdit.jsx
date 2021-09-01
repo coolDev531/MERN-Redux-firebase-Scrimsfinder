@@ -295,7 +295,7 @@ export default function ScrimEdit() {
                           lobbyHost: e.target.value,
                         }))
                       }
-                      value={scrimData.lobbyHost || ''}>
+                      value={scrimData.lobbyHost || currentUser}>
                       {[currentUser, 'random'].map((value, key) => (
                         <MenuItem value={value} key={key}>
                           {value === currentUser
