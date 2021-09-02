@@ -317,7 +317,11 @@ export default function ScrimSection({ scrim, isInDetail }) {
               className="lobby__info-box"
               style={{
                 background: `rgba(255, 255, 255,${
-                  gameStarted === scrim._id ? '0.7' : '0.5'
+                  imageUploaded === scrim._id
+                    ? '0.8'
+                    : gameStarted === scrim._id
+                    ? '0.7'
+                    : '0.5'
                 })`,
                 padding: '10px',
                 borderRadius: '4px',
