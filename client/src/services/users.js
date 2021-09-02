@@ -31,3 +31,17 @@ export const createUser = async (user) => {
     throw error;
   }
 };
+
+export const updateUser = async (id, userData) => {
+  try {
+    const response = await api.put(`/users/${id}`, userData);
+    return response.data;
+  } catch (error) {
+    const errorMsg = error?.response?.data?.error;
+
+    if (errorMsg) {
+      alert(errorMsg);
+    }
+    throw error;
+  }
+};

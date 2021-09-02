@@ -100,9 +100,24 @@ const loginUser = async (req, res) => {
   }
 };
 
+const updateUser = async (req, res) => {
+  const { id } = req.params;
+
+  await User.findByIdAndUpdate(id, req.body, { new: true }, (error, user) => {
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+    if (!user) {
+      return res.status(404).json(user);
+    }
+    res.status(200).json(user);
+  });
+};
+
 module.exports = {
   getAllUsers,
   createUser,
   verifyUser,
   loginUser,
+  updateUser,
 };
