@@ -91,7 +91,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
     } else {
       setPlayerEntered(false);
     }
-  }, [scrim, currentUser.name, teamOne, teamTwo]);
+  }, [scrim, currentUser?.name, teamOne, teamTwo]);
 
   useEffect(() => {
     if (scrim.postGameImage) {
@@ -113,12 +113,12 @@ export default function ScrimSection({ scrim, isInDetail }) {
     getNewScrimsData();
 
     const updatedScrim = await insertCasterInScrim(scrim._id, {
-      casterData: currentUser.name,
+      casterData: currentUser?.name,
     });
 
     if (updatedScrim) {
       console.log(
-        `%cadded ${currentUser.name} as a caster for scrim: ${scrim._id}`,
+        `%cadded ${currentUser?.name} as a caster for scrim: ${scrim._id}`,
         'color: #99ff99'
       );
       getNewScrimsData();
@@ -134,7 +134,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
 
     if (updatedScrim) {
       console.log(
-        `%cremoved ${currentUser.name} from the caster list for scrim: ${scrim._id}`,
+        `%cremoved ${currentUser?.name} from the caster list for scrim: ${scrim._id}`,
         'color: #99ff99'
       );
       getNewScrimsData();
@@ -346,7 +346,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
                         {playerEntered ||
                         casterEntered ||
                         process.env.REACT_APP_ADMIN_KEY ===
-                          currentUser.adminKey ? (
+                          currentUser?.adminKey ? (
                           <>
                             <h2 className="text-black">
                               Lobby host / captain: {scrim.lobbyHost?.name}
@@ -368,8 +368,8 @@ export default function ScrimSection({ scrim, isInDetail }) {
                     {/* WHO WON ? BUTTONS */}
                     {/* show buttons if is admin or is lobby captain */}
                     {/* don't show if game has ended */}
-                    {(scrim.lobbyHost.name === currentUser.name ||
-                      currentUser.adminKey ===
+                    {(scrim.lobbyHost.name === currentUser?.name ||
+                      currentUser?.adminKey ===
                         process.env.REACT_APP_ADMIN_KEY) &&
                       !gameEnded && (
                         // WHO WON BUTTONS
@@ -423,8 +423,8 @@ export default function ScrimSection({ scrim, isInDetail }) {
                     {/*  allow image upload if both teams are filled and 
                     the current user is the host or creator of scrim or an admin.
                   */}
-                    {(scrim.lobbyHost.name === currentUser.name ||
-                      currentUser.adminKey ===
+                    {(scrim.lobbyHost.name === currentUser?.name ||
+                      currentUser?.adminKey ===
                         process.env.REACT_APP_ADMIN_KEY) && (
                       <>
                         <Box marginTop={2} />

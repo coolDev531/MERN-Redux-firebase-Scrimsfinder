@@ -23,7 +23,7 @@ export default function ScrimCreate() {
   const [scrimData, setScrimData] = useState({
     gameStartTime: new Date().toISOString(),
     lobbyHost: currentUser,
-    region: currentUser.region,
+    region: currentUser?.region,
     createdBy: currentUser,
     title: '',
   });
@@ -98,7 +98,7 @@ export default function ScrimCreate() {
     setCreated({ createdScrim });
   };
 
-  if (process.env.REACT_APP_ADMIN_KEY !== currentUser.adminKey) {
+  if (process.env.REACT_APP_ADMIN_KEY !== currentUser?.adminKey) {
     return <Redirect to="/" />;
   }
 
@@ -124,7 +124,7 @@ export default function ScrimCreate() {
                 <Grid item sm={12}>
                   <Grid item>
                     <FormHelperText className="text-white">
-                      Scrim Title {`(example: ${currentUser.name}'s Scrim)`}
+                      Scrim Title {`(example: ${currentUser?.name}'s Scrim)`}
                     </FormHelperText>
                   </Grid>
                   <TextField

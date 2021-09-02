@@ -138,7 +138,7 @@ export default function ScrimEdit() {
     if (scrimData.lobbyHost === scrimData.previousLobbyHost.name) {
       devLog('previous lobby host');
       return scrimData.previousLobbyHost;
-    } else if (scrimData.lobbyHost === currentUser.name) {
+    } else if (scrimData.lobbyHost === currentUser?.name) {
       //  if lobby host is current User
       devLog('current user');
       return currentUser;
@@ -193,7 +193,7 @@ export default function ScrimEdit() {
   }, [dateData]);
 
   //  if user doesn't have admin key, push to '/'
-  if (process.env.REACT_APP_ADMIN_KEY !== currentUser.adminKey) {
+  if (process.env.REACT_APP_ADMIN_KEY !== currentUser?.adminKey) {
     return <Redirect to="/" />;
   }
 
@@ -269,7 +269,7 @@ export default function ScrimEdit() {
                       required
                       name="title"
                       value={scrimData.title}
-                      helperText={`Example: ${currentUser.name}'s scrim`}
+                      helperText={`Example: ${currentUser?.name}'s scrim`}
                     />
                   </Grid>
 
@@ -344,14 +344,14 @@ export default function ScrimEdit() {
                         {[
                           ...new Set([
                             scrimData?.lobbyHost,
-                            currentUser.name,
+                            currentUser?.name,
                             'random',
                             ...teamsArr.map((user) => user.name),
                           ]),
                         ].flatMap((value, key) => {
                           return (
                             <MenuItem value={value || ''} key={key}>
-                              {value === currentUser.name
+                              {value === currentUser?.name
                                 ? 'I will host the lobby'
                                 : value === 'random'
                                 ? 'Choose a random player from the teams to host'

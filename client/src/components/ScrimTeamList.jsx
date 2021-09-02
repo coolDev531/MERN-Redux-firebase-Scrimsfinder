@@ -81,7 +81,7 @@ export default function ScrimTeamList({
 
     // if is the array that the user is moving to is different, that means he is changing teams.
     if (compareArrays(currentTeamArr, teamArr) === false) {
-      console.log(`swapping teams for summoner ${currentUser.name}`);
+      console.log(`swapping teams for summoner ${currentUser?.name}`);
 
       dataSending = {
         playerData: {
@@ -114,7 +114,7 @@ export default function ScrimTeamList({
 
     if (updatedScrim) {
       console.log(
-        `%cswapped ${currentUser.name} in scrim: ${scrim._id}`,
+        `%cswapped ${currentUser?.name} in scrim: ${scrim._id}`,
         'color: #99ff99'
       );
       getNewScrimsData();
@@ -135,7 +135,7 @@ export default function ScrimTeamList({
 
     if (updatedScrim) {
       console.log(
-        `%cremoved ${currentUser.name} from scrim: ${scrim._id}`,
+        `%cremoved ${currentUser?.name} from scrim: ${scrim._id}`,
         'color: #99ff99'
       );
       getNewScrimsData();
@@ -143,7 +143,7 @@ export default function ScrimTeamList({
   };
 
   const kickPlayerFromGame = async (playerToKick, teamLeavingName) => {
-    if (currentUser.adminKey !== process.env.REACT_APP_ADMIN_KEY) return;
+    if (currentUser?.adminKey !== process.env.REACT_APP_ADMIN_KEY) return;
 
     const dataSending = {
       playerData: {
@@ -158,7 +158,7 @@ export default function ScrimTeamList({
 
     if (updatedScrim) {
       console.log(
-        `%ckicked ${currentUser.name} from scrim: ${scrim._id}`,
+        `%ckicked ${currentUser?.name} from scrim: ${scrim._id}`,
         'color: #99ff99'
       );
       getNewScrimsData();

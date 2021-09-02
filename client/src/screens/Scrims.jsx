@@ -53,7 +53,7 @@ export default function Scrims() {
       );
 
       const filteredScrimsByDateAndRegion = dateFilteredScrims.filter(
-        (scrim) => scrim.region === currentUser.region
+        (scrim) => scrim.region === currentUser?.region
       );
 
       // set filtered scrims by date and region

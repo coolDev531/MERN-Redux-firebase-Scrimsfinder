@@ -15,7 +15,11 @@ const KEYCODES = {
 };
 
 function getSteps() {
-  return ['Summoner Name and Discord', 'Rank division and number', 'Region'];
+  return [
+    'Summoner Name and Discord',
+    'Rank division and number',
+    'Region and sign up with google',
+  ];
 }
 
 export default function Intro() {
@@ -31,7 +35,8 @@ export default function Intro() {
     rankDivision: 'Iron',
     rankNumber: '4',
   });
-  const [currentUser, setCurrentUser] = useContext(CurrentUserContext);
+  const [currentUser, setCurrentUser, handleAuth] =
+    useContext(CurrentUserContext);
   const [currentFormIndex, setCurrentFormIndex] = useState(0);
   const [errors, setErrors] = useState(new Map()); // using a map to keep unique errors.
 
@@ -96,7 +101,7 @@ export default function Intro() {
   const goNextStep = useCallback(
     (e) => {
       e.preventDefault();
-      if (currentFormIndex === 2) return; // if final step, stop.
+      if (currentFormIndex === steps.length - 1) return; // if final step, stop.
 
       if (document.querySelector('#form').checkValidity()) {
         setCurrentFormIndex((prevState) => (prevState += 1));
@@ -107,7 +112,7 @@ export default function Intro() {
         handleErrors();
       }
     },
-    [currentFormIndex, handleErrors]
+    [currentFormIndex, handleErrors, steps.length]
   );
 
   const goPreviousStep = useCallback(
@@ -144,17 +149,18 @@ export default function Intro() {
 
       localStorage.setItem('currentUser', JSON.stringify(newUser));
       setCurrentUser(newUser);
-
+      handleAuth();
       return;
     },
-    [setCurrentUser, userData]
+    [setCurrentUser, userData, handleAuth]
   );
 
   useEffect(() => {
     const handleKeyUp = (e) => {
       switch (e.keyCode) {
         case KEYCODES.ENTER:
-          if (currentFormIndex === 2) return handleSubmit(e);
+          // if is last step, submit.
+          if (currentFormIndex === steps.length - 1) return handleSubmit(e);
           return goNextStep(e);
         case KEYCODES.BACKSPACE:
           // if pressing backspace but even.target doesn't have a name (a.k.a user isn't backspacing while typing on an input)
@@ -168,7 +174,13 @@ export default function Intro() {
     return () => {
       document.removeEventListener('keyup', handleKeyUp);
     };
-  }, [goNextStep, currentFormIndex, handleSubmit, goPreviousStep]);
+  }, [
+    goNextStep,
+    currentFormIndex,
+    handleSubmit,
+    goPreviousStep,
+    steps.length,
+  ]);
 
   if (currentUser) {
     console.log('redirecting to /');
@@ -222,7 +234,7 @@ export default function Intro() {
               divisionsWithNumbers={divisionsWithNumbers}
             />
             <div className="page-break" />
-            {currentFormIndex === 2 ? (
+            {currentFormIndex === steps.length - 1 ? (
               <Grid container item spacing={2}>
                 <Grid item>
                   <Button
@@ -233,8 +245,12 @@ export default function Intro() {
                   </Button>
                 </Grid>
                 <Grid item>
-                  <Button variant="contained" color="primary" type="submit">
-                    Create my account
+                  <Button
+                    onClick={handleAuth}
+                    variant="contained"
+                    color="primary"
+                    type="submit">
+                    Create my account with google
                   </Button>
                 </Grid>
               </Grid>
