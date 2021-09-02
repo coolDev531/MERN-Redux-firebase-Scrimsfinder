@@ -35,8 +35,9 @@ const createUser = async (req, res) => {
       region,
     };
 
-    const userExists = User.findOne({ uid, email });
-    if (userExists) {
+    const userExists = await User.find({ uid, email });
+
+    if (userExists.length) {
       return res.status(500).json({
         error: 'User with email already exists!',
       });
@@ -61,6 +62,7 @@ const verifyUser = async (req, res) => {
       error: `No Email Provided`,
     });
   }
+
   if (!uid) {
     return res.status(500).json({
       error: `No google id Provided.`,
@@ -72,7 +74,7 @@ const verifyUser = async (req, res) => {
 
   if (!foundUser) {
     return res.status(500).json({
-      error: `User doesn't exist with the combination of email: ${email} and/or Uid: ${uid}, please sign up or try again.`,
+      error: `User doesn't with the email: ${email}, please sign up or try again.`,
     });
   }
 

@@ -5,6 +5,6 @@ const router = Router();
 
 router.get('/users', controllers.getAllUsers); // GET
 router.post('/users', controllers.createUser); // POST
-router.get('/auth/verify/', controllers.verifyUser); // GET
+router.post('/auth/verify/', controllers.verifyUser); // GET
 
 module.exports = router;

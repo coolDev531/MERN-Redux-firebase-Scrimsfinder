@@ -70,13 +70,13 @@ export default function Navbar({
         uid: result.user.uid, // google id
         email: result.user.email,
       };
+
       // verifying user with google, then getting rest of data.
       const verifiedUser = await verifyUser(googleParams);
 
       if (verifiedUser) {
-        console.log({ verifiedUser });
-      } else {
-        console.error('error');
+        setCurrentUser(verifiedUser);
+        history.push('/');
       }
     }
   };

@@ -129,7 +129,6 @@ export default function Intro() {
   const createGoogleAccount = useCallback(async () => {
     try {
       const result = await auth.signInWithPopup(provider);
-
       if (result.user) {
         let newUser = {
           uid: result.user.uid, // google id

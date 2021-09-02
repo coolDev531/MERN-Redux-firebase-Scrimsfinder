@@ -7,6 +7,7 @@ import { useHistory } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@material-ui/core';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Footer from './components/shared/Footer';
+import devLog from './utils/devLog';
 
 const theme = createTheme({
   palette: {
@@ -25,7 +26,8 @@ function App() {
   const { push } = useHistory();
 
   useEffect(() => {
-    if (!currentUser) {
+    if (!currentUser?.uid) {
+      setCurrentUser(null); // for older users that didn't use google
       return push('./user-setup');
     }
     // eslint-disable-next-line
@@ -34,21 +36,21 @@ function App() {
   useEffect(() => {
     //  dev mode testing commands
     if (process.env.NODE_ENV === 'development') {
-      window.setUser = (data) => {
+      window.setUsername = (value) => {
         setCurrentUser((prevState) => ({
           ...prevState,
-          name: data,
+          name: value,
         }));
       };
 
-      window.setAdminKey = (data) => {
+      window.setAdminKey = (value) => {
         setCurrentUser((prevState) => ({
           ...prevState,
-          adminKey: data,
+          adminKey: value,
         }));
       };
 
-      window.getEnv = () => console.log(process.env);
+      window.getEnv = () => devLog(process.env);
     }
 
     // eslint-disable-next-line
