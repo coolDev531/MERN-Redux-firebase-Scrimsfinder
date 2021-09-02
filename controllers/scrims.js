@@ -394,16 +394,6 @@ const addImageToScrim = async (req, res) => {
     },
   };
 
-  const scrim = await Scrim.findById(id);
-
-  const alreadyHasImg = scrim?.postGameImage?.key !== null;
-
-  if (alreadyHasImg) {
-    return res.status(500).json({
-      error: 'Scrim already has an image!',
-    });
-  }
-
   await Scrim.findByIdAndUpdate(
     id,
     dataSending,

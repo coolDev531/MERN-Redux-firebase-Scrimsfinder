@@ -76,6 +76,16 @@ export const removeCasterFromScrim = async (id, data) => {
   }
 };
 
+export const addImageToScrim = async (id, data) => {
+  try {
+    const response = await api.put(`/scrims/${id}/add-image`, data);
+    return response.data;
+  } catch (error) {
+    const errorMsg = error.response.data.error;
+    alert(errorMsg);
+  }
+};
+
 export const deleteScrim = async (id) => {
   try {
     const response = await api.delete(`/scrims/${id}`);

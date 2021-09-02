@@ -1,5 +1,6 @@
 import React from 'react';
 import S3FileUpload from 'react-s3';
+import { addImageToScrim } from './../services/scrims';
 
 export default function UploadPostGameImage({ scrim }) {
   const config = {
@@ -12,8 +13,15 @@ export default function UploadPostGameImage({ scrim }) {
   const upload = (e) => {
     const img = e.target.files[0];
     S3FileUpload.uploadFile(img, config)
-      .then((data) => {
+      .then(async (data) => {
         console.log(data);
+        const addedImg = await addImageToScrim(scrim._id, data);
+        if (addedImg) {
+          console.log(
+            '%csuccessfully added an image for scrim: ' + scrim._id,
+            'color: lightgreen'
+          );
+        }
       })
       .catch((err) => {
         alert(err);
