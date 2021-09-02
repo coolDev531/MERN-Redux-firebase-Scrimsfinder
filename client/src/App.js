@@ -8,7 +8,6 @@ import { createTheme, ThemeProvider } from '@material-ui/core';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Footer from './components/shared/Footer';
 import devLog from './utils/devLog';
-import { verifyUser } from './services/auth';
 
 const theme = createTheme({
   palette: {

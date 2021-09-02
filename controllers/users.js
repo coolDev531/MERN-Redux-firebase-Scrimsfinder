@@ -1,5 +1,16 @@
 const User = require('../models/user');
 
+const removeSpacesBeforeHashTag = (str) => {
+  return str
+    .trim()
+    .replace(/\s([#])/g, function (el1, el2) {
+      return '' + el2;
+    })
+    .replace(/(«)\s/g, function (el1, el2) {
+      return el2 + '';
+    });
+};
+
 const getAllUsers = async (req, res) => {
   const region = req.query?.region;
   // /api/users?region=NA
@@ -29,10 +40,12 @@ const createUser = async (req, res) => {
   try {
     const { uid, name, discord, rank, adminKey, email, region } = req.body;
 
+    const noSpacesDiscord = removeSpacesBeforeHashTag(discord);
+
     const userData = {
       uid,
       name,
-      discord,
+      discord: noSpacesDiscord,
       rank,
       adminKey,
       email,
@@ -41,9 +54,17 @@ const createUser = async (req, res) => {
 
     const userExists = await User.find({ uid, email });
 
+    const discordTaken = await User.findOne({ discord: noSpacesDiscord });
+
+    if (discordTaken) {
+      return res.status(500).json({
+        error: `Error: User with discord: ${discord} already exists!`,
+      });
+    }
+
     if (userExists.length) {
       return res.status(500).json({
-        error: 'User with email already exists!',
+        error: `Error: User with email ${email} already exists!`,
       });
     }
 

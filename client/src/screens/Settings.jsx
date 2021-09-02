@@ -1,31 +1,49 @@
 import { useContext, useState, useEffect, useMemo } from 'react';
-import { Grid, TextField, Button } from '@material-ui/core';
+import {
+  Grid,
+  TextField,
+  Button,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormControl,
+  makeStyles,
+} from '@material-ui/core';
 import Navbar from '../components/shared/Navbar';
 import { CurrentUserContext } from '../context/currentUser';
-import { getUsersInRegion } from './../services/users';
 
+// services
+import { getUsersInRegion, updateUser } from './../services/users';
+
+// remove spaces from # in discord name
+const removeSpaces = (str) => {
+  return str
+    .trim()
+    .replace(/\s([#])/g, function (el1, el2) {
+      return '' + el2;
+    })
+    .replace(/(«)\s/g, function (el1, el2) {
+      return el2 + '';
+    });
+};
+
+const useStyles = makeStyles((theme) => ({
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 180,
+  },
+}));
+// userEdit
 export default function Settings() {
   const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
   const [usersInRegion, setUsersInRegion] = useState([]);
-
-  // remove spaces from # in discord name
-  const removeSpaces = (str) => {
-    return str
-      .trim()
-      .replace(/\s([#])/g, function (el1, el2) {
-        return '' + el2;
-      })
-      .replace(/(«)\s/g, function (el1, el2) {
-        return el2 + '';
-      });
-  };
-
   const [userData, setUserData] = useState({
     name: currentUser?.name, // LoL summoner name
     discord: currentUser?.discord,
     adminKey: currentUser?.adminKey ?? '',
     region: currentUser?.region ?? 'NA',
   });
+  const classes = useStyles();
 
   const foundUserSummonerName = useMemo(
     () =>
@@ -69,7 +87,9 @@ export default function Settings() {
     e.preventDefault();
 
     if (foundUserSummonerName) {
-      alert(`Summoner name ${userData.name} is already taken!`);
+      alert(
+        `Summoner name ${userData.name} in ${userData.region} is already taken!`
+      );
       return;
     }
     if (foundUserDiscord) {
@@ -80,10 +100,22 @@ export default function Settings() {
     let yes = window.confirm(`are you sure you want to update your account? \n
     Summoner Name: ${userData.name} \n
     Region: ${userData.region} \n
-    ${userData?.adminKey !== '' && `adminKey: ${userData.adminkey}`}
+    ${userData.adminKey ? 'Admin key: ' + userData.adminKey : ''}
     `);
 
     if (!yes) return;
+    try {
+      const updatedUser = await updateUser(currentUser?._id, userData);
+      alert('Account details updated!');
+
+      if (updatedUser) {
+        setUserData({ ...updatedUser });
+        setCurrentUser(updatedUser);
+      }
+    } catch (error) {
+      console.error('ERROR:', error);
+      alert(error);
+    }
   };
 
   const handleChange = (e) => {
@@ -106,7 +138,11 @@ export default function Settings() {
               alignItems="center"
               justifyContent="center"
               spacing={4}
-              style={{ marginLeft: 'auto', marginRight: 'auto' }}>
+              style={{
+                marginLeft: 'auto',
+                marginRight: 'auto',
+                width: 'auto',
+              }}>
               <Grid item>
                 <h1>Settings</h1>
               </Grid>
@@ -118,15 +154,17 @@ export default function Settings() {
                 justifyContent="center"
                 alignItems="center"
                 spacing={4}>
-                <TextField
-                  type="text"
-                  name="name"
-                  variant="filled"
-                  value={userData.name || ''}
-                  onChange={handleChange}
-                  label="Summoner Name"
-                  required
-                />
+                <Grid item>
+                  <TextField
+                    type="text"
+                    name="name"
+                    variant="filled"
+                    value={userData.name || ''}
+                    onChange={handleChange}
+                    label="Summoner Name"
+                    required
+                  />
+                </Grid>
 
                 <Grid item>
                   <TextField
@@ -141,18 +179,46 @@ export default function Settings() {
                 </Grid>
               </Grid>
 
-              <Grid item>
-                <TextField
-                  variant="filled"
-                  type="text"
-                  fullWidth
-                  name="adminKey"
-                  value={userData.adminKey || ''}
-                  onChange={handleChange}
-                  label="Admin key (not required)"
-                  helperText="You'll need an admin key to create scrims/lobbies."
-                />
+              <Grid
+                item
+                container
+                direction="row"
+                alignItems="center"
+                justifyContent="center"
+                spacing={4}>
+                <Grid item>
+                  <FormControl className={classes.formControl} variant="filled">
+                    <InputLabel>Region</InputLabel>
+                    <Select
+                      name="region"
+                      value={userData.region}
+                      onChange={handleChange}
+                      required>
+                      <MenuItem selected disabled>
+                        select region
+                      </MenuItem>
+                      {['NA', 'EUW', 'EUNE', 'LAN'].map((region, key) => (
+                        <MenuItem value={region} key={key}>
+                          {region}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+
+                <Grid item>
+                  <TextField
+                    variant="filled"
+                    type="text"
+                    // fullWidth
+                    name="adminKey"
+                    value={userData.adminKey || ''}
+                    onChange={handleChange}
+                    label="Admin key (not required)"
+                  />
+                </Grid>
               </Grid>
+
               <div className="page-break" />
               <Grid item>
                 <Button variant="contained" color="primary" type="submit">

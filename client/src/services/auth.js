@@ -8,7 +8,11 @@ export const loginUser = async (googleParams) => {
     });
     return response.data;
   } catch (error) {
-    throw error;
+    const errorMsg = error?.response?.data?.error;
+
+    if (errorMsg) {
+      return alert(errorMsg);
+    }
   }
 };
 
@@ -21,11 +25,6 @@ export const verifyUser = async (googleParams) => {
     });
     return response.data;
   } catch (error) {
-    const errorMsg = error?.response?.data?.error;
-
-    if (errorMsg) {
-      alert(errorMsg);
-    }
     throw error;
   }
 };

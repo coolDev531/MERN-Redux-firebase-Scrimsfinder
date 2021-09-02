@@ -41,7 +41,6 @@ export default function Intro() {
   const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
   const [currentFormIndex, setCurrentFormIndex] = useState(0);
   const [errors, setErrors] = useState(new Map()); // using a map to keep unique errors.
-
   const steps = getSteps();
 
   const divisionsWithNumbers = [
@@ -140,25 +139,7 @@ export default function Intro() {
           email: result.user.email,
         };
 
-        let yes =
-          window.confirm(`Are you sure you want to create this account? \n
-      Summoner Name: ${userData.name} \n
-      Discord: ${userData.discord} \n
-      Rank: ${userData.rank} \n
-      Region: ${userData.region} \n
-      Email: ${newUser.email} 
-      `);
-
-        if (!yes) return;
-
-        let createdUser = await createUser(newUser);
-
-        if (createdUser) {
-          return createdUser;
-        } else {
-          console.error('Error creating user.');
-          return false;
-        }
+        return newUser;
       }
     } catch (error) {
       console.error({ error });
@@ -170,25 +151,48 @@ export default function Intro() {
     async (e) => {
       e.preventDefault();
 
-      try {
-        let createdUser = await createGoogleAccount();
+      let newUser = await createGoogleAccount(); // google pop up verify acc
 
-        if (createdUser) {
-          setCurrentUser(createdUser);
+      if (newUser) {
+        // has to confirm.
+        // settimeout so google popup doesn't cover confirmation alert.
+        // google popup closes by then.
+        setTimeout(async () => {
+          let yes =
+            window.confirm(`Are you sure you want to create this account? \n
+        Summoner Name: ${userData.name} \n
+        Discord: ${userData.discord} \n
+        Rank: ${userData.rank} \n
+        Region: ${userData.region} \n
+        Email: ${newUser.email} 
+        `);
 
-          console.log(
-            '%cuser created with the summoner name: ' + userData.name,
-            'color: lightgreen'
-          );
+          if (!yes) return;
 
-          localStorage.setItem('currentUser', JSON.stringify(createdUser));
-        }
-      } catch (error) {
-        return;
+          let createdUser = await createUser(newUser);
+
+          if (createdUser) {
+            setCurrentUser(createdUser);
+
+            console.log(
+              '%cuser created with the summoner name: ' + userData.name,
+              'color: lightgreen'
+            );
+
+            localStorage.setItem('currentUser', JSON.stringify(createdUser));
+            return createdUser;
+          }
+        }, 200);
       }
-      return;
     },
-    [createGoogleAccount, setCurrentUser, userData.name]
+    [
+      createGoogleAccount,
+      setCurrentUser,
+      userData.name,
+      userData.discord,
+      userData.rank,
+      userData.region,
+    ]
   );
 
   useEffect(() => {
@@ -229,7 +233,7 @@ export default function Intro() {
       <main className="page-content">
         <div className="page-section">
           <div className="inner-column">
-            <h1>Welcome to LoL scrim finder, please fill in your details</h1>
+            <h1>Welcome to LoL Scrims Finder, please fill in your details</h1>
 
             <Grid container item direction="column" md={12}>
               {[...errors.values()].map((error, key) => (
@@ -249,14 +253,14 @@ export default function Intro() {
 
                 if (index === 0) {
                   labelProps.optional = (
-                    <Typography variant="caption">
+                    <Typography variant="caption" key={label}>
                       ( Admin key optional )
                     </Typography>
                   );
                 }
 
                 return (
-                  <Step key={label} {...stepProps}>
+                  <Step key={index} {...stepProps}>
                     <StepLabel {...labelProps}>{label}</StepLabel>
                   </Step>
                 );
