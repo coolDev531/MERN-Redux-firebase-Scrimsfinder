@@ -246,12 +246,8 @@ const insertPlayerInScrim = async (req, res) => {
 };
 
 const updateScrim = async (req, res) => {
-  // for changing times, players or casters joining.
-
+  // for admins changing scrim data not average user.
   const { id } = req.params;
-  const scrim = await Scrim.findById(id);
-
-  const { teamOne, teamTwo } = req.body;
 
   await Scrim.findByIdAndUpdate(id, req.body, { new: true }, (error, scrim) => {
     if (error) {
@@ -288,8 +284,6 @@ const removePlayerFromScrim = async (req, res) => {
 
   const teamLeavingArr =
     teamLeavingName === 'teamOne' ? scrim._doc.teamOne : scrim._doc.teamTwo;
-
-  const teams = [...scrim._doc.teamOne, ...scrim._doc.teamTwo];
 
   const scrimData = {
     ...scrim._doc,
@@ -386,6 +380,47 @@ const removeCasterFromScrim = async (req, res) => {
   session.endSession();
 };
 
+const addImageToScrim = async (req, res) => {
+  // client uplaods to s3 bucket, back-end saves endpoints
+  const { id } = req.params;
+  const { bucket, key, location, result } = req.body;
+
+  let dataSending = {
+    postGameImage: {
+      bucket,
+      key,
+      location,
+      result,
+    },
+  };
+
+  const scrim = await Scrim.findById(id);
+
+  const alreadyHasImg = scrim?.postGameImage?.key !== null;
+
+  if (alreadyHasImg) {
+    return res.status(500).json({
+      error: 'Scrim already has an image!',
+    });
+  }
+
+  await Scrim.findByIdAndUpdate(
+    id,
+    dataSending,
+    { new: true },
+    (error, scrim) => {
+      if (error) {
+        return res.status(500).json({ error: error.message });
+      }
+      if (!scrim) {
+        return res.status(500).send('Scrim not found');
+      }
+
+      res.status(200).json(scrim);
+    }
+  );
+};
+
 module.exports = {
   getAllScrims,
   getTodaysScrims,
@@ -397,4 +432,5 @@ module.exports = {
   removePlayerFromScrim,
   removeCasterFromScrim,
   insertCasterInScrim,
+  addImageToScrim,
 };
