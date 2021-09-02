@@ -256,7 +256,17 @@ export default function ScrimSection({ scrim, isInDetail }) {
               <div className="casters-container ">
                 {casters.length === 2 ? (
                   <h2 className="text-black">
-                    Casters: {casters.map(({ name }) => name).join(' & ')}
+                    Casters:{' '}
+                    {casters
+                      .map((caster) => {
+                        // for old database using only strings for casters
+                        if (typeof caster === 'string') {
+                          return caster;
+                        } else {
+                          return caster.name;
+                        }
+                      })
+                      .join(' & ')}
                   </h2>
                 ) : (
                   <div className="d-flex align-center gap-20">
@@ -265,7 +275,11 @@ export default function ScrimSection({ scrim, isInDetail }) {
                     ) : null}
                     {casters[0] && (
                       <h2 className="text-black">
-                        Current Casters: {casters[0].name}
+                        {/*  check if string for old database... */}
+                        Current Casters:{' '}
+                        {typeof casters[0] === 'string'
+                          ? casters[0]
+                          : casters[0].name}
                       </h2>
                     )}
                   </div>
