@@ -3,13 +3,20 @@ import { useState, useContext } from 'react';
 import { CurrentUserContext } from '../context/currentUser';
 import { Redirect } from 'react-router-dom';
 import Alert from '@material-ui/lab/Alert';
-import { Button, Grid } from '@material-ui/core';
+import { Button, Grid, Typography } from '@material-ui/core';
 import IntroForms from '../components/IntroForms';
+import Stepper from '@material-ui/core/Stepper';
+import Step from '@material-ui/core/Step';
+import StepLabel from '@material-ui/core/StepLabel';
 
 const KEYCODES = {
   ENTER: 13,
   BACKSPACE: 8,
 };
+
+function getSteps() {
+  return ['Summoner Name and Discord', 'Rank division and number', 'Region'];
+}
 
 export default function Intro() {
   const [userData, setUserData] = useState({
@@ -27,6 +34,8 @@ export default function Intro() {
   const [currentUser, setCurrentUser] = useContext(CurrentUserContext);
   const [currentFormIndex, setCurrentFormIndex] = useState(0);
   const [errors, setErrors] = useState(new Map()); // using a map to keep unique errors.
+
+  const steps = getSteps();
 
   const divisionsWithNumbers = [
     'Iron',
@@ -170,7 +179,7 @@ export default function Intro() {
     <main className="page-content">
       <div className="page-section">
         <div className="inner-column">
-          <h1>Welcome to LoL scrim finder, please fill in your details:</h1>
+          <h1>Welcome to LoL scrim finder, please fill in your details</h1>
 
           <Grid container direction="column" md={12}>
             {[...errors.values()].map((error) => (
@@ -182,10 +191,27 @@ export default function Intro() {
               </>
             ))}
           </Grid>
+          <Stepper activeStep={currentFormIndex}>
+            {steps.map((label, index) => {
+              const stepProps = {};
+              const labelProps = {};
 
+              if (index === 0) {
+                labelProps.optional = (
+                  <Typography variant="caption">
+                    ( Admin key optional )
+                  </Typography>
+                );
+              }
+
+              return (
+                <Step key={label} {...stepProps}>
+                  <StepLabel {...labelProps}>{label}</StepLabel>
+                </Step>
+              );
+            })}
+          </Stepper>
           <form onSubmit={handleSubmit} id="form">
-            <h2>Step {currentFormIndex + 1}</h2>
-
             <IntroForms
               handleChange={handleChange}
               currentFormIndex={currentFormIndex}
@@ -195,7 +221,7 @@ export default function Intro() {
               setRankData={setRankData}
               divisionsWithNumbers={divisionsWithNumbers}
             />
-
+            <div className="page-break" />
             {currentFormIndex === 2 ? (
               <Grid container item spacing={2}>
                 <Grid item>
