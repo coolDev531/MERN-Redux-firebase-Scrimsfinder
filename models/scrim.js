@@ -33,6 +33,13 @@ const PlayerSchema = new Schema({
   team: { name: { type: String } },
 });
 
+const BucketSchema = new Schema({
+  bucket: { type: String, required: true },
+  key: { type: String, required: true },
+  location: { type: String, required: true },
+  result: { type: Object, required: true },
+});
+
 const Scrim = new Schema(
   {
     teamOne: { type: [PlayerSchema], default: [] },
@@ -53,6 +60,7 @@ const Scrim = new Schema(
     region: { type: String, default: 'NA', required: true },
     createdBy: { type: Object, required: true },
     teamWon: { type: 'String', default: null },
+    postGameImage: { type: BucketSchema },
   },
   { timestamps: true, optimisticConcurrency: true, versionKey: 'version' }
 );
