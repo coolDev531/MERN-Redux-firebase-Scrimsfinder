@@ -182,9 +182,11 @@ export default function Navbar({
                   alignItems="center"
                   direction="row"
                   justifyContent="space-between">
-                  <div>
-                    <h2>Welcome: {currentUser?.name}</h2>
-                  </div>
+                  {pathname !== '/user-setup' && (
+                    <div>
+                      <h2>Welcome: {currentUser?.name}</h2>
+                    </div>
+                  )}
                   {showCheckboxes && (
                     <div className="d-flex align-center">
                       <FormGroup row className="text-white">
