@@ -208,6 +208,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
               <AdminArea>
                 <Grid
                   container
+                  item
                   direction="row"
                   alignItems="center"
                   xs={6}
@@ -363,13 +364,15 @@ export default function ScrimSection({ scrim, isInDetail }) {
                         )}
                       </>
                     )}
-                    {/* have buttons if is admin or created lobby or is lobby captain */}
+
+                    {/* WHO WON ? BUTTONS */}
+                    {/* show buttons if is admin or is lobby captain */}
                     {/* don't show if game has ended */}
-                    {(scrim.createdBy.name === currentUser.name ||
-                      scrim.lobbyHost.name === currentUser.name ||
+                    {(scrim.lobbyHost.name === currentUser.name ||
                       currentUser.adminKey ===
                         process.env.REACT_APP_ADMIN_KEY) &&
                       !gameEnded && (
+                        // WHO WON BUTTONS
                         <Grid
                           item
                           container
@@ -420,8 +423,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
                     {/*  allow image upload if both teams are filled and 
                     the current user is the host or creator of scrim or an admin.
                   */}
-                    {(scrim.createdBy.name === currentUser.name ||
-                      scrim.lobbyHost.name === currentUser.name ||
+                    {(scrim.lobbyHost.name === currentUser.name ||
                       currentUser.adminKey ===
                         process.env.REACT_APP_ADMIN_KEY) && (
                       <>
@@ -473,12 +475,14 @@ export default function ScrimSection({ scrim, isInDetail }) {
                       to unlock lobby name and password
                     </h5>
                     {scrim.createdBy.name === currentUser?.name ? (
-                      <Button
-                        color="secondary"
-                        variant="contained"
-                        onClick={handleDeleteScrim}>
-                        Close event
-                      </Button>
+                      <AdminArea>
+                        <Button
+                          color="secondary"
+                          variant="contained"
+                          onClick={handleDeleteScrim}>
+                          Close event
+                        </Button>
+                      </AdminArea>
                     ) : null}
                   </>
                 ))}
