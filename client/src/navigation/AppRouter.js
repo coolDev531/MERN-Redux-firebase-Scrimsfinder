@@ -8,6 +8,7 @@ import ScrimCreate from '../screens/ScrimCreate';
 import ScrimDetail from '../screens/ScrimDetail';
 import NotFound from '../screens/NotFound';
 import ScrimEdit from '../screens/ScrimEdit';
+import Settings from '../screens/Settings';
 
 const AppRouter = () => (
   <Switch>
@@ -17,6 +18,7 @@ const AppRouter = () => (
     <PrivateRoute exact path="/scrims/:id/edit" component={ScrimEdit} />
     <PrivateRoute exact path="/scrims/:id" component={ScrimDetail} />
     <Route exact path="/user-setup" component={Intro} />
+    <Route exact path="/settings" component={Settings} />
     <Route component={NotFound} />
   </Switch>
 );

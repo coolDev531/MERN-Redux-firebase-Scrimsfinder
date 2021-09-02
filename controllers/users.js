@@ -5,7 +5,11 @@ const getAllUsers = async (req, res) => {
   // /api/users?region=NA
   if (region) {
     try {
-      const users = await User.find({ region });
+      const users = await User.find({ region }).select([
+        'discord',
+        'name',
+        'region',
+      ]);
       res.json(users);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -13,7 +17,7 @@ const getAllUsers = async (req, res) => {
   } else {
     // if no region, just get all users.
     try {
-      const users = await User.find();
+      const users = await User.find().select(['discord', 'name', 'region']); // show only discord and name.
       res.json(users);
     } catch (error) {
       res.status(500).json({ error: error.message });

@@ -144,16 +144,20 @@ export default function Navbar({
                   &nbsp;
                   {currentUser?.uid ? (
                     <>
-                      <Tooltip title="User settings">
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={() => history.push('/settings')}
-                          startIcon={<SettingsIcon />}>
-                          Settings
-                        </Button>
-                      </Tooltip>
-                      <Box marginRight={2} />
+                      {pathname !== '/settings' && (
+                        <>
+                          <Tooltip title="User settings">
+                            <Button
+                              variant="contained"
+                              color="primary"
+                              onClick={() => history.push('/settings')}
+                              startIcon={<SettingsIcon />}>
+                              Settings
+                            </Button>
+                          </Tooltip>
+                          <Box marginRight={2} />
+                        </>
+                      )}
                       <Button
                         onClick={handleLogOut}
                         variant="contained"

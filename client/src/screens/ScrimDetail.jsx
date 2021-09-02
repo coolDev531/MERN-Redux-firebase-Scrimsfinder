@@ -35,7 +35,10 @@ export default function ScrimDetail() {
     <div>
       <Helmet>
         <meta charSet="utf-8" />
-        <title>LoL Scrims Finder | {scrim.createdBy.name}'s Scrim</title>
+        <title>
+          LoL Scrims Finder |{' '}
+          {scrim?.title ?? `${scrim.createdBy.name}'s Scrim`}
+        </title>
         <meta
           name="description"
           content="Visit this scrim at LoL Scrims Finder!"

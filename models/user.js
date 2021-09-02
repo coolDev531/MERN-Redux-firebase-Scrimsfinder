@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const User = new Schema(
   {
     name: {
-      // summoner name
+      // LoL summoner name
       type: String,
       required: true,
     },
