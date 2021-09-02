@@ -90,7 +90,8 @@ export default function Navbar({
                 </div>
 
                 <div className="d-flex mr-3">
-                  {pathname !== '/scrims/new' ? (
+                  {/*  don't show Create Scrim button at /new or /edit pages */}
+                  {pathname !== '/scrims/new' && !pathname.includes('/edit') && (
                     <AdminArea>
                       <Button
                         className="mr-3"
@@ -100,7 +101,10 @@ export default function Navbar({
                         Create Scrim
                       </Button>
                     </AdminArea>
-                  ) : (
+                  )}
+                  <Box marginRight={2} />
+                  {/* don't show go back button at home or /scrims */}
+                  {pathname !== '/scrims' && pathname !== '/' && (
                     <Button
                       className="mr-3"
                       variant="contained"

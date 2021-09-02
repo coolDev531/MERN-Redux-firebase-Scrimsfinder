@@ -74,8 +74,10 @@ export default function IntroForms({
             'Master',
             'Grandmaster',
             'Challenger',
-          ].map((value) => (
-            <MenuItem value={value}>{value}</MenuItem>
+          ].map((value, key) => (
+            <MenuItem value={value} key={key}>
+              {value}
+            </MenuItem>
           ))}
         </Select>
       </Grid>
@@ -112,8 +114,10 @@ export default function IntroForms({
         <MenuItem selected disabled>
           select region
         </MenuItem>
-        {['NA', 'EUW', 'EUNE', 'LAN'].map((region) => (
-          <MenuItem value={region}>{region}</MenuItem>
+        {['NA', 'EUW', 'EUNE', 'LAN'].map((region, key) => (
+          <MenuItem value={region} key={key}>
+            {region}
+          </MenuItem>
         ))}
       </Select>
     </Grid>

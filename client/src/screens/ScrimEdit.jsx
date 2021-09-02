@@ -57,15 +57,12 @@ export default function ScrimEdit() {
 
       const {
         region,
-        title,
         lobbyName,
         lobbyPassword,
         gameStartTime,
         teamOne,
         teamTwo,
       } = oneScrim;
-      const teamWon = oneScrim?.teamWon ?? null;
-      const lobbyHost = oneScrim?.lobbyHost ?? null;
 
       const { date, hours, minutes } = getDateAndTimeSeparated(gameStartTime);
 
@@ -77,15 +74,15 @@ export default function ScrimEdit() {
 
       setScrimData({
         region,
-        title,
+        title: oneScrim?.title ?? `${oneScrim.createdBy.name}'s Scrim`, // default to this if no title exists in scrim
         lobbyName,
         lobbyPassword,
-        teamWon,
+        teamWon: oneScrim?.teamWon ?? null,
         gameStartTime,
         teamOne,
         teamTwo,
-        lobbyHost: lobbyHost.name, // for input values not wanting objects, we will return the object in the submit.
-        previousLobbyHost: lobbyHost ?? null,
+        lobbyHost: oneScrim?.lobbyHost?.name ?? null, // for input values not wanting objects, we will return the object in the submit.
+        previousLobbyHost: oneScrim?.lobbyHost ?? null,
       });
     };
     prefillFormData();
@@ -336,7 +333,7 @@ export default function ScrimEdit() {
 
                     <Grid item>
                       <Select
-                        name="lobbyHost"
+                        // name="lobbyHost"
                         onChange={(e) =>
                           setScrimData((prevState) => ({
                             ...prevState,
@@ -344,20 +341,25 @@ export default function ScrimEdit() {
                           }))
                         }
                         value={scrimData.lobbyHost}>
-                        {[currentUser.name, 'random', ...teamsArr].flatMap(
-                          (value, key) => {
-                            // console.log({ value });
-                            return (
-                              <MenuItem value={value?.name ?? value} key={key}>
-                                {value === currentUser.name
-                                  ? 'I will host the lobby'
-                                  : typeof value === 'object'
-                                  ? value.name
-                                  : 'Choose a random player from the teams to host'}
-                              </MenuItem>
-                            );
-                          }
-                        )}
+                        {/* check that names aren't repeating */}
+                        {[
+                          ...new Set([
+                            scrimData?.lobbyHost,
+                            currentUser.name,
+                            'random',
+                            ...teamsArr.map((user) => user.name),
+                          ]),
+                        ].flatMap((value, key) => {
+                          return (
+                            <MenuItem value={value || ''} key={key}>
+                              {value === currentUser.name
+                                ? 'I will host the lobby'
+                                : value === 'random'
+                                ? 'Choose a random player from the teams to host'
+                                : value}
+                            </MenuItem>
+                          );
+                        })}
                       </Select>
                       <FormHelperText className="text-white">
                         Lobby host
