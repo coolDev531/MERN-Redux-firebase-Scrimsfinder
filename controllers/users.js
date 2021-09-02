@@ -1,8 +1,29 @@
 const User = require('../models/user');
 
+const getAllUsers = async (req, res) => {
+  const region = req.query?.region;
+  // /api/users?region=NA
+  if (region) {
+    try {
+      const users = await User.find({ region });
+      res.json(users);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  } else {
+    // if no region, just get all users.
+    try {
+      const users = await User.find();
+      res.json(users);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+};
+
 const createUser = async (req, res) => {
   try {
-    const { uid, name, discord, rank, adminKey, email } = req.body;
+    const { uid, name, discord, rank, adminKey, email, region } = req.body;
 
     const userData = {
       uid,
@@ -11,6 +32,7 @@ const createUser = async (req, res) => {
       rank,
       adminKey,
       email,
+      region,
     };
 
     const user = new User(userData);
@@ -48,6 +70,7 @@ const loginUser = async (req, res) => {
 };
 
 module.exports = {
+  getAllUsers,
   createUser,
   loginUser,
 };

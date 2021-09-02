@@ -10,6 +10,7 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import { auth, provider } from '../firebase';
 import Navbar from './../components/shared/Navbar';
+import { createUser } from './../services/users';
 
 const KEYCODES = {
   ENTER: 13,
@@ -133,6 +134,7 @@ export default function Intro() {
         let newUser = {
           uid: result.user.uid, // google id
           name: userData.name,
+          region: userData.region,
           discord: userData.discord,
           rank: userData.rank,
           adminKey: userData.adminKey?.trim() ?? '',
@@ -150,42 +152,37 @@ export default function Intro() {
 
         if (!yes) return;
 
-        setCurrentUser(newUser);
+        let createdUser = await createUser(newUser);
 
-        // db.collection('users').add({
-        //   summonerName: userData.name,
-        //   discord: userData.discord,
-        //   rank: userData.rank,
-        //   adminKey: userData.adminKey?.trim() ?? '',
-        //   email: result.user.email,
-        //   googleName: result.user.displayName,
-        // });
-
-        return newUser;
+        if (createdUser) {
+          return createdUser;
+        } else {
+          console.error('Error creating user.');
+          return false;
+        }
       }
     } catch (error) {
       console.error({ error });
-      // throw error;
       return false;
     }
-  }, [userData, setCurrentUser]);
+  }, [userData]);
 
   const handleSubmit = useCallback(
     async (e) => {
       e.preventDefault();
 
       try {
-        let newUser = await createGoogleAccount();
+        let createdUser = await createGoogleAccount();
 
-        if (newUser) {
-          setCurrentUser(newUser);
+        if (createdUser) {
+          setCurrentUser(createdUser);
 
           console.log(
-            '%c user created with the name: ' + userData.name,
+            '%cuser created with the summoner name: ' + userData.name,
             'color: lightgreen'
           );
 
-          localStorage.setItem('currentUser', JSON.stringify(newUser));
+          localStorage.setItem('currentUser', JSON.stringify(createdUser));
         }
       } catch (err) {
         return;

@@ -3,6 +3,7 @@ const controllers = require('../controllers/users');
 
 const router = Router();
 
+router.get('/users', controllers.getAllUsers); // GET
 router.post('/users', controllers.createUser); // POST
 router.get('/auth/log-in', controllers.loginUser); // GET
 
