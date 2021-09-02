@@ -28,7 +28,7 @@ import HideOnScroll from './HideOnScroll';
 import SettingsIcon from '@material-ui/icons/Settings';
 
 // services
-import { loginUser } from '../../services/users';
+import { loginUser } from '../../services/auth';
 import { auth, provider } from '../../firebase';
 
 const useStyles = makeStyles((theme) => ({
