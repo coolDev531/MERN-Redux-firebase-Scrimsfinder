@@ -42,7 +42,7 @@ const MAX_CASTER_AMOUNT = 2;
 
 export default function ScrimSection({ scrim, isInDetail }) {
   const { toggleFetch, setScrims } = useContext(ScrimsContext);
-  const [currentUser] = useContext(CurrentUserContext);
+  const { currentUser } = useContext(CurrentUserContext);
   const [playerEntered, setPlayerEntered] = useState(false);
   const [casterEntered, setCasterEntered] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);

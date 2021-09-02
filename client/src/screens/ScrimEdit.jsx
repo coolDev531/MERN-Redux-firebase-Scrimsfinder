@@ -25,7 +25,7 @@ import devLog from '../utils/devLog';
 const sample = (array) => array[Math.floor(Math.random() * array.length)];
 
 export default function ScrimEdit() {
-  const [currentUser] = useContext(CurrentUserContext);
+  const { currentUser } = useContext(CurrentUserContext);
   const { toggleFetch } = useContext(ScrimsContext);
 
   const [scrimData, setScrimData] = useState({

@@ -5,7 +5,7 @@ import { CurrentUserContext } from '../context/currentUser';
 import { getUsersInRegion } from './../services/users';
 
 export default function Settings() {
-  const [currentUser, setCurrentUser] = useContext(CurrentUserContext);
+  const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
   const [usersInRegion, setUsersInRegion] = useState([]);
 
   // remove spaces from # in discord name

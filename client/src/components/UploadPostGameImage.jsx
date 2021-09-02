@@ -9,7 +9,7 @@ import { CurrentUserContext } from '../context/currentUser';
 const MAX_FILE_SIZE_MIB = 0.953674; // 1 megabyte (in Memibyte format)
 
 export default function UploadPostGameImage({ scrim, isUploaded }) {
-  const [currentUser] = useContext(CurrentUserContext);
+  const { currentUser } = useContext(CurrentUserContext);
   const fileInputRef = useRef();
   const { toggleFetch } = useContext(ScrimsContext);
 

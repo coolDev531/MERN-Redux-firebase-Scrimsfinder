@@ -23,7 +23,7 @@ const theme = createTheme({
 });
 
 function App() {
-  const [currentUser, setCurrentUser] = useContext(CurrentUserContext);
+  const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
   const { push } = useHistory();
 
   useEffect(() => {
@@ -63,27 +63,6 @@ function App() {
 
     // eslint-disable-next-line
   }, [currentUser]);
-
-  // verify user details
-  useEffect(() => {
-    const handleVerifyUser = async () => {
-      let googleParams = {
-        uid: currentUser?.uid, // google id
-        email: currentUser?.email,
-      };
-
-      const verifiedUser = await verifyUser(googleParams);
-
-      if (verifiedUser) {
-        setCurrentUser(verifiedUser);
-      } else {
-        setCurrentUser(null);
-        push('/user-setup');
-      }
-    };
-    handleVerifyUser();
-    //eslint-disable-next-line
-  }, []);
 
   return (
     <ThemeProvider theme={theme}>

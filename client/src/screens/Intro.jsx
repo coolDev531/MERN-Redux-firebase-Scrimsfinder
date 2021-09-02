@@ -38,7 +38,7 @@ export default function Intro() {
     rankDivision: 'Iron',
     rankNumber: '4',
   });
-  const [currentUser, setCurrentUser] = useContext(CurrentUserContext);
+  const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
   const [currentFormIndex, setCurrentFormIndex] = useState(0);
   const [errors, setErrors] = useState(new Map()); // using a map to keep unique errors.
 
@@ -231,10 +231,10 @@ export default function Intro() {
           <div className="inner-column">
             <h1>Welcome to LoL scrim finder, please fill in your details</h1>
 
-            <Grid container direction="column" md={12}>
-              {[...errors.values()].map((error) => (
+            <Grid container item direction="column" md={12}>
+              {[...errors.values()].map((error, key) => (
                 <>
-                  <Alert severity="error">
+                  <Alert severity="error" key={key}>
                     Please correct the following error —{' '}
                     <strong>{error}</strong>
                   </Alert>

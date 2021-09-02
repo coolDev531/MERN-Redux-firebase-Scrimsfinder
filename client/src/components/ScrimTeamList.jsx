@@ -39,7 +39,7 @@ export default function ScrimTeamList({
   teamData,
   casterEntered,
 }) {
-  const [currentUser] = useContext(CurrentUserContext);
+  const { currentUser } = useContext(CurrentUserContext);
   const classes = useScrimSectionStyles({ scrim });
 
   const gameEnded = useMemo(() => scrim.teamWon, [scrim.teamWon]);

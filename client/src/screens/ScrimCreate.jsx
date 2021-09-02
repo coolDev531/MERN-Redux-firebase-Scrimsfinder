@@ -19,7 +19,7 @@ import { getMinutes } from './../utils/getMinutes';
 
 export default function ScrimCreate() {
   const { toggleFetch } = useContext(ScrimsContext);
-  const [currentUser] = useContext(CurrentUserContext);
+  const { currentUser } = useContext(CurrentUserContext);
   const [scrimData, setScrimData] = useState({
     gameStartTime: new Date().toISOString(),
     lobbyHost: currentUser,

@@ -27,7 +27,7 @@ const compareDates = (scrim) => {
 export default function Scrims() {
   const today = useMemo(() => moment(), []);
 
-  const [currentUser] = useContext(CurrentUserContext);
+  const { currentUser } = useContext(CurrentUserContext);
 
   const { scrims, toggleFetch, scrimsLoaded } = useContext(ScrimsContext);
 

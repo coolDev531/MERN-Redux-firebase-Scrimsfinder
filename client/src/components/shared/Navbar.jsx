@@ -47,7 +47,7 @@ export default function Navbar({
   showCheckboxes,
   hideProps,
 }) {
-  const [currentUser, setCurrentUser] = useContext(CurrentUserContext);
+  const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
   const history = useHistory();
   const { pathname } = useLocation();
 
