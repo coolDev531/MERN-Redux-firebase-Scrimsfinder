@@ -1,5 +1,5 @@
 import React, { useState, createContext, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { auth, provider } from '../firebase';
 
 const CurrentUserContext = createContext();
@@ -11,12 +11,12 @@ function CurrentUserProvider({ children }) {
     return user ? user : null;
   });
 
+  const { pathname } = useLocation();
   const history = useHistory();
 
   const setGoogleUser = (user) => {
     setCurrentUser((prevState) => ({
       ...prevState,
-      googleName: user?.displayName,
       email: user?.email,
       photo: user?.photoURL,
     }));
@@ -26,16 +26,19 @@ function CurrentUserProvider({ children }) {
     localStorage.setItem('currentUser', JSON.stringify(currentUser));
   }, [currentUser]);
 
-  useEffect(() => {
-    auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        setGoogleUser(user);
-        console.log('auth change');
-        history.push('/scrims');
-      }
-    });
-    // eslint-disable-next-line
-  }, [currentUser?.googleName]);
+  // this is so clunky...
+  // useEffect(() => {
+  //   if (pathname !== '/user-setup') {
+  //     auth.onAuthStateChanged(async (user) => {
+  //       if (user) {
+  //         setGoogleUser(user);
+  //         console.log('auth change');
+  //         history.push('/scrims');
+  //       }
+  //     });
+  //   }
+  //   // eslint-disable-next-line
+  // }, [currentUser?.email, pathname]);
 
   const handleSignOut = () => {
     console.log('signing out');

@@ -8,6 +8,8 @@ import IntroForms from '../components/IntroForms';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
+import { auth, provider } from '../firebase';
+import db from './../firebase';
 
 const KEYCODES = {
   ENTER: 13,
@@ -124,35 +126,73 @@ export default function Intro() {
     [currentFormIndex]
   );
 
-  const handleSubmit = useCallback(
-    (e) => {
-      e.preventDefault();
+  const createGoogleAccount = useCallback(async () => {
+    try {
+      const result = await auth.signInWithPopup(provider);
 
-      let newUser = {
-        ...userData,
-        adminKey: userData.adminKey.trim(),
-      };
+      if (result.user) {
+        let newUser = {
+          name: userData.name,
+          discord: userData.discord,
+          rank: userData.rank,
+          adminKey: userData.adminKey?.trim() ?? '',
+          email: result.user.email,
+        };
 
-      let yes = window.confirm(`Are you sure you want to create this account? \n
-      Name: ${userData.name} \n
+        let yes =
+          window.confirm(`Are you sure you want to create this account? \n
+      Summoner Name: ${userData.name} \n
       Discord: ${userData.discord} \n
       Rank: ${userData.rank} \n
-      Region: ${userData.region}
+      Region: ${userData.region} \n
+      Email: ${newUser.email} 
       `);
 
-      if (!yes) return;
+        if (!yes) return;
 
-      console.log(
-        '%c user created with the name: ' + userData.name,
-        'color: lightgreen'
-      );
+        setCurrentUser(newUser);
 
-      localStorage.setItem('currentUser', JSON.stringify(newUser));
-      setCurrentUser(newUser);
-      handleAuth();
+        // db.collection('users').add({
+        //   summonerName: userData.name,
+        //   discord: userData.discord,
+        //   rank: userData.rank,
+        //   adminKey: userData.adminKey?.trim() ?? '',
+        //   email: result.user.email,
+        //   googleName: result.user.displayName,
+        // });
+
+        return newUser;
+      }
+    } catch (error) {
+      console.error({ error });
+      // throw error;
+      return false;
+    }
+  }, [userData, setCurrentUser]);
+
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+
+      try {
+        let newUser = await createGoogleAccount();
+
+        if (newUser) {
+          setCurrentUser(newUser);
+
+          console.log(
+            '%c user created with the name: ' + userData.name,
+            'color: lightgreen'
+          );
+
+          localStorage.setItem('currentUser', JSON.stringify(newUser));
+        }
+      } catch (err) {
+        return;
+      }
       return;
     },
-    [setCurrentUser, userData, handleAuth]
+    [createGoogleAccount, setCurrentUser, userData.name]
   );
 
   useEffect(() => {
@@ -246,7 +286,7 @@ export default function Intro() {
                 </Grid>
                 <Grid item>
                   <Button
-                    onClick={handleAuth}
+                    onClick={handleSubmit}
                     variant="contained"
                     color="primary"
                     type="submit">

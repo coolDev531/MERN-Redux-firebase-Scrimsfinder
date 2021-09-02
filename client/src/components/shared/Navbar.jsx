@@ -22,6 +22,7 @@ import moment from 'moment';
 import 'moment-timezone';
 import AdminArea from './AdminArea';
 import HideOnScroll from './HideOnScroll';
+import { auth } from '../../firebase';
 
 const useStyles = makeStyles((theme) => ({
   offset: theme.mixins.offset,
@@ -53,13 +54,11 @@ export default function Navbar({
   ];
 
   const handleLogOut = () => {
-    let yes = window.confirm(
-      "Are you sure you want to log out? \n you'll have to set-up all over again"
-    );
-    if (!yes) return;
+    console.log('logging out...');
+    auth.signOut();
+    setCurrentUser(null);
 
     history.push('./user-setup');
-    setCurrentUser(null);
   };
 
   let hidePreviousScrims = hideProps?.hidePreviousScrims,
