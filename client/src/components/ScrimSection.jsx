@@ -7,7 +7,7 @@ import CountdownTimer from './CountdownTimer';
 import ScrimTeamList from './ScrimTeamList';
 import Moment from 'react-moment';
 import AdminArea from './shared/AdminArea';
-import { Button, Grid } from '@material-ui/core';
+import { Box, Button, Grid } from '@material-ui/core';
 import { Link, useHistory } from 'react-router-dom';
 
 // utils / services
@@ -46,6 +46,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
   const [playerEntered, setPlayerEntered] = useState(false);
   const [casterEntered, setCasterEntered] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
+  const [imageUploaded, setImageUploaded] = useState(false);
 
   // if the scrim has a winning team, it means it has ended.
   const gameEnded = useMemo(() => scrim.teamWon, [scrim.teamWon]);
@@ -91,6 +92,14 @@ export default function ScrimSection({ scrim, isInDetail }) {
       setPlayerEntered(false);
     }
   }, [scrim, currentUser.name, teamOne, teamTwo]);
+
+  useEffect(() => {
+    if (scrim.postGameImage) {
+      setImageUploaded(scrim._id);
+    } else {
+      setImageUploaded(false);
+    }
+  }, [scrim]);
 
   const joinCast = async () => {
     if (playerEntered) {
@@ -403,9 +412,48 @@ export default function ScrimSection({ scrim, isInDetail }) {
                           )}
                         </Grid>
                       )}
-                    <Grid item>
-                      <UploadPostGameImage scrim={scrim} />
-                    </Grid>
+
+                    {/*  allow image upload if both teams are filled and 
+                    the current user is the host or creator of scrim or an admin.
+                  */}
+                    {(scrim.createdBy.name === currentUser.name ||
+                      scrim.lobbyHost.name === currentUser.name ||
+                      currentUser.adminKey ===
+                        process.env.REACT_APP_ADMIN_KEY) && (
+                      <>
+                        <Box marginTop={2} />
+
+                        <UploadPostGameImage
+                          isUploaded={imageUploaded === scrim._id}
+                          scrim={scrim}
+                        />
+                      </>
+                    )}
+
+                    {imageUploaded === scrim._id && (
+                      <Grid
+                        item
+                        container
+                        direction="row"
+                        justifyContent="space-between"
+                        alignItems="center"
+                        spacing={2}>
+                        <Grid item>
+                          <h3 className="text-black">Image Uploaded!</h3>
+                        </Grid>
+                        <Grid item>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            component="a"
+                            href={scrim.postGameImage?.location}
+                            rel="noreferrer"
+                            target="_blank">
+                            View Image
+                          </Button>
+                        </Grid>
+                      </Grid>
+                    )}
                   </>
                 ) : (
                   <>
