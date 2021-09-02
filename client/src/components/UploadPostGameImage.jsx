@@ -18,8 +18,16 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
 
   const { toggleFetch } = useContext(ScrimsContext);
 
-  function upload(e) {
-    const img = e.target.files[0];
+  const upload = (e) => {
+    console.log(e.target.value);
+    let img = e.target.files[0];
+    let str = [...img.name];
+    if (str.includes(' ')) {
+      fileInputRef.current.value = '';
+      return alert(
+        `No spaces in name of file allowed \n name of file: ${img?.name}`
+      );
+    }
 
     S3FileUpload.uploadFile(img, config)
       .then(async (data) => {
@@ -42,7 +50,7 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
       .catch((err) => {
         alert(err);
       });
-  }
+  };
 
   // only show this if image hasn't been uploaded
   return !isUploaded ? (
