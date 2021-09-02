@@ -77,7 +77,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
     let foundPlayer = teams.find((player) => player?.uid === currentUser?.uid);
 
     let foundCaster = scrim.casters.find(
-      (casterName) => casterName === currentUser?.name
+      (caster) => caster?.uid === currentUser?.uid
     );
 
     if (foundCaster) {
@@ -91,7 +91,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
     } else {
       setPlayerEntered(false);
     }
-  }, [scrim, currentUser?.name, currentUser?.uid, teamOne, teamTwo]);
+  }, [scrim, currentUser?.uid, teamOne, teamTwo]);
 
   useEffect(() => {
     if (scrim.postGameImage) {
@@ -112,9 +112,16 @@ export default function ScrimSection({ scrim, isInDetail }) {
 
     getNewScrimsData();
 
-    const updatedScrim = await insertCasterInScrim(scrim._id, {
-      casterData: currentUser?.name,
-    });
+    const dataSending = {
+      casterData: {
+        name: currentUser?.name,
+        uid: currentUser?.uid,
+        email: currentUser?.email,
+        discord: currentUser?.discord,
+      },
+    };
+
+    const updatedScrim = await insertCasterInScrim(scrim._id, dataSending);
 
     if (updatedScrim) {
       console.log(
@@ -249,7 +256,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
               <div className="casters-container ">
                 {casters.length === 2 ? (
                   <h2 className="text-black">
-                    Casters: {casters.map((caster) => caster).join(' & ')}
+                    Casters: {casters.map(({ name }) => name).join(' & ')}
                   </h2>
                 ) : (
                   <div className="d-flex align-center gap-20">
@@ -258,7 +265,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
                     ) : null}
                     {casters[0] && (
                       <h2 className="text-black">
-                        Current Casters: {casters[0]}
+                        Current Casters: {casters[0].name}
                       </h2>
                     )}
                   </div>
@@ -272,7 +279,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
                       disabled={
                         casters.length === MAX_CASTER_AMOUNT ||
                         scrim.casters.find(
-                          (casterName) => casterName === currentUser?.name
+                          ({ uid }) => uid === currentUser?.uid
                         )
                           ? true
                           : false

@@ -23,7 +23,7 @@ const compareArrays = (arr1, arr2) => {
   if (arr1.length !== arr2.length) return false;
 
   for (let i = 0; i < arr1.length; i++) {
-    if (arr1[i].name !== arr2[i].name) return false;
+    if (arr1[i]._id !== arr2[i]._id) return false;
   }
 
   // If all elements were same.
@@ -127,7 +127,7 @@ export default function ScrimTeamList({
         ...currentUser,
         role: playerEntered.role,
         teamLeavingName,
-        isLobbyHost: scrim.lobbyHost?.name === playerEntered.name,
+        isLobbyHost: scrim.lobbyHost?._id === playerEntered._id,
       },
     };
 
@@ -158,7 +158,7 @@ export default function ScrimTeamList({
 
     if (updatedScrim) {
       console.log(
-        `%ckicked ${currentUser?.name} from scrim: ${scrim._id}`,
+        `%ckicked ${dataSending?.name} from scrim: ${scrim._id}`,
         'color: #99ff99'
       );
       getNewScrimsData();

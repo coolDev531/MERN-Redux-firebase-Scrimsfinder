@@ -35,6 +35,13 @@ const PlayerSchema = new Schema({
   email: { type: String, required: true },
 });
 
+const CasterSchema = new Schema({
+  name: { type: String, required: true },
+  uid: { type: String, required: true },
+  discord: { type: String, required: true },
+  email: { type: String, required: true },
+});
+
 const BucketSchema = new Schema({
   bucket: { type: String, required: true },
   key: { type: String, required: true },

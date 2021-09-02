@@ -105,7 +105,7 @@ const createScrim = async (req, res) => {
 
 const swapPlayer = (currentTeam, movingTeam, movingPlayer) => {
   const indexToRemove = currentTeam.findIndex(
-    (player) => player?.name === movingPlayer?.name
+    (player) => player?.uid === movingPlayer?.uid
   );
   if (indexToRemove > -1) currentTeam.splice(indexToRemove, 1);
   movingTeam = [...movingTeam, movingPlayer];
@@ -175,27 +175,24 @@ const insertPlayerInScrim = async (req, res) => {
         );
 
         newBody = {
-          ...scrim._doc,
           [teamLeavingName]: teamLeft,
           [teamJoiningName]: [
             ...teamJoined.map((player) =>
-              player.name === playerData.name ? { ...playerData } : player
+              player.uid === playerData.uid ? { ...playerData } : player
             ),
           ],
         };
       } else {
         let filtered = [...teamJoiningArr].filter(
-          (player) => player.name !== playerData.name
+          (player) => player.uid !== playerData.uid
         );
 
         newBody = {
-          ...scrim._doc,
           [teamJoiningName]: [...filtered, { ...playerData }],
         };
       }
     } else {
       newBody = {
-        ...scrim._doc,
         [teamJoiningName]: [...teamJoiningArr, playerData],
       };
     }
@@ -286,9 +283,8 @@ const removePlayerFromScrim = async (req, res) => {
     teamLeavingName === 'teamOne' ? scrim._doc.teamOne : scrim._doc.teamTwo;
 
   const scrimData = {
-    ...scrim._doc,
     [teamLeavingName]: teamLeavingArr.filter(
-      (player) => player.name !== playerData.name
+      (player) => player.uid !== playerData.uid
     ),
     lobbyHost: playerData.isLobbyHost ? null : scrim._doc.lobbyHost,
   };
@@ -319,7 +315,6 @@ const insertCasterInScrim = async (req, res) => {
     const scrim = await Scrim.findById(id);
 
     let bodyData = {
-      ...scrim._doc,
       casters: [...scrim._doc.casters, casterData],
     };
 
@@ -357,8 +352,7 @@ const removeCasterFromScrim = async (req, res) => {
     const scrim = await Scrim.findById(id);
 
     const bodyData = {
-      ...scrim._doc,
-      casters: scrim._doc.casters.filter((caster) => caster !== casterData),
+      casters: scrim._doc.casters.filter((caster) => caster !== casterData.uid),
     };
 
     await Scrim.findByIdAndUpdate(

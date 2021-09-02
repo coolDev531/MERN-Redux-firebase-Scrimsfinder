@@ -43,6 +43,13 @@ function App() {
         }));
       };
 
+      window.setUserUid = (value) => {
+        setCurrentUser((prevState) => ({
+          ...prevState,
+          uid: value,
+        }));
+      };
+
       window.setAdminKey = (value) => {
         setCurrentUser((prevState) => ({
           ...prevState,
