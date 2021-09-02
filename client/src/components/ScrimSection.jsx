@@ -285,33 +285,36 @@ export default function ScrimSection({ scrim, isInDetail }) {
                   </div>
                 )}
 
-                <div className="d-flex align-center gap-20">
-                  {casters.length !== MAX_CASTER_AMOUNT && (
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      disabled={
-                        casters.length === MAX_CASTER_AMOUNT ||
-                        scrim.casters.find(
-                          ({ uid }) => uid === currentUser?.uid
-                        )
-                          ? true
-                          : false
-                      }
-                      onClick={joinCast}>
-                      join cast
-                    </Button>
-                  )}
+                {/* don't show cast buttons if game ended */}
+                {!gameEnded && (
+                  <div className="d-flex align-center gap-20">
+                    {casters.length !== MAX_CASTER_AMOUNT && (
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        disabled={
+                          casters.length === MAX_CASTER_AMOUNT ||
+                          scrim.casters.find(
+                            ({ uid }) => uid === currentUser?.uid
+                          )
+                            ? true
+                            : false
+                        }
+                        onClick={joinCast}>
+                        join cast
+                      </Button>
+                    )}
 
-                  {casterEntered && (
-                    <Button
-                      color="secondary"
-                      variant="contained"
-                      onClick={leaveCast}>
-                      Leave cast
-                    </Button>
-                  )}
-                </div>
+                    {casterEntered && (
+                      <Button
+                        color="secondary"
+                        variant="contained"
+                        onClick={leaveCast}>
+                        Leave cast
+                      </Button>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>
