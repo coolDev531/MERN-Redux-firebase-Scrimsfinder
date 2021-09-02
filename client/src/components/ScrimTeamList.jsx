@@ -182,7 +182,7 @@ export default function ScrimTeamList({
             (player) => player?.role === teamRole
           );
 
-          const isCurrentUser = playerAssigned?.name === currentUser?.name;
+          const isCurrentUser = playerAssigned?.uid === currentUser?.uid;
 
           if (playerAssigned) {
             return (

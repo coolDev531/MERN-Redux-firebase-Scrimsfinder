@@ -132,6 +132,7 @@ export default function Intro() {
 
       if (result.user) {
         let newUser = {
+          uid: result.user.uid, // google id
           name: userData.name,
           discord: userData.discord,
           rank: userData.rank,

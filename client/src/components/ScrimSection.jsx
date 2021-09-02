@@ -74,7 +74,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
   useEffect(() => {
     const teams = [...teamOne, ...teamTwo];
 
-    let foundPlayer = teams.find((player) => player.name === currentUser?.name);
+    let foundPlayer = teams.find((player) => player?.uid === currentUser?.uid);
 
     let foundCaster = scrim.casters.find(
       (casterName) => casterName === currentUser?.name
@@ -368,7 +368,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
                     {/* WHO WON ? BUTTONS */}
                     {/* show buttons if is admin or is lobby captain */}
                     {/* don't show if game has ended */}
-                    {(scrim.lobbyHost.name === currentUser?.name ||
+                    {(scrim.lobbyHost.email === currentUser?.email ||
                       currentUser?.adminKey ===
                         process.env.REACT_APP_ADMIN_KEY) &&
                       !gameEnded && (
@@ -423,7 +423,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
                     {/*  allow image upload if both teams are filled and 
                     the current user is the host or creator of scrim or an admin.
                   */}
-                    {(scrim.lobbyHost.name === currentUser?.name ||
+                    {(scrim.lobbyHost?.uid === currentUser?.uid ||
                       currentUser?.adminKey ===
                         process.env.REACT_APP_ADMIN_KEY) && (
                       <>
@@ -474,7 +474,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
                       and {teamTwoDifference} players in team two <br />
                       to unlock lobby name and password
                     </h5>
-                    {scrim.createdBy.name === currentUser?.name ? (
+                    {scrim.createdBy?.email === currentUser?.email ? (
                       <AdminArea>
                         <Button
                           color="secondary"
