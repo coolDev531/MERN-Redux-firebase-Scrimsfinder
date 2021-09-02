@@ -1,7 +1,8 @@
 import { useContext, Fragment, useMemo } from 'react';
 import { useScrimSectionStyles } from '../styles/scrimSection.styles';
 import { CurrentUserContext } from '../context/currentUser';
-import { insertPlayerInScrim, removePlayerFromScrim } from '../services/scrims';
+
+// components
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Divider from '@material-ui/core/Divider';
@@ -9,10 +10,15 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import { Grid, IconButton, Typography } from '@material-ui/core';
-import { RANK_IMAGES, ROLE_IMAGES } from '../utils/imageMaps';
 import Tooltip from '../components/shared/Tooltip';
 import AdminArea from './shared/AdminArea';
+import ListSubheader from '@material-ui/core/ListSubheader';
 
+// utils
+import { RANK_IMAGES, ROLE_IMAGES } from '../utils/imageMaps';
+
+// services
+import { insertPlayerInScrim, removePlayerFromScrim } from '../services/scrims';
 // icons
 import SwapIcon from '@material-ui/icons/SwapHoriz';
 import JoinIcon from '@material-ui/icons/MeetingRoom';
@@ -171,16 +177,16 @@ export default function ScrimTeamList({
 
   return (
     <div className={`team-container team-container--${teamName}`}>
-      <div
-        style={{
-          background: 'rgba(240,234,240,0.8)',
-          width: '95%',
-          padding: '10px',
-        }}>
-        <h3 className="text-black">{teamTitleName}:</h3>
-      </div>
-
-      <List className={classes.teamList}>
+      <List
+        className={classes.teamList}
+        subheader={
+          <>
+            <ListSubheader component="div" style={{ color: '#fff' }}>
+              {teamTitleName}
+            </ListSubheader>
+            <Divider />
+          </>
+        }>
         {teamRoles.map((teamRole, idx) => {
           const playerAssigned = teamArray.find(
             (player) => player?.role === teamRole
