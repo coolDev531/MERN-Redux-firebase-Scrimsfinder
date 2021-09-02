@@ -22,7 +22,8 @@ import moment from 'moment';
 import 'moment-timezone';
 import AdminArea from './AdminArea';
 import HideOnScroll from './HideOnScroll';
-import { auth } from '../../firebase';
+import { auth, provider } from '../../firebase';
+import { verifyUser } from '../../services/users';
 
 const useStyles = makeStyles((theme) => ({
   offset: theme.mixins.offset,
@@ -61,7 +62,27 @@ export default function Navbar({
     history.push('./user-setup');
   };
 
-  const handleSignIn = async () => {};
+  const handleSignIn = async () => {
+    const result = await auth.signInWithPopup(provider);
+
+    if (result.user) {
+      let googleParams = {
+        uid: result.user.uid, // google id
+        email: result.user.email,
+      };
+      console.log({ googleParams });
+      // verifying user with google, then getting rest of data.
+      const verifiedUser = await verifyUser(googleParams.uid, {
+        email: googleParams.email,
+      });
+
+      if (verifiedUser) {
+        console.log({ verifiedUser });
+      } else {
+        console.error('error');
+      }
+    }
+  };
 
   let hidePreviousScrims = hideProps?.hidePreviousScrims,
     hideCurrentScrims = hideProps?.hideCurrentScrims,
@@ -128,7 +149,7 @@ export default function Navbar({
                       onClick={handleSignIn}
                       variant="contained"
                       color="secondary">
-                      Log Out
+                      Log In
                     </Button>
                   )}
                 </div>

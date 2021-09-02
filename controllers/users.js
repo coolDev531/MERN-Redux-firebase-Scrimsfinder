@@ -45,22 +45,27 @@ const createUser = async (req, res) => {
   }
 };
 
-const loginUser = async (req, res) => {
-  const { uid } = req.params;
-  const { email } = req.body;
+// get google uid and email by using google auth firebase, then give rest of user data hosted in database.
+const verifyUser = async (req, res) => {
+  const { email, uid } = req.body;
 
   if (!email) {
     return res.status(500).json({
       error: `No Email Provided`,
     });
   }
+  if (!uid) {
+    return res.status(500).json({
+      error: `No google id Provided.`,
+    });
+  }
 
-  const foundUser = User.find({ uid, email }).exec();
-  console.log({ foundUser });
+  // will find the one user with the exact uid and email combination
+  const foundUser = await User.findOne({ uid, email });
 
   if (!foundUser) {
     return res.status(500).json({
-      error: `User doesn't exist with the email ${email}, please sign up.`,
+      error: `User doesn't exist with the combination of email: ${email} and/or Uid: ${uid}, please sign up or try again.`,
     });
   }
 
@@ -72,5 +77,5 @@ const loginUser = async (req, res) => {
 module.exports = {
   getAllUsers,
   createUser,
-  loginUser,
+  verifyUser,
 };

@@ -17,6 +17,7 @@ const User = new Schema(
       type: String,
       required: true,
     },
+    adminKey: { type: String, default: '' },
     uid: { type: String, required: true }, // google id
     email: { type: String, required: true }, // google email.
   },
