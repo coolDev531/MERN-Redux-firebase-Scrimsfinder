@@ -8,7 +8,7 @@ const User = new Schema(
       type: String,
       required: true,
     },
-    discord: { type: String, required: true },
+    discord: { type: String, required: true, unique: true },
     rank: {
       type: String,
       required: true,
@@ -18,7 +18,7 @@ const User = new Schema(
       required: true,
     },
     adminKey: { type: String, default: '' },
-    uid: { type: String, required: true }, // google id
+    uid: { type: String, required: true, unique: true }, // google id
     email: { type: String, required: true, unique: true }, // google email.
   },
   { timestamps: true }
