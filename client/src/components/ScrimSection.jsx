@@ -23,6 +23,7 @@ import { insertCasterInScrim } from './../services/scrims';
 // icons
 import ShareIcon from '@material-ui/icons/Share';
 import SettingsIcon from '@material-ui/icons/Settings';
+import UploadPostGameImage from './UploadPostGameImage';
 
 const compareDates = (scrim) => {
   let currentTime = new Date().getTime();
@@ -402,6 +403,9 @@ export default function ScrimSection({ scrim, isInDetail }) {
                           )}
                         </Grid>
                       )}
+                    <Grid item>
+                      <UploadPostGameImage scrim={scrim} />
+                    </Grid>
                   </>
                 ) : (
                   <>
