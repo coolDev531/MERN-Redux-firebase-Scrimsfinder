@@ -199,8 +199,8 @@ const insertPlayerInScrim = async (req, res) => {
 
     const teamJoiningTitle =
       teamJoiningName === 'teamOne'
-        ? 'Team One (Blue Side)'
-        : 'Team Two (Red Side)';
+        ? 'Team 1 (Blue Side)'
+        : 'Team 2 (Red Side)';
 
     if (spotTaken) {
       return res.status(500).json({

@@ -311,7 +311,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
             teamData={{
               teamRoles: ['Top', 'Jungle', 'Mid', 'ADC', 'Support'],
               teamName: 'teamOne',
-              teamTitleName: 'Team One (Blue Side)',
+              teamTitleName: 'Team 1 (Blue Side)',
               teamArray: teamOne,
             }}
             scrim={scrim}
@@ -390,7 +390,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
                             <h3 className="text-black">Who won?</h3>
                           </Grid>
 
-                          {['Team One (Blue Side)', 'Team Two (Red Side)'].map(
+                          {['Team 1 (Blue Side)', 'Team 2 (Red Side)'].map(
                             (teamTitle, idx) => (
                               <Grid item key={idx}>
                                 <Button
@@ -503,7 +503,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
             teamData={{
               teamRoles: ['Top', 'Jungle', 'Mid', 'ADC', 'Support'],
               teamName: 'teamTwo',
-              teamTitleName: 'Team Two (Red Side)',
+              teamTitleName: 'Team 2 (Red Side)',
               teamArray: teamTwo,
             }}
             scrim={scrim}
