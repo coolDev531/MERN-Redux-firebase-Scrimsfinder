@@ -65,6 +65,10 @@ export default function ScrimTeamList({
     const updatedScrim = await insertPlayerInScrim(scrim._id, dataSending);
 
     if (updatedScrim) {
+      console.log(
+        `%c added ${currentUser?.name} to scrim: ${scrim._id} in team: ${teamJoiningName}`,
+        'color: #99ff99'
+      );
       getNewScrimsData();
     }
   };
@@ -114,7 +118,7 @@ export default function ScrimTeamList({
 
     if (updatedScrim) {
       console.log(
-        `%cswapped ${currentUser?.name} in scrim: ${scrim._id}`,
+        `%cswapped ${currentUser?.name} in scrim: ${scrim._id} to: ${teamStr} as ${role}`,
         'color: #99ff99'
       );
       getNewScrimsData();
