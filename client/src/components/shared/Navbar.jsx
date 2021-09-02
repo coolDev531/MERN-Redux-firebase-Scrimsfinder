@@ -13,6 +13,7 @@ import {
   FormGroup,
   FormControlLabel,
   Checkbox,
+  Tooltip,
 } from '@material-ui/core';
 import { useContext } from 'react';
 import { CurrentUserContext } from '../../context/currentUser';
@@ -22,8 +23,13 @@ import moment from 'moment';
 import 'moment-timezone';
 import AdminArea from './AdminArea';
 import HideOnScroll from './HideOnScroll';
-import { auth, provider } from '../../firebase';
+
+// icons
+import SettingsIcon from '@material-ui/icons/Settings';
+
+// services
 import { loginUser } from '../../services/users';
+import { auth, provider } from '../../firebase';
 
 const useStyles = makeStyles((theme) => ({
   offset: theme.mixins.offset,
@@ -137,12 +143,24 @@ export default function Navbar({
                   <Box marginRight={2} />
                   &nbsp;
                   {currentUser?.uid ? (
-                    <Button
-                      onClick={handleLogOut}
-                      variant="contained"
-                      color="secondary">
-                      Log Out
-                    </Button>
+                    <>
+                      <Tooltip title="User settings">
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={() => history.push('/settings')}
+                          startIcon={<SettingsIcon />}>
+                          Settings
+                        </Button>
+                      </Tooltip>
+                      <Box marginRight={2} />
+                      <Button
+                        onClick={handleLogOut}
+                        variant="contained"
+                        color="secondary">
+                        Log Out
+                      </Button>
+                    </>
                   ) : (
                     <Button
                       onClick={handleSignIn}

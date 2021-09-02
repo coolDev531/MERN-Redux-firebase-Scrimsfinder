@@ -64,6 +64,7 @@ function App() {
     // eslint-disable-next-line
   }, [currentUser]);
 
+  // verify user details
   useEffect(() => {
     const handleVerifyUser = async () => {
       let googleParams = {

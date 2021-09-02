@@ -95,7 +95,13 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
           position="top">
           <Button variant="contained" color="primary" component="label">
             Upload Image
-            <input ref={fileInputRef} hidden type="file" onChange={upload} />
+            <input
+              accept="image/*"
+              ref={fileInputRef}
+              hidden
+              type="file"
+              onChange={upload}
+            />
           </Button>
         </Tooltip>
       </Grid>
