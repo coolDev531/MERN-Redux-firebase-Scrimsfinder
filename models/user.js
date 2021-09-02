@@ -1,13 +1,14 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// not currently used.
 const User = new Schema(
   {
     name: {
+      // summoner name
       type: String,
       required: true,
     },
+    discord: { type: String, required: true },
     rank: {
       type: String,
       required: true,
@@ -16,8 +17,10 @@ const User = new Schema(
       type: String,
       required: true,
     },
+    uid: { type: String, required: true }, // google id
+    email: { type: String, required: true }, // google email.
   },
   { timestamps: true }
 );
 
-module.exports = User = mongoose.model('users', User);
+module.exports = mongoose.model('users', User);

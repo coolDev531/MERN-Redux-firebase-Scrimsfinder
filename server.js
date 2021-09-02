@@ -3,9 +3,10 @@ const logger = require('morgan');
 const cors = require('cors');
 const PORT = process.env.PORT || 3000;
 const db = require('./db/connection');
-const scrimRoutes = require('./routes/scrims');
 const bodyParser = require('body-parser');
 const apiKey = require('./utils/apiKey');
+const scrimRoutes = require('./routes/scrims');
+const userRoutes = require('./routes/users');
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.get('/', (_req, res) => {
 // require an api key for these routes
 app.use(apiKey);
 app.use('/api', scrimRoutes);
+app.use('/api', userRoutes);
 
 // another way to require api key for a specific route only.
 // router.get('/scrims', apiKey, controllers.getAllScrims);

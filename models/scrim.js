@@ -25,12 +25,14 @@ const getThirtyMinFromNow = () => {
 };
 
 const PlayerSchema = new Schema({
-  name: { type: String, required: true },
+  name: { type: String, required: true }, // summoner name
   discord: { type: String, required: true },
   role: { type: String, required: true },
   rank: { type: String, required: true },
   region: { type: String, required: true },
   team: { name: { type: String } },
+  uid: { type: String, required: true }, // google id
+  email: { type: String, required: true },
 });
 
 const BucketSchema = new Schema({

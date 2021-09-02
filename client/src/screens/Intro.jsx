@@ -9,7 +9,7 @@ import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import { auth, provider } from '../firebase';
-import db from './../firebase';
+import Navbar from './../components/shared/Navbar';
 
 const KEYCODES = {
   ENTER: 13,
@@ -37,8 +37,7 @@ export default function Intro() {
     rankDivision: 'Iron',
     rankNumber: '4',
   });
-  const [currentUser, setCurrentUser, handleAuth] =
-    useContext(CurrentUserContext);
+  const [currentUser, setCurrentUser] = useContext(CurrentUserContext);
   const [currentFormIndex, setCurrentFormIndex] = useState(0);
   const [errors, setErrors] = useState(new Map()); // using a map to keep unique errors.
 
@@ -229,96 +228,100 @@ export default function Intro() {
   }
 
   return (
-    <main className="page-content">
-      <div className="page-section">
-        <div className="inner-column">
-          <h1>Welcome to LoL scrim finder, please fill in your details</h1>
+    <>
+      <Navbar />
+      <main className="page-content">
+        <div className="page-section">
+          <div className="inner-column">
+            <h1>Welcome to LoL scrim finder, please fill in your details</h1>
 
-          <Grid container direction="column" md={12}>
-            {[...errors.values()].map((error) => (
-              <>
-                <Alert severity="error">
-                  Please correct the following error — <strong>{error}</strong>
-                </Alert>
-                <br />
-              </>
-            ))}
-          </Grid>
-          <Stepper activeStep={currentFormIndex}>
-            {steps.map((label, index) => {
-              const stepProps = {};
-              const labelProps = {};
+            <Grid container direction="column" md={12}>
+              {[...errors.values()].map((error) => (
+                <>
+                  <Alert severity="error">
+                    Please correct the following error —{' '}
+                    <strong>{error}</strong>
+                  </Alert>
+                  <br />
+                </>
+              ))}
+            </Grid>
+            <Stepper activeStep={currentFormIndex}>
+              {steps.map((label, index) => {
+                const stepProps = {};
+                const labelProps = {};
 
-              if (index === 0) {
-                labelProps.optional = (
-                  <Typography variant="caption">
-                    ( Admin key optional )
-                  </Typography>
+                if (index === 0) {
+                  labelProps.optional = (
+                    <Typography variant="caption">
+                      ( Admin key optional )
+                    </Typography>
+                  );
+                }
+
+                return (
+                  <Step key={label} {...stepProps}>
+                    <StepLabel {...labelProps}>{label}</StepLabel>
+                  </Step>
                 );
-              }
-
-              return (
-                <Step key={label} {...stepProps}>
-                  <StepLabel {...labelProps}>{label}</StepLabel>
-                </Step>
-              );
-            })}
-          </Stepper>
-          <form onSubmit={handleSubmit} id="form">
-            <IntroForms
-              handleChange={handleChange}
-              currentFormIndex={currentFormIndex}
-              userData={userData}
-              setUserData={setUserData}
-              rankData={rankData}
-              setRankData={setRankData}
-              divisionsWithNumbers={divisionsWithNumbers}
-            />
-            <div className="page-break" />
-            {currentFormIndex === steps.length - 1 ? (
-              <Grid container item spacing={2}>
-                <Grid item>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={goPreviousStep}>
-                    Previous
-                  </Button>
+              })}
+            </Stepper>
+            <form onSubmit={handleSubmit} id="form">
+              <IntroForms
+                handleChange={handleChange}
+                currentFormIndex={currentFormIndex}
+                userData={userData}
+                setUserData={setUserData}
+                rankData={rankData}
+                setRankData={setRankData}
+                divisionsWithNumbers={divisionsWithNumbers}
+              />
+              <div className="page-break" />
+              {currentFormIndex === steps.length - 1 ? (
+                <Grid container item spacing={2}>
+                  <Grid item>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={goPreviousStep}>
+                      Previous
+                    </Button>
+                  </Grid>
+                  <Grid item>
+                    <Button
+                      onClick={handleSubmit}
+                      variant="contained"
+                      color="primary"
+                      type="submit">
+                      Create my account with google
+                    </Button>
+                  </Grid>
                 </Grid>
-                <Grid item>
-                  <Button
-                    onClick={handleSubmit}
-                    variant="contained"
-                    color="primary"
-                    type="submit">
-                    Create my account with google
-                  </Button>
+              ) : (
+                <Grid container item spacing={2}>
+                  <Grid item>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      disabled={currentFormIndex === 0}
+                      onClick={goPreviousStep}>
+                      Previous
+                    </Button>
+                  </Grid>
+                  <Grid item>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={goNextStep}>
+                      Next
+                    </Button>
+                  </Grid>
                 </Grid>
-              </Grid>
-            ) : (
-              <Grid container item spacing={2}>
-                <Grid item>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    disabled={currentFormIndex === 0}
-                    onClick={goPreviousStep}>
-                    Previous
-                  </Button>
-                </Grid>
-                <Grid item>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={goNextStep}>
-                    Next
-                  </Button>
-                </Grid>
-              </Grid>
-            )}
-          </form>
+              )}
+            </form>
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </>
   );
 }

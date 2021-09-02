@@ -53,13 +53,15 @@ export default function Navbar({
     ...allRegions.filter((r) => r !== currentUser?.region),
   ];
 
-  const handleLogOut = () => {
+  const handleLogOut = async () => {
     console.log('logging out...');
     auth.signOut();
     setCurrentUser(null);
 
     history.push('./user-setup');
   };
+
+  const handleSignIn = async () => {};
 
   let hidePreviousScrims = hideProps?.hidePreviousScrims,
     hideCurrentScrims = hideProps?.hideCurrentScrims,
@@ -114,12 +116,21 @@ export default function Navbar({
                   )}
                   <Box marginRight={2} />
                   &nbsp;
-                  <Button
-                    onClick={handleLogOut}
-                    variant="contained"
-                    color="secondary">
-                    Log Out
-                  </Button>
+                  {currentUser?.uid ? (
+                    <Button
+                      onClick={handleLogOut}
+                      variant="contained"
+                      color="secondary">
+                      Log Out
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={handleSignIn}
+                      variant="contained"
+                      color="secondary">
+                      Log Out
+                    </Button>
+                  )}
                 </div>
               </div>
               <br />
