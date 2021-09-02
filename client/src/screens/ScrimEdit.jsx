@@ -154,7 +154,6 @@ export default function ScrimEdit() {
       }
     }
 
-    console.log(teamsArr.find((p) => p.name === scrimData.lobbyHost));
     return teamsArr.find((p) => p.name === scrimData.lobbyHost);
   };
 
@@ -333,7 +332,7 @@ export default function ScrimEdit() {
 
                     <Grid item>
                       <Select
-                        // name="lobbyHost"
+                        name="lobbyHost"
                         onChange={(e) =>
                           setScrimData((prevState) => ({
                             ...prevState,
