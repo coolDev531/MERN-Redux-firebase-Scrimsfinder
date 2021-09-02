@@ -7,11 +7,14 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
     maxWidth: '1100px',
     marginRight: 'auto',
     marginLeft: 'auto',
-    backgroundImage:
-      'url(https://pa1.narvii.com/5779/8d76b2b8112e6aa9494a93f0ca6bbffe96e2f6c3_hq.gif)',
+    backgroundImage: ({ imageUploaded, scrim }) =>
+      imageUploaded === scrim?._id
+        ? `url(${scrim?.postGameImage?.location})`
+        : 'url(https://pa1.narvii.com/5779/8d76b2b8112e6aa9494a93f0ca6bbffe96e2f6c3_hq.gif)',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
-    backgroundSize: 'cover',
+    backgroundSize: ({ imageUploaded, scrim }) =>
+      imageUploaded === scrim?._id ? '100% 100%' : 'cover',
     border: '1px solid white',
   },
   gameMetaInfo: {

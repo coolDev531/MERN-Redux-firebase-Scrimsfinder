@@ -51,7 +51,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
   // if the scrim has a winning team, it means it has ended.
   const gameEnded = useMemo(() => scrim.teamWon, [scrim.teamWon]);
 
-  const classes = useScrimSectionStyles();
+  const classes = useScrimSectionStyles({ imageUploaded, scrim });
   const history = useHistory();
 
   const { teamOne, teamTwo, casters } = scrim;
@@ -439,7 +439,9 @@ export default function ScrimSection({ scrim, isInDetail }) {
                         alignItems="center"
                         spacing={2}>
                         <Grid item>
-                          <h3 className="text-black">Image Uploaded!</h3>
+                          <h3 className="text-black">
+                            Post-Game Image Uploaded!
+                          </h3>
                         </Grid>
                         <Grid item>
                           <Button

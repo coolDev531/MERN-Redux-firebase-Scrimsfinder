@@ -40,7 +40,7 @@ export default function ScrimTeamList({
   casterEntered,
 }) {
   const [currentUser] = useContext(CurrentUserContext);
-  const classes = useScrimSectionStyles();
+  const classes = useScrimSectionStyles({ scrim });
 
   const gameEnded = useMemo(() => scrim.teamWon, [scrim.teamWon]);
 
@@ -79,7 +79,7 @@ export default function ScrimTeamList({
 
     let dataSending = {};
 
-    // if is swapping teams
+    // if is the array that the user is moving to is different, that means he is changing teams.
     if (compareArrays(currentTeamArr, teamArr) === false) {
       console.log(`swapping teams for summoner ${currentUser.name}`);
 
@@ -167,7 +167,14 @@ export default function ScrimTeamList({
 
   return (
     <div className={`team-container team-container--${teamName}`}>
-      <h4>{teamTitleName}:</h4>
+      <div
+        style={{
+          background: 'rgba(240,234,240,0.8)',
+          width: '95%',
+          padding: '10px',
+        }}>
+        <h3 className="text-black">{teamTitleName}:</h3>
+      </div>
 
       <List className={classes.teamList}>
         {teamRoles.map((teamRole, idx) => {
