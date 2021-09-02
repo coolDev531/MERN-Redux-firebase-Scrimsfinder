@@ -26,6 +26,8 @@ import HideOnScroll from './HideOnScroll';
 
 // icons
 import SettingsIcon from '@material-ui/icons/Settings';
+import KeyIcon from '@material-ui/icons/VpnKey';
+import ExitIcon from '@material-ui/icons/ExitToApp';
 
 // services
 import { loginUser } from '../../services/auth';
@@ -161,6 +163,7 @@ export default function Navbar({
                       <Button
                         onClick={handleLogOut}
                         variant="contained"
+                        startIcon={<ExitIcon />}
                         color="secondary">
                         Log Out
                       </Button>
@@ -169,6 +172,7 @@ export default function Navbar({
                     <Button
                       onClick={handleSignIn}
                       variant="contained"
+                      startIcon={<KeyIcon />}
                       color="primary">
                       Log In
                     </Button>
