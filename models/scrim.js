@@ -42,11 +42,12 @@ const CasterSchema = new Schema({
   email: { type: String, required: true },
 });
 
-const BucketSchema = new Schema({
+const ImageSchema = new Schema({
   bucket: { type: String, required: true },
   key: { type: String, required: true },
   location: { type: String, required: true },
   result: { type: Object, required: true },
+  uploadedBy: { type: Object, required: true },
 });
 
 const Scrim = new Schema(
@@ -54,7 +55,7 @@ const Scrim = new Schema(
     teamOne: { type: [PlayerSchema], default: [] },
     teamTwo: { type: [PlayerSchema], default: [] },
     // right now casters is just array of strings (user.name)s
-    casters: { type: Array, default: [] },
+    casters: { type: [CasterSchema], default: [] },
     title: { type: String },
     gameStartTime: {
       type: Date,
@@ -69,7 +70,7 @@ const Scrim = new Schema(
     region: { type: String, default: 'NA', required: true },
     createdBy: { type: Object, required: true },
     teamWon: { type: 'String', default: null },
-    postGameImage: { type: BucketSchema },
+    postGameImage: { type: ImageSchema },
   },
   { timestamps: true, optimisticConcurrency: true, versionKey: 'version' }
 );

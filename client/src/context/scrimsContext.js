@@ -25,9 +25,11 @@ function ScrimsProvider({ children }) {
   }, [fetch, pathname]);
 
   const loadScrims = async () => {
-    devLog('fetching scrims (interval)');
-    const scrimsData = await getAllScrims();
-    setScrims(scrimsData);
+    if (pathname !== '/user-setup') {
+      devLog('fetching scrims (interval)');
+      const scrimsData = await getAllScrims();
+      setScrims(scrimsData);
+    }
   };
 
   // load scrims every 10 seconds

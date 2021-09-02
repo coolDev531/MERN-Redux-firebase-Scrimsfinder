@@ -23,7 +23,7 @@ import 'moment-timezone';
 import AdminArea from './AdminArea';
 import HideOnScroll from './HideOnScroll';
 import { auth, provider } from '../../firebase';
-import { verifyUser } from '../../services/users';
+import { loginUser } from '../../services/users';
 
 const useStyles = makeStyles((theme) => ({
   offset: theme.mixins.offset,
@@ -72,7 +72,7 @@ export default function Navbar({
       };
 
       // verifying user with google, then getting rest of data.
-      const verifiedUser = await verifyUser(googleParams);
+      const verifiedUser = await loginUser(googleParams);
 
       if (verifiedUser) {
         setCurrentUser(verifiedUser);
@@ -122,16 +122,18 @@ export default function Navbar({
                     </AdminArea>
                   )}
                   <Box marginRight={2} />
-                  {/* don't show go back button at home or /scrims */}
-                  {pathname !== '/scrims' && pathname !== '/' && (
-                    <Button
-                      className="mr-3"
-                      variant="contained"
-                      color="primary"
-                      onClick={() => history.goBack()}>
-                      Go Back
-                    </Button>
-                  )}
+                  {/* don't show go back button at home or /scrims or /user-setup*/}
+                  {pathname !== '/scrims' &&
+                    pathname !== '/' &&
+                    pathname !== '/user-setup' && (
+                      <Button
+                        className="mr-3"
+                        variant="contained"
+                        color="primary"
+                        onClick={() => history.goBack()}>
+                        Go Back
+                      </Button>
+                    )}
                   <Box marginRight={2} />
                   &nbsp;
                   {currentUser?.uid ? (
@@ -145,7 +147,7 @@ export default function Navbar({
                     <Button
                       onClick={handleSignIn}
                       variant="contained"
-                      color="secondary">
+                      color="primary">
                       Log In
                     </Button>
                   )}

@@ -352,7 +352,9 @@ const removeCasterFromScrim = async (req, res) => {
     const scrim = await Scrim.findById(id);
 
     const bodyData = {
-      casters: scrim._doc.casters.filter((caster) => caster !== casterData.uid),
+      casters: scrim._doc.casters.filter(
+        (caster) => caster.uid !== casterData.uid
+      ),
     };
 
     await Scrim.findByIdAndUpdate(
@@ -377,7 +379,7 @@ const removeCasterFromScrim = async (req, res) => {
 const addImageToScrim = async (req, res) => {
   // client uplaods to s3 bucket, back-end saves endpoints
   const { id } = req.params;
-  const { bucket, key, location, result } = req.body;
+  const { bucket, key, location, result, uploadedBy } = req.body;
 
   let dataSending = {
     postGameImage: {
@@ -385,6 +387,7 @@ const addImageToScrim = async (req, res) => {
       key,
       location,
       result,
+      uploadedBy,
     },
   };
 

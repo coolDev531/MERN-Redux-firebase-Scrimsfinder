@@ -4,10 +4,15 @@ import S3FileUpload from 'react-s3';
 import { ScrimsContext } from '../context/scrimsContext';
 import { addImageToScrim } from './../services/scrims';
 import AdminArea from './shared/AdminArea';
+import { CurrentUserContext } from '../context/currentUser';
 
 const MAX_FILE_SIZE_MIB = 0.953674; // 1 megabyte (in Memibyte format)
 
 export default function UploadPostGameImage({ scrim, isUploaded }) {
+  const [currentUser] = useContext(CurrentUserContext);
+  const fileInputRef = useRef();
+  const { toggleFetch } = useContext(ScrimsContext);
+
   const config = {
     bucketName: 'lol-scrimsfinder-bucket',
     dirName: `postGameLobbyImages/${scrim._id}` /* optional */,
@@ -15,10 +20,6 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
     accessKeyId: process.env.REACT_APP_S3_ACCESS_KEY_ID,
     secretAccessKey: process.env.REACT_APP_S3_SECRET_ACCESS_KEY,
   };
-
-  const fileInputRef = useRef();
-
-  const { toggleFetch } = useContext(ScrimsContext);
 
   const upload = (e) => {
     if (e.target.files.length === 0) return;
@@ -57,8 +58,12 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
     }
 
     S3FileUpload.uploadFile(file, config)
-      .then(async (data) => {
-        const addedImg = await addImageToScrim(scrim._id, data);
+      .then(async (bucketData) => {
+        let dataSending = {
+          ...bucketData,
+          uploadedBy: { ...currentUser },
+        };
+        const addedImg = await addImageToScrim(scrim._id, dataSending);
         if (addedImg) {
           console.log(
             '%csuccessfully added an image for scrim: ' + scrim._id,

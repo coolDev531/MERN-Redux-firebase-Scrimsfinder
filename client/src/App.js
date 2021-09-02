@@ -8,6 +8,7 @@ import { createTheme, ThemeProvider } from '@material-ui/core';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Footer from './components/shared/Footer';
 import devLog from './utils/devLog';
+import { verifyUser } from './services/users';
 
 const theme = createTheme({
   palette: {
@@ -62,6 +63,26 @@ function App() {
 
     // eslint-disable-next-line
   }, [currentUser]);
+
+  useEffect(() => {
+    const handleVerifyUser = async () => {
+      let googleParams = {
+        uid: currentUser?.uid, // google id
+        email: currentUser?.email,
+      };
+
+      const verifiedUser = await verifyUser(googleParams);
+
+      if (verifiedUser) {
+        setCurrentUser(verifiedUser);
+      } else {
+        setCurrentUser(null);
+        push('/user-setup');
+      }
+    };
+    handleVerifyUser();
+    //eslint-disable-next-line
+  }, []);
 
   return (
     <ThemeProvider theme={theme}>
