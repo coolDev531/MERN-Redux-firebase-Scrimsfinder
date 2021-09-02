@@ -339,7 +339,7 @@ export default function ScrimEdit() {
                             lobbyHost: e.target.value,
                           }))
                         }
-                        value={scrimData.lobbyHost}>
+                        value={scrimData.lobbyHost || ''}>
                         {/* check that names aren't repeating */}
                         {[
                           ...new Set([

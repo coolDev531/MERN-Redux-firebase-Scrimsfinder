@@ -3,6 +3,7 @@ import { Tooltip, Grid, Button } from '@material-ui/core';
 import S3FileUpload from 'react-s3';
 import { ScrimsContext } from '../context/scrimsContext';
 import { addImageToScrim } from './../services/scrims';
+import AdminArea from './shared/AdminArea';
 
 export default function UploadPostGameImage({ scrim, isUploaded }) {
   const config = {
@@ -19,7 +20,7 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
 
   function upload(e) {
     const img = e.target.files[0];
-    console.log(e.target);
+
     S3FileUpload.uploadFile(img, config)
       .then(async (data) => {
         let yes = window.confirm('Are you sure you want to upload this image?');
@@ -44,29 +45,38 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
   }
 
   // only show this if image hasn't been uploaded
-  return (
-    !isUploaded && (
-      <Grid
-        item
-        container
-        direction="row"
-        alignItems="center"
-        justifyContent="space-between"
-        xs={12}>
-        <Grid item xs={8}>
-          <h3 className="text-black">Upload Post Game Lobby Image:</h3>
-        </Grid>
-        <Grid item xs={4}>
-          <Tooltip
-            title="Validate winner by uploading end of game results"
-            position="top">
-            <Button variant="contained" color="primary" component="label">
-              Upload File
-              <input ref={fileInputRef} hidden type="file" onChange={upload} />
-            </Button>
-          </Tooltip>
-        </Grid>
+  return !isUploaded ? (
+    <Grid
+      item
+      container
+      direction="row"
+      alignItems="center"
+      justifyContent="space-between"
+      xs={12}>
+      <Grid item xs={8}>
+        <h3 className="text-black">Upload Post Game Lobby Image:</h3>
       </Grid>
-    )
+      <Grid item xs={4}>
+        <Tooltip
+          title="Validate winner by uploading end of game results"
+          position="top">
+          <Button variant="contained" color="primary" component="label">
+            Upload File
+            <input ref={fileInputRef} hidden type="file" onChange={upload} />
+          </Button>
+        </Tooltip>
+      </Grid>
+    </Grid>
+  ) : (
+    <AdminArea>
+      <Grid item xs={12}>
+        <Tooltip title="Re-upload image (admin only)" position="top">
+          <Button variant="contained" color="primary" component="label">
+            Re-upload Image
+            <input ref={fileInputRef} hidden type="file" onChange={upload} />
+          </Button>
+        </Tooltip>
+      </Grid>
+    </AdminArea>
   );
 }
