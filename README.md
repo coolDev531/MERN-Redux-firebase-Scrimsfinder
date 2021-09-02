@@ -49,7 +49,12 @@ If you have an admin key, you can host a scrim/lobby. Then players just have to 
 - lobby names generated for scrims are now the amount of scrims created that day and in that region plus the one created. (previous word api brought weird names sometimes)
 
 ### 9/1/2021
+
 - admins can now edit scrims.
+
+### 9/2/2021
+
+- lobby hosts/captains and admins can now upload a post game image to verify winner.
 
 ---
 
