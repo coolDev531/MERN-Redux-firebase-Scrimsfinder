@@ -2,7 +2,18 @@ const User = require('../models/user');
 
 const createUser = async (req, res) => {
   try {
-    const user = new User(req.body);
+    const { uid, name, discord, rank, adminKey, email } = req.body;
+
+    const userData = {
+      uid,
+      name,
+      discord,
+      rank,
+      adminKey,
+      email,
+    };
+
+    const user = new User(userData);
     await user.save();
     res.status(201).json(user);
     console.log('User created: ', user);
@@ -16,13 +27,14 @@ const loginUser = async (req, res) => {
   const { uid } = req.params;
   const { email } = req.body;
 
-  const foundUser = User.find({ uid, email }).exec();
-
-  if (!req.body.email) {
+  if (!email) {
     return res.status(500).json({
       error: `No Email Provided`,
     });
   }
+
+  const foundUser = User.find({ uid, email }).exec();
+  console.log({ foundUser });
 
   if (!foundUser) {
     return res.status(500).json({
@@ -31,7 +43,6 @@ const loginUser = async (req, res) => {
   }
 
   if (foundUser) {
-    console.log({ foundUser });
     return res.json(foundUser);
   }
 };
