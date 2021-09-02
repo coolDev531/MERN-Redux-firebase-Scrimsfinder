@@ -112,7 +112,7 @@ export default function Navbar({
                 /> */}
                   &nbsp;
                   <Link to="/" className="link">
-                    <h1>LoL Scrims finder</h1>
+                    <h1>LoL Scrims Finder</h1>
                   </Link>
                 </div>
 
