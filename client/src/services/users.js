@@ -5,14 +5,19 @@ export const createUser = async (user) => {
     const response = await api.post('/users', user);
     return response.data;
   } catch (error) {
+    const errorMsg = error?.response?.data?.error;
+
+    if (errorMsg) {
+      alert(errorMsg);
+    }
     throw error;
   }
 };
 
 // verify user by getting google uid and email, then give rest of data.
-export const verifyUser = async (googleUid, googleEmail) => {
+export const verifyUser = async (googleParams) => {
   try {
-    const response = await api.get(`/auth/verify/${googleUid}`, googleEmail);
+    const response = await api.get('/auth/verify/', googleParams);
     return response.data;
   } catch (error) {
     throw error;

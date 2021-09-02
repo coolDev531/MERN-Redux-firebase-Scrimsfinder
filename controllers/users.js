@@ -35,6 +35,13 @@ const createUser = async (req, res) => {
       region,
     };
 
+    const userExists = User.findOne({ uid, email });
+    if (userExists) {
+      return res.status(500).json({
+        error: 'User with email already exists!',
+      });
+    }
+
     const user = new User(userData);
     await user.save();
     res.status(201).json(user);

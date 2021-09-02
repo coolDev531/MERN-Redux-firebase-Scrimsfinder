@@ -12,6 +12,7 @@ function CurrentUserProvider({ children }) {
   });
 
   const { pathname } = useLocation();
+
   const history = useHistory();
 
   const setGoogleUser = (user) => {

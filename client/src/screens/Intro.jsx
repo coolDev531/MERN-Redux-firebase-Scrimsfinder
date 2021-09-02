@@ -184,7 +184,7 @@ export default function Intro() {
 
           localStorage.setItem('currentUser', JSON.stringify(createdUser));
         }
-      } catch (err) {
+      } catch (error) {
         return;
       }
       return;
