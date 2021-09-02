@@ -5,6 +5,8 @@ import { ScrimsContext } from '../context/scrimsContext';
 import { addImageToScrim } from './../services/scrims';
 import AdminArea from './shared/AdminArea';
 
+const MAX_FILE_SIZE_MIB = 0.953674; // 1 megabyte (in Memibyte format)
+
 export default function UploadPostGameImage({ scrim, isUploaded }) {
   const config = {
     bucketName: 'lol-scrimsfinder-bucket',
@@ -19,25 +21,43 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
   const { toggleFetch } = useContext(ScrimsContext);
 
   const upload = (e) => {
-    console.log(e.target.value);
-    let img = e.target.files[0];
-    let str = [...img.name];
-    if (str.includes(' ')) {
+    if (e.target.files.length === 0) return;
+
+    let file = e.target.files[0];
+    let fileName = [...file.name];
+
+    const fileSize = file.size / 1024 / 1024; // in MiB
+
+    if (!/^image\//.test(file.type)) {
+      // if file type isn't an image, return
       fileInputRef.current.value = '';
-      return alert(
-        `No spaces in name of file allowed \n name of file: ${img?.name}`
-      );
+      alert(`File ${file.name} is not an image! \nonly images are allowed.`);
+      return;
     }
 
-    S3FileUpload.uploadFile(img, config)
-      .then(async (data) => {
-        let yes = window.confirm('Are you sure you want to upload this image?');
-        if (!yes) {
-          // empty the value inside the file upload so user can retry again...
-          fileInputRef.current.value = '';
-          return;
-        }
+    if (fileSize > MAX_FILE_SIZE_MIB) {
+      fileInputRef.current.value = '';
+      alert(`File ${file.name} is too big! \nmax allowed size: 1 MB.`);
+      return;
+    }
 
+    // if file name has sapces, return.
+    if (fileName.includes(' ')) {
+      fileInputRef.current.value = '';
+      alert(`No spaces in name of file allowed \n name of file: ${file?.name}`);
+      return;
+    }
+
+    let yes = window.confirm('Are you sure you want to upload this image?');
+
+    if (!yes) {
+      // empty the value inside the file upload so user can retry again...
+      fileInputRef.current.value = '';
+      return;
+    }
+
+    S3FileUpload.uploadFile(file, config)
+      .then(async (data) => {
         const addedImg = await addImageToScrim(scrim._id, data);
         if (addedImg) {
           console.log(
@@ -69,7 +89,7 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
           title="Validate winner by uploading end of game results"
           position="top">
           <Button variant="contained" color="primary" component="label">
-            Upload File
+            Upload Image
             <input ref={fileInputRef} hidden type="file" onChange={upload} />
           </Button>
         </Tooltip>
