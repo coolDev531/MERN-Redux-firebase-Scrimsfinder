@@ -35,13 +35,3 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 app.listen(PORT, () => {
   console.log(`Express server listening on port ${PORT}`);
 });
-
-Scrim.find()
-  .populate('casters', ['name', 'discord', 'uid'])
-  .exec((err, newScrim) => {
-    if (err) {
-      console.log(err);
-      res.status(400).end();
-    }
-    return newScrim;
-  });
