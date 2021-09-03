@@ -192,7 +192,13 @@ export default function ScrimTeamList({
             (player) => player?.role === teamRole
           );
 
-          const isCurrentUser = playerAssigned?._user?.uid === currentUser?.uid;
+          // doing this so old data is still working on the front-end after the major database update at 9/3/2021
+          // for old database status, if player didnt have nested ._user, just return as is, else return ._user
+          const userInfo = playerAssigned?._user?.uid
+            ? playerAssigned._user
+            : playerAssigned;
+
+          const isCurrentUser = userInfo?.uid === currentUser?.uid;
 
           if (playerAssigned) {
             return (
@@ -214,9 +220,9 @@ export default function ScrimTeamList({
                           href={`https://${playerAssigned?._user?.region}.op.gg/summoner/userName=${playerAssigned?.name}`}
                           target="_blank"
                           rel="noreferrer">
-                          {playerAssigned?._user?.name}
+                          {userInfo?.name}
                         </a>
-                        {playerAssigned.rank !== 'Unranked' && (
+                        {userInfo.rank !== 'Unranked' && (
                           <>
                             &nbsp;
                             <img
@@ -227,10 +233,7 @@ export default function ScrimTeamList({
                                 // replace number with empty string: Diamond 1 => Diamond
                                 // get rank image from images map by player.rank
                                 RANK_IMAGES[
-                                  playerAssigned?._user?.rank.replace(
-                                    /[^a-z$]/gi,
-                                    ''
-                                  )
+                                  userInfo.rank.replace(/[^a-z$]/gi, '')
                                 ]
                               }
                             />
@@ -248,7 +251,7 @@ export default function ScrimTeamList({
                               variant="body2"
                               className={classes.inline}
                               color="textPrimary">
-                              {playerAssigned?._user?.discord}
+                              {userInfo?.discord}
                             </Typography>
                             <br />
                           </>
@@ -268,7 +271,7 @@ export default function ScrimTeamList({
                           variant="body2"
                           className={classes.inline}
                           color="textPrimary">
-                          {playerAssigned?._user?.rank}
+                          {userInfo?.rank}
                         </Typography>
                       </>
                     }
@@ -288,13 +291,12 @@ export default function ScrimTeamList({
                     : // don't let admins kick if game has ended.
                       !gameEnded && (
                         <AdminArea>
-                          <Tooltip
-                            title={`Kick ${playerAssigned?._user?.name}`}>
+                          <Tooltip title={`Kick ${userInfo?.name}`}>
                             <IconButton
                               className={classes.iconButton}
                               onClick={() => {
                                 let yes = window.confirm(
-                                  `Are you sure you want to kick ${playerAssigned?._user?.name}?`
+                                  `Are you sure you want to kick ${userInfo?.name}?`
                                 );
                                 if (!yes) return;
                                 kickPlayerFromGame(playerAssigned, teamName);

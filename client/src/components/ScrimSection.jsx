@@ -40,6 +40,11 @@ const compareDates = (scrim) => {
 
 const MAX_CASTER_AMOUNT = 2;
 
+const getUserInfo = (data) => {
+  // for new database update, make it backwards compatible with older objects for now.
+  return data?._user?.uid ? data._user : data;
+};
+
 export default function ScrimSection({ scrim, isInDetail }) {
   const { toggleFetch, setScrims } = useContext(ScrimsContext);
   const { currentUser } = useContext(CurrentUserContext);
@@ -75,7 +80,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
     const teams = [...teamOne, ...teamTwo];
 
     let foundPlayer = teams.find(
-      (player) => player?._user?.uid === currentUser?.uid
+      (player) => getUserInfo(player)?.uid === currentUser?.uid
     );
 
     let foundCaster = scrim.casters.find(
