@@ -64,7 +64,7 @@ function CurrentUserProvider({ children }) {
     });
 
     //eslint-disable-next-line
-  }, [pathname]);
+  }, []);
 
   return (
     <CurrentUserContext.Provider value={{ currentUser, setCurrentUser }}>
