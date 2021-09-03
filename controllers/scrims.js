@@ -53,10 +53,15 @@ const getAllScrims = async (req, res) => {
   } else {
     // if no region, just get all scrims.
     try {
-      const scrims = await Scrim.find()
-        .populate('users')
-        .then((u) => u);
-      res.json(scrims);
+      return await Scrim.find()
+        .populate('casters', ['name', 'discord', 'uid'])
+        .exec((err, newScrim) => {
+          if (err) {
+            console.log(err);
+            res.status(400).end();
+          }
+          return res.json(newScrim);
+        });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
