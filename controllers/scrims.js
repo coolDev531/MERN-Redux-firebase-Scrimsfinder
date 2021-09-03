@@ -1,32 +1,18 @@
-const Scrim = require('../models/scrim');
-const db = require('../db/connection');
-const sample = require('../utils/sample');
-const toIsoString = require('../utils/toIsoString');
-const User = require('../models/user');
 const mongoose = require('mongoose');
+const db = require('../db/connection');
+// models
+const Scrim = require('../models/scrim');
+const User = require('../models/user');
+
+// utils
+const sample = require('../utils/sample');
+const {
+  checkIfScrimIsToday,
+  checkIfScrimIsInACertainDate,
+} = require('../utils/scrimUtils');
+const capitalizeWord = require('../utils/capitalizeWord');
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-
-const checkIfScrimIsToday = (scrim) => {
-  let now = Date.now();
-  let nowDate = new Date(now).setHours(0, 0, 0, 0);
-  let today = toIsoString(nowDate);
-
-  let scrimGameDay = new Date(scrim.gameStartTime).setHours(0, 0, 0, 0);
-  let scrimIso = toIsoString(scrimGameDay);
-
-  return today === scrimIso;
-};
-
-const checkIfScrimIsInACertainDate = (scrim, date) => {
-  let certainDate = new Date(date).setHours(0, 0, 0, 0);
-  certainDateIso = toIsoString(certainDate);
-
-  let scrimGameDay = new Date(scrim.gameStartTime).setHours(0, 0, 0, 0);
-  let scrimIso = toIsoString(scrimGameDay);
-
-  return certainDateIso === scrimIso;
-};
 
 const getLobbyName = async (region, createdScrimStartTime) => {
   const scrims = await Scrim.find();
@@ -38,10 +24,6 @@ const getLobbyName = async (region, createdScrimStartTime) => {
   );
 
   return `Scrim ${scrimsThatDay.length + 1} Custom Game (${region})`;
-};
-
-const capitalizeWord = ([first, ...rest]) => {
-  return [first.toUpperCase(), ...rest].join('');
 };
 
 const populateTeam = (teamName) => {
