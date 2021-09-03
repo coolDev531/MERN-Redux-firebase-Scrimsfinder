@@ -89,6 +89,7 @@ const getScrimById = async (req, res) => {
     return scrim
       .populate('casters', ['name', 'discord', 'uid'])
       .populate('lobbyHost', ['name', 'email', 'discord', 'uid'])
+      .populate('_user')
       .exec((err, newScrim) => {
         if (err) {
           console.log(err);
