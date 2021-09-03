@@ -24,23 +24,19 @@ const getThirtyMinFromNow = () => {
   return d2;
 };
 
-const PlayerSchema = new Schema({
-  name: { type: String, required: true }, // summoner name
-  discord: { type: String, required: true },
-  role: { type: String, required: true },
-  rank: { type: String, required: true },
-  region: { type: String, required: true },
-  team: { name: { type: String } },
-  uid: { type: String, required: true }, // google id
-  email: { type: String, required: true },
-});
-
-const CasterSchema = new Schema({
+const userProperties = {
   name: { type: String, required: true },
   uid: { type: String, required: true },
   discord: { type: String, required: true },
   email: { type: String, required: true },
-});
+  rank: { type: String, required: true },
+  region: { type: String, required: true },
+};
+
+const playerProperties = {
+  role: { type: String, required: true },
+  team: { name: { type: String, required: true } },
+};
 
 const ImageSchema = new Schema({
   bucket: { type: String, required: true },
@@ -53,15 +49,27 @@ const ImageSchema = new Schema({
 
 const Scrim = new Schema(
   {
-    teamOne: { type: [PlayerSchema], default: [] },
-    teamTwo: { type: [PlayerSchema], default: [] },
+    teamOne: [
+      {
+        ...userProperties,
+        ...playerProperties,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
+
+    teamTwo: [
+      {
+        ...userProperties,
+        ...playerProperties,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
     casters: [
       {
+        ...userProperties,
         type: mongoose.Schema.Types.ObjectId,
-        name: { type: String, required: true },
-        uid: { type: String, required: true },
-        discord: { type: String, required: true },
-        email: { type: String, required: true },
         ref: 'User',
       },
     ],
