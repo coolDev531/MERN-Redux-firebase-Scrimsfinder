@@ -132,7 +132,9 @@ export default function Navbar({
                       </Button>
                     </AdminArea>
                   )}
+
                   <Box marginRight={2} />
+
                   {/* don't show go back button at home or /scrims or /user-setup*/}
                   {pathname !== '/scrims' &&
                     pathname !== '/' &&
@@ -146,8 +148,6 @@ export default function Navbar({
                         Go Back
                       </Button>
                     )}
-                  <Box marginRight={2} />
-                  &nbsp;
                   {currentUser?.uid ? (
                     <>
                       {pathname !== '/settings' && (
@@ -161,16 +161,19 @@ export default function Navbar({
                               Settings
                             </Button>
                           </Tooltip>
-                          <Box marginRight={2} />
                         </>
                       )}
-                      <Button
-                        onClick={handleLogOut}
-                        variant="contained"
-                        startIcon={<ExitIcon />}
-                        color="secondary">
-                        Log Out
-                      </Button>
+                      <>
+                        <Box marginRight={2} />
+
+                        <Button
+                          onClick={handleLogOut}
+                          variant="contained"
+                          startIcon={<ExitIcon />}
+                          color="secondary">
+                          Log Out
+                        </Button>
+                      </>
                     </>
                   ) : (
                     <Button
