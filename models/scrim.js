@@ -45,27 +45,40 @@ const ImageSchema = new Schema({
   result: { type: Object, required: true },
   uploadedBy: { type: Object, required: true },
 });
+
 // type: mongoose.Schema.Types.ObjectId,
 
 const Scrim = new Schema(
   {
-    teamOne: [
-      {
-        ...userProperties,
-        ...playerProperties,
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-      },
-    ],
+    teamOne: {
+      type: [
+        {
+          role: { type: String },
+          team: { name: { type: String } },
+          _user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+          },
+        },
+      ],
+      default: [],
+      required: false,
+    },
 
-    teamTwo: [
-      {
-        ...userProperties,
-        ...playerProperties,
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-      },
-    ],
+    teamTwo: {
+      type: [
+        {
+          role: { type: String },
+          team: { name: { type: String } },
+          _user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+          },
+        },
+      ],
+      default: [],
+      required: false,
+    },
     casters: [
       {
         ...userProperties,
@@ -79,7 +92,11 @@ const Scrim = new Schema(
       default: getThirtyMinFromNow(),
       required: true,
     },
-    lobbyHost: { type: Object, default: null },
+    lobbyHost: {
+      type: mongoose.Schema.Types.ObjectId,
+      default: null,
+      ref: 'User',
+    },
     lobbyPassword: { type: String, default: generatePassword() },
     lobbyName: {
       type: String,
@@ -92,4 +109,4 @@ const Scrim = new Schema(
   { timestamps: true, optimisticConcurrency: true, versionKey: 'version' }
 );
 
-module.exports = mongoose.model('Scrim', Scrim, 'scrims`');
+module.exports = mongoose.model('Scrim', Scrim, 'scrims');

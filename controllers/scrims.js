@@ -88,6 +88,7 @@ const getScrimById = async (req, res) => {
     // using populate to show more than _id when using Ref on the model.
     return scrim
       .populate('casters', ['name', 'discord', 'uid'])
+      .populate('lobbyHost', ['name', 'email', 'discord', 'uid'])
       .exec((err, newScrim) => {
         if (err) {
           console.log(err);
