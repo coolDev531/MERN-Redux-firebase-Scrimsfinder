@@ -91,7 +91,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
     } else {
       setPlayerEntered(false);
     }
-  }, [scrim, currentUser?.uid, teamOne, teamTwo]);
+  }, [scrim, currentUser?._id, currentUser?.uid, teamOne, teamTwo]);
 
   useEffect(() => {
     if (scrim.postGameImage) {

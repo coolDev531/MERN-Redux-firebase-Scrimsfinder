@@ -76,13 +76,20 @@ const getTodaysScrims = async (_req, res) => {
 const getScrimById = async (req, res) => {
   try {
     const { id } = req.params;
-    const scrim = await Scrim.findById(id)
-      .populate('users')
-      .then((u) => u);
-    if (scrim) {
-      return res.json(scrim);
-    }
-    res.status(404).json({ message: 'Scrim not found!' });
+    let scrim = Scrim.findOne({ _id: id });
+
+    if (!scrim) return res.status(404).json({ message: 'Scrim not found!' });
+
+    // using populate to show more than _id when using Ref on the model.
+    return scrim
+      .populate('casters', ['name', 'discord', 'uid'])
+      .exec((err, newScrim) => {
+        if (err) {
+          console.log(err);
+          res.status(400).end();
+        }
+        return res.json(newScrim);
+      });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
