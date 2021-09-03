@@ -28,6 +28,7 @@ import HideOnScroll from './HideOnScroll';
 import SettingsIcon from '@material-ui/icons/Settings';
 import KeyIcon from '@material-ui/icons/VpnKey';
 import ExitIcon from '@material-ui/icons/ExitToApp';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 // services
 import { loginUser } from '../../services/auth';
@@ -138,6 +139,7 @@ export default function Navbar({
                         className="mr-3"
                         variant="contained"
                         color="primary"
+                        startIcon={<ArrowBackIcon />}
                         onClick={() => history.goBack()}>
                         Go Back
                       </Button>
