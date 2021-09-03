@@ -55,8 +55,10 @@ const Scrim = new Schema(
         role: { type: String },
         team: { name: { type: String } },
 
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User',
+        },
       },
     ],
 
@@ -91,8 +93,16 @@ const Scrim = new Schema(
     lobbyName: {
       type: String,
     },
-    region: { type: String, default: 'NA', required: true },
-    createdBy: { type: Object, required: true },
+    region: {
+      type: String,
+      default: 'NA',
+      required: true,
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'User',
+    },
     teamWon: { type: 'String', default: null },
     postGameImage: { type: ImageSchema },
   },

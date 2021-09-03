@@ -88,8 +88,9 @@ const getScrimById = async (req, res) => {
     // using populate to show more than _id when using Ref on the model.
     return scrim
       .populate('casters', ['name', 'discord', 'uid'])
+      .populate('createdBy')
       .populate('lobbyHost', ['name', 'email', 'discord', 'uid'])
-      .populate('teamOne', ['rank', 'role', 'discord'])
+      .populate('teamOne user', ['team', 'role'])
       .exec((err, newScrim) => {
         if (err) {
           console.log(err);
@@ -167,8 +168,11 @@ const insertPlayerInScrim = async (req, res) => {
     const newPlayer = {
       role: playerData.role,
       team: playerData.team,
-      ..._user,
+      user: {
+        ..._user,
+      },
     };
+    console.log({ newPlayer });
 
     const teamJoiningArr =
       teamJoiningName === 'teamOne' ? scrim._doc.teamOne : scrim._doc.teamTwo;
@@ -207,14 +211,14 @@ const insertPlayerInScrim = async (req, res) => {
           [teamLeavingName]: teamLeft,
           [teamJoiningName]: [
             ...teamJoined.map((player) =>
-              player.uid === newPlayer.uid ? { ...newPlayer } : player
+              player.user.uid === newPlayer.user.uid ? { ...newPlayer } : player
             ),
           ],
         };
       } else {
         // if moving but not changing teams
         let filtered = [...teamJoiningArr].filter(
-          (player) => player.uid !== newPlayer.uid
+          (player) => player.user.uid !== newPlayer.user.uid
         );
 
         newBody = {
