@@ -40,6 +40,17 @@ const getLobbyName = async (region, createdScrimStartTime) => {
   return `Scrim ${scrimsThatDay.length + 1} Custom Game (${region})`;
 };
 
+const populateTeam = (teamName) => {
+  return {
+    path: teamName,
+    populate: {
+      path: '_user',
+      model: 'User',
+      select: '-adminKey -email', // exclude adminKey and email from showing
+    },
+  };
+};
+
 const getAllScrims = async (req, res) => {
   const region = req.query?.region;
   // /api/scrims?region=NA
@@ -55,6 +66,10 @@ const getAllScrims = async (req, res) => {
     try {
       return await Scrim.find()
         .populate('casters', ['name', 'discord', 'uid'])
+        .populate('createdBy', ['-adminKey'])
+        .populate('lobbyHost', ['name', 'email', 'discord', 'uid'])
+        .populate(populateTeam('teamOne'))
+        .populate(populateTeam('teamTwo'))
         .exec((err, newScrim) => {
           if (err) {
             console.log(err);
@@ -88,9 +103,10 @@ const getScrimById = async (req, res) => {
     // using populate to show more than _id when using Ref on the model.
     return scrim
       .populate('casters', ['name', 'discord', 'uid'])
-      .populate('createdBy')
+      .populate('createdBy', ['-adminKey'])
       .populate('lobbyHost', ['name', 'email', 'discord', 'uid'])
-      .populate('teamOne user', ['team', 'role'])
+      .populate(populateTeam('teamOne'))
+      .populate(populateTeam('teamTwo'))
       .exec((err, newScrim) => {
         if (err) {
           console.log(err);
@@ -163,13 +179,18 @@ const insertPlayerInScrim = async (req, res) => {
     const teamJoiningName = playerData.team.name;
 
     const scrim = await Scrim.findById(id);
-    const _user = await User.findOne({ uid: playerData.uid });
+    const user = await User.findById(playerData._id);
 
     const newPlayer = {
-      ..._user,
       role: playerData.role,
       team: playerData.team,
+
+      _user: {
+        ...user._doc,
+      },
     };
+
+    console.log({ newPlayer });
 
     const teamJoiningArr =
       teamJoiningName === 'teamOne' ? scrim._doc.teamOne : scrim._doc.teamTwo;

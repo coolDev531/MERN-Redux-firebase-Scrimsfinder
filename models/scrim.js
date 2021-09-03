@@ -55,8 +55,10 @@ const Scrim = new Schema(
         role: { type: String },
         team: { name: { type: String } },
 
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        _user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User',
+        },
       },
     ],
 
