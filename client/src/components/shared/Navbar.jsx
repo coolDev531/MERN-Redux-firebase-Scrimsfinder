@@ -29,6 +29,7 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import KeyIcon from '@material-ui/icons/VpnKey';
 import ExitIcon from '@material-ui/icons/ExitToApp';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import CreateIcon from '@material-ui/icons/Create';
 
 // services
 import { loginUser } from '../../services/auth';
@@ -125,6 +126,7 @@ export default function Navbar({
                         className="mr-3"
                         variant="contained"
                         color="primary"
+                        startIcon={<CreateIcon />}
                         onClick={() => history.push('/scrims/new')}>
                         Create Scrim
                       </Button>
