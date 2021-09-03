@@ -44,6 +44,7 @@ export default function Settings() {
     adminKey: currentUser?.adminKey ?? '',
     region: currentUser?.region ?? 'NA',
   });
+
   const [rankData, setRankData] = useState({
     rankDivision: currentUser.rank.replace(/[0-9]/g, '').trim(), // match letters, trim spaces.
     rankNumber: currentUser.rank.replace(/[a-z]/gi, '').trim(), // match numbers
@@ -105,7 +106,8 @@ export default function Settings() {
     let yes = window.confirm(`are you sure you want to update your account? \n
     Summoner Name: ${userData.name} \n
     Region: ${userData.region} \n
-    ${userData.adminKey ? 'Admin key: ' + userData.adminKey : ''}
+    Rank: ${userData.rank} \n
+     ${userData.adminKey ? 'Admin key: ' + userData.adminKey : ''}
     `);
 
     if (!yes) return;
@@ -146,10 +148,12 @@ export default function Settings() {
     let isDivisionWithNumber = divisionsWithNumbers.includes(rankDivision);
 
     let rankResult = isDivisionWithNumber
-      ? `${rankDivision} ${rankNumber}`
+      ? `${rankDivision} ${rankNumber ?? '4'}` // when user saved a rank without a number but then changes back to rank with number
       : rankDivision;
-    // doing this because number and division are separate selects.
+
     setUserData((prevState) => ({
+      //  change rank everytime one of the values in rankData changes.
+      // doing this because number and division are separate selects, but back-end is accepting 1 string which is both.
       ...prevState,
       rank: rankResult,
     }));
@@ -184,6 +188,7 @@ export default function Settings() {
                 justifyContent="center"
                 alignItems="center"
                 spacing={4}>
+                {/* SUMMONER NAME */}
                 <Grid item>
                   <TextField
                     type="text"
@@ -196,6 +201,7 @@ export default function Settings() {
                   />
                 </Grid>
 
+                {/* DISCORD */}
                 <Grid item>
                   <TextField
                     type="text"
@@ -209,6 +215,7 @@ export default function Settings() {
                 </Grid>
               </Grid>
 
+              {/* CONTAINER BOTH REGION & ADMIN KEY */}
               <Grid
                 item
                 container
@@ -217,6 +224,7 @@ export default function Settings() {
                 justifyContent="center"
                 spacing={4}>
                 <Grid item>
+                  {/* REGION */}
                   <FormControl className={classes.formControl} variant="filled">
                     <InputLabel>Region</InputLabel>
                     <Select
@@ -236,6 +244,7 @@ export default function Settings() {
                   </FormControl>
                 </Grid>
 
+                {/* ADMIN KEY */}
                 <Grid item>
                   <TextField
                     variant="filled"
@@ -250,14 +259,24 @@ export default function Settings() {
               </Grid>
 
               {/* RANK DIVISION AND # */}
-              <Grid item container alignItems="center" spacing={4}>
+              <Grid
+                item
+                container
+                alignItems="center"
+                spacing={4}
+                justifyContent="center">
                 <Grid item>
                   <FormHelperText>Rank Division</FormHelperText>
                   <Select
                     name="rankDivision"
                     required
                     value={rankData.rankDivision}
-                    onChange={(e) => handleChange(e, setRankData)}>
+                    onChange={(e) =>
+                      setRankData((prevState) => ({
+                        ...prevState,
+                        [e.target.name]: e.target.value,
+                      }))
+                    }>
                     {[
                       'Unranked',
                       'Iron',
@@ -285,8 +304,13 @@ export default function Settings() {
                       required={divisionsWithNumbers.includes(
                         rankData.rankDivision
                       )}
-                      value={rankData.rankNumber}
-                      onChange={(e) => handleChange(e, setRankData)}>
+                      value={rankData.rankNumber || '4'}
+                      onChange={(e) =>
+                        setRankData((prevState) => ({
+                          ...prevState,
+                          [e.target.name]: e.target.value,
+                        }))
+                      }>
                       <MenuItem selected disabled>
                         select rank number
                       </MenuItem>
