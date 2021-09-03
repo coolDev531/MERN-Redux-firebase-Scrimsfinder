@@ -55,10 +55,8 @@ const Scrim = new Schema(
         role: { type: String },
         team: { name: { type: String } },
 
-        user: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'User',
-        },
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
       },
     ],
 
@@ -71,13 +69,16 @@ const Scrim = new Schema(
         ref: 'User',
       },
     ],
-    casters: [
-      {
-        ...userProperties,
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-      },
-    ],
+    casters: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User',
+        },
+      ],
+      min: 0,
+      max: 2,
+    },
     title: { type: String },
     gameStartTime: {
       type: Date,

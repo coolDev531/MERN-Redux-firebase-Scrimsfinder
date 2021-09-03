@@ -166,13 +166,10 @@ const insertPlayerInScrim = async (req, res) => {
     const _user = await User.findOne({ uid: playerData.uid });
 
     const newPlayer = {
+      ..._user,
       role: playerData.role,
       team: playerData.team,
-      user: {
-        ..._user,
-      },
     };
-    console.log({ newPlayer });
 
     const teamJoiningArr =
       teamJoiningName === 'teamOne' ? scrim._doc.teamOne : scrim._doc.teamTwo;
@@ -211,14 +208,14 @@ const insertPlayerInScrim = async (req, res) => {
           [teamLeavingName]: teamLeft,
           [teamJoiningName]: [
             ...teamJoined.map((player) =>
-              player.user.uid === newPlayer.user.uid ? { ...newPlayer } : player
+              player.uid === newPlayer.uid ? { ...newPlayer } : player
             ),
           ],
         };
       } else {
         // if moving but not changing teams
         let filtered = [...teamJoiningArr].filter(
-          (player) => player.user.uid !== newPlayer.user.uid
+          (player) => player.uid !== newPlayer.uid
         );
 
         newBody = {
