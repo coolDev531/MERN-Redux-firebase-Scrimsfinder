@@ -74,7 +74,9 @@ export default function ScrimSection({ scrim, isInDetail }) {
   useEffect(() => {
     const teams = [...teamOne, ...teamTwo];
 
-    let foundPlayer = teams.find((player) => player?.uid === currentUser?.uid);
+    let foundPlayer = teams.find(
+      (player) => player?._user?.uid === currentUser?.uid
+    );
 
     let foundCaster = scrim.casters.find(
       (caster) => caster?._id === currentUser?._id
