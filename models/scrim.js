@@ -24,20 +24,6 @@ const getThirtyMinFromNow = () => {
   return d2;
 };
 
-const userProperties = {
-  name: { type: String, required: true },
-  uid: { type: String, required: true },
-  discord: { type: String, required: true },
-  email: { type: String, required: true },
-  rank: { type: String, required: true },
-  region: { type: String, required: true },
-};
-
-const playerProperties = {
-  role: { type: String, required: true },
-  team: { name: { type: String, required: true } },
-};
-
 const ImageSchema = new Schema({
   bucket: { type: String, required: true },
   key: { type: String, required: true },
@@ -61,14 +47,15 @@ const Scrim = new Schema(
         },
       },
     ],
-
     teamTwo: [
       {
         role: { type: String },
         team: { name: { type: String } },
 
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        _user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User',
+        },
       },
     ],
     casters: {
