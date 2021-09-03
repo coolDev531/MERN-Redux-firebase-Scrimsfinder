@@ -2,6 +2,8 @@ const Scrim = require('../models/scrim');
 const db = require('../db/connection');
 const sample = require('../utils/sample');
 const toIsoString = require('../utils/toIsoString');
+const User = require('../models/user');
+const mongoose = require('mongoose');
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
@@ -51,7 +53,9 @@ const getAllScrims = async (req, res) => {
   } else {
     // if no region, just get all scrims.
     try {
-      const scrims = await Scrim.find();
+      const scrims = await Scrim.find()
+        .populate('users')
+        .then((u) => u);
       res.json(scrims);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -72,7 +76,9 @@ const getTodaysScrims = async (_req, res) => {
 const getScrimById = async (req, res) => {
   try {
     const { id } = req.params;
-    const scrim = await Scrim.findById(id);
+    const scrim = await Scrim.findById(id)
+      .populate('users')
+      .then((u) => u);
     if (scrim) {
       return res.json(scrim);
     }
@@ -135,6 +141,7 @@ const insertPlayerInScrim = async (req, res) => {
     const { id } = req.params;
 
     const { playerData } = req.body;
+
     const isMoving = req.body.swapData?.isMoving ?? false;
     const isChangingTeams = req.body.swapData?.isChangingTeams ?? false;
 
@@ -314,8 +321,18 @@ const insertCasterInScrim = async (req, res) => {
   await session.withTransaction(async () => {
     const scrim = await Scrim.findById(id);
 
+    const casterId = casterData.uid;
+
+    const casterJoining = await User.findOne({ uid: casterId });
+
+    let isValid = mongoose.Types.ObjectId.isValid(casterJoining._id);
+
+    if (!isValid) {
+      return res(500).json('invalid response.');
+    }
+
     let bodyData = {
-      casters: [...scrim._doc.casters, casterData],
+      casters: [...scrim._doc.casters, casterJoining],
     };
 
     if (scrim._doc.casters.length < 2) {

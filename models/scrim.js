@@ -49,13 +49,22 @@ const ImageSchema = new Schema({
   result: { type: Object, required: true },
   uploadedBy: { type: Object, required: true },
 });
+// type: mongoose.Schema.Types.ObjectId,
 
 const Scrim = new Schema(
   {
     teamOne: { type: [PlayerSchema], default: [] },
     teamTwo: { type: [PlayerSchema], default: [] },
-    // right now casters is just array of strings (user.name)s
-    casters: { type: [CasterSchema], default: [] },
+    casters: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        name: { type: String, required: true },
+        uid: { type: String, required: true },
+        discord: { type: String, required: true },
+        email: { type: String, required: true },
+        ref: 'User',
+      },
+    ],
     title: { type: String },
     gameStartTime: {
       type: Date,
@@ -75,4 +84,4 @@ const Scrim = new Schema(
   { timestamps: true, optimisticConcurrency: true, versionKey: 'version' }
 );
 
-module.exports = mongoose.model('scrims', Scrim);
+module.exports = mongoose.model('Scrim', Scrim, 'scrims`');

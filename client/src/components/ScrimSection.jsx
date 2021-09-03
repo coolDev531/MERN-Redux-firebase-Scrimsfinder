@@ -77,7 +77,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
     let foundPlayer = teams.find((player) => player?.uid === currentUser?.uid);
 
     let foundCaster = scrim.casters.find(
-      (caster) => caster?.uid === currentUser?.uid
+      (caster) => caster?._id === currentUser?._id
     );
 
     if (foundCaster) {
@@ -283,7 +283,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
                         disabled={
                           casters.length === MAX_CASTER_AMOUNT ||
                           scrim.casters.find(
-                            ({ uid }) => uid === currentUser?.uid
+                            ({ _id }) => _id === currentUser?._id
                           )
                             ? true
                             : false
