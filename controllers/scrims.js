@@ -378,11 +378,24 @@ const removeCasterFromScrim = async (req, res) => {
   const { casterData } = req.body;
 
   await session.withTransaction(async () => {
-    const scrim = await Scrim.findById(id);
+    const scrim = await Scrim.findOne({ _id: id });
 
+    const casterId = casterData.uid;
+
+    const casterLeaving = await User.findOne({ uid: casterId });
+
+    let isValid = mongoose.Types.ObjectId.isValid(casterLeaving._id);
+
+    if (!isValid) {
+      return res(500).json('invalid response.');
+    }
+
+    const { casters } = scrim;
+
+    // without populate the only data is the id's.
     const bodyData = {
-      casters: scrim._doc.casters.filter(
-        (caster) => caster.uid !== casterData.uid
+      casters: [...casters].filter(
+        (casterId) => String(casterId) !== String(casterLeaving._id)
       ),
     };
 
