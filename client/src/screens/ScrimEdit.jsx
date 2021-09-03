@@ -83,6 +83,7 @@ export default function ScrimEdit() {
         teamTwo,
         lobbyHost: oneScrim?.lobbyHost?.name ?? null, // for input values not wanting objects, we will return the object in the submit.
         previousLobbyHost: oneScrim?.lobbyHost ?? null,
+        createdBy: oneScrim?.createdBy,
       });
     };
     prefillFormData();
@@ -343,7 +344,8 @@ export default function ScrimEdit() {
                         {/* check that names aren't repeating */}
                         {[
                           ...new Set([
-                            scrimData?.lobbyHost,
+                            scrimData.createdBy?.name,
+                            scrimData?.lobbyHost ?? 'random',
                             currentUser?.name,
                             'random',
                             ...teamsArr.map((user) => user.name),

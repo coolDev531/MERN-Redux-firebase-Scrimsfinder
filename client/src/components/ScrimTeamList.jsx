@@ -137,7 +137,7 @@ export default function ScrimTeamList({
         ...currentUser,
         role: playerEntered.role,
         teamLeavingName,
-        isLobbyHost: scrim.lobbyHost?.uid === playerEntered?._user?.uid,
+        isLobbyHost: scrim.lobbyHost?._id === playerEntered?._user?._id,
       },
     };
 
@@ -198,7 +198,7 @@ export default function ScrimTeamList({
             ? playerAssigned._user
             : playerAssigned;
 
-          const isCurrentUser = userInfo?.uid === currentUser?.uid;
+          const isCurrentUser = userInfo?._id === currentUser?._id;
 
           if (playerAssigned) {
             return (

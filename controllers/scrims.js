@@ -142,7 +142,7 @@ const createScrim = async (req, res) => {
 
 const swapPlayer = (currentTeam, movingTeam, movingPlayer) => {
   const indexToRemove = currentTeam.findIndex(
-    (player) => player?.uid === movingPlayer?.uid
+    (player) => String(player?._user) === String(movingPlayer?._user._id)
   );
   if (indexToRemove > -1) currentTeam.splice(indexToRemove, 1);
   movingTeam = [...movingTeam, movingPlayer];
@@ -306,16 +306,16 @@ const insertPlayerInScrim = async (req, res) => {
             return res.status(500).send('Scrim not found');
           }
 
-          // need to fix this with populate
-
           const lobbyHost = scrim.lobbyHost ?? null;
 
           if (lobbyHost !== null) {
             scrim.lobbyHost = lobbyHost;
           } else if (scrim.teamOne.length === 5 && scrim.teamTwo.length === 5) {
             const result = sample([...scrim.teamOne, ...scrim.teamTwo]);
+            console.log({ result });
             const userResult = User.findById(result._user);
-            scrim.lobbyHost = result;
+            console.log({ userResult });
+            scrim.lobbyHost = userResult;
           } else {
             scrim.lobbyHost = null;
           }

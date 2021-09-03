@@ -80,7 +80,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
     const teams = [...teamOne, ...teamTwo];
 
     let foundPlayer = teams.find(
-      (player) => getUserInfo(player)?.uid === currentUser?.uid
+      (player) => getUserInfo(player)?._id === currentUser?._id
     );
 
     let foundCaster = scrim.casters.find(
