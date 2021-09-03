@@ -40,6 +40,10 @@ const getLobbyName = async (region, createdScrimStartTime) => {
   return `Scrim ${scrimsThatDay.length + 1} Custom Game (${region})`;
 };
 
+const capitalizeWord = ([first, ...rest]) => {
+  return [first.toUpperCase(), ...rest].join('');
+};
+
 const populateTeam = (teamName) => {
   return {
     path: teamName,
@@ -212,7 +216,7 @@ const insertPlayerInScrim = async (req, res) => {
     const user = await User.findById(playerData._id);
 
     const playerInTransaction = {
-      role: playerData.role,
+      role: capitalizeWord(playerData.role),
       team: playerData.team,
 
       _user: {
