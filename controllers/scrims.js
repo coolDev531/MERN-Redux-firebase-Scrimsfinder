@@ -208,9 +208,10 @@ const insertPlayerInScrim = async (req, res) => {
     const teamJoiningName = playerData.team.name;
 
     const scrim = await Scrim.findById(id);
+
     const user = await User.findById(playerData._id);
 
-    const newPlayer = {
+    const playerInTransaction = {
       role: playerData.role,
       team: playerData.team,
 
@@ -223,7 +224,7 @@ const insertPlayerInScrim = async (req, res) => {
       teamJoiningName === 'teamOne' ? scrim._doc.teamOne : scrim._doc.teamTwo;
 
     const spotTaken = scrim._doc[teamJoiningName].find(
-      (player) => player.role === newPlayer.role
+      (player) => player.role === playerInTransaction.role
     );
 
     const spotsAvailable = getAvailableRoles(teamJoiningArr);
@@ -249,31 +250,36 @@ const insertPlayerInScrim = async (req, res) => {
         let [teamLeft, teamJoined] = swapPlayer(
           currentTeamArray,
           teamChangingToArray,
-          newPlayer
+          playerInTransaction
         );
 
         newBody = {
           [teamLeavingName]: teamLeft,
           [teamJoiningName]: [
             ...teamJoined.map((player) =>
-              player.uid === newPlayer.uid ? { ...newPlayer } : player
+              // ._user is just an id here because of no populate
+              player._user === playerInTransaction._user._id
+                ? { ...playerInTransaction }
+                : player
             ),
           ],
         };
       } else {
         // if moving but not changing teams
+        // remove the player from the team
         let filtered = [...teamJoiningArr].filter(
-          (player) => player.uid !== newPlayer.uid
+          (player) => String(player._user) !== String(user._id)
         );
 
+        // re-insert him in his new role.
         newBody = {
-          [teamJoiningName]: [...filtered, newPlayer],
+          [teamJoiningName]: [...filtered, playerInTransaction],
         };
       }
     } else {
-      // if not moving or changing teams
+      // if  just joining
       newBody = {
-        [teamJoiningName]: [...teamJoiningArr, newPlayer],
+        [teamJoiningName]: [...teamJoiningArr, playerInTransaction],
       };
     }
 
@@ -299,6 +305,8 @@ const insertPlayerInScrim = async (req, res) => {
           if (!scrim) {
             return res.status(500).send('Scrim not found');
           }
+
+          // need to fix this with populate
 
           const lobbyHost = scrim.lobbyHost ?? null;
 
