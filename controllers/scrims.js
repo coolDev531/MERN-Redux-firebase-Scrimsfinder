@@ -164,6 +164,35 @@ const getAvailableRoles = (team) => {
   return roles.filter((r) => !takenRoles.has(r)).join(', ');
 };
 
+const updateScrim = async (req, res) => {
+  // for admins changing scrim data not average user.
+  const { id } = req.params;
+
+  await Scrim.findByIdAndUpdate(id, req.body, { new: true }, (error, scrim) => {
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+    if (!scrim) {
+      return res.status(500).send('Scrim not found');
+    }
+
+    res.status(200).json(scrim);
+  });
+};
+
+const deleteScrim = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await Scrim.findByIdAndDelete(id);
+    if (deleted) {
+      return res.status(200).send(`Scrim with id: ${id} deleted`);
+    }
+    throw new Error('Scrim not found');
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 const insertPlayerInScrim = async (req, res) => {
   const session = await Scrim.startSession();
 
@@ -189,8 +218,6 @@ const insertPlayerInScrim = async (req, res) => {
         ...user._doc,
       },
     };
-
-    console.log({ newPlayer });
 
     const teamJoiningArr =
       teamJoiningName === 'teamOne' ? scrim._doc.teamOne : scrim._doc.teamTwo;
@@ -295,35 +322,6 @@ const insertPlayerInScrim = async (req, res) => {
   session.endSession();
 };
 
-const updateScrim = async (req, res) => {
-  // for admins changing scrim data not average user.
-  const { id } = req.params;
-
-  await Scrim.findByIdAndUpdate(id, req.body, { new: true }, (error, scrim) => {
-    if (error) {
-      return res.status(500).json({ error: error.message });
-    }
-    if (!scrim) {
-      return res.status(500).send('Scrim not found');
-    }
-
-    res.status(200).json(scrim);
-  });
-};
-
-const deleteScrim = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const deleted = await Scrim.findByIdAndDelete(id);
-    if (deleted) {
-      return res.status(200).send(`Scrim with id: ${id} deleted`);
-    }
-    throw new Error('Scrim not found');
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
 const removePlayerFromScrim = async (req, res) => {
   const { playerData } = req.body;
   const { id } = req.params;
@@ -331,15 +329,19 @@ const removePlayerFromScrim = async (req, res) => {
   const teamLeavingName = playerData?.teamLeavingName;
 
   const scrim = await Scrim.findById(id);
+  const _user = await User.findById(playerData._id);
 
   const teamLeavingArr =
     teamLeavingName === 'teamOne' ? scrim._doc.teamOne : scrim._doc.teamTwo;
 
   const scrimData = {
+    // filter array to remove player leaving
     [teamLeavingName]: teamLeavingArr.filter(
-      (player) => player.uid !== playerData.uid
+      (player) =>
+        //  we didn't populate here so player._user is actually just user._id
+        String(player._user) !== String(_user._id)
     ),
-    lobbyHost: playerData.isLobbyHost ? null : scrim._doc.lobbyHost,
+    lobbyHost: playerData.isLobbyHost ? null : scrim._doc.lobbyHost, // if player leaving is hosting, reset the host to null
   };
 
   await Scrim.findByIdAndUpdate(
