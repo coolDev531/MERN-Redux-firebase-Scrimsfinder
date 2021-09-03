@@ -50,20 +50,17 @@ const ImageSchema = new Schema({
 
 const Scrim = new Schema(
   {
-    teamOne: {
-      type: [
-        {
-          role: { type: String },
-          team: { name: { type: String } },
-          _user: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
-          },
+    teamOne: [
+      {
+        role: { type: String, required: true },
+        team: { name: { type: String, required: true } },
+        _user: {
+          type: mongoose.Schema.Types.ObjectId,
+          default: null,
+          ref: 'User',
         },
-      ],
-      default: [],
-      required: false,
-    },
+      },
+    ],
 
     teamTwo: {
       type: [
