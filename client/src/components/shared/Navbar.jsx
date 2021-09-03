@@ -118,40 +118,48 @@ export default function Navbar({
                   </Link>
                 </div>
 
-                <div className="d-flex mr-3">
+                <Grid
+                  item
+                  container
+                  alignItems="center"
+                  spacing={2}
+                  direction="row"
+                  justifyContent="flex-end">
                   {/*  don't show Create Scrim button at /new or /edit pages */}
                   {pathname !== '/scrims/new' && !pathname.includes('/edit') && (
                     <AdminArea>
-                      <Button
-                        className="mr-3"
-                        variant="contained"
-                        color="primary"
-                        startIcon={<CreateIcon />}
-                        onClick={() => history.push('/scrims/new')}>
-                        Create Scrim
-                      </Button>
+                      <Grid item>
+                        <Button
+                          className="mr-3"
+                          variant="contained"
+                          color="primary"
+                          startIcon={<CreateIcon />}
+                          onClick={() => history.push('/scrims/new')}>
+                          Create Scrim
+                        </Button>
+                      </Grid>
                     </AdminArea>
                   )}
-
-                  <Box marginRight={2} />
 
                   {/* don't show go back button at home or /scrims or /user-setup*/}
                   {pathname !== '/scrims' &&
                     pathname !== '/' &&
                     pathname !== '/user-setup' && (
-                      <Button
-                        className="mr-3"
-                        variant="contained"
-                        color="primary"
-                        startIcon={<ArrowBackIcon />}
-                        onClick={() => history.goBack()}>
-                        Go Back
-                      </Button>
+                      <Grid item>
+                        <Button
+                          className="mr-3"
+                          variant="contained"
+                          color="primary"
+                          startIcon={<ArrowBackIcon />}
+                          onClick={() => history.goBack()}>
+                          Go Back
+                        </Button>
+                      </Grid>
                     )}
                   {currentUser?.uid ? (
                     <>
                       {pathname !== '/settings' && (
-                        <>
+                        <Grid item>
                           <Tooltip title="User settings">
                             <Button
                               variant="contained"
@@ -161,11 +169,9 @@ export default function Navbar({
                               Settings
                             </Button>
                           </Tooltip>
-                        </>
+                        </Grid>
                       )}
-                      <>
-                        <Box marginRight={2} />
-
+                      <Grid item>
                         <Button
                           onClick={handleLogOut}
                           variant="contained"
@@ -173,18 +179,20 @@ export default function Navbar({
                           color="secondary">
                           Log Out
                         </Button>
-                      </>
+                      </Grid>
                     </>
                   ) : (
-                    <Button
-                      onClick={handleSignIn}
-                      variant="contained"
-                      startIcon={<KeyIcon />}
-                      color="primary">
-                      Log In
-                    </Button>
+                    <Grid item>
+                      <Button
+                        onClick={handleSignIn}
+                        variant="contained"
+                        startIcon={<KeyIcon />}
+                        color="primary">
+                        Log In
+                      </Button>
+                    </Grid>
                   )}
-                </div>
+                </Grid>
               </div>
               <br />
               {!showLess && (
