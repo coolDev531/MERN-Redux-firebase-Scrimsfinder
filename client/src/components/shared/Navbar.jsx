@@ -270,14 +270,11 @@ export default function Navbar({
                             shrink: true,
                           }}
                           value={
-                            moment(new Date(scrimsDate).toISOString()).format(
-                              'yyyy-MM-DD'
-                            ) || moment().format('yyyy-MM-DD')
+                            moment(new Date(scrimsDate)).format('yyyy-MM-DD') ||
+                            moment().format('yyyy-MM-DD')
                           }
                           onChange={(e) => {
-                            setScrimsDate(
-                              new Date(e.target.value.replace('-', '/'))
-                            );
+                            setScrimsDate(moment(e.target.value));
                           }}
                         />
 
