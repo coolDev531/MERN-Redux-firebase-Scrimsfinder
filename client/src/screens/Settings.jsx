@@ -8,6 +8,7 @@ import {
   MenuItem,
   FormControl,
   makeStyles,
+  FormHelperText,
 } from '@material-ui/core';
 import Navbar from '../components/shared/Navbar';
 import { CurrentUserContext } from '../context/currentUser';
@@ -43,6 +44,20 @@ export default function Settings() {
     adminKey: currentUser?.adminKey ?? '',
     region: currentUser?.region ?? 'NA',
   });
+  const [rankData, setRankData] = useState({
+    rankDivision: currentUser.rank.replace(/[0-9]/g, '').trim(), // match letters, trim spaces.
+    rankNumber: currentUser.rank.replace(/[a-z]/gi, '').trim(), // match numbers
+  });
+
+  const divisionsWithNumbers = [
+    'Iron',
+    'Bronze',
+    'Silver',
+    'Gold',
+    'Platinum',
+    'Diamond',
+  ];
+
   const classes = useStyles();
 
   const foundUserSummonerName = useMemo(
@@ -72,16 +87,6 @@ export default function Settings() {
       }),
     [userData.discord, usersInRegion, currentUser?._id]
   );
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      // for checking if summoner name or discord are taken.
-      const usersInRegionData = await getUsersInRegion(userData.region);
-
-      setUsersInRegion(usersInRegionData);
-    };
-    fetchUsers();
-  }, [userData.region]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -125,6 +130,31 @@ export default function Settings() {
       [name]: value,
     }));
   };
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      // for checking if summoner name or discord are taken.
+      const usersInRegionData = await getUsersInRegion(userData.region);
+
+      setUsersInRegion(usersInRegionData);
+    };
+    fetchUsers();
+  }, [userData.region]);
+
+  useEffect(() => {
+    const { rankNumber, rankDivision } = rankData;
+    let isDivisionWithNumber = divisionsWithNumbers.includes(rankDivision);
+
+    let rankResult = isDivisionWithNumber
+      ? `${rankDivision} ${rankNumber}`
+      : rankDivision;
+    // doing this because number and division are separate selects.
+    setUserData((prevState) => ({
+      ...prevState,
+      rank: rankResult,
+    }));
+    // eslint-disable-next-line
+  }, [rankData]);
 
   return (
     <>
@@ -217,6 +247,56 @@ export default function Settings() {
                     label="Admin key (not required)"
                   />
                 </Grid>
+              </Grid>
+
+              {/* RANK DIVISION AND # */}
+              <Grid item container alignItems="center" spacing={4}>
+                <Grid item>
+                  <FormHelperText>Rank Division</FormHelperText>
+                  <Select
+                    name="rankDivision"
+                    required
+                    value={rankData.rankDivision}
+                    onChange={(e) => handleChange(e, setRankData)}>
+                    {[
+                      'Unranked',
+                      'Iron',
+                      'Bronze',
+                      'Silver',
+                      'Gold',
+                      'Platinum',
+                      'Diamond',
+                      'Master',
+                      'Grandmaster',
+                      'Challenger',
+                    ].map((value, key) => (
+                      <MenuItem value={value} key={key}>
+                        {value}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </Grid>
+                {/* exclude this number select from divisions without numbers */}
+                {divisionsWithNumbers.includes(rankData.rankDivision) && (
+                  <Grid item>
+                    <FormHelperText>Rank Number</FormHelperText>
+                    <Select
+                      name="rankNumber"
+                      required={divisionsWithNumbers.includes(
+                        rankData.rankDivision
+                      )}
+                      value={rankData.rankNumber}
+                      onChange={(e) => handleChange(e, setRankData)}>
+                      <MenuItem selected disabled>
+                        select rank number
+                      </MenuItem>
+                      <MenuItem value={4}>4</MenuItem>
+                      <MenuItem value={3}>3</MenuItem>
+                      <MenuItem value={2}>2</MenuItem>
+                      <MenuItem value={1}>1</MenuItem>
+                    </Select>
+                  </Grid>
+                )}
               </Grid>
 
               <div className="page-break" />
