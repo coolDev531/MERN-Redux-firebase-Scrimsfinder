@@ -314,6 +314,7 @@ const insertPlayerInScrim = async (req, res) => {
             scrim.lobbyHost = lobbyHost;
           } else if (scrim.teamOne.length === 5 && scrim.teamTwo.length === 5) {
             const result = sample([...scrim.teamOne, ...scrim.teamTwo]);
+            const userResult = User.findById(result._user);
             scrim.lobbyHost = result;
           } else {
             scrim.lobbyHost = null;
