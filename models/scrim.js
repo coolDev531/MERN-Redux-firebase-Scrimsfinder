@@ -52,25 +52,21 @@ const Scrim = new Schema(
   {
     teamOne: [
       {
-        role: { type: String, required: true },
-        team: { name: { type: String, required: true } },
-        _user: {
-          type: mongoose.Schema.Types.ObjectId,
-          default: null,
-          ref: 'User',
-        },
+        role: { type: String },
+        team: { name: { type: String } },
+
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
       },
     ],
 
     teamTwo: [
       {
-        role: { type: String, required: true },
-        team: { name: { type: String, required: true } },
-        _user: {
-          type: mongoose.Schema.Types.ObjectId,
-          default: null,
-          ref: 'User',
-        },
+        role: { type: String },
+        team: { name: { type: String } },
+
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
       },
     ],
     casters: [

@@ -285,12 +285,12 @@ export default function ScrimTeamList({
                     : // don't let admins kick if game has ended.
                       !gameEnded && (
                         <AdminArea>
-                          <Tooltip title={`Kick ${playerAssigned.name}`}>
+                          <Tooltip title={`Kick ${playerAssigned?.name}`}>
                             <IconButton
                               className={classes.iconButton}
                               onClick={() => {
                                 let yes = window.confirm(
-                                  `Are you sure you want to kick ${playerAssigned.name}?`
+                                  `Are you sure you want to kick ${playerAssigned?.name}?`
                                 );
                                 if (!yes) return;
                                 kickPlayerFromGame(playerAssigned, teamName);

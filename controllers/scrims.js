@@ -89,7 +89,7 @@ const getScrimById = async (req, res) => {
     return scrim
       .populate('casters', ['name', 'discord', 'uid'])
       .populate('lobbyHost', ['name', 'email', 'discord', 'uid'])
-      .populate('_user')
+      .populate('teamOne', ['rank', 'role', 'discord'])
       .exec((err, newScrim) => {
         if (err) {
           console.log(err);
@@ -162,12 +162,19 @@ const insertPlayerInScrim = async (req, res) => {
     const teamJoiningName = playerData.team.name;
 
     const scrim = await Scrim.findById(id);
+    const _user = await User.findOne({ uid: playerData.uid });
+
+    const newPlayer = {
+      role: playerData.role,
+      team: playerData.team,
+      ..._user,
+    };
 
     const teamJoiningArr =
       teamJoiningName === 'teamOne' ? scrim._doc.teamOne : scrim._doc.teamTwo;
 
     const spotTaken = scrim._doc[teamJoiningName].find(
-      (player) => player.role === playerData.role
+      (player) => player.role === newPlayer.role
     );
 
     const spotsAvailable = getAvailableRoles(teamJoiningArr);
@@ -176,6 +183,7 @@ const insertPlayerInScrim = async (req, res) => {
 
     if (isMoving) {
       if (isChangingTeams) {
+        // if moving and changing teams
         const { currentTeamName, teamChangingToName } = req.body.swapData;
         const teamLeavingName = currentTeamName;
 
@@ -192,29 +200,31 @@ const insertPlayerInScrim = async (req, res) => {
         let [teamLeft, teamJoined] = swapPlayer(
           currentTeamArray,
           teamChangingToArray,
-          playerData
+          newPlayer
         );
 
         newBody = {
           [teamLeavingName]: teamLeft,
           [teamJoiningName]: [
             ...teamJoined.map((player) =>
-              player.uid === playerData.uid ? { ...playerData } : player
+              player.uid === newPlayer.uid ? { ...newPlayer } : player
             ),
           ],
         };
       } else {
+        // if moving but not changing teams
         let filtered = [...teamJoiningArr].filter(
-          (player) => player.uid !== playerData.uid
+          (player) => player.uid !== newPlayer.uid
         );
 
         newBody = {
-          [teamJoiningName]: [...filtered, { ...playerData }],
+          [teamJoiningName]: [...filtered, newPlayer],
         };
       }
     } else {
+      // if not moving or changing teams
       newBody = {
-        [teamJoiningName]: [...teamJoiningArr, playerData],
+        [teamJoiningName]: [...teamJoiningArr, newPlayer],
       };
     }
 
