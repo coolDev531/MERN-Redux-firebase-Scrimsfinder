@@ -19,15 +19,10 @@ If you have an admin key, you can host a scrim/lobby. Then players just have to 
 
 # POST-MVP
 
-- Authentication (Maybe, trying to keep it plug and play...)
+- Authentication (Maybe, trying to keep it plug and play...) ✔️
 - Use the Riot Live Client API for summoner data.
-- Be able to host tournaments with classic tourney-style functionality and interface.
-- Convert the webapp to an Electron GUI app.
+- Be able to host tournaments with classic tourney-style functionality and interface. 
 
-# Some debates
-
-- Not sure if everyone should be able to make lobbies or only people with admin keys (trying to keep scrims amount low for the free-plan database)
-- Not sure if we should have full authentication with passwords and usernames (pros: removal of impersonation, reliable. cons: less plug and play, people more likely to get discouraged of using it)
 
 <br />
 
