@@ -27,7 +27,6 @@ const PlayerSchema = new Schema({
     ref: 'User',
   },
 });
-// type: mongoose.Schema.Types.ObjectId,
 
 const Scrim = new Schema(
   {
