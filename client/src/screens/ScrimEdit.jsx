@@ -394,6 +394,14 @@ export default function ScrimEdit() {
                               </MenuItem>
                             );
 
+                          if (id === currentUser?._id) {
+                            return (
+                              <MenuItem value={id} key={key}>
+                                I will host!
+                              </MenuItem>
+                            );
+                          }
+
                           return (
                             <MenuItem value={id} key={key}>
                               {usersArr.find((user) => user?._id === id)?.name}
