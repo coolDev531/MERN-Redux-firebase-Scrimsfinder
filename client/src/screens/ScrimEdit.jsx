@@ -132,13 +132,14 @@ export default function ScrimEdit() {
     return [];
   }, [scrimData]);
 
+  console.log({ scrimData });
   const getLobbyHost = async () => {
     const { teamOne, teamTwo } = scrimData;
 
     // if he didn't change values.
-    if (scrimData.lobbyHost === scrimData.previousLobbyHost.name) {
+    if (scrimData?.lobbyHost === scrimData.previousLobbyHost?.name) {
       devLog('previous lobby host');
-      return scrimData.previousLobbyHost;
+      return scrimData?.previousLobbyHost;
     } else if (scrimData.lobbyHost === currentUser?.name) {
       //  if lobby host is current User
       devLog('current user');
@@ -192,7 +193,7 @@ export default function ScrimEdit() {
       gameStartTime: gameStartTime.toISOString(),
     }));
   }, [dateData]);
-
+  console.log({ teamsArr });
   //  if user doesn't have admin key, push to '/'
   if (process.env.REACT_APP_ADMIN_KEY !== currentUser?.adminKey) {
     return <Redirect to="/" />;
@@ -340,23 +341,26 @@ export default function ScrimEdit() {
                             lobbyHost: e.target.value,
                           }))
                         }
-                        value={scrimData.lobbyHost || ''}>
+                        value={scrimData.lobbyHost || 'random'}>
                         {/* check that names aren't repeating */}
                         {[
                           ...new Set([
+                            'random',
                             scrimData.createdBy?.name,
+                            scrimData?.previousLobbyHost ?? 'random',
                             scrimData?.lobbyHost ?? 'random',
                             currentUser?.name,
-                            'random',
-                            ...teamsArr.map((user) => user.name),
+                            ...teamsArr.map(
+                              ({ _user }) => _user?.name ?? 'random' // if team arr has no length
+                            ),
                           ]),
                         ].flatMap((value, key) => {
                           return (
                             <MenuItem value={value || ''} key={key}>
-                              {value === currentUser?.name
-                                ? 'I will host the lobby'
-                                : value === 'random'
-                                ? 'Choose a random player from the teams to host'
+                              {value === 'random'
+                                ? 'Random Host'
+                                : value === currentUser?.name
+                                ? 'I will host'
                                 : value}
                             </MenuItem>
                           );
