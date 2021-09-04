@@ -24,6 +24,8 @@ import devLog from '../utils/devLog';
  */
 const sample = (array) => array[Math.floor(Math.random() * array.length)];
 
+const RANDOM_HOST_CODE = '_$random';
+
 export default function ScrimEdit() {
   const { currentUser } = useContext(CurrentUserContext);
   const { toggleFetch } = useContext(ScrimsContext);
@@ -41,7 +43,7 @@ export default function ScrimEdit() {
     lobbyHost: null,
     createdBy: null,
     previousLobbyHost: null,
-    _lobbyHost: '', // _id
+    _lobbyHost: RANDOM_HOST_CODE, // _id
   });
 
   const [dateData, setDateData] = useState({
@@ -89,6 +91,7 @@ export default function ScrimEdit() {
         previousLobbyHost: oneScrim?.lobbyHost ?? null,
         createdBy: oneScrim?.createdBy,
         casters: oneScrim?.casters,
+        _lobbyHost: oneScrim?.lobbyHost?._id ?? RANDOM_HOST_CODE,
       });
     };
     prefillFormData();
@@ -185,7 +188,9 @@ export default function ScrimEdit() {
       //  if lobby host is current User
       devLog('current user');
       return currentUser;
-    } else if (scrimData._lobbyHost === '') {
+
+      // if admin chose random
+    } else if (scrimData._lobbyHost === RANDOM_HOST_CODE) {
       // if the lobby is full get a random player from the lobby to be the host.
       if ([...teamOne, ...teamTwo].length === 10) {
         devLog('getting random user to host');
@@ -377,19 +382,21 @@ export default function ScrimEdit() {
                       <Select
                         name="_lobbyHost"
                         onChange={handleChange}
-                        value={scrimData._lobbyHost || ''}>
+                        value={scrimData._lobbyHost || RANDOM_HOST_CODE}>
                         {/* check that names aren't repeating */}
-                        {idsArr.map((id, key) => {
-                          // if (id === '')
-                          //   return (
-                          //     <MenuItem value={''} key={key}>
-                          //       Random Host...
-                          //     </MenuItem>
-                          //   );
+                        {[RANDOM_HOST_CODE, ...idsArr].map((id, key) => {
+                          if (id === RANDOM_HOST_CODE)
+                            return (
+                              <MenuItem
+                                value={RANDOM_HOST_CODE}
+                                key={RANDOM_HOST_CODE}>
+                                Random Host!
+                              </MenuItem>
+                            );
 
                           return (
-                            <MenuItem value={id || ''} key={key}>
-                              {usersArr.find((v) => v?._id === id)?.name}
+                            <MenuItem value={id} key={key}>
+                              {usersArr.find((user) => user?._id === id)?.name}
                             </MenuItem>
                           );
                         })}
