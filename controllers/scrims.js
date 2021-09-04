@@ -290,7 +290,7 @@ const insertPlayerInScrim = async (req, res) => {
         id,
         newBody,
         { new: true },
-        (error, scrim) => {
+        async (error, scrim) => {
           if (error) {
             return res.status(500).json({ error: error.message });
           }
@@ -303,11 +303,10 @@ const insertPlayerInScrim = async (req, res) => {
 
           if (lobbyHost !== null) {
             scrim.lobbyHost = lobbyHost;
-          } else if (scrim.teamOne.length === 5 && scrim.teamTwo.length === 5) {
+            // if lobby is full after user is joining
+          } else if (scrim.teamOne.length === 2 && scrim.teamTwo.length === 0) {
             const result = sample([...scrim.teamOne, ...scrim.teamTwo]);
-            console.log({ result });
-            const userResult = User.findById(result._user);
-            console.log({ userResult });
+            const userResult = await User.findById(result._user);
             scrim.lobbyHost = userResult;
           } else {
             scrim.lobbyHost = null;

@@ -97,24 +97,27 @@ const loginUser = async (req, res) => {
   const { email, uid } = req.body;
 
   if (!email) {
-    return res.status(500).json({
+    res.status(500).json({
       error: `No Email Provided`,
     });
+    return;
   }
 
   if (!uid) {
-    return res.status(500).json({
+    res.status(500).json({
       error: `No google id Provided.`,
     });
+    return;
   }
 
   // will find the one user with the exact uid and email combination
   const foundUser = await User.findOne({ uid, email });
 
   if (!foundUser) {
-    return res.status(500).json({
+    res.status(500).json({
       error: `User not found with the email: ${email}, please sign up or try again.`,
     });
+    return;
   }
 
   if (foundUser) {
