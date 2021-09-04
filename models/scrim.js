@@ -30,8 +30,8 @@ const PlayerSchema = new Schema({
 
 const Scrim = new Schema(
   {
-    teamOne: { type: [PlayerSchema], default: [] },
-    teamTwo: { type: [PlayerSchema], default: [] },
+    teamOne: { type: [PlayerSchema], default: [] }, // an array of players
+    teamTwo: { type: [PlayerSchema], default: [] }, // an array of players
     casters: {
       type: [
         {
