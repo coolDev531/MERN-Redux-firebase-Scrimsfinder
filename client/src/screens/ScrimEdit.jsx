@@ -133,19 +133,18 @@ export default function ScrimEdit() {
     return scrimData?.teamOne || [];
   }, [scrimData.teamOne]);
 
-  console.log({ scrimData });
   const getLobbyHost = async () => {
     const { teamOne, teamTwo } = scrimData;
 
     // if he didn't change values.
-    if (scrimData?.lobbyHost === scrimData.previousLobbyHost?.name) {
+    if (scrimData?._lobbyHost === scrimData.previousLobbyHost?._id) {
       devLog('previous lobby host');
       return scrimData?.previousLobbyHost;
-    } else if (scrimData.lobbyHost === currentUser?.name) {
+    } else if (scrimData._lobbyHost === currentUser?._id) {
       //  if lobby host is current User
       devLog('current user');
       return currentUser;
-    } else if (scrimData.lobbyHost === '') {
+    } else if (scrimData._lobbyHost === '') {
       // if the lobby is full get a random player from the lobby to be the host.
       if ([...teamOne, ...teamTwo].length === 10) {
         devLog('getting random user to host');
@@ -156,9 +155,8 @@ export default function ScrimEdit() {
         return null;
       }
     }
-
-    // else, find the name in the teams
-    return teamsArr.find((p) => p.name === scrimData.lobbyHost);
+    // if scrimData._lobbyHost has a value and it's not the previous host or currentUser.
+    return teamsArr.find((p) => p._user._id === scrimData._lobbyHost);
   };
 
   const handleSubmit = async (e) => {
@@ -195,7 +193,7 @@ export default function ScrimEdit() {
       gameStartTime: gameStartTime.toISOString(),
     }));
   }, [dateData]);
-  console.log({ teamsArr });
+
   //  if user doesn't have admin key, push to '/'
   if (process.env.REACT_APP_ADMIN_KEY !== currentUser?.adminKey) {
     return <Redirect to="/" />;
