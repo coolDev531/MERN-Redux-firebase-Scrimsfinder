@@ -139,8 +139,27 @@ const updateUser = async (req, res) => {
   });
 };
 
+const getUserById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    let user = await User.findOne({ _id: id }).select([
+      'discord',
+      'name',
+      'region',
+    ]);
+
+    if (!user) return res.status(404).json({ message: 'User not found!' });
+
+    // using populate to show more than _id when using Ref on the model.
+    return res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   getAllUsers,
+  getUserById,
   createUser,
   verifyUser,
   loginUser,
