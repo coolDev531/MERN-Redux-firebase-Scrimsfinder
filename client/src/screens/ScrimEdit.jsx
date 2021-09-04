@@ -33,10 +33,14 @@ export default function ScrimEdit() {
     region: '',
     title: '',
     casters: [],
+    teamOne: [],
+    teamTwo: [],
     gameStartTime: new Date().toISOString(),
     lobbyName: '',
     lobbyPassword: '',
     lobbyHost: null,
+    createdBy: null,
+    previousLobbyHost: null,
     _lobbyHost: '', // _id
   });
 
@@ -82,7 +86,6 @@ export default function ScrimEdit() {
         gameStartTime,
         teamOne,
         teamTwo,
-        lobbyHost: oneScrim?.lobbyHost?.name ?? null, // for input values not wanting objects, we will return the object in the submit.
         previousLobbyHost: oneScrim?.lobbyHost ?? null,
         createdBy: oneScrim?.createdBy,
         casters: oneScrim?.casters,
@@ -123,15 +126,13 @@ export default function ScrimEdit() {
     }
   };
 
-  let teamsArr = useMemo(() => {
-    // let players = [...scrimData?.teamOne].map((user) => user);
+  let usersArr = useMemo(() => {
+    let teamOne = scrimData?.teamOne || [];
+    let teamTwo = scrimData?.teamTwo || [];
+    let casters = scrimData?.casters || [];
 
-    // let casters = [...scrimData?.casters].map((caster) => caster);
-
-    // return players;
-
-    return scrimData?.teamOne || [];
-  }, [scrimData.teamOne]);
+    return [...casters, ...teamOne, ...teamTwo];
+  }, [scrimData?.teamOne, scrimData?.casters, scrimData?.teamTwo]);
 
   const getLobbyHost = async () => {
     const { teamOne, teamTwo } = scrimData;
@@ -156,7 +157,7 @@ export default function ScrimEdit() {
       }
     }
     // if scrimData._lobbyHost has a value and it's not the previous host or currentUser.
-    return teamsArr.find((p) => p._user._id === scrimData._lobbyHost);
+    return usersArr.find((p) => p._user._id === scrimData._lobbyHost);
   };
 
   const handleSubmit = async (e) => {
@@ -336,12 +337,15 @@ export default function ScrimEdit() {
                       <Select
                         name="_lobbyHost"
                         onChange={handleChange}
-                        value={scrimData._lobbyHost || 'random'}>
+                        value={scrimData._lobbyHost || ''}>
                         {/* check that names aren't repeating */}
-                        {teamsArr.map((player, key) => {
+                        {usersArr.flatMap((player, key) => {
+                          // casters don't have _user in them.
+                          let userInfo = player?._user ? player?._user : player;
+
                           return (
-                            <MenuItem value={player._user._id || ''} key={key}>
-                              {player?._user?.name}
+                            <MenuItem value={userInfo._id} key={key}>
+                              {userInfo?.name}
                             </MenuItem>
                           );
                         })}
