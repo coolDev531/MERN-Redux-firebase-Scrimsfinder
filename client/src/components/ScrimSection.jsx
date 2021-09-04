@@ -42,7 +42,7 @@ const MAX_CASTER_AMOUNT = 2;
 
 const getUserInfo = (data) => {
   // for new database update, make it backwards compatible with older objects for now.
-  return data?._user?.uid ? data._user : data;
+  return data?._user?._id ? data._user : data;
 };
 
 export default function ScrimSection({ scrim, isInDetail }) {
@@ -98,7 +98,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
     } else {
       setPlayerEntered(false);
     }
-  }, [scrim, currentUser?._id, currentUser?.uid, teamOne, teamTwo]);
+  }, [scrim, currentUser?._id, teamOne, teamTwo]);
 
   useEffect(() => {
     if (scrim.postGameImage) {
@@ -121,6 +121,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
 
     const dataSending = {
       casterData: {
+        _id: currentUser._id,
         name: currentUser?.name,
         uid: currentUser?.uid,
         email: currentUser?.email,
@@ -442,7 +443,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
                     {/*  allow image upload if both teams are filled and 
                     the current user is the host or creator of scrim or an admin.
                   */}
-                    {(scrim.lobbyHost?.uid === currentUser?.uid ||
+                    {(scrim.lobbyHost?._id === currentUser?._id ||
                       currentUser?.adminKey ===
                         process.env.REACT_APP_ADMIN_KEY) && (
                       <>

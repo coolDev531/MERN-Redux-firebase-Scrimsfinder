@@ -16,6 +16,7 @@ const getAllUsers = async (req, res) => {
   // /api/users?region=NA
   if (region) {
     try {
+      // don't show other fields, using select.
       const users = await User.find({ region }).select([
         'discord',
         'name',

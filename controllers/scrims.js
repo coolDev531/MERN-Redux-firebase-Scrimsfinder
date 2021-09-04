@@ -27,21 +27,25 @@ const getLobbyName = async (region, createdScrimStartTime) => {
 };
 
 const populateTeam = (teamName) => {
+  // nested populate
   return {
     path: teamName,
     populate: {
       path: '_user',
       model: 'User',
-      select: '-adminKey -email', // exclude adminKey and email from showing
+      select: '-adminKey -email -uid', // exclude adminKey,uid and email from showing
     },
   };
 };
+
+const populateUser = ['name', 'discord'];
 
 const getAllScrims = async (req, res) => {
   const region = req.query?.region;
   // /api/scrims?region=NA
   if (region) {
     try {
+      // might have to use populate on this, not necessary now.
       const scrims = await Scrim.find({ region: region });
       res.json(scrims);
     } catch (error) {
@@ -51,9 +55,9 @@ const getAllScrims = async (req, res) => {
     // if no region, just get all scrims.
     try {
       return await Scrim.find()
-        .populate('casters', ['name', 'discord', 'uid'])
-        .populate('createdBy', ['-adminKey'])
-        .populate('lobbyHost', ['name', 'email', 'discord', 'uid'])
+        .populate('createdBy', populateUser)
+        .populate('casters', populateUser)
+        .populate('lobbyHost', populateUser)
         .populate(populateTeam('teamOne'))
         .populate(populateTeam('teamTwo'))
         .exec((err, newScrim) => {
@@ -88,9 +92,9 @@ const getScrimById = async (req, res) => {
 
     // using populate to show more than _id when using Ref on the model.
     return scrim
-      .populate('casters', ['name', 'discord', 'uid'])
-      .populate('createdBy', ['-adminKey'])
-      .populate('lobbyHost', ['name', 'email', 'discord', 'uid'])
+      .populate('casters', populateUser)
+      .populate('createdBy', populateUser)
+      .populate('lobbyHost', populateUser)
       .populate(populateTeam('teamOne'))
       .populate(populateTeam('teamTwo'))
       .exec((err, newScrim) => {
@@ -107,12 +111,15 @@ const getScrimById = async (req, res) => {
 
 const createScrim = async (req, res) => {
   try {
+    let createdByUser = await User.findOne({ _id: req.body.createdBy._id });
+
     let requestBody = {
       ...req.body,
       lobbyName: await getLobbyName(
         req.body?.region ?? 'NA',
         req.body?.gameStartTime
       ),
+      createdBy: createdByUser,
     };
 
     const scrim = new Scrim(requestBody);
@@ -364,9 +371,9 @@ const insertCasterInScrim = async (req, res) => {
   await session.withTransaction(async () => {
     const scrim = await Scrim.findById(id);
 
-    const casterId = casterData.uid;
+    const casterId = casterData._id;
 
-    const casterJoining = await User.findOne({ uid: casterId });
+    const casterJoining = await User.findOne({ _id: casterId });
 
     let isValid = mongoose.Types.ObjectId.isValid(casterJoining._id);
 
@@ -405,15 +412,15 @@ const insertCasterInScrim = async (req, res) => {
 
 const removeCasterFromScrim = async (req, res) => {
   const session = await Scrim.startSession();
-  const { id } = req.params;
+  const { id } = req.params; // scrim id
   const { casterData } = req.body;
 
   await session.withTransaction(async () => {
     const scrim = await Scrim.findOne({ _id: id });
 
-    const casterId = casterData.uid;
+    const casterId = casterData._id;
 
-    const casterLeaving = await User.findOne({ uid: casterId });
+    const casterLeaving = await User.findOne({ _id: casterId });
 
     let isValid = mongoose.Types.ObjectId.isValid(casterLeaving._id);
 
