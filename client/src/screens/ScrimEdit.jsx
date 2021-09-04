@@ -127,12 +127,50 @@ export default function ScrimEdit() {
   };
 
   let usersArr = useMemo(() => {
-    let teamOne = scrimData?.teamOne || [];
-    let teamTwo = scrimData?.teamTwo || [];
-    let casters = scrimData?.casters || [];
+    let teamOne = scrimData?.teamOne.map((player) => player._user);
+    let teamTwo = scrimData?.teamTwo.map(({ player }) => player._user);
 
-    return [...casters, ...teamOne, ...teamTwo];
-  }, [scrimData?.teamOne, scrimData?.casters, scrimData?.teamTwo]);
+    let casters = scrimData?.casters.map((player) => player);
+
+    let result = [
+      ...teamOne,
+      ...teamTwo,
+      ...casters,
+      scrimData.createdBy,
+      currentUser,
+    ];
+
+    return [...new Set([...result])];
+  }, [
+    scrimData?.teamOne,
+    scrimData?.casters,
+    scrimData?.teamTwo,
+    currentUser,
+    scrimData.createdBy,
+  ]);
+
+  let idsArr = useMemo(() => {
+    let teamOne = scrimData?.teamOne.map((player) => player._user?._id);
+    let teamTwo = scrimData?.teamTwo.map(({ player }) => player._user?._id);
+
+    let casters = scrimData?.casters.map((player) => player._id);
+
+    let result = [
+      ...teamOne,
+      ...teamTwo,
+      ...casters,
+      scrimData.createdBy?._id,
+      currentUser?._id,
+    ];
+
+    return [...new Set([...result])];
+  }, [
+    scrimData?.teamOne,
+    scrimData?.casters,
+    scrimData?.teamTwo,
+    currentUser?._id,
+    scrimData.createdBy?._id,
+  ]);
 
   const getLobbyHost = async () => {
     const { teamOne, teamTwo } = scrimData;
@@ -157,10 +195,7 @@ export default function ScrimEdit() {
       }
     }
     // if scrimData._lobbyHost has a value and it's not the previous host or currentUser.
-    return usersArr.find((player) => {
-      let userInfo = player?._user ? player?._user : player;
-      return userInfo._id === scrimData._lobbyHost;
-    });
+    return usersArr.find((user) => user._id === scrimData._lobbyHost);
   };
 
   const handleSubmit = async (e) => {
@@ -342,13 +377,17 @@ export default function ScrimEdit() {
                         onChange={handleChange}
                         value={scrimData._lobbyHost || ''}>
                         {/* check that names aren't repeating */}
-                        {usersArr.flatMap((player, key) => {
-                          // casters don't have _user in them.
-                          let userInfo = player?._user ? player?._user : player;
+                        {idsArr.map((id, key) => {
+                          // if (id === '')
+                          //   return (
+                          //     <MenuItem value={''} key={key}>
+                          //       Random Host...
+                          //     </MenuItem>
+                          //   );
 
                           return (
-                            <MenuItem value={userInfo._id} key={key}>
-                              {userInfo?.name}
+                            <MenuItem value={id || ''} key={key}>
+                              {usersArr.find((v) => v?._id === id)?.name}
                             </MenuItem>
                           );
                         })}
