@@ -37,6 +37,7 @@ export default function ScrimEdit() {
     lobbyName: '',
     lobbyPassword: '',
     lobbyHost: null,
+    _lobbyHost: '', // _id
   });
 
   const [dateData, setDateData] = useState({
@@ -128,8 +129,8 @@ export default function ScrimEdit() {
     // let casters = [...scrimData?.casters].map((caster) => caster);
 
     // return players;
-    console.log(scrimData.teamOne);
-    return scrimData.teamOne;
+
+    return scrimData?.teamOne || [];
   }, [scrimData.teamOne]);
 
   console.log({ scrimData });
@@ -335,19 +336,14 @@ export default function ScrimEdit() {
 
                     <Grid item>
                       <Select
-                        name="lobbyHost"
-                        onChange={(e) =>
-                          setScrimData((prevState) => ({
-                            ...prevState,
-                            lobbyHost: e.target.value,
-                          }))
-                        }
-                        value={scrimData.lobbyHost || 'random'}>
+                        name="_lobbyHost"
+                        onChange={handleChange}
+                        value={scrimData._lobbyHost || 'random'}>
                         {/* check that names aren't repeating */}
-                        {[].flatMap((value, key) => {
+                        {teamsArr.map((player, key) => {
                           return (
-                            <MenuItem value={value || ''} key={key}>
-                              {value}
+                            <MenuItem value={player._user._id || ''} key={key}>
+                              {player?._user?.name}
                             </MenuItem>
                           );
                         })}
