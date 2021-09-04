@@ -107,6 +107,8 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
       </Grid>
     </Grid>
   ) : (
+    // if is uploaded
+    // admin only, re-upload image
     <AdminArea>
       <Grid item xs={12}>
         <Tooltip title="Re-upload image (admin only)" position="top">
