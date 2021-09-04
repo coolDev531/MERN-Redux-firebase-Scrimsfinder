@@ -2,20 +2,6 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const toIsoString = require('../utils/toIsoString');
 
-const generatePassword = () => {
-  var pass = '';
-  var str =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZ' + 'abcdefghijklmnopqrstuvwxyz0123456789@#$';
-
-  for (i = 1; i <= 8; i++) {
-    var char = Math.floor(Math.random() * str.length + 1);
-
-    pass += str.charAt(char);
-  }
-
-  return pass;
-};
-
 const getThirtyMinFromNow = () => {
   let now = Date.now();
   let d1 = toIsoString(now);
@@ -63,7 +49,7 @@ const Scrim = new Schema(
       required: true,
     },
     lobbyHost: { type: Object, default: null },
-    lobbyPassword: { type: String, default: generatePassword() },
+    lobbyPassword: { type: String, required: true },
     lobbyName: {
       type: String,
     },

@@ -2,6 +2,7 @@ const Scrim = require('../models/scrim');
 const db = require('../db/connection');
 const sample = require('../utils/sample');
 const toIsoString = require('../utils/toIsoString');
+const generatePassword = require('../utils/generatePassword');
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
@@ -90,6 +91,7 @@ const createScrim = async (req, res) => {
         req.body?.region ?? 'NA',
         req.body?.gameStartTime
       ),
+      lobbyPassword: await generatePassword(),
     };
 
     const scrim = new Scrim(requestBody);
