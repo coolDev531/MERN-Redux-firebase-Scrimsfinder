@@ -140,6 +140,7 @@ export default function ScrimEdit() {
       currentUser,
     ];
 
+    // unique values, currentUser can be createdBy and can be a caster or player.
     return [...new Set([...result])];
   }, [
     scrimData?.teamOne,
@@ -163,6 +164,7 @@ export default function ScrimEdit() {
       currentUser?._id,
     ];
 
+    // unique values, currentUser can be createdBy and can be a caster or player.
     return [...new Set([...result])];
   }, [
     scrimData?.teamOne,
