@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const apiKey = require('./utils/apiKey');
 const scrimRoutes = require('./routes/scrims');
 const userRoutes = require('./routes/users');
+const authRoutes = require('./routes/auth');
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.get('/', (_req, res) => {
 app.use(apiKey);
 app.use('/api', scrimRoutes);
 app.use('/api', userRoutes);
+app.use('/api', authRoutes);
 
 // another way to require api key for a specific route only.
 // router.get('/scrims', apiKey, controllers.getAllScrims);

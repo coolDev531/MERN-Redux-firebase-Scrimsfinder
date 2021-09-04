@@ -57,6 +57,13 @@ function App() {
         }));
       };
 
+      window.setUserId = (value) => {
+        setCurrentUser((prevState) => ({
+          ...prevState,
+          _id: value,
+        }));
+      };
+
       window.getEnv = () => devLog(process.env);
     }
 

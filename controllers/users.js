@@ -1,6 +1,14 @@
 const User = require('../models/user');
+const db = require('../db/connection');
 
+/**
+ * @method removeSpacesBeforeHashTag
+ * takes a discord name and trims the spaces.
+ * @param {String} str
+ * @returns {String}
+ */
 const removeSpacesBeforeHashTag = (str) => {
+  // for discord name
   return str
     .trim()
     .replace(/\s([#])/g, function (el1, el2) {
@@ -11,11 +19,14 @@ const removeSpacesBeforeHashTag = (str) => {
     });
 };
 
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
 const getAllUsers = async (req, res) => {
   const region = req.query?.region;
   // /api/users?region=NA
   if (region) {
     try {
+      // don't show other fields, using select.
       const users = await User.find({ region }).select([
         'discord',
         'name',
@@ -78,49 +89,6 @@ const createUser = async (req, res) => {
   }
 };
 
-// get google uid and email by using google auth firebase, then give rest of user data hosted in database.
-const verifyUser = async (req, res) => {
-  const { email, uid } = req.body;
-
-  // will find the one user with the exact uid and email combination
-  const foundUser = await User.findOne({ uid, email });
-
-  if (foundUser) {
-    return res.json(foundUser);
-  }
-};
-
-// get google uid and email by using google auth firebase, then give rest of user data hosted in database.
-// same as verify user but with errors.
-const loginUser = async (req, res) => {
-  const { email, uid } = req.body;
-
-  if (!email) {
-    return res.status(500).json({
-      error: `No Email Provided`,
-    });
-  }
-
-  if (!uid) {
-    return res.status(500).json({
-      error: `No google id Provided.`,
-    });
-  }
-
-  // will find the one user with the exact uid and email combination
-  const foundUser = await User.findOne({ uid, email });
-
-  if (!foundUser) {
-    return res.status(500).json({
-      error: `User not found with the email: ${email}, please sign up or try again.`,
-    });
-  }
-
-  if (foundUser) {
-    return res.json(foundUser);
-  }
-};
-
 const updateUser = async (req, res) => {
   const { id } = req.params;
 
@@ -135,10 +103,27 @@ const updateUser = async (req, res) => {
   });
 };
 
+const getUserById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    let user = await User.findOne({ _id: id }).select([
+      'discord',
+      'name',
+      'region',
+    ]);
+
+    if (!user) return res.status(404).json({ message: 'User not found!' });
+
+    // using populate to show more than _id when using Ref on the model.
+    return res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   getAllUsers,
+  getUserById,
   createUser,
-  verifyUser,
-  loginUser,
   updateUser,
 };

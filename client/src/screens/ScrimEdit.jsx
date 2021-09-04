@@ -24,6 +24,8 @@ import devLog from '../utils/devLog';
  */
 const sample = (array) => array[Math.floor(Math.random() * array.length)];
 
+const RANDOM_HOST_CODE = '_$random';
+
 export default function ScrimEdit() {
   const { currentUser } = useContext(CurrentUserContext);
   const { toggleFetch } = useContext(ScrimsContext);
@@ -33,10 +35,15 @@ export default function ScrimEdit() {
     region: '',
     title: '',
     casters: [],
+    teamOne: [],
+    teamTwo: [],
     gameStartTime: new Date().toISOString(),
     lobbyName: '',
     lobbyPassword: '',
     lobbyHost: null,
+    createdBy: null,
+    previousLobbyHost: null,
+    _lobbyHost: RANDOM_HOST_CODE, // _id
   });
 
   const [dateData, setDateData] = useState({
@@ -81,8 +88,10 @@ export default function ScrimEdit() {
         gameStartTime,
         teamOne,
         teamTwo,
-        lobbyHost: oneScrim?.lobbyHost?.name ?? null, // for input values not wanting objects, we will return the object in the submit.
         previousLobbyHost: oneScrim?.lobbyHost ?? null,
+        createdBy: oneScrim?.createdBy,
+        casters: oneScrim?.casters,
+        _lobbyHost: oneScrim?.lobbyHost?._id ?? RANDOM_HOST_CODE,
       });
     };
     prefillFormData();
@@ -120,29 +129,68 @@ export default function ScrimEdit() {
     }
   };
 
-  let teamsArr = useMemo(() => {
-    if (
-      [...(scrimData?.teamOne ?? []), ...(scrimData?.teamTwo ?? [])].length > 0
-    ) {
-      return [...(scrimData?.teamOne ?? []), ...(scrimData?.teamTwo ?? [])].map(
-        (item) => item
-      );
-    }
-    return [];
-  }, [scrimData]);
+  let usersArr = useMemo(() => {
+    let teamOne = scrimData?.teamOne.map((player) => player._user);
+    let teamTwo = scrimData?.teamTwo.map(({ player }) => player._user);
+
+    let casters = scrimData?.casters.map((player) => player);
+
+    let result = [
+      ...teamOne,
+      ...teamTwo,
+      ...casters,
+      scrimData.createdBy,
+      currentUser,
+    ];
+
+    // unique values, currentUser can be createdBy and can be a caster or player.
+    return [...new Set([...result])];
+  }, [
+    scrimData?.teamOne,
+    scrimData?.casters,
+    scrimData?.teamTwo,
+    currentUser,
+    scrimData.createdBy,
+  ]);
+
+  let idsArr = useMemo(() => {
+    let teamOne = scrimData?.teamOne.map((player) => player._user?._id);
+    let teamTwo = scrimData?.teamTwo.map(({ player }) => player._user?._id);
+
+    let casters = scrimData?.casters.map((player) => player._id);
+
+    let result = [
+      ...teamOne,
+      ...teamTwo,
+      ...casters,
+      scrimData.createdBy?._id,
+      currentUser?._id,
+    ];
+
+    // unique values, currentUser can be createdBy and can be a caster or player.
+    return [...new Set([...result])];
+  }, [
+    scrimData?.teamOne,
+    scrimData?.casters,
+    scrimData?.teamTwo,
+    currentUser?._id,
+    scrimData.createdBy?._id,
+  ]);
 
   const getLobbyHost = async () => {
     const { teamOne, teamTwo } = scrimData;
 
     // if he didn't change values.
-    if (scrimData.lobbyHost === scrimData.previousLobbyHost.name) {
+    if (scrimData._lobbyHost === scrimData.previousLobbyHost?._id) {
       devLog('previous lobby host');
-      return scrimData.previousLobbyHost;
-    } else if (scrimData.lobbyHost === currentUser?.name) {
+      return scrimData?.previousLobbyHost;
+    } else if (scrimData._lobbyHost === currentUser?._id) {
       //  if lobby host is current User
       devLog('current user');
       return currentUser;
-    } else if (scrimData.lobbyHost === 'random') {
+
+      // if admin chose random
+    } else if (scrimData._lobbyHost === RANDOM_HOST_CODE) {
       // if the lobby is full get a random player from the lobby to be the host.
       if ([...teamOne, ...teamTwo].length === 10) {
         devLog('getting random user to host');
@@ -153,8 +201,8 @@ export default function ScrimEdit() {
         return null;
       }
     }
-
-    return teamsArr.find((p) => p.name === scrimData.lobbyHost);
+    // if scrimData._lobbyHost has a value and it's not the previous host or currentUser.
+    return usersArr.find((user) => user._id === scrimData._lobbyHost);
   };
 
   const handleSubmit = async (e) => {
@@ -332,30 +380,31 @@ export default function ScrimEdit() {
 
                     <Grid item>
                       <Select
-                        name="lobbyHost"
-                        onChange={(e) =>
-                          setScrimData((prevState) => ({
-                            ...prevState,
-                            lobbyHost: e.target.value,
-                          }))
-                        }
-                        value={scrimData.lobbyHost || ''}>
+                        name="_lobbyHost"
+                        onChange={handleChange}
+                        value={scrimData._lobbyHost || RANDOM_HOST_CODE}>
                         {/* check that names aren't repeating */}
-                        {[
-                          ...new Set([
-                            scrimData?.lobbyHost,
-                            currentUser?.name,
-                            'random',
-                            ...teamsArr.map((user) => user.name),
-                          ]),
-                        ].flatMap((value, key) => {
+                        {[RANDOM_HOST_CODE, ...idsArr].map((id, key) => {
+                          if (id === RANDOM_HOST_CODE)
+                            return (
+                              <MenuItem
+                                value={RANDOM_HOST_CODE}
+                                key={RANDOM_HOST_CODE}>
+                                Random Host!
+                              </MenuItem>
+                            );
+
+                          if (id === currentUser?._id) {
+                            return (
+                              <MenuItem value={id} key={key}>
+                                I will host!
+                              </MenuItem>
+                            );
+                          }
+
                           return (
-                            <MenuItem value={value || ''} key={key}>
-                              {value === currentUser?.name
-                                ? 'I will host the lobby'
-                                : value === 'random'
-                                ? 'Choose a random player from the teams to host'
-                                : value}
+                            <MenuItem value={id} key={key}>
+                              {usersArr.find((user) => user?._id === id)?.name}
                             </MenuItem>
                           );
                         })}

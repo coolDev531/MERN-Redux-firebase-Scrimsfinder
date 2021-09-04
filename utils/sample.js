@@ -1,7 +1,7 @@
 /**
  * @method sample
  * @param {Array} array
- * @return {String} takes an array of strings and returns a random element, the random element being a string.
+ * @return {Object} takes an array of elements and returns a random element, the random element being a object.
  */
 const sample = (array) => array[Math.floor(Math.random() * array.length)];
 

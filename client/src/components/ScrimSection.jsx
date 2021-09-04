@@ -40,6 +40,11 @@ const compareDates = (scrim) => {
 
 const MAX_CASTER_AMOUNT = 2;
 
+const getUserInfo = (data) => {
+  // for new database update, make it backwards compatible with older objects for now.
+  return data?._user?._id ? data._user : data;
+};
+
 export default function ScrimSection({ scrim, isInDetail }) {
   const { toggleFetch, setScrims } = useContext(ScrimsContext);
   const { currentUser } = useContext(CurrentUserContext);
@@ -74,10 +79,12 @@ export default function ScrimSection({ scrim, isInDetail }) {
   useEffect(() => {
     const teams = [...teamOne, ...teamTwo];
 
-    let foundPlayer = teams.find((player) => player?.uid === currentUser?.uid);
+    let foundPlayer = teams.find(
+      (player) => getUserInfo(player)?._id === currentUser?._id
+    );
 
     let foundCaster = scrim.casters.find(
-      (caster) => caster?.uid === currentUser?.uid
+      (caster) => caster?._id === currentUser?._id
     );
 
     if (foundCaster) {
@@ -91,7 +98,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
     } else {
       setPlayerEntered(false);
     }
-  }, [scrim, currentUser?.uid, teamOne, teamTwo]);
+  }, [scrim, currentUser?._id, teamOne, teamTwo]);
 
   useEffect(() => {
     if (scrim.postGameImage) {
@@ -114,6 +121,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
 
     const dataSending = {
       casterData: {
+        _id: currentUser._id,
         name: currentUser?.name,
         uid: currentUser?.uid,
         email: currentUser?.email,
@@ -283,7 +291,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
                         disabled={
                           casters.length === MAX_CASTER_AMOUNT ||
                           scrim.casters.find(
-                            ({ uid }) => uid === currentUser?.uid
+                            ({ _id }) => _id === currentUser?._id
                           )
                             ? true
                             : false
@@ -435,7 +443,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
                     {/*  allow image upload if both teams are filled and 
                     the current user is the host or creator of scrim or an admin.
                   */}
-                    {(scrim.lobbyHost?.uid === currentUser?.uid ||
+                    {(scrim.lobbyHost?._id === currentUser?._id ||
                       currentUser?.adminKey ===
                         process.env.REACT_APP_ADMIN_KEY) && (
                       <>
@@ -482,28 +490,8 @@ export default function ScrimSection({ scrim, isInDetail }) {
                       {`${teamOne.length + teamTwo.length}/10`}
                     </h2>
                     <h5 className="text-black">
-                      Please get&nbsp;
-                      {teamOneDifference > 0 ? (
-                        <>
-                          {teamOneDifference}{' '}
-                          {`player${teamOneDifference > 1 ? 's' : ''}`} in Team
-                          1
-                          <br />
-                        </>
-                      ) : (
-                        <></>
-                      )}
-                      {/* if teamTwo needs players, show text */}
-                      {teamTwoDifference > 0 ? (
-                        <>
-                          {/* if teamOne doesn't needs players, show and text  */}
-                          {teamOneDifference > 0 ? 'and ' : ''}
-                          {teamTwoDifference}&nbsp;
-                          {`player${teamTwoDifference > 1 ? 's' : ''}`} in Team
-                          2
-                          <br />
-                        </>
-                      ) : null}
+                      Please get {teamOneDifference} players in team one <br />
+                      and {teamTwoDifference} players in team two <br />
                       to unlock lobby name and password
                     </h5>
                     {scrim.createdBy?.email === currentUser?.email ? (

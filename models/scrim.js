@@ -10,24 +10,6 @@ const getThirtyMinFromNow = () => {
   return d2;
 };
 
-const PlayerSchema = new Schema({
-  name: { type: String, required: true }, // summoner name
-  discord: { type: String, required: true },
-  role: { type: String, required: true },
-  rank: { type: String, required: true },
-  region: { type: String, required: true },
-  team: { name: { type: String } },
-  uid: { type: String, required: true }, // google id
-  email: { type: String, required: true },
-});
-
-const CasterSchema = new Schema({
-  name: { type: String, required: true },
-  uid: { type: String, required: true },
-  discord: { type: String, required: true },
-  email: { type: String, required: true },
-});
-
 const ImageSchema = new Schema({
   bucket: { type: String, required: true },
   key: { type: String, required: true },
@@ -36,29 +18,65 @@ const ImageSchema = new Schema({
   uploadedBy: { type: Object, required: true },
 });
 
+const PlayerSchema = new Schema({
+  role: { type: String },
+  team: { name: { type: String } },
+
+  _user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
+});
+// type: mongoose.Schema.Types.ObjectId,
+
 const Scrim = new Schema(
   {
     teamOne: { type: [PlayerSchema], default: [] },
     teamTwo: { type: [PlayerSchema], default: [] },
-    // right now casters is just array of strings (user.name)s
-    casters: { type: [CasterSchema], default: [] },
+    casters: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User',
+        },
+      ],
+      min: 0,
+      max: 2,
+    },
     title: { type: String },
     gameStartTime: {
       type: Date,
       default: getThirtyMinFromNow(),
       required: true,
     },
+<<<<<<< HEAD
     lobbyHost: { type: Object, default: null },
     lobbyPassword: { type: String, required: true },
+=======
+    lobbyHost: {
+      type: mongoose.Schema.Types.ObjectId,
+      default: null,
+      ref: 'User',
+    },
+    lobbyPassword: { type: String, default: generatePassword() },
+>>>>>>> populate
     lobbyName: {
       type: String,
     },
-    region: { type: String, default: 'NA', required: true },
-    createdBy: { type: Object, required: true },
+    region: {
+      type: String,
+      default: 'NA',
+      required: true,
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'User',
+    },
     teamWon: { type: 'String', default: null },
     postGameImage: { type: ImageSchema },
   },
   { timestamps: true, optimisticConcurrency: true, versionKey: 'version' }
 );
 
-module.exports = mongoose.model('scrims', Scrim);
+module.exports = mongoose.model('Scrim', Scrim, 'scrims');
