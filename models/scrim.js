@@ -15,7 +15,7 @@ const ImageSchema = new Schema({
   key: { type: String, required: true },
   location: { type: String, required: true },
   result: { type: Object, required: true },
-  uploadedBy: { type: Object, required: true },
+  uploadedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 });
 
 const PlayerSchema = new Schema({
