@@ -15,7 +15,7 @@ const ImageSchema = new Schema({
   key: { type: String, required: true },
   location: { type: String, required: true },
   result: { type: Object, required: true },
-  uploadedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  uploadedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // will only show up as user._id if not populated
 });
 
 const PlayerSchema = new Schema({

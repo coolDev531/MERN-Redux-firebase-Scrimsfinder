@@ -443,6 +443,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
                     {/*  allow image upload if both teams are filled and 
                     the current user is the host or creator of scrim or an admin.
                   */}
+                    {/* POST GAME IMAGE SECTION */}
                     {(scrim.lobbyHost?._id === currentUser?._id ||
                       currentUser?.adminKey ===
                         process.env.REACT_APP_ADMIN_KEY) && (
