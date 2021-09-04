@@ -49,17 +49,13 @@ const Scrim = new Schema(
       default: getThirtyMinFromNow(),
       required: true,
     },
-<<<<<<< HEAD
     lobbyHost: { type: Object, default: null },
     lobbyPassword: { type: String, required: true },
-=======
     lobbyHost: {
       type: mongoose.Schema.Types.ObjectId,
       default: null,
       ref: 'User',
     },
-    lobbyPassword: { type: String, default: generatePassword() },
->>>>>>> populate
     lobbyName: {
       type: String,
     },
