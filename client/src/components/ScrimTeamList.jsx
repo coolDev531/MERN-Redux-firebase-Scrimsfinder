@@ -161,6 +161,7 @@ export default function ScrimTeamList({
         teamLeavingName,
         isLobbyHost: scrim.lobbyHost?.name === playerToKick.name,
         _id: playerToKick._user?._id,
+        name: playerToKick._user?.name,
       },
     };
 
@@ -168,7 +169,7 @@ export default function ScrimTeamList({
 
     if (updatedScrim) {
       console.log(
-        `%ckicked ${dataSending?.name} from scrim: ${scrim._id}`,
+        `%ckicked ${dataSending?.playerData?.name} from scrim: ${scrim._id}`,
         'color: #99ff99'
       );
       getNewScrimsData();
