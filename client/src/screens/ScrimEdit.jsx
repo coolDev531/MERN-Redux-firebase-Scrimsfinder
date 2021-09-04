@@ -84,6 +84,7 @@ export default function ScrimEdit() {
         lobbyHost: oneScrim?.lobbyHost?.name ?? null, // for input values not wanting objects, we will return the object in the submit.
         previousLobbyHost: oneScrim?.lobbyHost ?? null,
         createdBy: oneScrim?.createdBy,
+        casters: oneScrim?.casters,
       });
     };
     prefillFormData();
@@ -122,15 +123,14 @@ export default function ScrimEdit() {
   };
 
   let teamsArr = useMemo(() => {
-    if (
-      [...(scrimData?.teamOne ?? []), ...(scrimData?.teamTwo ?? [])].length > 0
-    ) {
-      return [...(scrimData?.teamOne ?? []), ...(scrimData?.teamTwo ?? [])].map(
-        (item) => item
-      );
-    }
-    return [];
-  }, [scrimData]);
+    // let players = [...scrimData?.teamOne].map((user) => user);
+
+    // let casters = [...scrimData?.casters].map((caster) => caster);
+
+    // return players;
+    console.log(scrimData.teamOne);
+    return scrimData.teamOne;
+  }, [scrimData.teamOne]);
 
   console.log({ scrimData });
   const getLobbyHost = async () => {
@@ -144,7 +144,7 @@ export default function ScrimEdit() {
       //  if lobby host is current User
       devLog('current user');
       return currentUser;
-    } else if (scrimData.lobbyHost === 'random') {
+    } else if (scrimData.lobbyHost === '') {
       // if the lobby is full get a random player from the lobby to be the host.
       if ([...teamOne, ...teamTwo].length === 10) {
         devLog('getting random user to host');
@@ -156,6 +156,7 @@ export default function ScrimEdit() {
       }
     }
 
+    // else, find the name in the teams
     return teamsArr.find((p) => p.name === scrimData.lobbyHost);
   };
 
@@ -343,25 +344,10 @@ export default function ScrimEdit() {
                         }
                         value={scrimData.lobbyHost || 'random'}>
                         {/* check that names aren't repeating */}
-                        {[
-                          ...new Set([
-                            'random',
-                            scrimData.createdBy?.name,
-                            scrimData?.previousLobbyHost ?? 'random',
-                            scrimData?.lobbyHost ?? 'random',
-                            currentUser?.name,
-                            ...teamsArr.map(
-                              ({ _user }) => _user?.name ?? 'random' // if team arr has no length
-                            ),
-                          ]),
-                        ].flatMap((value, key) => {
+                        {[].flatMap((value, key) => {
                           return (
                             <MenuItem value={value || ''} key={key}>
-                              {value === 'random'
-                                ? 'Random Host'
-                                : value === currentUser?.name
-                                ? 'I will host'
-                                : value}
+                              {value}
                             </MenuItem>
                           );
                         })}

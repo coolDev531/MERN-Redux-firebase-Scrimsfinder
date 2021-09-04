@@ -32,32 +32,21 @@ const ImageSchema = new Schema({
   uploadedBy: { type: Object, required: true },
 });
 
+const PlayerSchema = new Schema({
+  role: { type: String },
+  team: { name: { type: String } },
+
+  _user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
+});
 // type: mongoose.Schema.Types.ObjectId,
 
 const Scrim = new Schema(
   {
-    teamOne: [
-      {
-        role: { type: String },
-        team: { name: { type: String } },
-
-        _user: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'User',
-        },
-      },
-    ],
-    teamTwo: [
-      {
-        role: { type: String },
-        team: { name: { type: String } },
-
-        _user: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'User',
-        },
-      },
-    ],
+    teamOne: { type: [PlayerSchema], default: [] },
+    teamTwo: { type: [PlayerSchema], default: [] },
     casters: {
       type: [
         {
