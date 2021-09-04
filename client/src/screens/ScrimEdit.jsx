@@ -138,7 +138,7 @@ export default function ScrimEdit() {
     const { teamOne, teamTwo } = scrimData;
 
     // if he didn't change values.
-    if (scrimData?._lobbyHost === scrimData.previousLobbyHost?._id) {
+    if (scrimData._lobbyHost === scrimData.previousLobbyHost?._id) {
       devLog('previous lobby host');
       return scrimData?.previousLobbyHost;
     } else if (scrimData._lobbyHost === currentUser?._id) {
@@ -157,7 +157,10 @@ export default function ScrimEdit() {
       }
     }
     // if scrimData._lobbyHost has a value and it's not the previous host or currentUser.
-    return usersArr.find((p) => p._user._id === scrimData._lobbyHost);
+    return usersArr.find((player) => {
+      let userInfo = player?._user ? player?._user : player;
+      return userInfo._id === scrimData._lobbyHost;
+    });
   };
 
   const handleSubmit = async (e) => {
