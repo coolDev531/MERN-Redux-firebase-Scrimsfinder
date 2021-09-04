@@ -301,10 +301,11 @@ const insertPlayerInScrim = async (req, res) => {
 
           const lobbyHost = scrim.lobbyHost ?? null;
 
+          // select lobby host
           if (lobbyHost !== null) {
             scrim.lobbyHost = lobbyHost;
             // if lobby is full after user is joining
-          } else if (scrim.teamOne.length === 2 && scrim.teamTwo.length === 0) {
+          } else if (scrim.teamOne.length === 5 && scrim.teamTwo.length === 5) {
             const result = sample([...scrim.teamOne, ...scrim.teamTwo]);
             const userResult = await User.findById(result._user);
             scrim.lobbyHost = userResult;

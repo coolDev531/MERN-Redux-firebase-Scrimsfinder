@@ -154,13 +154,13 @@ export default function ScrimTeamList({
 
   const kickPlayerFromGame = async (playerToKick, teamLeavingName) => {
     if (currentUser?.adminKey !== process.env.REACT_APP_ADMIN_KEY) return;
-
     const dataSending = {
       playerData: {
         ...playerToKick,
         role: playerToKick.role,
         teamLeavingName,
         isLobbyHost: scrim.lobbyHost?.name === playerToKick.name,
+        _id: playerToKick._user?._id,
       },
     };
 
