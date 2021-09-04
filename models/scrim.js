@@ -69,7 +69,7 @@ const Scrim = new Schema(
       ref: 'User',
     },
     teamWon: { type: 'String', default: null },
-    postGameImage: { type: ImageSchema },
+    postGameImage: { type: ImageSchema }, // image of the post-game lobby
   },
   { timestamps: true, optimisticConcurrency: true, versionKey: 'version' }
 );
