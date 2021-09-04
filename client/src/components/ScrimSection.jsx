@@ -484,8 +484,28 @@ export default function ScrimSection({ scrim, isInDetail }) {
                       {`${teamOne.length + teamTwo.length}/10`}
                     </h2>
                     <h5 className="text-black">
-                      Please get {teamOneDifference} players in team one <br />
-                      and {teamTwoDifference} players in team two <br />
+                      Please get&nbsp;
+                      {teamOneDifference > 0 ? (
+                        <>
+                          {teamOneDifference}{' '}
+                          {`player${teamOneDifference > 1 ? 's' : ''}`} in Team
+                          1
+                          <br />
+                        </>
+                      ) : (
+                        <></>
+                      )}
+                      {/* if teamTwo needs players, show text */}
+                      {teamTwoDifference > 0 ? (
+                        <>
+                          {/* if teamOne doesn't needs players, show and text  */}
+                          {teamOneDifference > 0 ? 'and ' : ''}
+                          {teamTwoDifference}&nbsp;
+                          {`player${teamTwoDifference > 1 ? 's' : ''}`} in Team
+                          2
+                          <br />
+                        </>
+                      ) : null}
                       to unlock lobby name and password
                     </h5>
                     {scrim.createdBy?.email === currentUser?.email ? (
