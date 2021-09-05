@@ -130,8 +130,8 @@ export default function ScrimEdit() {
   };
 
   let usersArr = useMemo(() => {
-    let teamOne = scrimData?.teamOne.map((player) => player._user);
-    let teamTwo = scrimData?.teamTwo.map(({ player }) => player._user);
+    let teamOne = scrimData?.teamOne.map((player) => player?._user);
+    let teamTwo = scrimData?.teamTwo.map(({ player }) => player?._user);
 
     let casters = scrimData?.casters.map((player) => player);
 
