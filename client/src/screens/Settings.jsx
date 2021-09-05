@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   Grid,
   TextField,
@@ -15,6 +15,8 @@ import { useAuth } from '../context/currentUser';
 
 // services
 import { getUsersInRegion, updateUser } from './../services/users';
+import { setAuthToken } from './../services/auth';
+import jwt_decode from 'jwt-decode';
 
 // remove spaces from # in discord name
 const removeSpaces = (str) => {
@@ -113,12 +115,17 @@ export default function Settings() {
 
     if (!yes) return;
     try {
-      const updatedUser = await updateUser(currentUser?._id, userData);
-      alert('Account details updated!');
+      const data = await updateUser(currentUser?._id, userData);
 
-      if (updatedUser) {
-        setUserData({ ...updatedUser });
-        setCurrentUser(updatedUser);
+      if (data?.token) {
+        console.log({ data });
+        const { token } = data;
+        localStorage.setItem('jwtToken', token); // add token to back-end
+        setAuthToken(token); // add authorization in the request to be bearer token.
+        const decodedUser = jwt_decode(token); // decode user by hashed uid that was hashed in back-end
+        setCurrentUser(decodedUser);
+        setUserData({ ...decodedUser });
+        alert('Account details updated!');
       }
     } catch (error) {
       console.error('ERROR:', error);
