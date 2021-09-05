@@ -57,6 +57,17 @@ export default function Navbar({
   const { pathname } = useLocation();
   const history = useHistory();
 
+  const noBackButtonPaths = [/^\/user-setup$/, /^\/scrims$/, /^\/$/];
+
+  const renderBackButton = () => {
+    for (let url of noBackButtonPaths) {
+      if (url.test(pathname)) {
+        return false;
+      }
+    }
+    return true;
+  };
+
   return (
     <>
       <HideOnScroll>
@@ -110,11 +121,11 @@ export default function Navbar({
                         </Button>
                       </Grid>
                     )}
-                    {/* don't show go back button at home or /scirms or /user-setup
+                    {/* don't show go back button at home or /scirms
                      ? means an optional extra slash after /scrims.
                      | means or.
                     */}
-                    {!pathname.match(/^\/$|^\/scrims?\/$|^\/user-setup?\//) && (
+                    {renderBackButton() && (
                       <Button
                         className="mr-3"
                         variant="contained"
