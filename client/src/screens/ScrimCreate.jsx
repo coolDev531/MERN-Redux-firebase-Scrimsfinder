@@ -115,7 +115,7 @@ export default function ScrimCreate() {
 
   return (
     <>
-      <Navbar />
+      <Navbar showLess />
       <PageContent>
         <PageSection>
           <InnerColumn>

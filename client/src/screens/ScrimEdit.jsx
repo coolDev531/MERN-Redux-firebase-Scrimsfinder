@@ -255,7 +255,7 @@ export default function ScrimEdit() {
 
   return (
     <>
-      <Navbar />
+      <Navbar showLess />
       <PageContent>
         <PageSection>
           <InnerColumn>
