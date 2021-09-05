@@ -41,7 +41,7 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import KeyIcon from '@material-ui/icons/VpnKey';
 import ExitIcon from '@material-ui/icons/ExitToApp';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import CreateIcon from '@material-ui/icons/Create';
+import CreateIcon from '@material-ui/icons/BorderColor';
 
 const useStyles = makeStyles((theme) => ({
   offset: theme.mixins.offset,
@@ -148,23 +148,6 @@ export default function Navbar({
                     spacing={2}
                     direction="row"
                     justifyContent="flex-end">
-                    {/* don't show Create Scrim button at /new or /edit pages */}
-                    {!pathname.includes('/scrims/new') &&
-                      !pathname.includes('/edit') && (
-                        <AdminArea>
-                          <Grid item>
-                            <Button
-                              className="mr-3"
-                              variant="contained"
-                              color="primary"
-                              startIcon={<CreateIcon />}
-                              onClick={() => history.push('/scrims/new')}>
-                              Create Scrim
-                            </Button>
-                          </Grid>
-                        </AdminArea>
-                      )}
-
                     {/* don't show go back button at home or /scrims or /user-setup*/}
                     {/* TODO: this can be done more elegantly, lol. */}
                     {!pathname.match(/^\/scrims$/) &&
@@ -183,19 +166,9 @@ export default function Navbar({
                           </Box>
                         </Grid>
                       )}
-                    {currentUser?.uid ? (
-                      <>
-                        <Grid item>
-                          <Button
-                            onClick={logOutUser}
-                            variant="contained"
-                            startIcon={<ExitIcon />}
-                            color="secondary">
-                            Log Out
-                          </Button>
-                        </Grid>
-                      </>
-                    ) : (
+
+                    {/* if no user, show log in button */}
+                    {!currentUser?.uid && (
                       <Grid item>
                         <Button
                           onClick={logInUser}
@@ -344,23 +317,46 @@ export default function Navbar({
         anchor="left"
         open={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}>
-        <List>
-          <ListItem button onClick={() => drawerNavPush('/settings')}>
-            <ListItemIcon>
-              <SettingsIcon />
-            </ListItemIcon>
-            <ListItemText primary="Settings" />
+        <div
+          className={clsx(classes.list, {
+            [classes.fullList]: false,
+          })}>
+          <List>
+            {/* Settings button */}
+            <ListItem button onClick={() => drawerNavPush('/settings')}>
+              <ListItemIcon>
+                <SettingsIcon />
+              </ListItemIcon>
+              <ListItemText primary="Settings" />
+            </ListItem>
 
             <Divider />
-            <ListItem button onClick={logOutUser}>
-              <ListItemIcon>
-                <ExitIcon />
-              </ListItemIcon>
-              <ListItemText primary="LogOut" />
-            </ListItem>
-          </ListItem>
-          <Divider />
-        </List>
+
+            {/* Create scrim button (admins only) */}
+            <AdminArea>
+              <ListItem button onClick={() => drawerNavPush('/scrims/new')}>
+                <ListItemIcon>
+                  <CreateIcon />
+                </ListItemIcon>
+                <ListItemText primary="Create Scrim" />
+              </ListItem>
+              <Divider />
+            </AdminArea>
+
+            {/* Log out button */}
+            {currentUser?.uid && (
+              <>
+                <ListItem button onClick={logOutUser}>
+                  <ListItemIcon>
+                    <ExitIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Log Out" />
+                </ListItem>
+                <Divider />
+              </>
+            )}
+          </List>
+        </div>
       </Drawer>
 
       <div className={classes.offset} />
