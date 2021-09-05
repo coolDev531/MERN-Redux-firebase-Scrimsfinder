@@ -11,12 +11,15 @@ import {
   FormHelperText,
 } from '@material-ui/core';
 import Navbar from '../components/shared/Navbar';
-import { useAuth } from '../context/currentUser';
+import {
+  InnerColumn,
+  PageContent,
+} from './../components/shared/PageComponents';
 
-// services
+// services & utils
+import { useAuth } from '../context/currentUser';
 import { getUsersInRegion, updateUser } from './../services/users';
 import { setAuthToken } from './../services/auth';
-import { InnerColumn } from './../components/shared/PageComponents';
 
 // remove spaces from # in discord name
 const removeSpaces = (str) => {
@@ -180,7 +183,7 @@ export default function Settings() {
   return (
     <>
       <Navbar showLess />
-      <main className="page-content">
+      <PageContent>
         <InnerColumn>
           <form onSubmit={handleSubmit}>
             <Grid
@@ -349,7 +352,7 @@ export default function Settings() {
             </Grid>
           </form>
         </InnerColumn>
-      </main>
+      </PageContent>
     </>
   );
 }
