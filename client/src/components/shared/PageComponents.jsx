@@ -5,7 +5,7 @@ const StyledPageContent = styled('main')(({ theme: _theme }) => ({
   flexGrow: 1,
 }));
 
-const StyledPageSection = styled('div')(({ theme: _theme }) => ({
+const StyledPageSection = styled('section')(({ theme: _theme }) => ({
   scrollMarginTop: '2em',
 }));
 

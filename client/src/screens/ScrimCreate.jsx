@@ -9,13 +9,16 @@ import {
   Button,
 } from '@material-ui/core';
 import { Redirect } from 'react-router';
-import moment from 'moment';
-import 'moment-timezone';
-import { createScrim } from './../services/scrims';
 import { CurrentUserContext } from '../context/currentUser';
 import { Select } from '@material-ui/core';
 import { ScrimsContext } from '../context/scrimsContext';
+import { InnerColumn } from './../components/shared/PageComponents';
+
+// utils and services
+import { createScrim } from './../services/scrims';
 import { getMinutes } from './../utils/getMinutes';
+import moment from 'moment';
+import 'moment-timezone';
 
 export default function ScrimCreate() {
   const { toggleFetch } = useContext(ScrimsContext);
@@ -111,7 +114,7 @@ export default function ScrimCreate() {
       <Navbar />
       <main className="page-content">
         <section className="page-section create-scrim">
-          <div className="inner-column">
+          <InnerColumn>
             <form
               onSubmit={handleSubmit}
               style={{ width: '80%', marginLeft: 'auto', marginRight: 'auto' }}>
@@ -233,7 +236,7 @@ export default function ScrimCreate() {
                 </Grid>
               </Grid>
             </form>
-          </div>
+          </InnerColumn>
         </section>
       </main>
     </>

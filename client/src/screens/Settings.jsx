@@ -16,6 +16,7 @@ import { useAuth } from '../context/currentUser';
 // services
 import { getUsersInRegion, updateUser } from './../services/users';
 import { setAuthToken } from './../services/auth';
+import { InnerColumn } from './../components/shared/PageComponents';
 
 // remove spaces from # in discord name
 const removeSpaces = (str) => {
@@ -180,7 +181,7 @@ export default function Settings() {
     <>
       <Navbar showLess />
       <main className="page-content">
-        <div className="inner-column">
+        <InnerColumn>
           <form onSubmit={handleSubmit}>
             <Grid
               container
@@ -347,7 +348,7 @@ export default function Settings() {
               </Grid>
             </Grid>
           </form>
-        </div>
+        </InnerColumn>
       </main>
     </>
   );
