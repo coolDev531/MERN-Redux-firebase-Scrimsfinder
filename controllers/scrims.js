@@ -53,12 +53,12 @@ const getAllScrims = async (req, res) => {
         .populate('lobbyHost', populateUser)
         .populate(populateTeam('teamOne'))
         .populate(populateTeam('teamTwo'))
-        .exec((err, newScrim) => {
+        .exec((err, scrimData) => {
           if (err) {
             console.log(err);
-            res.status(400).end();
+            return res.status(400).end();
           }
-          return res.json(newScrim);
+          return res.json(scrimData);
         });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -73,16 +73,15 @@ const getAllScrims = async (req, res) => {
         .populate('lobbyHost', populateUser)
         .populate(populateTeam('teamOne'))
         .populate(populateTeam('teamTwo'))
-        .exec((err, newScrim) => {
+        .exec((err, scrimData) => {
           if (err) {
             console.log(err);
-            res.status(400).end();
+            return res.status(400).end();
           }
-          return res.json(newScrim);
+          return res.json(scrimData);
         });
     } catch (error) {
-      res.status(500).json({ error: error.message });
-      return;
+      return res.status(500).json({ error: error.message });
     }
   }
 };
@@ -93,8 +92,7 @@ const getTodaysScrims = async (_req, res) => {
     const todaysScrims = scrims.filter(checkIfScrimIsToday);
     return res.json(todaysScrims);
   } catch (error) {
-    res.status(500).json({ error: error.message });
-    return;
+    return res.status(500).json({ error: error.message });
   }
 };
 
@@ -118,12 +116,12 @@ const getScrimById = async (req, res) => {
       .populate('lobbyHost', populateUser)
       .populate(populateTeam('teamOne'))
       .populate(populateTeam('teamTwo'))
-      .exec((err, newScrim) => {
+      .exec((err, scrimData) => {
         if (err) {
           console.log(err);
-          res.status(400).end();
+          return res.status(400).end();
         }
-        return res.json(newScrim);
+        return res.json(scrimData);
       });
   } catch (error) {
     return res.status(500).json({ error: error.message });
@@ -147,13 +145,11 @@ const createScrim = async (req, res) => {
     const scrim = new Scrim(requestBody);
 
     await scrim.save();
-    res.status(201).json(scrim);
     console.log('Scrim created: ', scrim);
-    return;
+    return res.status(201).json(scrim);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: error.message });
-    return;
+    return res.status(500).json({ error: error.message });
   }
 };
 
@@ -183,7 +179,14 @@ const getAvailableRoles = (team) => {
 
 const updateScrim = async (req, res) => {
   // for admins changing scrim data not average user.
+
   const { id } = req.params;
+
+  let isValid = mongoose.Types.ObjectId.isValid(id);
+
+  if (!isValid) {
+    return res.status(500).json({ error: 'invalid id' });
+  }
 
   await Scrim.findByIdAndUpdate(id, req.body, { new: true }, (error, scrim) => {
     if (error) {
@@ -193,23 +196,27 @@ const updateScrim = async (req, res) => {
       return res.status(500).send('Scrim not found');
     }
 
-    res.status(200).json(scrim);
-    return;
+    return res.status(200).json(scrim);
   });
 };
 
 const deleteScrim = async (req, res) => {
   try {
     const { id } = req.params;
+
+    let isValid = mongoose.Types.ObjectId.isValid(id);
+
+    if (!isValid) {
+      return res.status(500).json({ error: 'invalid id' });
+    }
+
     const deleted = await Scrim.findByIdAndDelete(id);
+
     if (deleted) {
       return res.status(200).send(`Scrim with id: ${id} deleted`);
     }
-    throw new Error('Scrim not found');
-    return;
   } catch (error) {
-    res.status(500).json({ error: error.message });
-    return;
+    return res.status(500).json({ error: error.message });
   }
 };
 
@@ -341,8 +348,7 @@ const insertPlayerInScrim = async (req, res) => {
           }
 
           scrim.save();
-          res.status(200).json(scrim);
-          return;
+          return res.status(200).json(scrim);
         }
       );
     }
@@ -388,7 +394,7 @@ const removePlayerFromScrim = async (req, res) => {
         return res.status(500).send('Scrim not found');
       }
 
-      res.status(200).json(scrim);
+      return res.status(200).json(scrim);
     }
   );
 };
@@ -428,7 +434,7 @@ const insertCasterInScrim = async (req, res) => {
             return res.status(500).send('Scrim not found');
           }
 
-          res.status(200).json(scrim);
+          return res.status(200).json(scrim);
         }
       );
     } else {
@@ -479,7 +485,7 @@ const removeCasterFromScrim = async (req, res) => {
           return res.status(500).send('Scrim not found');
         }
 
-        res.status(200).json(scrim);
+        return res.status(200).json(scrim);
       }
     );
   });
@@ -513,7 +519,7 @@ const addImageToScrim = async (req, res) => {
         return res.status(500).send('Scrim not found');
       }
 
-      res.status(200).json(scrim);
+      return res.status(200).json(scrim);
     }
   );
 };
