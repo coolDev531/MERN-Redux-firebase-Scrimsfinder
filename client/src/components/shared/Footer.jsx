@@ -8,20 +8,23 @@ const StyledFooter = styled('footer')({
 });
 
 const Footer = () => (
-  <StyledFooter className="page-section site-footer">
-    <InnerColumn>
-      <Grid container justifyContent="space-between">
-        &copy; 2021 GitCat
-        <a
-          target="_blank"
-          rel="noreferrer"
-          className="link"
-          href="https://github.com/DannyMichaels/LoL-scrims-finder">
-          Source
-        </a>
-      </Grid>
-    </InnerColumn>
-  </StyledFooter>
+  <>
+    <div className="footer-spacer" />
+    <StyledFooter className="page-section site-footer">
+      <InnerColumn>
+        <Grid container justifyContent="space-between">
+          &copy; 2021 GitCat
+          <a
+            target="_blank"
+            rel="noreferrer"
+            className="link"
+            href="https://github.com/DannyMichaels/LoL-scrims-finder">
+            Source
+          </a>
+        </Grid>
+      </InnerColumn>
+    </StyledFooter>
+  </>
 );
 
 export default Footer;

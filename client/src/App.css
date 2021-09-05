@@ -14,7 +14,8 @@ picture img {
   scroll-margin-top: 2em;
 }
 
-.page-break {
+.page-break,
+.footer-spacer {
   display: flex;
   flex-direction: row;
   justify-content: center;

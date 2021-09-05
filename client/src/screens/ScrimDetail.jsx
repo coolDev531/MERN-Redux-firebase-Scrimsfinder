@@ -6,6 +6,7 @@ import { ScrimsContext } from '../context/scrimsContext';
 import Navbar from '../components/shared/Navbar';
 import { Helmet } from 'react-helmet';
 import Loading from '../components/shared/Loading';
+import { PageContent } from '../components/shared/PageComponents';
 
 export default function ScrimDetail() {
   const { id } = useParams();
@@ -46,11 +47,11 @@ export default function ScrimDetail() {
       </Helmet>
 
       <Navbar showLess />
-      <main className="page-content">
-        <div id={`scrim-container ${scrim._id}`}>
+      <PageContent>
+        <div className={`scrim__container ${scrim?._id}`}>
           <ScrimSection scrim={scrim} isInDetail />
         </div>
-      </main>
+      </PageContent>
     </div>
   );
 }
