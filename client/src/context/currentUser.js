@@ -63,6 +63,7 @@ function CurrentUserProvider({ children }) {
   useEffect(() => {
     // Check for token to keep user logged in
     const verify = async () => {
+      devLog('verifying user');
       if (localStorage.jwtToken) {
         // Set auth token header auth
         const token = localStorage.jwtToken;
@@ -91,7 +92,8 @@ function CurrentUserProvider({ children }) {
     };
   }, [history, logOutUser]);
 
-  console.log({ loading });
+  devLog({ loading });
+
   let value = {
     currentUser,
     setCurrentUser,
