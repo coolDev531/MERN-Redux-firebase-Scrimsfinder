@@ -1,6 +1,7 @@
 // hooks
 import { useState } from 'react';
 import { useAuth } from '../../context/currentUser';
+import { useLocation, useHistory } from 'react-router-dom';
 
 // components
 import {
@@ -53,6 +54,8 @@ export default function Navbar({
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const { currentUser, logInUser } = useAuth();
   const classes = useStyles();
+  const { pathname } = useLocation();
+  const history = useHistory();
 
   return (
     <>
@@ -107,6 +110,20 @@ export default function Navbar({
                         </Button>
                       </Grid>
                     )}
+                    {/* don't show go back button at home or /scirms
+                     ? means an optional extra slash after /scrims.
+                     | means or.
+                    */}
+                    {!pathname.match(/^\/$|^\/scrims?\/$/) && (
+                      <Button
+                        className="mr-3"
+                        variant="contained"
+                        color="primary"
+                        onClick={() => history.goBack()}>
+                        Go Back
+                      </Button>
+                    )}
+
                     {/* BURGER ICON */}
                     <Grid item>
                       <Tooltip title="More options" placement="top">
