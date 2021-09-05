@@ -7,6 +7,7 @@ const CurrentUserContext = createContext();
 export const useAuth = () => useContext(CurrentUserContext);
 
 function CurrentUserProvider({ children }) {
+  // we really don't need useReducer for this.
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(false);
 
