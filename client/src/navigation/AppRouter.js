@@ -22,4 +22,5 @@ const AppRouter = () => (
     <Route component={NotFound} />
   </Switch>
 );
+
 export default AppRouter;
