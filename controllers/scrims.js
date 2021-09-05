@@ -48,8 +48,19 @@ const getAllScrims = async (req, res) => {
   if (region) {
     try {
       // might have to use populate on this, not necessary now.
-      const scrims = await Scrim.find({ region: region });
-      res.json(scrims);
+      return await Scrim.find({ region: region })
+        .populate('createdBy', populateUser)
+        .populate('casters', populateUser)
+        .populate('lobbyHost', populateUser)
+        .populate(populateTeam('teamOne'))
+        .populate(populateTeam('teamTwo'))
+        .exec((err, newScrim) => {
+          if (err) {
+            console.log(err);
+            res.status(400).end();
+          }
+          return res.json(newScrim);
+        });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
