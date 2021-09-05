@@ -29,7 +29,7 @@ function CurrentUserProvider({ children }) {
     localStorage.removeItem('jwtToken'); // remove token from localStorage
     removeToken();
     setCurrentUser(null); // set user to null.
-    history.push('./user-setup'); // push back to signup
+    history.push('/user-setup'); // push back to signup
   }, [history]);
 
   const logInUser = async () => {
@@ -82,7 +82,7 @@ function CurrentUserProvider({ children }) {
             // Logout user
             logOutUser();
             // Redirect to login
-            history.push('./user-setup');
+            history.push('/user-setup');
           }
         }
       }

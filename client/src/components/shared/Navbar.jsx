@@ -109,9 +109,10 @@ export default function Navbar({
                   )}
 
                   {/* don't show go back button at home or /scrims or /user-setup*/}
-                  {pathname !== '/scrims' &&
+                  {!pathname.match(/^\/scrims$/) &&
+                    !pathname.match(/^\/scrims\/$/) &&
                     pathname !== '/' &&
-                    pathname !== '/user-setup' && (
+                    !pathname.match(/\/^user-setup/) && (
                       <Grid item>
                         <Box onClick={() => history.goBack()}>
                           <Button

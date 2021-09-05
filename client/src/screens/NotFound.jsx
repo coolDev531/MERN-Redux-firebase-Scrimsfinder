@@ -4,11 +4,13 @@ export default function NotFound() {
   const { pathname } = useLocation();
 
   return (
-    <div className="centered" style={{ width: 'auto' }}>
-      <h1>
-        Oops, <br />
-        {pathname.replace('/', '')} doesn't exist!
-      </h1>
-    </div>
+    <main className="page-content">
+      <div className="centered" style={{ width: 'auto' }}>
+        <h1>
+          Oops, <br />
+          {pathname.replace('/', '')} doesn't exist!
+        </h1>
+      </div>
+    </main>
   );
 }

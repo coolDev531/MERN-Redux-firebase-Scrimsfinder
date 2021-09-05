@@ -1,13 +1,11 @@
 import './App.css';
 import { useEffect } from 'react';
-import { CurrentUserContext } from './context/currentUser';
-import { useContext } from 'react';
 import AppRouter from './navigation/AppRouter';
-import { useHistory } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@material-ui/core';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Footer from './components/shared/Footer';
 import devLog from './utils/devLog';
+import { useAuth } from './context/currentUser';
 
 const theme = createTheme({
   palette: {
@@ -22,16 +20,7 @@ const theme = createTheme({
 });
 
 function App() {
-  const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
-  const { push } = useHistory();
-
-  useEffect(() => {
-    if (!currentUser?.uid) {
-      setCurrentUser(null); // for older users that didn't use google
-      return push('./user-setup');
-    }
-    // eslint-disable-next-line
-  }, [currentUser]);
+  const { currentUser, setCurrentUser } = useAuth();
 
   useEffect(() => {
     //  dev mode testing commands
