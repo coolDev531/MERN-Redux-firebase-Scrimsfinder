@@ -31,7 +31,7 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 // same as verify user but with errors.
 const loginUser = async (req, res) => {
   const { email, uid } = req.body;
-
+  console.log({ uid });
   if (!email) {
     res.status(500).json({
       error: `No Email Provided`,
@@ -47,7 +47,7 @@ const loginUser = async (req, res) => {
   }
 
   // will find the one user with the exact uid and email combination
-  const foundUser = await User.findOne({ uid, email });
+  const foundUser = await User.findOne({ email });
 
   if (!foundUser) {
     res.status(500).json({
@@ -56,9 +56,10 @@ const loginUser = async (req, res) => {
     return;
   }
 
-  // Check password
+  // Check uid
   bcrypt.compare(uid, foundUser.uid).then((isMatch) => {
     if (isMatch) {
+      console.log({ isMatch, uid });
       // User matched
       // Create JWT Payload
       const payload = {
@@ -78,6 +79,7 @@ const loginUser = async (req, res) => {
             success: true,
             token: 'Bearer ' + token,
           });
+          return;
         }
       );
     } else {
