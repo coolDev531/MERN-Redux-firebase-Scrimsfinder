@@ -11,6 +11,7 @@ function CurrentUserProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // we can't do it this way, need a custom way.
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (googleUser) => {
       let googleParams = {

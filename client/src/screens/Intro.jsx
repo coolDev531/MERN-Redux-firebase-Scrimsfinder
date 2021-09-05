@@ -10,7 +10,7 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import { auth, provider } from '../firebase';
 import Navbar from './../components/shared/Navbar';
-import { registerUser } from './../services/auth';
+import { registerUser } from '../services/auth';
 
 const KEYCODES = {
   ENTER: 13,

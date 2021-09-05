@@ -16,15 +16,16 @@ export const loginUser = async (googleParams) => {
   }
 };
 
-export const registerUser = async (user) => {
+export const registerUser = async (userData) => {
   try {
-    const response = await api.post('/users', user);
+    const response = await api.post('/auth/register', userData);
     return response.data;
   } catch (error) {
     const errorMsg = error?.response?.data?.error;
 
     if (errorMsg) {
       alert(errorMsg);
+      return;
     }
     throw error;
   }

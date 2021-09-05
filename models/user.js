@@ -20,6 +20,7 @@ const User = new Schema(
     adminKey: { type: String, default: '' },
     uid: { type: String, required: true, unique: true }, // google id
     email: { type: String, required: true, unique: true }, // google email.
+    refreshToken: { type: String, required: true },
   },
   { timestamps: true }
 );
