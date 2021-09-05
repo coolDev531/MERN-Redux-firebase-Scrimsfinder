@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 // components
 import Select from '@material-ui/core/Select';
@@ -23,6 +23,7 @@ import {
   ListItemText,
   ListItemIcon,
   Typography,
+  IconButton,
 } from '@material-ui/core';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 // import { BOOTCAMP_LOL_SRC } from '../../utils/bootcampImg'; // need license
@@ -42,6 +43,7 @@ import KeyIcon from '@material-ui/icons/VpnKey';
 import ExitIcon from '@material-ui/icons/ExitToApp';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import CreateIcon from '@material-ui/icons/BorderColor';
+import MenuIcon from '@material-ui/icons/Menu'; // burger icon
 
 const useStyles = makeStyles((theme) => ({
   offset: theme.mixins.offset,
@@ -107,11 +109,34 @@ export default function Navbar({
     }, 100);
   };
 
+  useEffect(() => {
+    const handleKeyUp = ({ keycode }) => {
+      // close drawer if user is pressing escape
+      if (keycode === 27) {
+        if (isDrawerOpen) {
+          setIsDrawerOpen(false);
+          return;
+        }
+      }
+    };
+    document.addEventListener('keyup', handleKeyUp);
+    return () => {
+      document.removeEventListener('keyup', handleKeyUp);
+    };
+  }, []);
+
   return (
     <>
       <HideOnScroll>
         <AppBar className={classes.siteHeader} position="sticky">
           <Toolbar className={classes.toolbar}>
+            {/* BURGER ICON */}
+            <IconButton
+              onClick={() => setIsDrawerOpen(true)}
+              style={{ position: 'fixed', top: '10px', left: '10px' }}>
+              <MenuIcon fontSize="large" />
+            </IconButton>
+
             <InnerColumn>
               <Grid
                 container
@@ -322,8 +347,8 @@ export default function Navbar({
         open={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}>
         <div
-          className={clsx(classes.list, {
-            [classes.fullList]:
+          className={clsx(classes.drawerList, {
+            [classes.drawerFullList]:
               DRAWER_ANCHOR === 'top' || DRAWER_ANCHOR === 'bottom',
           })}>
           <List>
