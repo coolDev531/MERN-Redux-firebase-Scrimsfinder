@@ -69,6 +69,7 @@ const loginUser = async (req, res) => {
         region: foundUser.region,
         discord: foundUser.discord,
         adminKey: foundUser.adminKey,
+        name: foundUser.name,
       };
 
       const accessToken = jwt.sign(payload, keys.secretOrKey, {
@@ -123,10 +124,28 @@ const registerUser = async (req, res) => {
       bcrypt.hash(newUser.uid, salt, (err, hash) => {
         if (err) throw err;
         newUser.uid = hash; // hash google uid to use as token, maybe there's something better that google provides as token.
+
+        const payload = {
+          uid: newUser.uid,
+          email: newUser.uid,
+          rank: newUser.rank,
+          _id: newUser._id,
+          region: newUser.region,
+          discord: newUser.discord,
+          adminKey: newUser.adminKey,
+          name: newUser.name,
+        };
+
+        const accessToken = jwt.sign(payload, keys.secretOrKey, {
+          expiresIn: 31556926, // 1 year in seconds
+          // expiresIn: new Date(new Date()).setDate(new Date().getDate() + 30), // 30 days from now, does this work?
+        });
+
         newUser.save();
+
         res.status(201).json({
           success: true,
-          token: 'Bearer ' + hash,
+          token: accessToken,
           user: newUser,
         });
         console.log('User created: ', newUser);
