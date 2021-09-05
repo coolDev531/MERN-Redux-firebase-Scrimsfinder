@@ -138,6 +138,7 @@ export default function ScrimCreate() {
                     onChange={handleChange}
                     required
                     name="title"
+                    placeholder="Scrim title"
                     value={scrimData.title}
                   />
                 </Grid>

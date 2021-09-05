@@ -33,6 +33,7 @@ import 'moment-timezone';
 import AdminArea from './AdminArea';
 import HideOnScroll from './HideOnScroll';
 import { InnerColumn } from './PageComponents';
+import Tooltip from './Tooltip';
 
 // utils
 import { KEYCODES } from './../../utils/keycodes';
@@ -46,7 +47,6 @@ import ExitIcon from '@material-ui/icons/ExitToApp';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import CreateIcon from '@material-ui/icons/BorderColor';
 import MenuIcon from '@material-ui/icons/Menu'; // burger icon
-
 const useStyles = makeStyles((theme) => ({
   offset: theme.mixins.offset,
   toolbarDistance: theme.mixins.toolbar,
@@ -183,14 +183,14 @@ export default function Navbar({
                     )}
                     {/* BURGER ICON */}
                     <Grid item>
-                      <IconButton
-                        // prevent active class from staying on button after clicking (was noticeable when pressing escape)
-                        onMouseDown={(e) => e.preventDefault()}
-                        onClick={() => setIsDrawerOpen(true)}
-                        // style={{ position: 'fixed', top: '10px', right: '10px' }}>
-                      >
-                        <MenuIcon fontSize="large" />
-                      </IconButton>
+                      <Tooltip title="More options" placement="top">
+                        <IconButton
+                          // prevent active class from staying on button after clicking (was noticeable when pressing escape)
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => setIsDrawerOpen(true)}>
+                          <MenuIcon fontSize="large" />
+                        </IconButton>
+                      </Tooltip>
                     </Grid>
                   </Grid>
                 </Grid>
@@ -314,7 +314,8 @@ export default function Navbar({
                 </ListItem>
               </>
             )}
-            <Divider />
+            {/* don't show divider if there isn't anything else to show below... */}
+            {showCheckboxes && <Divider />}
           </List>
 
           {showCheckboxes && (
