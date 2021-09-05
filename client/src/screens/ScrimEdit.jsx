@@ -303,7 +303,10 @@ export default function ScrimEdit() {
                           required
                           type="time"
                           name="gameStartHours"
-                          value={[...dateData.gameStartHours].join(':')}
+                          value={
+                            moment(scrimData?.gameStartTime).format('HH:mm') ||
+                            moment().format('HH:mm')
+                          }
                         />
                       </Grid>
                     </Grid>
