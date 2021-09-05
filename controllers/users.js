@@ -17,6 +17,7 @@ const getAllUsers = async (req, res) => {
       return res.json(users);
     } catch (error) {
       res.status(500).json({ error: error.message });
+      return;
     }
   } else {
     // if no region, just get all users.
@@ -25,6 +26,7 @@ const getAllUsers = async (req, res) => {
       return res.json(users);
     } catch (error) {
       res.status(500).json({ error: error.message });
+      return;
     }
   }
 };
@@ -40,6 +42,7 @@ const updateUser = async (req, res) => {
       return res.status(404).json(user);
     }
     res.status(200).json(user);
+    return;
   });
 };
 

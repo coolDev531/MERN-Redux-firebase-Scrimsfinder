@@ -20,6 +20,7 @@ export const useAuth = () => useContext(CurrentUserContext);
 function CurrentUserProvider({ children }) {
   // we really don't need useReducer for this.
   const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const history = useHistory();
 
   const logOutUser = useCallback(async () => {
@@ -49,6 +50,7 @@ function CurrentUserProvider({ children }) {
       setAuthToken(token); // add authorization in the request to be bearer token.
       const decodedUser = jwt_decode(token); // decode user by hashed uid that was hashed in back-end
       setCurrentUser(decodedUser);
+      setLoading(false);
       history.push('/');
     }
   };
@@ -68,6 +70,7 @@ function CurrentUserProvider({ children }) {
 
       // Set user
       setCurrentUser(decodedUser);
+      setLoading(false);
 
       // Check for expired token
       const currentTime = Date.now() / 1000; // to get in milliseconds
@@ -84,14 +87,14 @@ function CurrentUserProvider({ children }) {
   let value = {
     currentUser,
     setCurrentUser,
-
     logOutUser,
     logInUser,
   };
 
   return (
     <CurrentUserContext.Provider value={value}>
-      {children}
+      {/* don't render children if loading */}
+      {!loading && children}
     </CurrentUserContext.Provider>
   );
 }
