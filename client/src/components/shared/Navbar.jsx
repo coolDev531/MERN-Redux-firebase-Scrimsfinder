@@ -81,8 +81,12 @@ export default function Navbar({
         <AppBar className={classes.siteHeader} position="sticky">
           <Toolbar>
             <InnerColumn>
-              <div className="d-flex align-center justify-between">
-                <div className="logo d-flex align-center">
+              <Grid
+                container
+                direction="row"
+                alignItems="center"
+                justifyContent="space-between">
+                <Grid item className="logo d-flex align-center" xs={12} sm={6}>
                   {/* need license to use img */}
                   {/* <img
                   src={BOOTCAMP_LOL_SRC}
@@ -93,11 +97,13 @@ export default function Navbar({
                   <Link to="/" className="link">
                     <h1>LoL Scrims Finder</h1>
                   </Link>
-                </div>
+                </Grid>
 
                 <Grid
                   item
                   container
+                  xs={12}
+                  sm={6}
                   alignItems="center"
                   spacing={2}
                   direction="row"
@@ -173,7 +179,7 @@ export default function Navbar({
                     </Grid>
                   )}
                 </Grid>
-              </div>
+              </Grid>
               <br />
               {!showLess && (
                 <Grid
