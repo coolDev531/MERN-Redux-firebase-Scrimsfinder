@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, Fragment } from 'react';
 import { useState, useContext } from 'react';
 import { CurrentUserContext } from '../context/currentUser';
 import { Redirect } from 'react-router-dom';
@@ -243,13 +243,13 @@ export default function Intro() {
 
             <Grid container item direction="column" md={12}>
               {[...errors.values()].map((error, key) => (
-                <>
-                  <Alert severity="error" key={key}>
+                <Fragment key={key}>
+                  <Alert severity="error">
                     Please correct the following error —{' '}
                     <strong>{error}</strong>
                   </Alert>
                   <br />
-                </>
+                </Fragment>
               ))}
             </Grid>
             <Stepper activeStep={currentFormIndex}>
