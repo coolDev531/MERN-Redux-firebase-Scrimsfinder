@@ -1,13 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
-.page-section {
-  scroll-margin-top: 2em;
-}
-
-.page-content {
-  flex-grow: 1;
-}
-
 picture {
   display: block;
 }

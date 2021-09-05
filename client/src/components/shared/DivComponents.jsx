@@ -1,14 +1,15 @@
 import { styled } from '@material-ui/core';
 
-const StyledPageContent = styled('div')(({ theme }) => ({
+// theme not being used, indicated with _
+const StyledPageContent = styled('div')(({ theme: _theme }) => ({
   flexGrow: 1,
 }));
 
-export const PageContent = ({ children }) => (
-  <StyledPageContent>{children}</StyledPageContent>
-);
+const StyledPageSection = styled('div')(({ theme: _theme }) => ({
+  scrollMarginTop: '2em',
+}));
 
-const StyledInnerColumn = styled('div')(({ theme }) => ({
+const StyledInnerColumn = styled('div')(({ theme: _theme }) => ({
   display: 'block',
   width: '98%',
   maxWidth: '1100px',
@@ -16,6 +17,14 @@ const StyledInnerColumn = styled('div')(({ theme }) => ({
   marginLeft: 'auto',
   padding: '10px',
 }));
+
+export const PageContent = ({ children }) => (
+  <StyledPageContent className="page-content">{children}</StyledPageContent>
+);
+
+export const PageSection = ({ children }) => (
+  <StyledPageSection className="page-section">{children}</StyledPageSection>
+);
 
 export const InnerColumn = ({ children }) => (
   <StyledInnerColumn className="inner-column">{children}</StyledInnerColumn>
