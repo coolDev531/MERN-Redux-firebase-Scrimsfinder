@@ -53,6 +53,15 @@ If you have an admin key, you can host a scrim/lobby. Then players just have to 
 - accounts are now authenticated using google and stored in database.
 - users can edit their account information as long as it isn't taken
 
+### 9/4/2021
+- Database is now fully relational (teams and casters of scrim reference the user).
+- Added JWT & bcrypt ontop of google authentication with firebase.
+
+### 9/5/2021
+- Created a navbar drawer/burger-menu
+- Moved the date select filter and region filter for scrims into the drawer
+- Moved the show/hide current ,previous ,upcoming scrims toggles into the drawer.
+
 ---
 
 <br />
