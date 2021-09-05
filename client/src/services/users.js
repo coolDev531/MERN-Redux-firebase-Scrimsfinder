@@ -18,20 +18,6 @@ export const getUsersInRegion = async (region) => {
   }
 };
 
-export const createUser = async (user) => {
-  try {
-    const response = await api.post('/users', user);
-    return response.data;
-  } catch (error) {
-    const errorMsg = error?.response?.data?.error;
-
-    if (errorMsg) {
-      alert(errorMsg);
-    }
-    throw error;
-  }
-};
-
 export const updateUser = async (id, userData) => {
   try {
     const response = await api.put(`/users/${id}`, userData);

@@ -10,7 +10,7 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import { auth, provider } from '../firebase';
 import Navbar from './../components/shared/Navbar';
-import { createUser } from './../services/users';
+import { registerUser } from './../services/auth';
 
 const KEYCODES = {
   ENTER: 13,
@@ -137,6 +137,7 @@ export default function Intro() {
           rank: userData.rank,
           adminKey: userData.adminKey?.trim() ?? '',
           email: result.user.email,
+          refreshToken: result.user.refreshToken,
         };
 
         return newUser;
@@ -169,7 +170,7 @@ export default function Intro() {
 
           if (!yes) return;
 
-          let createdUser = await createUser(newUser);
+          let createdUser = await registerUser(newUser);
 
           if (createdUser) {
             setCurrentUser(createdUser);

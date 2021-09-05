@@ -1,24 +1,6 @@
 const User = require('../models/user');
 const db = require('../db/connection');
 
-/**
- * @method removeSpacesBeforeHashTag
- * takes a discord name and trims the spaces.
- * @param {String} str
- * @returns {String}
- */
-const removeSpacesBeforeHashTag = (str) => {
-  // for discord name
-  return str
-    .trim()
-    .replace(/\s([#])/g, function (el1, el2) {
-      return '' + el2;
-    })
-    .replace(/(«)\s/g, function (el1, el2) {
-      return el2 + '';
-    });
-};
-
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 const getAllUsers = async (req, res) => {
@@ -44,48 +26,6 @@ const getAllUsers = async (req, res) => {
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
-  }
-};
-
-const createUser = async (req, res) => {
-  try {
-    const { uid, name, discord, rank, adminKey, email, region } = req.body;
-
-    const noSpacesDiscord = removeSpacesBeforeHashTag(discord);
-
-    const userData = {
-      uid,
-      name,
-      discord: noSpacesDiscord,
-      rank,
-      adminKey,
-      email,
-      region,
-    };
-
-    const userExists = await User.find({ uid, email });
-
-    const discordTaken = await User.findOne({ discord: noSpacesDiscord });
-
-    if (discordTaken) {
-      return res.status(500).json({
-        error: `Error: User with discord: ${discord} already exists!`,
-      });
-    }
-
-    if (userExists.length) {
-      return res.status(500).json({
-        error: `Error: User with email ${email} already exists!`,
-      });
-    }
-
-    const user = new User(userData);
-    await user.save();
-    res.status(201).json(user);
-    console.log('User created: ', user);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: error.message });
   }
 };
 
@@ -124,6 +64,5 @@ const getUserById = async (req, res) => {
 module.exports = {
   getAllUsers,
   getUserById,
-  createUser,
   updateUser,
 };
