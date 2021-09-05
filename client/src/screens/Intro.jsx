@@ -172,9 +172,10 @@ export default function Intro() {
           if (!yes) return;
 
           // HANDLE SIGN UP.
-          let { token } = await registerUser(newUser);
+          let data = await registerUser(newUser);
 
-          if (token) {
+          if (data?.token) {
+            const { token } = data;
             // token = `Bearer ${bcryptHash}`
             localStorage.setItem('jwtToken', token); // add token to back-end
             setAuthToken(token); // add authorization in the request to be bearer token.
