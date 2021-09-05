@@ -113,14 +113,15 @@ export default function Navbar({
                     pathname !== '/' &&
                     pathname !== '/user-setup' && (
                       <Grid item>
-                        <Button
-                          className="mr-3"
-                          variant="contained"
-                          color="primary"
-                          startIcon={<ArrowBackIcon />}
-                          onClick={() => history.goBack()}>
-                          Go Back
-                        </Button>
+                        <Box onClick={() => history.goBack()}>
+                          <Button
+                            className="mr-3"
+                            variant="contained"
+                            color="primary"
+                            startIcon={<ArrowBackIcon />}>
+                            Go Back
+                          </Button>
+                        </Box>
                       </Grid>
                     )}
                   {currentUser?.uid ? (
@@ -128,13 +129,14 @@ export default function Navbar({
                       {pathname !== '/settings' && (
                         <Grid item>
                           <Tooltip title="User settings">
-                            <Button
-                              variant="contained"
-                              color="primary"
-                              onClick={() => history.push('/settings')}
-                              startIcon={<SettingsIcon />}>
-                              Settings
-                            </Button>
+                            <Box onClick={() => history.push('/settings')}>
+                              <Button
+                                variant="contained"
+                                color="primary"
+                                startIcon={<SettingsIcon />}>
+                                Settings
+                              </Button>
+                            </Box>
                           </Tooltip>
                         </Grid>
                       )}
