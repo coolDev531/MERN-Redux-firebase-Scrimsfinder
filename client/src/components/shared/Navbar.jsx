@@ -123,7 +123,7 @@ export default function Navbar({
     return () => {
       document.removeEventListener('keyup', handleKeyUp);
     };
-  }, []);
+  }, [isDrawerOpen]);
 
   return (
     <>
@@ -132,6 +132,8 @@ export default function Navbar({
           <Toolbar className={classes.toolbar}>
             {/* BURGER ICON */}
             <IconButton
+              // prevent active class from staying on button after clicking (was noticeable when pressing escape)
+              onMouseDown={(e) => e.preventDefault()}
               onClick={() => setIsDrawerOpen(true)}
               style={{ position: 'fixed', top: '10px', left: '10px' }}>
               <MenuIcon fontSize="large" />
