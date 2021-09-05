@@ -18,6 +18,9 @@ const StyledInnerColumn = styled('div')(({ theme: _theme }) => ({
   padding: '10px',
 }));
 
+/* the classnames on the components aren't doing anything, 
+they're just nice for devs who inspect the page to read a className rather than some randomly generated gibberish .*/
+
 export const PageContent = ({ children }) => (
   <StyledPageContent className="page-content">{children}</StyledPageContent>
 );

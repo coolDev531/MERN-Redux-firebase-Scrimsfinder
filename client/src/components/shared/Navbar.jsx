@@ -1,3 +1,4 @@
+// components
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -15,13 +16,16 @@ import {
   Checkbox,
   Tooltip,
 } from '@material-ui/core';
-import { useAuth } from '../../context/currentUser';
 import { Link, useHistory, useLocation } from 'react-router-dom';
-// import { BOOTCAMP_LOL_SRC } from '../../utils/bootcampImg';
-import moment from 'moment';
+// import { BOOTCAMP_LOL_SRC } from '../../utils/bootcampImg'; // need license
 import 'moment-timezone';
 import AdminArea from './AdminArea';
 import HideOnScroll from './HideOnScroll';
+import { InnerColumn } from './DivComponents';
+
+// utils
+import moment from 'moment';
+import { useAuth } from '../../context/currentUser';
 
 // icons
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -70,7 +74,7 @@ export default function Navbar({
       <HideOnScroll>
         <AppBar className="page-section site-header" position="sticky">
           <Toolbar>
-            <div className="inner-column">
+            <InnerColumn>
               <div className="d-flex align-center justify-between">
                 <div className="logo d-flex align-center">
                   {/* need license to use img */}
@@ -279,7 +283,7 @@ export default function Navbar({
                   )}
                 </Grid>
               )}
-            </div>
+            </InnerColumn>
           </Toolbar>
         </AppBar>
       </HideOnScroll>
