@@ -65,6 +65,11 @@ const loginUser = async (req, res) => {
       const payload = {
         uid: foundUser.uid,
         email: foundUser.uid,
+        rank: foundUser.rank,
+        _id: foundUser._id,
+        region: foundUser.region,
+        discord: foundUser.discord,
+        adminKey: foundUser.adminKey,
       };
       // Sign token
       jwt.sign(
@@ -136,20 +141,7 @@ const registerUser = async (req, res) => {
   }
 };
 
-// get google uid and email by using google auth firebase, then give rest of user data hosted in database.
-const verifyUser = async (req, res) => {
-  const { email, uid } = req.body;
-
-  // will find the one user with the exact uid and email combination
-  const foundUser = await User.findOne({ uid, email });
-
-  if (foundUser) {
-    return res.json(foundUser);
-  }
-};
-
 module.exports = {
   loginUser,
-  verifyUser,
   registerUser,
 };

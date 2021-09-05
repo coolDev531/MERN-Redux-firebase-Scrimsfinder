@@ -15,8 +15,7 @@ import {
   Checkbox,
   Tooltip,
 } from '@material-ui/core';
-import { useContext } from 'react';
-import { CurrentUserContext } from '../../context/currentUser';
+import { useAuth } from '../../context/currentUser';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 // import { BOOTCAMP_LOL_SRC } from '../../utils/bootcampImg';
 import moment from 'moment';
@@ -30,11 +29,6 @@ import KeyIcon from '@material-ui/icons/VpnKey';
 import ExitIcon from '@material-ui/icons/ExitToApp';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import CreateIcon from '@material-ui/icons/Create';
-
-// services
-import { loginUser, setAuthToken } from '../../services/auth';
-import { auth, provider } from '../../firebase';
-import jwt_decode from 'jwt-decode';
 
 const useStyles = makeStyles((theme) => ({
   offset: theme.mixins.offset,
@@ -52,10 +46,9 @@ export default function Navbar({
   showCheckboxes,
   hideProps,
 }) {
-  const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
   const history = useHistory();
   const { pathname } = useLocation();
-
+  const { currentUser, logOutUser, logInUser } = useAuth();
   const classes = useStyles();
 
   let allRegions = ['NA', 'EUW', 'EUNE', 'LAN'];
@@ -64,35 +57,6 @@ export default function Navbar({
     currentUser?.region,
     ...allRegions.filter((r) => r !== currentUser?.region),
   ];
-
-  const handleLogOut = async () => {
-    console.log('logging out...');
-    auth.signOut();
-    setCurrentUser(null);
-
-    history.push('./user-setup');
-  };
-
-  const handleSignIn = async () => {
-    const result = await auth.signInWithPopup(provider);
-
-    if (result.user) {
-      let googleParams = {
-        uid: result.user.uid, // google id
-        email: result.user.email,
-      };
-
-      // verifying user with google, then getting rest of data.
-      const { token } = await loginUser(googleParams); // data.token
-      localStorage.setItem('jwtToken', token);
-      setAuthToken(token);
-      const decoded = jwt_decode(token);
-
-      setCurrentUser(decoded);
-
-      history.push('/');
-    }
-  };
 
   let hidePreviousScrims = hideProps?.hidePreviousScrims,
     hideCurrentScrims = hideProps?.hideCurrentScrims,
@@ -176,7 +140,7 @@ export default function Navbar({
                       )}
                       <Grid item>
                         <Button
-                          onClick={handleLogOut}
+                          onClick={logOutUser}
                           variant="contained"
                           startIcon={<ExitIcon />}
                           color="secondary">
@@ -187,7 +151,7 @@ export default function Navbar({
                   ) : (
                     <Grid item>
                       <Button
-                        onClick={handleSignIn}
+                        onClick={logInUser}
                         variant="contained"
                         startIcon={<KeyIcon />}
                         color="primary">

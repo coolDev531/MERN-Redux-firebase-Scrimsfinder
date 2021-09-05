@@ -31,19 +31,6 @@ export const registerUser = async (userData) => {
   }
 };
 
-// verify user by getting google uid and email, then give rest of data.
-export const verifyUser = async (googleParams) => {
-  try {
-    const response = await api.post('/auth/verify', {
-      email: googleParams.email,
-      uid: googleParams.uid,
-    });
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
 export const setAuthToken = (token) => {
   if (token) {
     // Apply authorization token to every request if logged in
