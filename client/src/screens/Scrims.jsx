@@ -9,6 +9,7 @@ import { showEarliestFirst, showLatestFirst } from '../utils/getSortedScrims';
 import moment from 'moment';
 import 'moment-timezone';
 import { compareDateWithCurrentTime } from './../utils/compareDateWithCurrentTime';
+import { InnerColumn, PageContent } from '../components/shared/DivComponents';
 
 const compareDates = (scrim) => {
   let currentTime = new Date().toISOString();
@@ -129,7 +130,7 @@ export default function Scrims() {
   }
 
   return (
-    <div>
+    <>
       <Navbar
         scrimsRegion={scrimsRegion}
         setScrimsRegion={setScrimsRegion}
@@ -149,7 +150,7 @@ export default function Scrims() {
       />
       <div className="page-break" />
 
-      <main className="page-content">
+      <PageContent>
         <div id="scrims-container" className="page-section">
           {filteredScrims.length > 0 ? (
             <>
@@ -158,7 +159,7 @@ export default function Scrims() {
                 <>
                   {currentScrims.length > 0 ? (
                     <>
-                      <div className="inner-column">
+                      <InnerColumn>
                         <div
                           style={{
                             marginBottom: '40px',
@@ -168,7 +169,7 @@ export default function Scrims() {
                             {currentScrims.length > 0 && 'Current scrims'}
                           </Typography>
                         </div>
-                      </div>
+                      </InnerColumn>
 
                       {currentScrims.map((scrim) => (
                         <Fragment key={scrim._id}>
@@ -186,7 +187,7 @@ export default function Scrims() {
               {/* UPCOMING SCRIMS */}
               {!hideUpcomingScrims && (
                 <>
-                  <div className="inner-column">
+                  <InnerColumn>
                     <div
                       style={{
                         marginBottom: '40px',
@@ -198,7 +199,7 @@ export default function Scrims() {
                           : 'No upcoming scrims'}
                       </Typography>
                     </div>
-                  </div>
+                  </InnerColumn>
 
                   {upcomingScrims.map((scrim) => (
                     <Fragment key={scrim._id}>
@@ -215,7 +216,7 @@ export default function Scrims() {
               {!hidePreviousScrims && (
                 <>
                   {previousScrims.length > 0 ? (
-                    <div className="inner-column" style={{ marginTop: '20px' }}>
+                    <InnerColumn style={{ marginTop: '20px' }}>
                       <div
                         style={{
                           marginBottom: '40px',
@@ -225,7 +226,7 @@ export default function Scrims() {
                           Previous scrims
                         </Typography>
                       </div>
-                    </div>
+                    </InnerColumn>
                   ) : null}
                   {previousScrims.map((scrim) => (
                     <Fragment key={scrim._id}>
@@ -244,7 +245,7 @@ export default function Scrims() {
             </>
           )}
         </div>
-      </main>
-    </div>
+      </PageContent>
+    </>
   );
 }

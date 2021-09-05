@@ -65,7 +65,6 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <AppRouter />
-
       <Footer />
     </ThemeProvider>
   );
