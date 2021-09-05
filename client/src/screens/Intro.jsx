@@ -18,14 +18,10 @@ import {
 // utils
 import { auth, provider } from '../firebase';
 import { useAuth } from './../context/currentUser';
+import { KEYCODES } from './../utils/keycodes';
 
 // services
 import { registerUser } from '../services/auth';
-
-const KEYCODES = {
-  ENTER: 13,
-  BACKSPACE: 8,
-};
 
 function getSteps() {
   return [

@@ -1,4 +1,6 @@
+// hooks
 import { useState, useEffect } from 'react';
+import { useAuth } from '../../context/currentUser';
 
 // components
 import Select from '@material-ui/core/Select';
@@ -33,8 +35,8 @@ import HideOnScroll from './HideOnScroll';
 import { InnerColumn } from './PageComponents';
 
 // utils
+import { KEYCODES } from './../../utils/keycodes';
 import moment from 'moment';
-import { useAuth } from '../../context/currentUser';
 import clsx from 'clsx';
 
 // icons
@@ -112,7 +114,7 @@ export default function Navbar({
   useEffect(() => {
     const handleKeyUp = ({ keycode }) => {
       // close drawer if user is pressing escape
-      if (keycode === 27) {
+      if (keycode === KEYCODES.ESCAPE) {
         if (isDrawerOpen) {
           setIsDrawerOpen(false);
           return;
