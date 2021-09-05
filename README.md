@@ -21,7 +21,7 @@ If you have an admin key, you can host a scrim/lobby. Then players just have to 
 
 - Authentication (Maybe, trying to keep it plug and play...) ✔️
 - Use the Riot Live Client API for summoner data.
-- Be able to host tournaments with classic tourney-style functionality and interface. 
+- Be able to host tournaments with classic tourney-style functionality and interface.
 - Mobile queries
 
 <br />
