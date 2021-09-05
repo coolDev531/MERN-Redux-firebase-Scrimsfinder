@@ -63,7 +63,7 @@ const loginUser = async (req, res) => {
     if (isMatch) {
       const payload = {
         uid: foundUser.uid,
-        email: foundUser.uid,
+        email: foundUser.email,
         rank: foundUser.rank,
         _id: foundUser._id,
         region: foundUser.region,
@@ -127,7 +127,7 @@ const registerUser = async (req, res) => {
 
         const payload = {
           uid: newUser.uid,
-          email: newUser.uid,
+          email: newUser.email,
           rank: newUser.rank,
           _id: newUser._id,
           region: newUser.region,

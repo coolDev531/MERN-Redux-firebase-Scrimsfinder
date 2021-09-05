@@ -1,6 +1,8 @@
 const User = require('../models/user');
 const db = require('../db/connection');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const keys = require('../config/keys');
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
@@ -35,29 +37,55 @@ const getAllUsers = async (req, res) => {
 const updateUser = async (req, res) => {
   const { id } = req.params;
 
-  bcrypt.genSalt(10, (err, salt) => {
-    bcrypt.hash(req.body.uid, salt, async (err, hash) => {
-      if (err) throw err;
+  const foundUser = await User.findOne({ _id: id });
 
-      req.body.uid = hash;
+  const isMatch = bcrypt.compare(req.body.uid, foundUser.uid); // compare req.body.uid to user uid in db.
 
-      await User.findByIdAndUpdate(
-        id,
-        req.body,
-        { new: true },
-        (error, user) => {
-          if (error) {
-            return res.status(500).json({ error: error.message });
+  if (isMatch) {
+    const payload = {
+      uid: foundUser.uid,
+      email: foundUser.email,
+      rank: req.body.rank,
+      _id: foundUser._id,
+      region: req.body.region,
+      discord: req.body.discord,
+      adminKey: req.body.adminKey,
+      name: req.body.name,
+    };
+
+    bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(req.body.uid, salt, async (err, hash) => {
+        if (err) throw err;
+
+        req.body.uid = hash;
+
+        const accessToken = jwt.sign(payload, keys.secretOrKey, {
+          expiresIn: 31556926, // 1 year in seconds
+          // expiresIn: new Date(new Date()).setDate(new Date().getDate() + 30), // 30 days from now, does this work?
+        });
+
+        await User.findByIdAndUpdate(
+          id,
+          req.body,
+          { new: true },
+          (error, user) => {
+            if (error) {
+              return res.status(500).json({ error: error.message });
+            }
+            if (!user) {
+              return res.status(404).json(user);
+            }
+
+            return res.status(201).json({
+              success: true,
+              token: accessToken,
+              user,
+            });
           }
-          if (!user) {
-            return res.status(404).json(user);
-          }
-
-          return res.status(200).json(user);
-        }
-      );
+        );
+      });
     });
-  });
+  }
 };
 
 const getUserById = async (req, res) => {
