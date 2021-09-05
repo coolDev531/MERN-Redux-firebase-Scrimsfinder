@@ -350,14 +350,14 @@ const removePlayerFromScrim = async (req, res) => {
   const teamLeavingArr =
     teamLeavingName === 'teamOne' ? scrim._doc.teamOne : scrim._doc.teamTwo;
 
-  let isLobbyHost = String(scrim._doc.lobbyHost._id) === String(_user._id);
+  let isLobbyHost = String(scrim._doc.lobbyHost?._id) === String(_user?._id);
 
   const scrimData = {
     // filter array to remove player leaving
     [teamLeavingName]: teamLeavingArr.filter(
       (player) =>
         //  we didn't populate here so player._user is actually just user._id
-        String(player._user) !== String(_user._id)
+        String(player._user) !== String(_user?._id)
     ),
     lobbyHost: isLobbyHost ? null : scrim?._doc?.lobbyHost ?? null, // if player leaving is hosting, reset the host to null
   };

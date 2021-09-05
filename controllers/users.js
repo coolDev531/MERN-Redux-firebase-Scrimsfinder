@@ -39,7 +39,8 @@ const updateUser = async (req, res) => {
     if (!user) {
       return res.status(404).json(user);
     }
-    res.status(200).json(user);
+
+    return res.status(200).json(user);
   });
 };
 
