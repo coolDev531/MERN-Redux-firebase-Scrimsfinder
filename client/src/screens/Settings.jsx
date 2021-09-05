@@ -118,7 +118,6 @@ export default function Settings() {
       const data = await updateUser(currentUser?._id, userData);
 
       if (data?.token) {
-        console.log({ data });
         const { token } = data;
         localStorage.setItem('jwtToken', token); // add token to back-end
         setAuthToken(token); // add authorization in the request to be bearer token.
