@@ -9,6 +9,7 @@ picture img {
   width: 100%;
   height: auto;
 }
+
 #scrims-container {
   scroll-margin-top: 2em;
 }
@@ -107,15 +108,6 @@ p {
 
 .mr-3 {
   margin-right: 30px;
-}
-
-.MuiFormLabel-root.Mui-focused {
-  /* being lazy, overriding Mui styles here instead of createTheme */
-  color: #fbc02d !important;
-}
-
-.MuiInput-underline:after {
-  border-bottom-color: #fbc02d !important;
 }
 
 .centered {
