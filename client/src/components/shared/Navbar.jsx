@@ -132,15 +132,6 @@ export default function Navbar({
       <HideOnScroll>
         <AppBar className={classes.siteHeader} position="sticky">
           <Toolbar className={classes.toolbar}>
-            {/* BURGER ICON */}
-            <IconButton
-              // prevent active class from staying on button after clicking (was noticeable when pressing escape)
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => setIsDrawerOpen(true)}
-              style={{ position: 'fixed', top: '10px', left: '10px' }}>
-              <MenuIcon fontSize="large" />
-            </IconButton>
-
             <InnerColumn>
               <Grid
                 container
@@ -169,7 +160,6 @@ export default function Navbar({
                     </Link>
                   </Grid>
 
-                  {/* SETTINGS, LOGOUT BUTTONS */}
                   <Grid
                     item
                     container
@@ -179,25 +169,6 @@ export default function Navbar({
                     spacing={2}
                     direction="row"
                     justifyContent="flex-end">
-                    {/* don't show go back button at home or /scrims or /user-setup*/}
-                    {/* TODO: this can be done more elegantly, lol. */}
-                    {!pathname.match(/^\/scrims$/) &&
-                      !pathname.match(/^\/scrims\/$/) &&
-                      pathname !== '/' &&
-                      !pathname.match(/^\/user-setup/) && (
-                        <Grid item>
-                          <Box onClick={() => history.goBack()}>
-                            <Button
-                              className="mr-3"
-                              variant="contained"
-                              color="primary"
-                              startIcon={<ArrowBackIcon />}>
-                              Go Back
-                            </Button>
-                          </Box>
-                        </Grid>
-                      )}
-
                     {/* if no user, show log in button */}
                     {!currentUser?.uid && (
                       <Grid item>
@@ -210,6 +181,17 @@ export default function Navbar({
                         </Button>
                       </Grid>
                     )}
+                    {/* BURGER ICON */}
+                    <Grid item>
+                      <IconButton
+                        // prevent active class from staying on button after clicking (was noticeable when pressing escape)
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => setIsDrawerOpen(true)}
+                        // style={{ position: 'fixed', top: '10px', right: '10px' }}>
+                      >
+                        <MenuIcon fontSize="large" />
+                      </IconButton>
+                    </Grid>
                   </Grid>
                 </Grid>
                 <br />
@@ -227,61 +209,7 @@ export default function Navbar({
                         </Typography>
                       </Grid>
                     )}
-                    {showCheckboxes && (
-                      <div className="d-flex align-center">
-                        <FormGroup row className="text-white">
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                checked={hideCurrentScrims}
-                                color="primary"
-                                onChange={() =>
-                                  setHideCurrentScrims(
-                                    (prevState) => !prevState
-                                  )
-                                }
-                                name="hideCurrentScrims"
-                              />
-                            }
-                            label="Hide current scrims"
-                            labelPlacement="bottom"
-                          />
 
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                checked={hideUpcomingScrims}
-                                color="primary"
-                                onChange={() =>
-                                  setHideUpcomingScrims(
-                                    (prevState) => !prevState
-                                  )
-                                }
-                                name="hideUpcomingScrims"
-                              />
-                            }
-                            label="Hide upcoming scrims"
-                            labelPlacement="bottom"
-                          />
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                color="primary"
-                                checked={hidePreviousScrims}
-                                onChange={() =>
-                                  setHidePreviousScrims(
-                                    (prevState) => !prevState
-                                  )
-                                }
-                                name="hidePreviousScrims"
-                              />
-                            }
-                            label="Hide Previous Scrims"
-                            labelPlacement="bottom"
-                          />
-                        </FormGroup>
-                      </div>
-                    )}
                     {showDropdowns && (
                       <div
                         id="nav__selects--container"
@@ -343,9 +271,7 @@ export default function Navbar({
         </AppBar>
       </HideOnScroll>
 
-      <Button onClick={() => setIsDrawerOpen(true)}>{'drawer open'}</Button>
-
-      {/* BURGER MENU, LEFT ANCHOR */}
+      {/* Additional navbar (drawer). */}
       <Drawer
         anchor={DRAWER_ANCHOR}
         open={isDrawerOpen}
@@ -388,7 +314,65 @@ export default function Navbar({
                 </ListItem>
               </>
             )}
+            <Divider />
           </List>
+
+          {showCheckboxes && (
+            <Grid
+              item
+              container
+              alignItems="center"
+              style={{ padding: '20px' }}>
+              <FormGroup
+                row
+                className="text-white"
+                style={{ justifyContent: 'center' }}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={!hideCurrentScrims}
+                      color="primary"
+                      onChange={() =>
+                        setHideCurrentScrims((prevState) => !prevState)
+                      }
+                      name="hideCurrentScrims"
+                    />
+                  }
+                  label="Show current scrims"
+                  labelPlacement="bottom"
+                />
+
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={!hideUpcomingScrims}
+                      color="primary"
+                      onChange={() =>
+                        setHideUpcomingScrims((prevState) => !prevState)
+                      }
+                      name="hideUpcomingScrims"
+                    />
+                  }
+                  label="Show upcoming scrims"
+                  labelPlacement="bottom"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      color="primary"
+                      checked={!hidePreviousScrims}
+                      onChange={() =>
+                        setHidePreviousScrims((prevState) => !prevState)
+                      }
+                      name="hidePreviousScrims"
+                    />
+                  }
+                  label="Show Previous Scrims"
+                  labelPlacement="bottom"
+                />
+              </FormGroup>
+            </Grid>
+          )}
         </div>
       </Drawer>
 
