@@ -38,6 +38,7 @@ function getSteps() {
 // the page where users sign up.
 // can also be named Signup.
 export default function Intro() {
+  const { currentUser, setCurrentUser } = useAuth();
   const [userData, setUserData] = useState({
     name: '',
     rank: '',
@@ -50,7 +51,6 @@ export default function Intro() {
     rankDivision: 'Iron',
     rankNumber: '4',
   });
-  const { currentUser } = useAuth();
   const [currentFormIndex, setCurrentFormIndex] = useState(0);
   const [errors, setErrors] = useState(new Map()); // using a map to keep unique errors.
   const steps = getSteps();
@@ -186,7 +186,7 @@ export default function Intro() {
 
           // HANDLE SIGN UP.
           let decodedUser = await registerUser(newUser);
-
+          setCurrentUser(decodedUser);
           return decodedUser;
         }, 200);
       }
