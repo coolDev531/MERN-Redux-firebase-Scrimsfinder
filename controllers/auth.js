@@ -77,7 +77,7 @@ const loginUser = async (req, res) => {
         // expiresIn: new Date(new Date()).setDate(new Date().getDate() + 30), // 30 days from now, does this work?
       });
 
-      res.json({ success: true, token: 'Bearer ' + accessToken });
+      return res.json({ success: true, token: 'Bearer ' + accessToken });
     } else {
       return res.status(500).json('password incorrect');
     }
@@ -102,7 +102,7 @@ const registerUser = async (req, res) => {
       region,
     };
 
-    const userExists = await User.find({ uid, email });
+    const userExists = await User.findOne({ email });
 
     const discordTaken = await User.findOne({ discord: noSpacesDiscord });
 
@@ -112,7 +112,7 @@ const registerUser = async (req, res) => {
       });
     }
 
-    if (userExists.length) {
+    if (userExists) {
       return res.status(500).json({
         error: `Error: User with email ${email} already exists!`,
       });
@@ -143,17 +143,18 @@ const registerUser = async (req, res) => {
 
         newUser.save();
 
-        res.status(201).json({
+        console.log('User created: ', newUser);
+        return res.status(201).json({
           success: true,
           token: accessToken,
           user: newUser,
         });
-        console.log('User created: ', newUser);
       });
     });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: error.message });
+    return;
   }
 };
 

@@ -63,6 +63,7 @@ const getAllScrims = async (req, res) => {
         });
     } catch (error) {
       res.status(500).json({ error: error.message });
+      return;
     }
   } else {
     // if no region, just get all scrims.
@@ -82,6 +83,7 @@ const getAllScrims = async (req, res) => {
         });
     } catch (error) {
       res.status(500).json({ error: error.message });
+      return;
     }
   }
 };
@@ -90,9 +92,10 @@ const getTodaysScrims = async (_req, res) => {
   try {
     const scrims = await Scrim.find();
     const todaysScrims = scrims.filter(checkIfScrimIsToday);
-    res.json(todaysScrims);
+    return res.json(todaysScrims);
   } catch (error) {
     res.status(500).json({ error: error.message });
+    return;
   }
 };
 
@@ -141,9 +144,11 @@ const createScrim = async (req, res) => {
     await scrim.save();
     res.status(201).json(scrim);
     console.log('Scrim created: ', scrim);
+    return;
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: error.message });
+    return;
   }
 };
 
@@ -184,6 +189,7 @@ const updateScrim = async (req, res) => {
     }
 
     res.status(200).json(scrim);
+    return;
   });
 };
 
@@ -195,8 +201,10 @@ const deleteScrim = async (req, res) => {
       return res.status(200).send(`Scrim with id: ${id} deleted`);
     }
     throw new Error('Scrim not found');
+    return;
   } catch (error) {
     res.status(500).json({ error: error.message });
+    return;
   }
 };
 
@@ -329,6 +337,7 @@ const insertPlayerInScrim = async (req, res) => {
 
           scrim.save();
           res.status(200).json(scrim);
+          return;
         }
       );
     }
