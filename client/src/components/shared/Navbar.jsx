@@ -1,5 +1,5 @@
 // hooks
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useAuth } from '../../context/currentUser';
 
 // components
@@ -18,9 +18,6 @@ import 'moment-timezone';
 import HideOnScroll from './HideOnScroll';
 import { InnerColumn } from './PageComponents';
 import Tooltip from './Tooltip';
-
-// utils
-import { KEYCODES } from './../../utils/keycodes';
 
 // icons
 import KeyIcon from '@material-ui/icons/VpnKey';
