@@ -231,7 +231,7 @@ export default function Intro() {
 
   return (
     <>
-      <Navbar />
+      <Navbar showLess />
       <PageContent>
         <PageSection>
           <InnerColumn>
