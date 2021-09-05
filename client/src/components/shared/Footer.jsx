@@ -1,5 +1,5 @@
 import { Grid } from '@material-ui/core';
-import { InnerColumn } from './DivComponents';
+import { InnerColumn } from './PageComponents';
 
 const Footer = () => (
   <footer className="page-section site-footer">

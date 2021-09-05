@@ -21,7 +21,7 @@ import { Link, useHistory, useLocation } from 'react-router-dom';
 import 'moment-timezone';
 import AdminArea from './AdminArea';
 import HideOnScroll from './HideOnScroll';
-import { InnerColumn } from './DivComponents';
+import { InnerColumn } from './PageComponents';
 
 // utils
 import moment from 'moment';

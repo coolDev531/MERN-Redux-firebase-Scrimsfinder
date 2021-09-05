@@ -9,7 +9,11 @@ import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Navbar from './../components/shared/Navbar';
-import { InnerColumn } from './../components/shared/DivComponents';
+import {
+  InnerColumn,
+  PageSection,
+  PageContent,
+} from '../components/shared/PageComponents';
 
 // utils
 import { auth, provider } from '../firebase';
@@ -231,8 +235,8 @@ export default function Intro() {
   return (
     <>
       <Navbar />
-      <main className="page-content">
-        <div className="page-section">
+      <PageContent>
+        <PageSection>
           <InnerColumn>
             <h1>Welcome to LoL Scrims Finder, please fill in your details</h1>
 
@@ -321,8 +325,8 @@ export default function Intro() {
               )}
             </form>
           </InnerColumn>
-        </div>
-      </main>
+        </PageSection>
+      </PageContent>
     </>
   );
 }

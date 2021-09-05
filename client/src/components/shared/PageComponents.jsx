@@ -1,7 +1,7 @@
 import { styled } from '@material-ui/core';
 
 // theme not being used, indicated with _
-const StyledPageContent = styled('div')(({ theme: _theme }) => ({
+const StyledPageContent = styled('main')(({ theme: _theme }) => ({
   flexGrow: 1,
 }));
 

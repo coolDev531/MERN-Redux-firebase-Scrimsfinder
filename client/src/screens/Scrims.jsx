@@ -9,7 +9,7 @@ import { showEarliestFirst, showLatestFirst } from '../utils/getSortedScrims';
 import moment from 'moment';
 import 'moment-timezone';
 import { compareDateWithCurrentTime } from './../utils/compareDateWithCurrentTime';
-import { InnerColumn, PageContent } from '../components/shared/DivComponents';
+import { InnerColumn, PageContent } from '../components/shared/PageComponents';
 
 const compareDates = (scrim) => {
   let currentTime = new Date().toISOString();
