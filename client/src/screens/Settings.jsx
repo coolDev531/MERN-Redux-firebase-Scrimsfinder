@@ -147,6 +147,9 @@ export default function Settings() {
       setUsersInRegion(usersInRegionData);
     };
     fetchUsers();
+    return () => {
+      fetchUsers();
+    };
   }, [userData.region]);
 
   useEffect(() => {
@@ -163,6 +166,13 @@ export default function Settings() {
       ...prevState,
       rank: rankResult,
     }));
+
+    return () => {
+      setUserData((prevState) => ({
+        ...prevState,
+        rank: rankResult,
+      }));
+    };
     // eslint-disable-next-line
   }, [rankData]);
 
