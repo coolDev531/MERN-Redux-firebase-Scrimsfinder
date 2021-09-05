@@ -1,5 +1,9 @@
 const db = require('../db/connection');
 
+// jwt
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
 // models
 const User = require('../models/user');
 
@@ -52,9 +56,33 @@ const loginUser = async (req, res) => {
     return;
   }
 
-  if (foundUser) {
-    return res.json(foundUser);
-  }
+  // Check password
+  bcrypt.compare(uid, foundUser.uid).then((isMatch) => {
+    if (isMatch) {
+      // User matched
+      // Create JWT Payload
+      const payload = {
+        uid: foundUser.uid,
+        email: foundUser.uid,
+      };
+      // Sign token
+      jwt.sign(
+        payload,
+        keys.secretOrKey,
+        {
+          expiresIn: 31556926, // 1 year in seconds
+        },
+        (err, token) => {
+          res.json({
+            success: true,
+            token: 'Bearer ' + token,
+          });
+        }
+      );
+    } else {
+      return res.status(500).json('password incorrect');
+    }
+  });
 };
 
 const registerUser = async (req, res) => {
@@ -89,10 +117,17 @@ const registerUser = async (req, res) => {
       });
     }
 
-    const user = new User(userData);
-    await user.save();
-    res.status(201).json(user);
-    console.log('User created: ', user);
+    const newUser = new User(userData);
+
+    bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(newUser.uid, salt, (err, hash) => {
+        if (err) throw err;
+        newUser.uid = hash;
+        newUser.save();
+        res.status(201).json(newUser);
+        console.log('User created: ', newUser);
+      });
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: error.message });

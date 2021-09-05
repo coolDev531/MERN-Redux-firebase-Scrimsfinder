@@ -137,7 +137,7 @@ export default function Intro() {
           rank: userData.rank,
           adminKey: userData.adminKey?.trim() ?? '',
           email: result.user.email,
-          refreshToken: result.user.refreshToken,
+          // refreshToken: result.user.refreshToken, // prob don't need.
         };
 
         return newUser;
