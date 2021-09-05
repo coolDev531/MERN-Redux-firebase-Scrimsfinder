@@ -36,6 +36,12 @@ const compareArrays = (arr1, arr2) => {
   return true;
 };
 
+const getRankImage = (user) => {
+  // replace number with empty string: Diamond 1 => Diamond
+  // get rank image from images map by player.rank
+  return RANK_IMAGES[user?.rank?.replace(/[^a-z$]/gi, '')];
+};
+
 export default function ScrimTeamList({
   playerEntered,
   scrim,
@@ -195,9 +201,7 @@ export default function ScrimTeamList({
 
           // doing this so old data is still working on the front-end after the major database update at 9/3/2021
           // for old database status, if player didnt have nested ._user, just return as is, else return ._user
-          const userInfo = playerAssigned?._user?._id
-            ? playerAssigned._user
-            : playerAssigned;
+          const userInfo = playerAssigned?._user;
 
           const isCurrentUser = userInfo?._id === currentUser?._id;
 
@@ -230,13 +234,7 @@ export default function ScrimTeamList({
                               width="25px"
                               style={{ objectFit: 'cover' }}
                               alt={playerAssigned.role}
-                              src={
-                                // replace number with empty string: Diamond 1 => Diamond
-                                // get rank image from images map by player.rank
-                                RANK_IMAGES[
-                                  userInfo.rank.replace(/[^a-z$]/gi, '')
-                                ]
-                              }
+                              src={getRankImage(userInfo)}
                             />
                           </>
                         )}
