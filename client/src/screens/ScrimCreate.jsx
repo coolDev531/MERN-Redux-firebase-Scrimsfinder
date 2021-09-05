@@ -12,7 +12,11 @@ import { Redirect } from 'react-router';
 import { CurrentUserContext } from '../context/currentUser';
 import { Select } from '@material-ui/core';
 import { ScrimsContext } from '../context/scrimsContext';
-import { InnerColumn } from './../components/shared/PageComponents';
+import {
+  InnerColumn,
+  PageContent,
+  PageSection,
+} from './../components/shared/PageComponents';
 
 // utils and services
 import { createScrim } from './../services/scrims';
@@ -112,8 +116,8 @@ export default function ScrimCreate() {
   return (
     <>
       <Navbar />
-      <main className="page-content">
-        <section className="page-section create-scrim">
+      <PageContent>
+        <PageSection>
           <InnerColumn>
             <form
               onSubmit={handleSubmit}
@@ -237,8 +241,8 @@ export default function ScrimCreate() {
               </Grid>
             </form>
           </InnerColumn>
-        </section>
-      </main>
+        </PageSection>
+      </PageContent>
     </>
   );
 }

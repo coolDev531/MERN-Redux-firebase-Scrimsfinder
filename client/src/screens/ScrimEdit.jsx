@@ -16,6 +16,11 @@ import moment from 'moment';
 import 'moment-timezone';
 import { getDateAndTimeSeparated } from '../utils/getDateAndTimeSeparated';
 import devLog from '../utils/devLog';
+import {
+  PageContent,
+  PageSection,
+  InnerColumn,
+} from '../components/shared/PageComponents';
 
 /**
  * @method sample
@@ -251,9 +256,9 @@ export default function ScrimEdit() {
   return (
     <>
       <Navbar />
-      <main className="page-content">
-        <section className="page-section create-scrim">
-          <div className="inner-column">
+      <PageContent>
+        <PageSection>
+          <InnerColumn>
             <form
               onSubmit={handleSubmit}
               style={{
@@ -444,9 +449,9 @@ export default function ScrimEdit() {
                 </Grid>
               </Grid>
             </form>
-          </div>
-        </section>
-      </main>
+          </InnerColumn>
+        </PageSection>
+      </PageContent>
     </>
   );
 }
