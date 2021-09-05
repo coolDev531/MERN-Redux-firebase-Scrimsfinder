@@ -110,11 +110,11 @@ export default function Navbar({
                         </Button>
                       </Grid>
                     )}
-                    {/* don't show go back button at home or /scirms
+                    {/* don't show go back button at home or /scirms or /user-setup
                      ? means an optional extra slash after /scrims.
                      | means or.
                     */}
-                    {!pathname.match(/^\/$|^\/scrims?\/$/) && (
+                    {!pathname.match(/^\/$|^\/scrims?\/$|^\/user-setup?\//) && (
                       <Button
                         className="mr-3"
                         variant="contained"
