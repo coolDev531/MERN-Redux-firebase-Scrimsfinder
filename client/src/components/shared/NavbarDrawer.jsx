@@ -276,7 +276,7 @@ export default function NavbarDrawer({
                           name="hidePreviousScrims"
                         />
                       }
-                      label="Show Previous Scrims"
+                      label="Show previous scrims"
                       labelPlacement="bottom"
                     />
                   </FormGroup>
