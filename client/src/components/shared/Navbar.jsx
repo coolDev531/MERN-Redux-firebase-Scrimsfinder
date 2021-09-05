@@ -143,9 +143,8 @@ export default function Navbar({
                   container
                   direction="row"
                   alignItems="center"
-                  justifyContent="space-between"
-                  spacing={0}>
-                  <Grid item container alignItems="center" xs={12} sm={5}>
+                  justifyContent="space-between">
+                  <Grid item container alignItems="center" xs={12} sm={6}>
                     {/* need license to use img */}
                     {/* <img
                   src={BOOTCAMP_LOL_SRC}
@@ -164,7 +163,7 @@ export default function Navbar({
                     item
                     container
                     xs={12}
-                    sm={7}
+                    sm={6}
                     alignItems="center"
                     spacing={2}
                     direction="row"
@@ -195,76 +194,6 @@ export default function Navbar({
                   </Grid>
                 </Grid>
                 <br />
-                {!showLess && (
-                  <Grid
-                    container
-                    item
-                    alignItems="center"
-                    direction="row"
-                    justifyContent="space-between">
-                    {pathname !== '/user-setup' && (
-                      <Grid item>
-                        <Typography variant="h2" component="h2">
-                          Welcome: {currentUser?.name}
-                        </Typography>
-                      </Grid>
-                    )}
-
-                    {showDropdowns && (
-                      <div
-                        id="nav__selects--container"
-                        className="d-flex align-center">
-                        <div id="nav__date-filter--container">
-                          <TextField
-                            id="date"
-                            required
-                            label="Scrims Date"
-                            type="date"
-                            name="scrimsDate"
-                            InputLabelProps={{
-                              shrink: true,
-                            }}
-                            value={
-                              moment(new Date(scrimsDate)).format(
-                                'yyyy-MM-DD'
-                              ) || moment().format('yyyy-MM-DD')
-                            }
-                            onChange={(e) => {
-                              setScrimsDate(moment(e.target.value));
-                            }}
-                          />
-
-                          <FormHelperText className="text-white">
-                            Filter scrims by date
-                          </FormHelperText>
-                        </div>
-                        <Box marginRight={4} />
-
-                        <div id="nav__region-filter--container">
-                          <InputLabel className="text-white">Region</InputLabel>
-
-                          <Select
-                            value={scrimsRegion}
-                            className="text-white"
-                            onChange={(e) => {
-                              const region = e.target.value;
-                              toggleFetch((prev) => !prev);
-                              setScrimsRegion(region); // set the navbar select value to selected region
-                            }}>
-                            {selectRegions.map((region, key) => (
-                              <MenuItem value={region} key={key}>
-                                {region}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                          <FormHelperText className="text-white">
-                            Filter scrims by region
-                          </FormHelperText>
-                        </div>
-                      </div>
-                    )}
-                  </Grid>
-                )}
               </Grid>
             </InnerColumn>
           </Toolbar>
