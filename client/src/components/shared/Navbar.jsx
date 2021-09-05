@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
     borderBottom: '1px solid white',
   },
   toolbar: {
-    paddingTop: '20px',
+    paddingTop: '30px',
     paddingBottom: '20px',
   },
 }));

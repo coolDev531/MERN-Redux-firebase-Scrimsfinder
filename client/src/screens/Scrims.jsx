@@ -1,15 +1,19 @@
-import { Typography } from '@material-ui/core';
 import { useContext, useState, useEffect, Fragment, useMemo } from 'react';
+
+// components
+import Typography from '@material-ui/core/Typography';
+import { showEarliestFirst, showLatestFirst } from '../utils/getSortedScrims';
+import { InnerColumn, PageContent } from '../components/shared/PageComponents';
 import ScrimSection from '../components/ScrimSection';
 import Loading from '../components/shared/Loading';
 import Navbar from '../components/shared/Navbar';
-import { CurrentUserContext } from '../context/currentUser';
+
+// utils
 import { ScrimsContext } from '../context/scrimsContext';
-import { showEarliestFirst, showLatestFirst } from '../utils/getSortedScrims';
 import moment from 'moment';
 import 'moment-timezone';
 import { compareDateWithCurrentTime } from './../utils/compareDateWithCurrentTime';
-import { InnerColumn, PageContent } from '../components/shared/PageComponents';
+import { useAuth } from './../context/currentUser';
 
 const compareDates = (scrim) => {
   let currentTime = new Date().toISOString();
@@ -28,7 +32,7 @@ const compareDates = (scrim) => {
 export default function Scrims() {
   const today = useMemo(() => moment(), []);
 
-  const { currentUser } = useContext(CurrentUserContext);
+  const { currentUser } = useAuth();
 
   const { scrims, toggleFetch, scrimsLoaded } = useContext(ScrimsContext);
 
