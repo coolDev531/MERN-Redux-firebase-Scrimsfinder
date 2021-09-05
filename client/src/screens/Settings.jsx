@@ -11,7 +11,7 @@ import {
   FormHelperText,
 } from '@material-ui/core';
 import Navbar from '../components/shared/Navbar';
-import { CurrentUserContext } from '../context/currentUser';
+import { useAuth } from '../context/currentUser';
 
 // services
 import { getUsersInRegion, updateUser } from './../services/users';
@@ -36,13 +36,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 // userEdit
 export default function Settings() {
-  const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
+  const { currentUser, setCurrentUser } = useAuth();
   const [usersInRegion, setUsersInRegion] = useState([]);
   const [userData, setUserData] = useState({
     name: currentUser?.name, // LoL summoner name
     discord: currentUser?.discord,
     adminKey: currentUser?.adminKey ?? '',
     region: currentUser?.region ?? 'NA',
+    ...currentUser,
   });
 
   const [rankData, setRankData] = useState({
