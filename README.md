@@ -60,7 +60,7 @@ If you have an admin key, you can host a scrim/lobby. Then players just have to 
 ### 9/5/2021
 - Created a navbar drawer/burger-menu
 - Moved the date select filter and region filter for scrims into the drawer
-- Moved the show/hide current ,previous ,upcoming scrims toggles into the drawer.
+- Moved the show/hide current, previous, upcoming scrims toggles into the drawer.
 
 ---
 
