@@ -15,11 +15,15 @@ export default function ScrimDetail() {
 
   useEffect(() => {
     const fetchScrimData = async () => {
-      const scrimData = await getScrimById(id);
-      if (scrimData) {
-        setScrim(scrimData);
+      try {
+        const scrimData = await getScrimById(id);
+        if (scrimData) {
+          setScrim(scrimData);
+        }
+        // push to / if scrim not found.
+      } catch (error) {
+        history.push('/');
       }
-      // push to / if scrim not found.
     };
     fetchScrimData();
     // run this on mount and everytime scrims change.
