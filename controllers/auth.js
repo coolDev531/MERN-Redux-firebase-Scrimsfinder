@@ -122,7 +122,7 @@ const registerUser = async (req, res) => {
     bcrypt.genSalt(10, (err, salt) => {
       bcrypt.hash(newUser.uid, salt, (err, hash) => {
         if (err) throw err;
-        newUser.uid = hash;
+        newUser.uid = hash; // hash google uid to use as token, maybe there's something better that google provides as token.
         newUser.save();
         res.status(201).json(newUser);
         console.log('User created: ', newUser);
