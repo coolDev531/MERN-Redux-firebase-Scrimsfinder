@@ -102,7 +102,7 @@ const registerUser = async (req, res) => {
       region,
     };
 
-    const userExists = await User.find({ uid, email });
+    const userExists = await User.findOne({ email });
 
     const discordTaken = await User.findOne({ discord: noSpacesDiscord });
 
@@ -112,7 +112,7 @@ const registerUser = async (req, res) => {
       });
     }
 
-    if (userExists.length) {
+    if (userExists) {
       return res.status(500).json({
         error: `Error: User with email ${email} already exists!`,
       });

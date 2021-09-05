@@ -50,7 +50,6 @@ function CurrentUserProvider({ children }) {
       setAuthToken(token); // add authorization in the request to be bearer token.
       const decodedUser = jwt_decode(token); // decode user by hashed uid that was hashed in back-end
       setCurrentUser(decodedUser);
-      setLoading(false);
       history.push('/');
     }
   };
@@ -60,30 +59,36 @@ function CurrentUserProvider({ children }) {
   // verify user every mount and refresh
   useEffect(() => {
     // Check for token to keep user logged in
-    if (localStorage.jwtToken) {
-      // Set auth token header auth
-      const token = localStorage.jwtToken;
-      setAuthToken(token);
+    const verify = async () => {
+      if (localStorage.jwtToken) {
+        // Set auth token header auth
+        const token = localStorage.jwtToken;
+        setAuthToken(token);
 
-      // Decode token and get user info and exp
-      const decodedUser = jwt_decode(token);
+        // Decode token and get user info and exp
+        const decodedUser = jwt_decode(token);
+        // Set user
+        setCurrentUser(decodedUser);
 
-      // Set user
-      setCurrentUser(decodedUser);
-      setLoading(false);
-
-      // Check for expired token
-      const currentTime = Date.now() / 1000; // to get in milliseconds
-      if (decodedUser.exp < currentTime) {
-        // if time passed expiration
-        // Logout user
-        logOutUser();
-        // Redirect to login
-        history.push('./user-setup');
+        // Check for expired token
+        const currentTime = Date.now() / 1000; // to get in milliseconds
+        if (decodedUser.exp < currentTime) {
+          // if time passed expiration
+          // Logout user
+          logOutUser();
+          // Redirect to login
+          history.push('./user-setup');
+        }
       }
-    }
+      setLoading(false);
+    };
+    verify();
+    return () => {
+      verify();
+    };
   }, [history, logOutUser]);
 
+  console.log({ loading });
   let value = {
     currentUser,
     setCurrentUser,

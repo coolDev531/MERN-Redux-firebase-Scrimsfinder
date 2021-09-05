@@ -17,8 +17,8 @@ const AppRouter = () => (
     <PrivateRoute exact path="/scrims/:id" component={ScrimDetail} />
     <PrivateRoute exact path="/scrims" component={Scrims} />
     <Route exact path="/settings" component={Settings} />
-    <Route exact path="/user-setup" component={Intro} />
-    <PrivateRoute exact path="/" component={Scrims} />
+    <Route path="/user-setup" component={Intro} />
+    <PrivateRoute path="/" component={Scrims} />
     <Route component={NotFound} />
   </Switch>
 );
