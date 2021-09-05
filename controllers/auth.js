@@ -1,5 +1,5 @@
 const db = require('../db/connection');
-
+const keys = require('../config/keys');
 // jwt
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -71,6 +71,7 @@ const loginUser = async (req, res) => {
         keys.secretOrKey,
         {
           expiresIn: 31556926, // 1 year in seconds
+          // expiresIn: new Date(new Date()).setDate(new Date().getDate() + 30), // 30 days from now, does this work?
         },
         (err, token) => {
           res.json({
