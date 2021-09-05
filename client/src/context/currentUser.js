@@ -72,7 +72,8 @@ function CurrentUserProvider({ children }) {
           uid: decodedUser?.uid,
           email: decodedUser?.email,
         });
-        console.log({ data });
+
+        // if there is no token PrivateRoute.jsx should send us to /user-setup automatically.
         if (data?.token) {
           localStorage.setItem('jwtToken', data?.token);
           // Set user
