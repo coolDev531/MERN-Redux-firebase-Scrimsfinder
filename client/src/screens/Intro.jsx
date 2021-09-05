@@ -1,3 +1,4 @@
+// components
 import { useEffect, useCallback, Fragment } from 'react';
 import { useState, useContext } from 'react';
 import { CurrentUserContext } from '../context/currentUser';
@@ -8,10 +9,15 @@ import IntroForms from '../components/IntroForms';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
-import { auth, provider } from '../firebase';
 import Navbar from './../components/shared/Navbar';
-import { registerUser, setAuthToken } from '../services/auth';
+import { InnerColumn } from './../components/shared/DivComponents';
+
+// utils
+import { auth, provider } from '../firebase';
 import jwt_decode from 'jwt-decode';
+
+// services
+import { registerUser, setAuthToken } from '../services/auth';
 
 const KEYCODES = {
   ENTER: 13,
@@ -239,7 +245,7 @@ export default function Intro() {
       <Navbar />
       <main className="page-content">
         <div className="page-section">
-          <div className="inner-column">
+          <InnerColumn>
             <h1>Welcome to LoL Scrims Finder, please fill in your details</h1>
 
             <Grid container item direction="column" md={12}>
@@ -326,7 +332,7 @@ export default function Intro() {
                 </Grid>
               )}
             </form>
-          </div>
+          </InnerColum>
         </div>
       </main>
     </>
