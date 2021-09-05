@@ -58,42 +58,9 @@ function CurrentUserProvider({ children }) {
   };
 
   // HANDLE VERIFY
-  // this runs on every mount  / refresh
-  // verify user every mount and refresh
-  // useEffect(() => {
-  //   // Check for token to keep user logged in
-  //   const verify = async () => {
-  //     devLog('verifying user');
-  //     if (localStorage.jwtToken) {
-  //       // Set auth token header auth
-  //       const token = localStorage.jwtToken;
-  //       setAuthToken(token);
-
-  //       // Decode token and get user info and exp
-  //       const decodedUser = jwt_decode(token);
-  //       // Set user
-  //       setCurrentUser(decodedUser);
-
-  //       // Check for expired token
-  //       const currentTime = Date.now() / 1000; // to get in milliseconds
-  //       if (decodedUser.exp < currentTime) {
-  //         // if time passed expiration
-  //         // Logout user
-  //         logOutUser();
-  //         // Redirect to login
-  //         history.push('./user-setup');
-  //       }
-  //     }
-  //     setLoading(false);
-  //   };
-  //   verify();
-  //   return () => {
-  //     verify();
-  //   };
-  // }, [history, logOutUser]);
-
   useEffect(() => {
     const handleVerify = async () => {
+      devLog('verifying user');
       if (localStorage.jwtToken) {
         // Set auth token header auth
         const token = localStorage.jwtToken;
@@ -105,25 +72,32 @@ function CurrentUserProvider({ children }) {
           uid: decodedUser?.uid,
           email: decodedUser?.email,
         });
+        console.log({ data });
+        if (data?.token) {
+          localStorage.setItem('jwtToken', data?.token);
+          // Set user
+          setCurrentUser(data?.user);
 
-        localStorage.setItem('jwtToken', data?.token);
-        // Set user
-        setCurrentUser(data.user);
-
-        // Check for expired token
-        const currentTime = Date.now() / 1000; // to get in milliseconds
-        if (decodedUser.exp < currentTime) {
-          // if time passed expiration
-          // Logout user
-          logOutUser();
-          // Redirect to login
-          history.push('./user-setup');
+          // Check for expired token
+          const currentTime = Date.now() / 1000; // to get in milliseconds
+          if (decodedUser.exp < currentTime) {
+            // if time passed expiration
+            // Logout user
+            logOutUser();
+            // Redirect to login
+            history.push('./user-setup');
+          }
         }
       }
       setLoading(false);
     };
     handleVerify();
-  }, [history, logOutUser]);
+
+    return () => {
+      handleVerify();
+    };
+    //eslint-disable-next-line
+  }, []);
 
   let value = {
     currentUser,
