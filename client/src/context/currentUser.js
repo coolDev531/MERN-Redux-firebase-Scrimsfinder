@@ -20,6 +20,7 @@ export const useAuth = () => useContext(CurrentUserContext);
 function CurrentUserProvider({ children }) {
   // we really don't need useReducer for this.
   const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(false);
   const history = useHistory();
 
   const logOutUser = useCallback(async () => {
@@ -61,27 +62,30 @@ function CurrentUserProvider({ children }) {
   // verify user every mount and refresh
   useEffect(() => {
     // Check for token to keep user logged in
-    if (localStorage.jwtToken) {
-      // Set auth token header auth
-      const token = localStorage.jwtToken;
-      setAuthToken(token);
+    const verify = async () => {
+      if (localStorage.jwtToken) {
+        // Set auth token header auth
+        const token = localStorage.jwtToken;
+        setAuthToken(token);
 
-      // Decode token and get user info and exp
-      const decodedUser = jwt_decode(token);
+        // Decode token and get user info and exp
+        const decodedUser = jwt_decode(token);
 
-      // Set user
-      setCurrentUser(decodedUser);
+        // Set user
+        setCurrentUser(decodedUser);
 
-      // Check for expired token
-      const currentTime = Date.now() / 1000; // to get in milliseconds
-      if (decodedUser.exp < currentTime) {
-        // if time passed expiration
-        // Logout user
-        logOutUser();
-        // Redirect to login
-        history.push('./user-setup');
+        // Check for expired token
+        const currentTime = Date.now() / 1000; // to get in milliseconds
+        if (decodedUser.exp < currentTime) {
+          // if time passed expiration
+          // Logout user
+          logOutUser();
+          // Redirect to login
+          history.push('./user-setup');
+        }
       }
-    }
+      verify();
+    };
   }, [history, logOutUser]);
 
   let value = {
@@ -94,7 +98,7 @@ function CurrentUserProvider({ children }) {
 
   return (
     <CurrentUserContext.Provider value={value}>
-      {children}
+      {!loading && children}
     </CurrentUserContext.Provider>
   );
 }
