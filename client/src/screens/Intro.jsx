@@ -193,6 +193,7 @@ export default function Intro() {
     },
     [
       createGoogleAccount,
+      setCurrentUser,
       userData.name,
       userData.discord,
       userData.rank,
