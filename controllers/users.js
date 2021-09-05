@@ -20,8 +20,7 @@ const getAllUsers = async (req, res) => {
       ]);
       return res.json(users);
     } catch (error) {
-      res.status(500).json({ error: error.message });
-      return;
+      return res.status(500).json({ error: error.message });
     }
   } else {
     // if no region, just get all users.
@@ -29,8 +28,7 @@ const getAllUsers = async (req, res) => {
       const users = await User.find().select(['discord', 'name', 'region']); // show only discord and name.
       return res.json(users);
     } catch (error) {
-      res.status(500).json({ error: error.message });
-      return;
+      return res.status(500).json({ error: error.message });
     }
   }
 };
@@ -73,6 +71,7 @@ const updateUser = async (req, res) => {
             if (error) {
               return res.status(500).json({ error: error.message });
             }
+
             if (!user) {
               return res.status(404).json(user);
             }
@@ -110,7 +109,7 @@ const getUserById = async (req, res) => {
     // using populate to show more than _id when using Ref on the model.
     return res.json(user);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
 };
 
