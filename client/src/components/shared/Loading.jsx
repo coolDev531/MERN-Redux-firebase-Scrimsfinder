@@ -1,9 +1,10 @@
 import { Typography } from '@material-ui/core';
 import LoadingGif from '../../assets/images/loading.gif';
+import { PageContent } from './PageComponents';
 
 export default function Loading({ text }) {
   return (
-    <main className="page-content">
+    <PageContent>
       <div className="centered">
         <div className="loading-wrapper">
           <div className="content-container">
@@ -14,6 +15,6 @@ export default function Loading({ text }) {
           </div>
         </div>
       </div>
-    </main>
+    </PageContent>
   );
 }

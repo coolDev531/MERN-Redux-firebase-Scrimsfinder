@@ -98,7 +98,7 @@ export default function Navbar({
                   alignItems="center"
                   justifyContent="space-between"
                   spacing={0}>
-                  <Grid item container alignItems="center" xs={12} sm={6}>
+                  <Grid item container alignItems="center" xs={12} sm={5}>
                     {/* need license to use img */}
                     {/* <img
                   src={BOOTCAMP_LOL_SRC}
@@ -118,7 +118,7 @@ export default function Navbar({
                     item
                     container
                     xs={12}
-                    sm={6}
+                    sm={7}
                     alignItems="center"
                     spacing={2}
                     direction="row"
