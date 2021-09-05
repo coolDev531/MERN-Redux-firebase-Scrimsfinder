@@ -27,12 +27,11 @@ const PlayerSchema = new Schema({
     ref: 'User',
   },
 });
-// type: mongoose.Schema.Types.ObjectId,
 
 const Scrim = new Schema(
   {
-    teamOne: { type: [PlayerSchema], default: [] },
-    teamTwo: { type: [PlayerSchema], default: [] },
+    teamOne: { type: [PlayerSchema], default: [] }, // an array of players
+    teamTwo: { type: [PlayerSchema], default: [] }, // an array of players
     casters: {
       type: [
         {
@@ -70,7 +69,7 @@ const Scrim = new Schema(
       ref: 'User',
     },
     teamWon: { type: 'String', default: null },
-    postGameImage: { type: ImageSchema },
+    postGameImage: { type: ImageSchema }, // image of the post-game lobby
   },
   { timestamps: true, optimisticConcurrency: true, versionKey: 'version' }
 );
