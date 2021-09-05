@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 // components
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -14,7 +16,12 @@ import {
   FormGroup,
   FormControlLabel,
   Checkbox,
-  Tooltip,
+  Drawer,
+  List,
+  ListItem,
+  Divider,
+  ListItemText,
+  ListItemIcon,
   Typography,
 } from '@material-ui/core';
 import { Link, useHistory, useLocation } from 'react-router-dom';
@@ -27,6 +34,7 @@ import { InnerColumn } from './PageComponents';
 // utils
 import moment from 'moment';
 import { useAuth } from '../../context/currentUser';
+import clsx from 'clsx';
 
 // icons
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -48,6 +56,12 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: '30px',
     paddingBottom: '20px',
   },
+  drawerList: {
+    width: 250,
+  },
+  drawerFullList: {
+    width: 'auto',
+  },
 }));
 
 export default function Navbar({
@@ -61,6 +75,7 @@ export default function Navbar({
   showCheckboxes,
   hideProps,
 }) {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const history = useHistory();
   const { pathname } = useLocation();
   const { currentUser, logOutUser, logInUser } = useAuth();
@@ -73,12 +88,22 @@ export default function Navbar({
     ...allRegions.filter((r) => r !== currentUser?.region),
   ];
 
+  // this is terrible but I'm doing it this way because it will cause an error that it can't find props of uudefined
   let hidePreviousScrims = hideProps?.hidePreviousScrims,
     hideCurrentScrims = hideProps?.hideCurrentScrims,
     hideUpcomingScrims = hideProps?.hideUpcomingScrims,
     setHidePreviousScrims = hideProps?.setHidePreviousScrims,
     setHideCurrentScrims = hideProps?.setHideCurrentScrims,
     setHideUpcomingScrims = hideProps?.setHideUpcomingScrims;
+
+  const drawerNavPush = (path) => {
+    setIsDrawerOpen(false);
+
+    // using settimeout so the user sees the drawer close before the path gets redirected.
+    setTimeout(() => {
+      history.push(path);
+    }, 100);
+  };
 
   return (
     <>
@@ -160,20 +185,6 @@ export default function Navbar({
                       )}
                     {currentUser?.uid ? (
                       <>
-                        {pathname !== '/settings' && (
-                          <Grid item>
-                            <Tooltip title="User settings">
-                              <Box onClick={() => history.push('/settings')}>
-                                <Button
-                                  variant="contained"
-                                  color="primary"
-                                  startIcon={<SettingsIcon />}>
-                                  Settings
-                                </Button>
-                              </Box>
-                            </Tooltip>
-                          </Grid>
-                        )}
                         <Grid item>
                           <Button
                             onClick={logOutUser}
@@ -327,6 +338,30 @@ export default function Navbar({
           </Toolbar>
         </AppBar>
       </HideOnScroll>
+
+      <Button onClick={() => setIsDrawerOpen(true)}>{'drawer open'}</Button>
+      <Drawer
+        anchor="left"
+        open={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}>
+        <List>
+          <ListItem button onClick={() => drawerNavPush('/settings')}>
+            <ListItemIcon>
+              <SettingsIcon />
+            </ListItemIcon>
+            <ListItemText primary="Settings" />
+
+            <Divider />
+            <ListItem button onClick={logOutUser}>
+              <ListItemIcon>
+                <ExitIcon />
+              </ListItemIcon>
+              <ListItemText primary="LogOut" />
+            </ListItem>
+          </ListItem>
+          <Divider />
+        </List>
+      </Drawer>
 
       <div className={classes.offset} />
       <div className={classes.toolbarDistance} />
