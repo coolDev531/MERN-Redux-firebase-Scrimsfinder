@@ -57,7 +57,12 @@ export default function Navbar({
   const { pathname } = useLocation();
   const history = useHistory();
 
-  const noBackButtonPaths = [/^\/user-setup$/, /^\/scrims$/, /^\/$/];
+  const noBackButtonPaths = [
+    /^\/user-setup/,
+    /^\/scrims$/,
+    /^\/scrims\/$/,
+    /^\/$/,
+  ];
 
   const renderBackButton = () => {
     for (let url of noBackButtonPaths) {
@@ -125,7 +130,7 @@ export default function Navbar({
                      ? means an optional extra slash after /scrims.
                      | means or.
                     */}
-                    {renderBackButton() && (
+                    {renderBackButton() ? (
                       <Button
                         className="mr-3"
                         variant="contained"
@@ -133,7 +138,7 @@ export default function Navbar({
                         onClick={() => history.goBack()}>
                         Go Back
                       </Button>
-                    )}
+                    ) : null}
 
                     {/* BURGER ICON */}
                     <Grid item>
