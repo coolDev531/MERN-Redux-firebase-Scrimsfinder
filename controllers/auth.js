@@ -75,11 +75,10 @@ const loginUser = async (req, res) => {
           // expiresIn: new Date(new Date()).setDate(new Date().getDate() + 30), // 30 days from now, does this work?
         },
         (err, token) => {
-          res.json({
+          return res.json({
             success: true,
             token: 'Bearer ' + token,
           });
-          return;
         }
       );
     } else {
