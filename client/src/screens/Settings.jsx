@@ -16,7 +16,6 @@ import { useAuth } from '../context/currentUser';
 // services
 import { getUsersInRegion, updateUser } from './../services/users';
 import { setAuthToken } from './../services/auth';
-import jwt_decode from 'jwt-decode';
 
 // remove spaces from # in discord name
 const removeSpaces = (str) => {
@@ -49,8 +48,8 @@ export default function Settings() {
   });
 
   const [rankData, setRankData] = useState({
-    rankDivision: currentUser.rank.replace(/[0-9]/g, '').trim(), // match letters, trim spaces.
-    rankNumber: currentUser.rank.replace(/[a-z]/gi, '').trim(), // match numbers
+    rankDivision: currentUser?.rank?.replace(/[0-9]/g, '').trim(), // match letters, trim spaces.
+    rankNumber: currentUser?.rank?.replace(/[a-z]/gi, '').trim(), // match numbers
   });
 
   const divisionsWithNumbers = [
@@ -69,7 +68,7 @@ export default function Settings() {
       usersInRegion.find(
         // make sure it's not the same user with uid.
         ({ name, _id }) => {
-          if (_id === currentUser._id) {
+          if (_id === currentUser?._id) {
             return false;
           }
 
@@ -83,7 +82,7 @@ export default function Settings() {
     () =>
       usersInRegion.find(({ discord, _id }) => {
         // make sure it's not the same user with _id.
-        if (_id === currentUser._id) {
+        if (_id === currentUser?._id) {
           return false;
         }
 
@@ -121,9 +120,9 @@ export default function Settings() {
         const { token } = data;
         localStorage.setItem('jwtToken', token); // add token to back-end
         setAuthToken(token); // add authorization in the request to be bearer token.
-        const decodedUser = jwt_decode(token); // decode user by hashed uid that was hashed in back-end
-        setCurrentUser(decodedUser);
-        setUserData({ ...decodedUser });
+        let updatedUser = data?.user;
+        setCurrentUser(updatedUser);
+        setUserData({ ...updatedUser });
         alert('Account details updated!');
       }
     } catch (error) {

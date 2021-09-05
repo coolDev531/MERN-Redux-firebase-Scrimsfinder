@@ -65,6 +65,8 @@ function App() {
       };
 
       window.getEnv = () => devLog(process.env);
+
+      window.setToken = (value) => localStorage.setItem('jwtToken', value);
     }
 
     // eslint-disable-next-line

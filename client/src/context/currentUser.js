@@ -5,7 +5,7 @@ import {
   useContext,
   useCallback,
 } from 'react';
-import { setAuthToken } from '../services/auth';
+import { setAuthToken, removeToken, verifyUser } from '../services/auth';
 import { auth, provider } from '../firebase';
 import { useHistory } from 'react-router-dom';
 
@@ -27,7 +27,7 @@ function CurrentUserProvider({ children }) {
     devLog('logging out...');
     auth.signOut();
     localStorage.removeItem('jwtToken'); // remove token from localStorage
-    setAuthToken(false);
+    removeToken();
     setCurrentUser(null); // set user to null.
     history.push('./user-setup'); // push back to signup
   }, [history]);
@@ -60,19 +60,55 @@ function CurrentUserProvider({ children }) {
   // HANDLE VERIFY
   // this runs on every mount  / refresh
   // verify user every mount and refresh
+  // useEffect(() => {
+  //   // Check for token to keep user logged in
+  //   const verify = async () => {
+  //     devLog('verifying user');
+  //     if (localStorage.jwtToken) {
+  //       // Set auth token header auth
+  //       const token = localStorage.jwtToken;
+  //       setAuthToken(token);
+
+  //       // Decode token and get user info and exp
+  //       const decodedUser = jwt_decode(token);
+  //       // Set user
+  //       setCurrentUser(decodedUser);
+
+  //       // Check for expired token
+  //       const currentTime = Date.now() / 1000; // to get in milliseconds
+  //       if (decodedUser.exp < currentTime) {
+  //         // if time passed expiration
+  //         // Logout user
+  //         logOutUser();
+  //         // Redirect to login
+  //         history.push('./user-setup');
+  //       }
+  //     }
+  //     setLoading(false);
+  //   };
+  //   verify();
+  //   return () => {
+  //     verify();
+  //   };
+  // }, [history, logOutUser]);
+
   useEffect(() => {
-    // Check for token to keep user logged in
-    const verify = async () => {
-      devLog('verifying user');
+    const handleVerify = async () => {
       if (localStorage.jwtToken) {
         // Set auth token header auth
         const token = localStorage.jwtToken;
         setAuthToken(token);
 
-        // Decode token and get user info and exp
         const decodedUser = jwt_decode(token);
+
+        const data = await verifyUser({
+          uid: decodedUser?.uid,
+          email: decodedUser?.email,
+        });
+
+        localStorage.setItem('jwtToken', data?.token);
         // Set user
-        setCurrentUser(decodedUser);
+        setCurrentUser(data.user);
 
         // Check for expired token
         const currentTime = Date.now() / 1000; // to get in milliseconds
@@ -86,13 +122,8 @@ function CurrentUserProvider({ children }) {
       }
       setLoading(false);
     };
-    verify();
-    return () => {
-      verify();
-    };
+    handleVerify();
   }, [history, logOutUser]);
-
-  devLog({ loading });
 
   let value = {
     currentUser,

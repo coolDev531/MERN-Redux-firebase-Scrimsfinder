@@ -158,7 +158,56 @@ const registerUser = async (req, res) => {
   }
 };
 
+// get google uid and email by using google auth firebase, then give rest of user data hosted in database.
+const verifyUser = async (req, res) => {
+  try {
+    const { email, uid } = req.body;
+
+    // will find the one user with the exact uid and email combination
+    const foundUser = await User.findOne({ email });
+
+    if (foundUser) {
+      const isMatch = bcrypt.compare(uid, foundUser.uid); // compare req.body.uid to user uid in db.
+      if (isMatch) {
+        const payload = {
+          uid: foundUser.uid,
+          email: foundUser.email,
+          rank: foundUser.rank,
+          _id: foundUser._id,
+          region: foundUser.region,
+          discord: foundUser.discord,
+          adminKey: foundUser.adminKey,
+          name: foundUser.name,
+        };
+
+        const accessToken = jwt.sign(payload, keys.secretOrKey, {
+          expiresIn: 31556926, // 1 year in seconds
+          // expiresIn: new Date(new Date()).setDate(new Date().getDate() + 30), // 30 days from now, does this work?
+        });
+
+        return res.status(200).json({
+          success: true,
+          token: accessToken,
+          user: foundUser,
+        });
+      } else {
+        res.status(500).json({
+          message: 'Invalid token',
+        });
+      }
+    } else {
+      res.status(500).json({
+        message: 'User not found!',
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   loginUser,
   registerUser,
+  verifyUser,
 };
