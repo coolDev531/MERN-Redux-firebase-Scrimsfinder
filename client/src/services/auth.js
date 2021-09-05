@@ -1,5 +1,16 @@
 import api from './apiConfig';
 import devLog from './../utils/devLog';
+import jwt_decode from 'jwt-decode';
+
+export const setAuthToken = (token) => {
+  if (token) {
+    // Apply authorization token to every request if logged in
+    api.defaults.headers.common['Authorization'] = token;
+  } else {
+    // Delete auth header
+    delete api.defaults.headers.common['Authorization'];
+  }
+};
 
 export const loginUser = async (googleParams) => {
   try {
@@ -7,7 +18,19 @@ export const loginUser = async (googleParams) => {
       email: googleParams.email,
       uid: googleParams.uid,
     });
-    return response.data;
+
+    if (response.data?.token) {
+      const { token } = response.data;
+      localStorage.setItem('jwtToken', token); // add token to back-end
+      setAuthToken(token); // add authorization in the request to be bearer token.
+      const decodedUser = jwt_decode(token); // decode user by hashed uid that was hashed in back-end
+      if (!decodedUser) console.error('unable to decode user');
+      return decodedUser;
+    } else {
+      console.error(
+        'error, no token provided by response, invalid token provided?'
+      );
+    }
   } catch (error) {
     const errorMsg = error?.response?.data?.error;
 
@@ -29,16 +52,6 @@ export const registerUser = async (userData) => {
       return;
     }
     throw error;
-  }
-};
-
-export const setAuthToken = (token) => {
-  if (token) {
-    // Apply authorization token to every request if logged in
-    api.defaults.headers.common['Authorization'] = token;
-  } else {
-    // Delete auth header
-    delete api.defaults.headers.common['Authorization'];
   }
 };
 

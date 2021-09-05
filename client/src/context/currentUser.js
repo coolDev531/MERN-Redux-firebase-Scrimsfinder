@@ -45,12 +45,8 @@ function CurrentUserProvider({ children }) {
       };
 
       // token = `Bearer ${bcryptHash}`
-      const data = await loginUser(googleParams); // get the jwt token from backend with params
-      if (data?.token) {
-        const { token } = data;
-        localStorage.setItem('jwtToken', token); // add token to back-end
-        setAuthToken(token); // add authorization in the request to be bearer token.
-        const decodedUser = jwt_decode(token); // decode user by hashed uid that was hashed in back-end
+      const decodedUser = await loginUser(googleParams); // get the jwt token from backend with params
+      if (decodedUser) {
         setCurrentUser(decodedUser);
         history.push('/');
       }
