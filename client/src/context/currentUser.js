@@ -32,11 +32,14 @@ function CurrentUserProvider({ children }) {
 
   const logOutUser = () => {
     auth.signOut();
+    localStorage.removeItem('jwtToken');
+    setAuthToken(false);
     setCurrentUser(null);
   };
 
   useEffect(() => {
     // Check for token to keep user logged in
+    console.log({ localStorage });
     if (localStorage.jwtToken) {
       // Set auth token header auth
       const token = localStorage.jwtToken;

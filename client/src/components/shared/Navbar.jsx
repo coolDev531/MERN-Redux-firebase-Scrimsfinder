@@ -32,8 +32,9 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import CreateIcon from '@material-ui/icons/Create';
 
 // services
-import { loginUser } from '../../services/auth';
+import { loginUser, setAuthToken } from '../../services/auth';
 import { auth, provider } from '../../firebase';
+import jwt_decode from 'jwt-decode';
 
 const useStyles = makeStyles((theme) => ({
   offset: theme.mixins.offset,
@@ -82,12 +83,14 @@ export default function Navbar({
       };
 
       // verifying user with google, then getting rest of data.
-      const verifiedUser = await loginUser(googleParams);
+      const { token } = await loginUser(googleParams); // data.token
+      localStorage.setItem('jwtToken', token);
+      setAuthToken(token);
+      const decoded = jwt_decode(token);
 
-      if (verifiedUser) {
-        setCurrentUser(verifiedUser);
-        history.push('/');
-      }
+      setCurrentUser(decoded);
+
+      history.push('/');
     }
   };
 

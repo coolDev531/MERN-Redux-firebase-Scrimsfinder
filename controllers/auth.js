@@ -31,7 +31,7 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 // same as verify user but with errors.
 const loginUser = async (req, res) => {
   const { email, uid } = req.body;
-  console.log({ uid });
+
   if (!email) {
     res.status(500).json({
       error: `No Email Provided`,
