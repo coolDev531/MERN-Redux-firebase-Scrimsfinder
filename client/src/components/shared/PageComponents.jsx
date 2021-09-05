@@ -21,14 +21,20 @@ const StyledInnerColumn = styled('div')(({ theme: _theme }) => ({
 /* the classnames on the components aren't doing anything, 
 they're just nice for devs who inspect the page to read a className rather than some randomly generated gibberish .*/
 
-export const PageContent = ({ children }) => (
-  <StyledPageContent className="page-content">{children}</StyledPageContent>
+export const PageContent = ({ children, ...rest }) => (
+  <StyledPageContent {...rest} className="page-content">
+    {children}
+  </StyledPageContent>
 );
 
-export const PageSection = ({ children }) => (
-  <StyledPageSection className="page-section">{children}</StyledPageSection>
+export const PageSection = ({ children, ...rest }) => (
+  <StyledPageSection {...rest} className="page-section">
+    {children}
+  </StyledPageSection>
 );
 
-export const InnerColumn = ({ children }) => (
-  <StyledInnerColumn className="inner-column">{children}</StyledInnerColumn>
+export const InnerColumn = ({ children, ...rest }) => (
+  <StyledInnerColumn {...rest} className="inner-column">
+    {children}
+  </StyledInnerColumn>
 );

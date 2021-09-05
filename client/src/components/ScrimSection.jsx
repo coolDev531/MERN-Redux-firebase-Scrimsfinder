@@ -9,6 +9,7 @@ import Moment from 'react-moment';
 import AdminArea from './shared/AdminArea';
 import { Box, Button, Grid } from '@material-ui/core';
 import { Link, useHistory } from 'react-router-dom';
+import { PageSection } from './shared/PageComponents';
 
 // utils / services
 import {
@@ -172,7 +173,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
   const teamTwoDifference = 5 - teamTwo.length;
 
   return (
-    <div className="page-section one-scrim__container">
+    <PageSection aria-label="scrim section">
       <div className={classes.scrimBox}>
         <Grid
           item
@@ -543,6 +544,6 @@ export default function ScrimSection({ scrim, isInDetail }) {
           />
         </div>
       </div>
-    </div>
+    </PageSection>
   );
 }
