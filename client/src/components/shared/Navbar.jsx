@@ -205,107 +205,175 @@ export default function Navbar({
         anchor={DRAWER_ANCHOR}
         open={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}>
-        <div
-          className={clsx(classes.drawerList, {
-            [classes.drawerFullList]:
-              DRAWER_ANCHOR === 'top' || DRAWER_ANCHOR === 'bottom',
-          })}>
-          <List>
-            {/* Settings button */}
-            <ListItem button onClick={() => drawerNavPush('/settings')}>
-              <ListItemIcon>
-                <SettingsIcon />
-              </ListItemIcon>
-              <ListItemText primary="Settings" />
-            </ListItem>
-
-            <Divider />
-
-            {/* Create scrim button (admins only) */}
-            <AdminArea>
-              <ListItem button onClick={() => drawerNavPush('/scrims/new')}>
+        <InnerColumn>
+          <div
+            className={clsx(classes.drawerList, {
+              [classes.drawerFullList]:
+                DRAWER_ANCHOR === 'top' || DRAWER_ANCHOR === 'bottom',
+            })}>
+            <List>
+              {/* Settings button */}
+              <ListItem button onClick={() => drawerNavPush('/settings')}>
                 <ListItemIcon>
-                  <CreateIcon />
+                  <SettingsIcon />
                 </ListItemIcon>
-                <ListItemText primary="Create Scrim" />
+                <ListItemText primary="Settings" />
               </ListItem>
+
               <Divider />
-            </AdminArea>
 
-            {/* Log out button */}
-            {currentUser?.uid && (
-              <>
-                <ListItem button onClick={logOutUser}>
+              {/* Create scrim button (admins only) */}
+              <AdminArea>
+                <ListItem button onClick={() => drawerNavPush('/scrims/new')}>
                   <ListItemIcon>
-                    <ExitIcon />
+                    <CreateIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Log Out" />
+                  <ListItemText primary="Create Scrim" />
                 </ListItem>
-              </>
-            )}
-            {/* don't show divider if there isn't anything else to show below... */}
-            {showCheckboxes && <Divider />}
-          </List>
+                <Divider />
+              </AdminArea>
 
-          {showCheckboxes && (
-            <Grid
-              item
-              container
-              alignItems="center"
-              style={{ padding: '20px' }}>
-              <FormGroup
-                row
-                className="text-white"
-                style={{ justifyContent: 'center' }}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      // the UI says "show X scrims", so in this case we are reversing the boolean for checked, lol.
-                      // doesn't matter functionally.
-                      checked={!hideCurrentScrims}
-                      color="primary"
-                      onChange={() =>
-                        setHideCurrentScrims((prevState) => !prevState)
-                      }
-                      name="hideCurrentScrims"
-                    />
-                  }
-                  label="Show current scrims"
-                  labelPlacement="bottom"
-                />
+              {/* Log out button */}
+              {currentUser?.uid && (
+                <>
+                  <ListItem button onClick={logOutUser}>
+                    <ListItemIcon>
+                      <ExitIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Log Out" />
+                  </ListItem>
+                </>
+              )}
+              {/* don't show divider if there isn't anything else to show below... */}
+              {showCheckboxes && <Divider />}
+            </List>
+          </div>
 
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={!hideUpcomingScrims}
-                      color="primary"
-                      onChange={() =>
-                        setHideUpcomingScrims((prevState) => !prevState)
-                      }
-                      name="hideUpcomingScrims"
-                    />
-                  }
-                  label="Show upcoming scrims"
-                  labelPlacement="bottom"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      color="primary"
-                      checked={!hidePreviousScrims}
-                      onChange={() =>
-                        setHidePreviousScrims((prevState) => !prevState)
-                      }
-                      name="hidePreviousScrims"
-                    />
-                  }
-                  label="Show Previous Scrims"
-                  labelPlacement="bottom"
-                />
-              </FormGroup>
-            </Grid>
+          {!showLess && (
+            <>
+              <Grid
+                container
+                alignItems="center"
+                direction="row"
+                justifyContent="space-between"
+                style={{ padding: '15px 10px 10px 10px' }}>
+                {showDropdowns && (
+                  <Grid
+                    item
+                    container
+                    xs={6}
+                    alignItems="center"
+                    id="nav__selects--container">
+                    {/* date regions and filters */}
+                    <Grid item>
+                      <TextField
+                        id="date"
+                        required
+                        label="Scrims Date"
+                        type="date"
+                        name="scrimsDate"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        value={
+                          moment(new Date(scrimsDate)).format('yyyy-MM-DD') ||
+                          moment().format('yyyy-MM-DD')
+                        }
+                        onChange={(e) => {
+                          setScrimsDate(moment(e.target.value));
+                        }}
+                      />
+
+                      <FormHelperText className="text-white">
+                        Filter scrims by date
+                      </FormHelperText>
+                    </Grid>
+
+                    <Box marginRight={4} />
+
+                    <Grid item id="nav__region-filter--container">
+                      <InputLabel className="text-white">Region</InputLabel>
+
+                      <Select
+                        value={scrimsRegion}
+                        className="text-white"
+                        onChange={(e) => {
+                          const region = e.target.value;
+                          toggleFetch((prev) => !prev);
+                          setScrimsRegion(region); // set the navbar select value to selected region
+                        }}>
+                        {selectRegions.map((region, key) => (
+                          <MenuItem value={region} key={key}>
+                            {region}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      <FormHelperText className="text-white">
+                        Filter scrims by region
+                      </FormHelperText>
+                    </Grid>
+                  </Grid>
+                )}
+
+                {/* Show scrims (current, previous, upcoming) buttons */}
+                {showCheckboxes && (
+                  <Grid item alignItems="center" container xs={6}>
+                    <FormGroup
+                      row
+                      className="text-white"
+                      style={{ justifyContent: 'center' }}>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            // the UI says "show X scrims", so in this case we are reversing the boolean for checked, lol.
+                            // doesn't matter functionally.
+                            checked={!hideCurrentScrims}
+                            color="primary"
+                            onChange={() =>
+                              setHideCurrentScrims((prevState) => !prevState)
+                            }
+                            name="hideCurrentScrims"
+                          />
+                        }
+                        label="Show current scrims"
+                        labelPlacement="bottom"
+                      />
+
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={!hideUpcomingScrims}
+                            color="primary"
+                            onChange={() =>
+                              setHideUpcomingScrims((prevState) => !prevState)
+                            }
+                            name="hideUpcomingScrims"
+                          />
+                        }
+                        label="Show upcoming scrims"
+                        labelPlacement="bottom"
+                      />
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            color="primary"
+                            checked={!hidePreviousScrims}
+                            onChange={() =>
+                              setHidePreviousScrims((prevState) => !prevState)
+                            }
+                            name="hidePreviousScrims"
+                          />
+                        }
+                        label="Show Previous Scrims"
+                        labelPlacement="bottom"
+                      />
+                    </FormGroup>
+                  </Grid>
+                )}
+              </Grid>
+            </>
           )}
-        </div>
+        </InnerColumn>
       </Drawer>
 
       <div className={classes.offset} />
