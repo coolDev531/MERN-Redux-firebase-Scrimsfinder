@@ -9,6 +9,9 @@ picture img {
   width: 100%;
   height: auto;
 }
+#scrims-container {
+  scroll-margin-top: 2em;
+}
 
 .page-break {
   display: flex;

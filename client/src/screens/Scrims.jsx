@@ -9,7 +9,11 @@ import { showEarliestFirst, showLatestFirst } from '../utils/getSortedScrims';
 import moment from 'moment';
 import 'moment-timezone';
 import { compareDateWithCurrentTime } from './../utils/compareDateWithCurrentTime';
-import { InnerColumn, PageContent } from '../components/shared/PageComponents';
+import {
+  InnerColumn,
+  PageContent,
+  PageSection,
+} from '../components/shared/PageComponents';
 
 const compareDates = (scrim) => {
   let currentTime = new Date().toISOString();
@@ -151,7 +155,7 @@ export default function Scrims() {
       <div className="page-break" />
 
       <PageContent>
-        <div id="scrims-container" className="page-section">
+        <div id="scrims-container">
           {filteredScrims.length > 0 ? (
             <>
               {/* CURRENT SCRIMS */}
