@@ -10,7 +10,8 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import { auth, provider } from '../firebase';
 import Navbar from './../components/shared/Navbar';
-import { registerUser } from '../services/auth';
+import { registerUser, setAuthToken } from '../services/auth';
+import jwt_decode from 'jwt-decode';
 
 const KEYCODES = {
   ENTER: 13,
@@ -170,18 +171,22 @@ export default function Intro() {
 
           if (!yes) return;
 
-          let createdUser = await registerUser(newUser);
+          // HANDLE SIGN UP.
+          let { token } = await registerUser(newUser);
 
-          if (createdUser) {
-            setCurrentUser(createdUser);
+          if (token) {
+            // token = `Bearer ${bcryptHash}`
+            localStorage.setItem('jwtToken', token); // add token to back-end
+            setAuthToken(token); // add authorization in the request to be bearer token.
+            const decodedUser = jwt_decode(token); // decode user by hashed uid that was hashed in back-end
+            setCurrentUser(decodedUser);
 
             console.log(
               '%cuser created with the summoner name: ' + userData.name,
               'color: lightgreen'
             );
 
-            localStorage.setItem('currentUser', JSON.stringify(createdUser));
-            return createdUser;
+            return decodedUser;
           }
         }, 200);
       }

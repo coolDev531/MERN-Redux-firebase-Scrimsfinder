@@ -57,11 +57,10 @@ const loginUser = async (req, res) => {
   }
 
   // Check uid
-  bcrypt.compare(uid, foundUser.uid).then((isMatch) => {
+  try {
+    const isMatch = bcrypt.compare(uid, foundUser.uid); // compare req.body.uid to user uid in db.
+
     if (isMatch) {
-      console.log({ isMatch, uid });
-      // User matched
-      // Create JWT Payload
       const payload = {
         uid: foundUser.uid,
         email: foundUser.uid,
@@ -71,25 +70,19 @@ const loginUser = async (req, res) => {
         discord: foundUser.discord,
         adminKey: foundUser.adminKey,
       };
-      // Sign token
-      jwt.sign(
-        payload,
-        keys.secretOrKey,
-        {
-          expiresIn: 31556926, // 1 year in seconds
-          // expiresIn: new Date(new Date()).setDate(new Date().getDate() + 30), // 30 days from now, does this work?
-        },
-        (err, token) => {
-          return res.json({
-            success: true,
-            token: 'Bearer ' + token,
-          });
-        }
-      );
+
+      const accessToken = jwt.sign(payload, keys.secretOrKey, {
+        expiresIn: 31556926, // 1 year in seconds
+        // expiresIn: new Date(new Date()).setDate(new Date().getDate() + 30), // 30 days from now, does this work?
+      });
+
+      res.json({ success: true, token: 'Bearer ' + accessToken });
     } else {
       return res.status(500).json('password incorrect');
     }
-  });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
 };
 
 const registerUser = async (req, res) => {
@@ -131,7 +124,11 @@ const registerUser = async (req, res) => {
         if (err) throw err;
         newUser.uid = hash; // hash google uid to use as token, maybe there's something better that google provides as token.
         newUser.save();
-        res.status(201).json(newUser);
+        res.status(201).json({
+          success: true,
+          token: 'Bearer ' + hash,
+          user: newUser,
+        });
         console.log('User created: ', newUser);
       });
     });
