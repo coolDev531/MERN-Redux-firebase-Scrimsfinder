@@ -87,7 +87,7 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
       justifyContent="space-between"
       xs={12}>
       <Grid item xs={8}>
-        <h3 className="text-black">Upload Post Game Lobby Image:</h3>
+        <h3 className="text-black">Upload post-game lobby image:</h3>
       </Grid>
       <Grid item xs={4}>
         <Tooltip

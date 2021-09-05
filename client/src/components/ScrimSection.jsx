@@ -24,6 +24,7 @@ import { insertCasterInScrim } from './../services/scrims';
 import ShareIcon from '@material-ui/icons/Share';
 import SettingsIcon from '@material-ui/icons/Settings';
 import UploadPostGameImage from './UploadPostGameImage';
+import pluralize from 'pluralize';
 
 const compareDates = (scrim) => {
   let currentTime = new Date().getTime();
@@ -462,7 +463,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
                         spacing={2}>
                         <Grid item>
                           <h3 className="text-black">
-                            Post-Game Image Uploaded!
+                            Post-game image uploaded!
                           </h3>
                         </Grid>
                         <Grid item>
@@ -486,8 +487,28 @@ export default function ScrimSection({ scrim, isInDetail }) {
                       {`${teamOne.length + teamTwo.length}/10`}
                     </h2>
                     <h5 className="text-black">
-                      Please get {teamOneDifference} players in team one <br />
-                      and {teamTwoDifference} players in team two <br />
+                      Please get
+                      {/* if teamOne still needs players show this else don't show */}
+                      {teamOneDifference > 0 ? (
+                        <>
+                          &nbsp;{teamOneDifference}&nbsp;
+                          {/* spell check singular and plural with pluralize */}
+                          {pluralize('players', teamOneDifference)} in Team
+                          1&nbsp;
+                          <br />
+                        </>
+                      ) : null}
+                      {/* if teamTwo needs players, show this text. */}
+                      {teamTwoDifference > 0 ? (
+                        <>
+                          {/* if team one needs players, show 'and', else don't show 'and' */}
+                          {teamOneDifference > 0 ? 'and' : ''}&nbsp;
+                          {teamTwoDifference}
+                          &nbsp;{pluralize('players', teamTwoDifference)} in
+                          Team 2
+                          <br />
+                        </>
+                      ) : null}
                       to unlock lobby name and password
                     </h5>
                     {scrim.createdBy?.email === currentUser?.email ? (
