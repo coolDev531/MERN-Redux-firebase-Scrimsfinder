@@ -95,13 +95,6 @@ p {
   justify-content: space-between !important;
 }
 
-.site-header {
-  top: 0 !important;
-  z-index: 5 !important;
-  background-color: black !important;
-  border-bottom: 1px solid white !important;
-}
-
 .direction-column {
   flex-direction: column;
 }

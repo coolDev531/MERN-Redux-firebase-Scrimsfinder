@@ -37,6 +37,12 @@ import CreateIcon from '@material-ui/icons/Create';
 const useStyles = makeStyles((theme) => ({
   offset: theme.mixins.offset,
   toolbarDistance: theme.mixins.toolbar,
+  siteHeader: {
+    top: '0',
+    zIndex: '5',
+    backgroundColor: 'black',
+    borderBottom: '1px solid white',
+  },
 }));
 
 export default function Navbar({
@@ -72,7 +78,7 @@ export default function Navbar({
   return (
     <>
       <HideOnScroll>
-        <AppBar className="page-section site-header" position="sticky">
+        <AppBar className={classes.siteHeader} position="sticky">
           <Toolbar>
             <InnerColumn>
               <div className="d-flex align-center justify-between">
