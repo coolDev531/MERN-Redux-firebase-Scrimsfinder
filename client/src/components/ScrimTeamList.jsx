@@ -143,7 +143,6 @@ export default function ScrimTeamList({
         ...currentUser,
         role: playerEntered.role,
         teamLeavingName,
-        isLobbyHost: scrim.lobbyHost?._id === playerEntered?._user?._id,
       },
     };
 
@@ -165,7 +164,6 @@ export default function ScrimTeamList({
         ...playerToKick,
         role: playerToKick.role,
         teamLeavingName,
-        isLobbyHost: scrim.lobbyHost?.name === playerToKick.name,
         _id: playerToKick._user?._id,
         name: playerToKick._user?.name,
       },
