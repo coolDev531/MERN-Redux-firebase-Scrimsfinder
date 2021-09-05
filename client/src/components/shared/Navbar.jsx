@@ -112,7 +112,7 @@ export default function Navbar({
                   {!pathname.match(/^\/scrims$/) &&
                     !pathname.match(/^\/scrims\/$/) &&
                     pathname !== '/' &&
-                    !pathname.match(/\/^user-setup/) && (
+                    !pathname.match(/^\/user-setup/) && (
                       <Grid item>
                         <Box onClick={() => history.goBack()}>
                           <Button
