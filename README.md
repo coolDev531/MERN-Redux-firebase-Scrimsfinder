@@ -54,7 +54,7 @@ If you have an admin key, you can host a scrim/lobby. Then players just have to 
 - users can edit their account information as long as it isn't taken
 
 ### 9/4/2021
-- Database is now fully relational (teams and casters of scrim reference the user).
+- Database is now fully relational (teams and casters of scrim reference the user, etc).
 - Added JWT & bcrypt ontop of google authentication with firebase.
 
 ### 9/5/2021
