@@ -3,6 +3,7 @@ const db = require('../db/connection');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const keys = require('../config/keys');
+const mongoose = require('mongoose');
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
@@ -91,6 +92,13 @@ const updateUser = async (req, res) => {
 const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
+
+    let isValid = mongoose.Types.ObjectId.isValid(id);
+
+    if (!isValid) {
+      return res.status(500).json({ error: 'invalid id' });
+    }
+
     let user = await User.findOne({ _id: id }).select([
       'discord',
       'name',

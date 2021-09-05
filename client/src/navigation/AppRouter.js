@@ -12,13 +12,12 @@ import Settings from '../screens/Settings';
 
 const AppRouter = () => (
   <Switch>
-    <PrivateRoute exact path="/scrims" component={Scrims} />
-    <PrivateRoute path="/scrims/new" component={ScrimCreate} />
-    <PrivateRoute path="/scrims/:id/edit" component={ScrimEdit} />
-    <PrivateRoute path="/scrims/:id" component={ScrimDetail} />
-    <PrivateRoute path="/settings" component={Settings} />
-    <Route path="/user-setup" component={Intro} />
-    <PrivateRoute exact path="/" component={Scrims} />
+    <PrivateRoute exact path="/scrims/new" component={ScrimCreate} />
+    <PrivateRoute exact path="/scrims/:id/edit" component={ScrimEdit} />
+    <PrivateRoute exact path="/scrims/:id" component={ScrimDetail} />
+    <PrivateRoute exact path="/settings" component={Settings} />
+    <Route exact path="/user-setup" component={Intro} />
+    <PrivateRoute exact path={['/', '/scrims']} component={Scrims} />
     <Route component={NotFound} />
   </Switch>
 );

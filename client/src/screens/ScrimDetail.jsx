@@ -20,9 +20,9 @@ export default function ScrimDetail() {
         if (scrimData) {
           setScrim(scrimData);
         }
-        // push to / if scrim not found.
+        // push to /scrims if scrim not found.
       } catch (error) {
-        history.push('/');
+        history.push('/scrims');
       }
     };
     fetchScrimData();

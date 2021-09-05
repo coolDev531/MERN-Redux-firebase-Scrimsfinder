@@ -6,7 +6,6 @@ const User = require('../models/user');
 
 // utils
 const sample = require('../utils/sample');
-const toIsoString = require('../utils/toIsoString');
 const generatePassword = require('../utils/generatePassword');
 const {
   checkIfScrimIsToday,
@@ -102,12 +101,18 @@ const getTodaysScrims = async (_req, res) => {
 const getScrimById = async (req, res) => {
   try {
     const { id } = req.params;
+    let isValid = mongoose.Types.ObjectId.isValid(id);
+
+    if (!isValid) {
+      return res.status(500).json({ error: 'invalid id' });
+    }
+
     let scrim = Scrim.findOne({ _id: id });
 
     if (!scrim) return res.status(404).json({ message: 'Scrim not found!' });
 
     // using populate to show more than _id when using Ref on the model.
-    return scrim
+    return await scrim
       .populate('casters', populateUser)
       .populate('createdBy', populateUser)
       .populate('lobbyHost', populateUser)
