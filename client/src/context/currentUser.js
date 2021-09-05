@@ -1,15 +1,13 @@
 import { useState, createContext, useEffect } from 'react';
 import { verifyUser } from '../services/auth';
 import { useHistory } from 'react-router-dom';
+import { auth } from '../firebase';
 
 const CurrentUserContext = createContext();
 
 function CurrentUserProvider({ children }) {
-  const [currentUser, setCurrentUser] = useState(() => {
-    const user = JSON.parse(localStorage.getItem('currentUser'));
-
-    return user !== null ? user : null;
-  });
+  const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const history = useHistory();
 
@@ -18,29 +16,48 @@ function CurrentUserProvider({ children }) {
   }, [currentUser]);
 
   // verify user details in mongodb database.
+  // useEffect(() => {
+  //   const handleVerifyUser = async () => {
+  //     let googleParams = {
+  //       uid: currentUser?.uid, // google id
+  //       email: currentUser?.email,
+  //     };
+
+  //     // back-end is taking google data and checking if it exists.
+  //     const verifiedUser = await verifyUser(googleParams);
+
+  //     if (verifiedUser) {
+  //       setCurrentUser(verifiedUser);
+  //     } else {
+  //       setCurrentUser(null);
+  //       history.push('/user-setup');
+  //     }
+  //   };
+  //   handleVerifyUser();
+  // }, [history, currentUser?.uid, currentUser?.email]);
+
   useEffect(() => {
-    const handleVerifyUser = async () => {
+    const unsubscribe = auth.onAuthStateChanged(async (googleUser) => {
       let googleParams = {
-        uid: currentUser?.uid, // google id
-        email: currentUser?.email,
+        uid: googleUser?.uid, // google id
+        email: googleUser?.email,
       };
 
       // back-end is taking google data and checking if it exists.
       const verifiedUser = await verifyUser(googleParams);
+      setCurrentUser(verifiedUser);
+      setLoading(false);
+    });
 
-      if (verifiedUser) {
-        setCurrentUser(verifiedUser);
-      } else {
-        setCurrentUser(null);
-        history.push('/user-setup');
-      }
+    return () => {
+      console.log('UNSUBSCRIBE');
+      unsubscribe();
     };
-    handleVerifyUser();
-  }, [history, currentUser?.uid, currentUser?.email]);
+  }, []);
 
   return (
     <CurrentUserContext.Provider value={{ currentUser, setCurrentUser }}>
-      {children}
+      {!loading && children}
     </CurrentUserContext.Provider>
   );
 }
