@@ -4,6 +4,7 @@ const cors = require('cors');
 const PORT = process.env.PORT || 3000;
 const db = require('./db/connection');
 const bodyParser = require('body-parser');
+const passport = require('passport');
 const apiKey = require('./utils/apiKey');
 const scrimRoutes = require('./routes/scrims');
 const userRoutes = require('./routes/users');
@@ -25,6 +26,10 @@ app.get('/', (_req, res) => {
 // require an api key for these routes
 app.use(apiKey);
 app.use('/api', scrimRoutes);
+
+// Passport config
+require('./config/passport')(passport);
+
 app.use('/api', userRoutes);
 app.use('/api', authRoutes);
 
