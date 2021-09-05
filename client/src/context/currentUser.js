@@ -56,6 +56,7 @@ function CurrentUserProvider({ children }) {
 
   // HANDLE VERIFY
   // this runs on every mount  / refresh
+  // verify user every mount and refresh
   useEffect(() => {
     // Check for token to keep user logged in
     if (localStorage.jwtToken) {
