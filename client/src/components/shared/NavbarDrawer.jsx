@@ -46,6 +46,10 @@ const useStyles = makeStyles({
   },
 });
 
+const sleep = (ms) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
+
 export default function NavbarDrawer({
   isDrawerOpen,
   setIsDrawerOpen,
@@ -77,13 +81,12 @@ export default function NavbarDrawer({
     setHideCurrentScrims = hideProps?.setHideCurrentScrims,
     setHideUpcomingScrims = hideProps?.setHideUpcomingScrims;
 
-  const drawerNavPush = (path) => {
+  const drawerNavPush = async (path) => {
     setIsDrawerOpen(false);
 
-    // using settimeout so the user sees the drawer close before the path gets redirected.
-    setTimeout(() => {
-      history.push(path);
-    }, 100);
+    // using sleep so the user sees the drawer close before the path gets redirected.
+    await sleep(80);
+    history.push(path);
   };
 
   const onSelectRegion = (e) => {
