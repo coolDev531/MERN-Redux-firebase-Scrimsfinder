@@ -43,7 +43,16 @@ export const loginUser = async (googleParams) => {
 export const registerUser = async (userData) => {
   try {
     const response = await api.post('/auth/register', userData);
-    return response.data;
+
+    if (response?.data?.token) {
+      const { token } = response.data;
+      // token = `Bearer ${bcryptHash}`
+      localStorage.setItem('jwtToken', token); // add token to back-end
+      setAuthToken(token); // add authorization in the request to be bearer token.
+      const decodedUser = jwt_decode(token); // decode user by hashed uid that was hashed in back-end
+
+      return decodedUser;
+    }
   } catch (error) {
     const errorMsg = error?.response?.data?.error;
 

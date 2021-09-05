@@ -1,7 +1,6 @@
+import { useState, useEffect, useCallback, Fragment } from 'react';
+
 // components
-import { useEffect, useCallback, Fragment } from 'react';
-import { useState, useContext } from 'react';
-import { CurrentUserContext } from '../context/currentUser';
 import { Redirect } from 'react-router-dom';
 import Alert from '@material-ui/lab/Alert';
 import { Button, Grid, Typography } from '@material-ui/core';
@@ -14,10 +13,10 @@ import { InnerColumn } from './../components/shared/DivComponents';
 
 // utils
 import { auth, provider } from '../firebase';
-import jwt_decode from 'jwt-decode';
+import { useAuth } from './../context/currentUser';
 
 // services
-import { registerUser, setAuthToken } from '../services/auth';
+import { registerUser } from '../services/auth';
 
 const KEYCODES = {
   ENTER: 13,
@@ -32,6 +31,8 @@ function getSteps() {
   ];
 }
 
+// the page where users sign up.
+// can also be named Signup.
 export default function Intro() {
   const [userData, setUserData] = useState({
     name: '',
@@ -45,7 +46,7 @@ export default function Intro() {
     rankDivision: 'Iron',
     rankNumber: '4',
   });
-  const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
+  const { currentUser } = useAuth();
   const [currentFormIndex, setCurrentFormIndex] = useState(0);
   const [errors, setErrors] = useState(new Map()); // using a map to keep unique errors.
   const steps = getSteps();
@@ -63,15 +64,17 @@ export default function Intro() {
     /* if the text input value is empty and the errors map doesn't have it as a key:
     add it as a key and it's value as the message to the error map */
     Object.entries(userData)
-      // don't throw errors for adminKey
+      // don't throw errors for adminKey, it's not a required field.
       .filter(([k]) => k !== 'adminKey')
       .map(([key, value]) =>
+        // if value is empty and errors DON'T already have the key, add it to the errors map state.
         value === ''
           ? !errors.has(key) &&
             setErrors(
               (prevState) => new Map(prevState.set(key, `${key} is empty!`))
             )
           : errors.has(key) &&
+            // else if they do have the key, remove it from the errors map state.
             setErrors((prevState) => {
               /* else if the text input value isn't empty and the key exists (input.name) in the errors map, 
               remove it from the errors map */
@@ -178,29 +181,14 @@ export default function Intro() {
           if (!yes) return;
 
           // HANDLE SIGN UP.
-          let data = await registerUser(newUser);
+          let decodedUser = await registerUser(newUser);
 
-          if (data?.token) {
-            const { token } = data;
-            // token = `Bearer ${bcryptHash}`
-            localStorage.setItem('jwtToken', token); // add token to back-end
-            setAuthToken(token); // add authorization in the request to be bearer token.
-            const decodedUser = jwt_decode(token); // decode user by hashed uid that was hashed in back-end
-            setCurrentUser(decodedUser);
-
-            console.log(
-              '%cuser created with the summoner name: ' + userData.name,
-              'color: lightgreen'
-            );
-
-            return decodedUser;
-          }
+          return decodedUser;
         }, 200);
       }
     },
     [
       createGoogleAccount,
-      setCurrentUser,
       userData.name,
       userData.discord,
       userData.rank,
@@ -332,7 +320,7 @@ export default function Intro() {
                 </Grid>
               )}
             </form>
-          </InnerColum>
+          </InnerColumn>
         </div>
       </main>
     </>
