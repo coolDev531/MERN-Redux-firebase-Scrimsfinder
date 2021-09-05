@@ -1,8 +1,10 @@
-import { useState, createContext, useEffect } from 'react';
+import { useState, createContext, useEffect, useContext } from 'react';
 import { verifyUser } from '../services/auth';
 import { auth } from '../firebase';
 
 const CurrentUserContext = createContext();
+
+export const useAuth = () => useContext(CurrentUserContext);
 
 function CurrentUserProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
@@ -20,15 +22,14 @@ function CurrentUserProvider({ children }) {
       setCurrentUser(verifiedUser);
       setLoading(false);
     });
-
     return () => {
-      console.log('UNSUBSCRIBE');
       unsubscribe();
     };
   }, []);
 
   return (
-    <CurrentUserContext.Provider value={{ currentUser, setCurrentUser }}>
+    <CurrentUserContext.Provider
+      value={{ currentUser, loading, setCurrentUser }}>
       {!loading && children}
     </CurrentUserContext.Provider>
   );
