@@ -64,6 +64,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const DRAWER_ANCHOR = 'top';
+
 export default function Navbar({
   toggleFetch,
   setScrimsRegion,
@@ -313,13 +315,16 @@ export default function Navbar({
       </HideOnScroll>
 
       <Button onClick={() => setIsDrawerOpen(true)}>{'drawer open'}</Button>
+
+      {/* BURGER MENU, LEFT ANCHOR */}
       <Drawer
-        anchor="left"
+        anchor={DRAWER_ANCHOR}
         open={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}>
         <div
           className={clsx(classes.list, {
-            [classes.fullList]: false,
+            [classes.fullList]:
+              DRAWER_ANCHOR === 'top' || DRAWER_ANCHOR === 'bottom',
           })}>
           <List>
             {/* Settings button */}
@@ -352,7 +357,6 @@ export default function Navbar({
                   </ListItemIcon>
                   <ListItemText primary="Log Out" />
                 </ListItem>
-                <Divider />
               </>
             )}
           </List>
