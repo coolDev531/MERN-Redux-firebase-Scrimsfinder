@@ -225,13 +225,13 @@ export default function ScrimTeamList({
                           rel="noreferrer">
                           {userInfo?.name}
                         </a>
-                        {userInfo.rank !== 'Unranked' && (
+                        {userInfo?.rank !== 'Unranked' && (
                           <>
                             &nbsp;
                             <img
                               width="25px"
                               style={{ objectFit: 'cover' }}
-                              alt={playerAssigned.role}
+                              alt={playerAssigned?.role}
                               src={getRankImage(userInfo)}
                             />
                           </>
