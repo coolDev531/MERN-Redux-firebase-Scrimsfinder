@@ -89,9 +89,9 @@ const main = async () => {
       lobbyName: 'testScrim 1',
       teamOne: teamOnePlayers,
       teamTwo: teamTwoPlayers,
-      casters: ['jimmy', 'bob'],
+      casters: ['jimmy', 'bob'], // not an array of strings anymore, an array of objects, check models/scrim.js line 35.
       gameStartTime: setHours(new Date(), '3:00pm'),
-      lobbyHost: sample([...teamOnePlayers, ...teamTwoPlayers]),
+      lobbyHost: sample([...teamOnePlayers, ...teamTwoPlayers]), // get a random person from the 2 teams to host the lobby.
       createdBy: teamOnePlayers[0]._user,
     },
 
