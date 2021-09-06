@@ -91,16 +91,20 @@ const updateUser = async (req, res) => {
 const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
-    const adminKey = req?.query?.adminKey ?? nul;
-
-    if (!adminKey) {
-      return res.status(500).json({ error: 'adminKey not provided' });
-    }
+    const adminKey = req?.query?.adminKey;
 
     let isValid = mongoose.Types.ObjectId.isValid(id);
 
     if (!isValid) {
       return res.status(500).json({ error: 'invalid id' });
+    }
+
+    if (!adminKey) {
+      return res.status(500).json({ error: 'admin key not provided' });
+    }
+
+    if (adminKey !== KEYS.ADMIN_KEY) {
+      return res.status(500).json({ error: 'incorrect admin key' });
     }
 
     let user = await User.findOne({ _id: id }).select([
@@ -109,12 +113,17 @@ const getUserById = async (req, res) => {
       'region',
       'createdAt',
       'updatedAt',
+      'email',
+      'adminKey',
     ]);
 
     if (!user) return res.status(404).json({ message: 'User not found!' });
 
     // using populate to show more than _id when using Ref on the model.
-    return res.json(user);
+    return res.json({
+      ...user._doc,
+      'isAdmin?': user.adminKey === KEYS.ADMIN_KEY,
+    });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
