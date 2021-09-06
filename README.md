@@ -79,6 +79,10 @@ SECRET_OR_KEY=secret_or_key_here
 ADMIN_KEY=admin_key_here
 ```
 
+There are 2 models currently, the `User` and the `Scrim` models.
+A `Scrim` is basically a game lobby that contains 2 teams, and casters, and more. Most of these objects nested inside the scrim reference the `User` model.
+The `User` is authenticated using both Google (for email) and JWT (to save decoded user into local storage and to ping node-api for verification).
+
 ## Front-End
 
 Front-end is made using the `React` library and was bootstrapped using `Create-React-App`. It uses `@material-ui/core` as the UI framework, please check the documentation for Material-UI here: https://material-ui.com/ if not familiar with it.
