@@ -3,6 +3,8 @@ import AppRouter from './navigation/AppRouter';
 import { createTheme, ThemeProvider } from '@material-ui/core';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Footer from './components/shared/Footer';
+import { useAuth } from './context/currentUser';
+import Loading from './components/shared/Loading';
 
 const theme = createTheme({
   palette: {
@@ -38,6 +40,12 @@ const theme = createTheme({
 });
 
 function App() {
+  const { loading: verifyingUser } = useAuth();
+
+  if (verifyingUser) {
+    return <Loading text="Verifying user..." />;
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />

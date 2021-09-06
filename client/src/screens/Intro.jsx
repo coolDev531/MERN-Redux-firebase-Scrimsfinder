@@ -22,7 +22,6 @@ import { KEYCODES } from './../utils/keycodes';
 
 // services
 import { registerUser } from '../services/auth';
-import Loading from '../components/shared/Loading';
 
 function getSteps() {
   return [
@@ -35,7 +34,7 @@ function getSteps() {
 // the page where users sign up.
 // can also be named Signup.
 export default function Intro() {
-  const { currentUser, setCurrentUser, loading: loadingVerifyUser } = useAuth();
+  const { currentUser, setCurrentUser } = useAuth();
 
   const [userData, setUserData] = useState({
     name: '',
@@ -225,10 +224,6 @@ export default function Intro() {
     goPreviousStep,
     steps.length,
   ]);
-
-  if (loadingVerifyUser) {
-    return <Loading text="Verifying user..." />;
-  }
 
   if (currentUser) {
     console.log('redirecting to /');
