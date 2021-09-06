@@ -101,12 +101,13 @@ function CurrentUserProvider({ children }) {
     setCurrentUser,
     logOutUser,
     logInUser,
+    loading,
   };
 
   return (
     <CurrentUserContext.Provider value={value}>
       {/* don't render children if loading */}
-      {!loading && children}
+      {children}
     </CurrentUserContext.Provider>
   );
 }
