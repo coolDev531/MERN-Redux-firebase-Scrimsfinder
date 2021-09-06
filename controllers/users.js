@@ -102,6 +102,8 @@ const getUserById = async (req, res) => {
       'discord',
       'name',
       'region',
+      'createdAt',
+      'updatedAt',
     ]);
 
     if (!user) return res.status(404).json({ message: 'User not found!' });
