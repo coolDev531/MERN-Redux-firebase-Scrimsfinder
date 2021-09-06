@@ -16,9 +16,11 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 
 // utils
 import { RANK_IMAGES, ROLE_IMAGES } from '../utils/imageMaps';
+import { truncate } from './../utils/truncate';
 
 // services
 import { insertPlayerInScrim, removePlayerFromScrim } from '../services/scrims';
+
 // icons
 import SwapIcon from '@material-ui/icons/SwapHoriz';
 import JoinIcon from '@material-ui/icons/MeetingRoom';
@@ -223,7 +225,7 @@ export default function ScrimTeamList({
                           href={`https://${userInfo?.region}.op.gg/summoner/userName=${userInfo?.name}`}
                           target="_blank"
                           rel="noreferrer">
-                          {userInfo?.name}
+                          {truncate(userInfo?.name, 14)}
                         </a>
                         {userInfo?.rank !== 'Unranked' && (
                           <>
