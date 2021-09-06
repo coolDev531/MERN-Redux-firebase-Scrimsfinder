@@ -26,7 +26,7 @@ If you have an admin key, you can host a scrim/lobby. Then players just have to 
 
 <br />
 
-# changelog
+# changelog (major)
 
 ### 8/29/2021
 
@@ -66,17 +66,53 @@ If you have an admin key, you can host a scrim/lobby. Then players just have to 
 
 <br />
 
-# Dev area
+# Developer area
 
 ## Back-end
 
 Back-end is made using `Express` & `Node.js`, with `Mongoose` to connect to the `MongoDB` database.
+There are a few .env variables you need to set-up.
+
+```
+X_API_KEY=api_key_here
+SECRET_OR_KEY=secret_or_key_here
+ADMIN_KEY=admin_key_here
+```
 
 ## Front-End
 
-Front-end is made using the `React` library and was bootstrapped using `Create-React-App`. It uses `@material-ui/core` as the UI framework.
+Front-end is made using the `React` library and was bootstrapped using `Create-React-App`. It uses `@material-ui/core` as the UI framework, please check the documentation for Material-UI here: https://material-ui.com/ if not familiar with it.
+
+There are some .env variables you need to set up before getting started:
+```
+REACT_APP_ADMIN_KEY
+
+# Node API
+REACT_APP_API_URL
+REACT_APP_API_KEY
+
+# S3
+REACT_APP_S3_ACCESS_KEY_ID
+REACT_APP_S3_SECRET_ACCESS_KEY
+
+# Firebase
+REACT_APP_FIREBASE_MEASUREMENT_ID
+REACT_APP_FIREBASE_APP_ID
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID
+REACT_APP_FIREBASE_STORAGE_BUCKET
+REACT_APP_FIREBASE_PROJECT_ID
+REACT_APP_FIREBASE_AUTH_DOMAIN
+REACT_APP_FIREBASE_API_KEY
+```
+
 
 ## running it on your machine
-
 - to run back-end, type in cmd: `yarn` to install latest-dependencies, then run the command: `npm run dev`.
 - to run front-end, cd into `client` directory and run `yarn` to install dependencies, then run `yarn start` to run the server.
+
+
+## pull requests
+Please link your issue to your pull request when making one. Please the request to merge into develop instead of master.
+Do not merge without being approved.
+Please squash your commits before merging.
+
