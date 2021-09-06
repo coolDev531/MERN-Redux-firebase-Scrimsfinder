@@ -26,7 +26,7 @@ If you have an admin key, you can host a scrim/lobby. Then players just have to 
 
 <br />
 
-# changelog
+# changelog (major)
 
 ### 8/29/2021
 
@@ -66,17 +66,109 @@ If you have an admin key, you can host a scrim/lobby. Then players just have to 
 
 <br />
 
-# Dev area
+# Developer area
 
 ## Back-end
 
 Back-end is made using `Express` & `Node.js`, with `Mongoose` to connect to the `MongoDB` database.
+There are a few .env variables you need to set-up.
+
+```
+X_API_KEY=api_key_here
+SECRET_OR_KEY=secret_or_key_here
+ADMIN_KEY=admin_key_here
+```
+
+There are 2 models currently, the `User` and the `Scrim` models.
+A `Scrim` is basically a game lobby that contains 2 teams, and casters, and more. Most of these objects nested inside the scrim reference the `User` model.
+The `User` is authenticated using both Google (for email) and JWT (to save decoded user into local storage and to ping node-api for verification).
 
 ## Front-End
 
-Front-end is made using the `React` library and was bootstrapped using `Create-React-App`. It uses `@material-ui/core` as the UI framework.
+Front-end is made using the `React` library and was bootstrapped using `Create-React-App`. It uses `@material-ui/core` as the UI framework, please check the documentation for Material-UI here: https://material-ui.com/ if not familiar with it.
+
+
+The folder hiearchy for the react-app looks something like this:
+```
+src
+|__ assets/
+      |__ images
+        |__ ranks
+          |__ diamond.png
+          |__ bronze.png
+        |__ roles
+          |__ top.png
+          |__ bottom.png
+          
+|__ context
+  |__ currentUser.js
+  |__ scrimsContext.js
+  
+|__ components
+  |__ CountdownTimer.jsx
+  |__ IntroForms.jsx
+  |__ ScrimTeamList.jsx
+  |__ UploadPostGameImage.jsx
+  |__ shared
+    |__ Navbar.jsx
+    |__ NavbarDrawer.jsx
+    |__ Loading.jsx
+    |__ Footer.jsx
+    |__ Tooltip.jsx    
+    
+|__ services/
+   |__ apiConfig.js
+   |__ users.js
+   |__ auth.js
+   |__ scrims.js
+   
+|_ styles/
+   |__ scrimSection.styles.js
+   
+|_ screens/
+   |__ Intro.jsx
+   |__ Scrims.jsx
+   |__ ScrimDetail.jsx
+   |__ ScrimCreate.jsx
+   |__ ScrimEdit.jsx
+   |__ Settings.jsx
+   
+|__ utils/
+ |__ keycodes.js
+ |__ copyToClipboard.js
+```
+
+There are some .env variables you need to set up before getting started:
+```
+REACT_APP_ADMIN_KEY
+
+# Node API
+REACT_APP_API_URL
+REACT_APP_API_KEY
+
+# S3
+REACT_APP_S3_ACCESS_KEY_ID
+REACT_APP_S3_SECRET_ACCESS_KEY
+
+# Firebase
+REACT_APP_FIREBASE_MEASUREMENT_ID
+REACT_APP_FIREBASE_APP_ID
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID
+REACT_APP_FIREBASE_STORAGE_BUCKET
+REACT_APP_FIREBASE_PROJECT_ID
+REACT_APP_FIREBASE_AUTH_DOMAIN
+REACT_APP_FIREBASE_API_KEY
+```
+
 
 ## running it on your machine
-
 - to run back-end, type in cmd: `yarn` to install latest-dependencies, then run the command: `npm run dev`.
 - to run front-end, cd into `client` directory and run `yarn` to install dependencies, then run `yarn start` to run the server.
+
+
+## pull requests
+- Please link your issue to your pull request when making one. 
+- Please the request to merge into develop instead of master.
+- Do not merge without being approved.
+- Please squash your commits before merging.
+
