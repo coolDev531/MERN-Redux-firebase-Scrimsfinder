@@ -2,7 +2,7 @@
 import { useEffect } from 'react';
 import { useAuth } from './../../context/currentUser';
 import { useHistory } from 'react-router-dom';
-
+import { useMediaQuery, useTheme } from '@material-ui/core';
 // components
 import { InnerColumn } from './PageComponents';
 import Select from '@material-ui/core/Select';
@@ -68,6 +68,9 @@ export default function NavbarDrawer({
   const { currentUser, logOutUser } = useAuth();
   const history = useHistory();
   let allRegions = ['NA', 'EUW', 'EUNE', 'LAN'];
+  const theme = useTheme();
+  const matchesSm = theme.breakpoints.down('sm');
+  const matchesXs = theme.breakpoints.down('xs');
 
   let selectRegions = [
     currentUser?.region,
@@ -181,8 +184,6 @@ export default function NavbarDrawer({
                   item
                   container
                   xs={4}
-                  sm={4}
-                  md={4}
                   alignItems="center"
                   id="nav__selects--container">
                   {/* date regions and filters */}
@@ -209,8 +210,9 @@ export default function NavbarDrawer({
                   </Grid>
 
                   <Hidden smUp>
-                    <br />
+                    <Box marginbottom={2} />
                   </Hidden>
+
                   <Hidden xsDown>
                     <Box marginRight={4} />
                   </Hidden>

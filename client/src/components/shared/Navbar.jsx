@@ -136,7 +136,6 @@ export default function Navbar({
                     item
                     container
                     xs={6}
-                    sm={6}
                     alignItems="center"
                     spacing={2}
                     direction="row"
@@ -190,6 +189,7 @@ export default function Navbar({
                       alignItems="center"
                       direction="row"
                       justifyContent="space-between"
+                      item
                       xs={12}>
                       {/* Show scrims (current, previous, upcoming) buttons */}
                       {showCheckboxes && (
