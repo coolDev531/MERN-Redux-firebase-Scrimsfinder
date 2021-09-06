@@ -227,7 +227,7 @@ export default function ScrimTeamList({
                             href={`https://${userInfo?.region}.op.gg/summoner/userName=${userInfo?.name}`}
                             target="_blank"
                             rel="noreferrer">
-                            {truncate(userInfo?.name, 14)}
+                            {truncate(userInfo?.name, 16)}
                           </a>
                         </Tooltip>
                         {userInfo?.rank !== 'Unranked' && (
