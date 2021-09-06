@@ -18,7 +18,7 @@ import {
 
 // services & utils
 import { useAuth } from '../context/currentUser';
-import { getUsersInRegion, updateUser } from './../services/users';
+import { updateUser, getAllUsers } from './../services/users';
 import { setAuthToken } from './../services/auth';
 
 // remove spaces from # in discord name
@@ -39,10 +39,11 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 180,
   },
 }));
+
 // userEdit
 export default function Settings() {
   const { currentUser, setCurrentUser } = useAuth();
-  const [usersInRegion, setUsersInRegion] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
   const [userData, setUserData] = useState({
     name: currentUser?.name, // LoL summoner name
     discord: currentUser?.discord,
@@ -67,8 +68,14 @@ export default function Settings() {
 
   const classes = useStyles();
 
+  const usersInRegion = useMemo(
+    () => allUsers.filter((user) => user?.region === userData?.region),
+    [allUsers, userData?.region]
+  );
+
   const foundUserSummonerName = useMemo(
     () =>
+      // check only for users in the region.
       usersInRegion.find(
         // make sure it's not the same user with uid.
         ({ name, _id }) => {
@@ -84,7 +91,8 @@ export default function Settings() {
 
   const foundUserDiscord = useMemo(
     () =>
-      usersInRegion.find(({ discord, _id }) => {
+      // discord is unique across all regions, unlike summoner names.
+      allUsers.find(({ discord, _id }) => {
         // make sure it's not the same user with _id.
         if (_id === currentUser?._id) {
           return false;
@@ -92,9 +100,10 @@ export default function Settings() {
 
         return removeSpaces(discord) === removeSpaces(userData.discord);
       }),
-    [userData.discord, usersInRegion, currentUser?._id]
+    [userData.discord, allUsers, currentUser?._id]
   );
 
+  // chrone is throwing a violation error for this: [Violation] 'submit' handler took 701ms
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -146,15 +155,15 @@ export default function Settings() {
   useEffect(() => {
     const fetchUsers = async () => {
       // for checking if summoner name or discord are taken.
-      const usersInRegionData = await getUsersInRegion(userData.region);
+      const allUsersData = await getAllUsers();
 
-      setUsersInRegion(usersInRegionData);
+      setAllUsers(allUsersData);
     };
     fetchUsers();
     return () => {
       fetchUsers();
     };
-  }, [userData.region]);
+  }, []);
 
   useEffect(() => {
     const { rankNumber, rankDivision } = rankData;
