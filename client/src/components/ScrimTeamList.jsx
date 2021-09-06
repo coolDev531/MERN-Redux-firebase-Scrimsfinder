@@ -240,7 +240,7 @@ export default function ScrimTeamList({
                     }
                     secondary={
                       <>
-                        {playerAssigned?.discord && (
+                        {userInfo?.discord && (
                           <>
                             Discord -&nbsp;
                             <Typography
