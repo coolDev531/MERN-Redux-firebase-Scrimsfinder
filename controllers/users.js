@@ -2,7 +2,7 @@ const User = require('../models/user');
 const db = require('../db/connection');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const keys = require('../config/keys');
+const KEYS = require('../config/keys');
 const mongoose = require('mongoose');
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
@@ -58,7 +58,7 @@ const updateUser = async (req, res) => {
 
         req.body.uid = hash;
 
-        const accessToken = jwt.sign(payload, keys.secretOrKey, {
+        const accessToken = jwt.sign(payload, KEYS.SECRET_OR_KEY, {
           expiresIn: 31556926, // 1 year in seconds
           // expiresIn: new Date(new Date()).setDate(new Date().getDate() + 30), // 30 days from now, does this work?
         });
@@ -91,6 +91,11 @@ const updateUser = async (req, res) => {
 const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
+    const adminKey = req?.query?.adminKey ?? nul;
+
+    if (!adminKey) {
+      return res.status(500).json({ error: 'adminKey not provided' });
+    }
 
     let isValid = mongoose.Types.ObjectId.isValid(id);
 

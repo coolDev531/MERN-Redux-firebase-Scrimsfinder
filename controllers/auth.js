@@ -1,5 +1,5 @@
 const db = require('../db/connection');
-const keys = require('../config/keys');
+const KEYS = require('../config/keys');
 // jwt
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -72,7 +72,7 @@ const loginUser = async (req, res) => {
         name: foundUser.name,
       };
 
-      const accessToken = jwt.sign(payload, keys.secretOrKey, {
+      const accessToken = jwt.sign(payload, KEYS.SECRET_OR_KEY, {
         expiresIn: 31556926, // 1 year in seconds
         // expiresIn: new Date(new Date()).setDate(new Date().getDate() + 30), // 30 days from now, does this work?
       });
@@ -136,7 +136,7 @@ const registerUser = async (req, res) => {
           name: newUser.name,
         };
 
-        const accessToken = jwt.sign(payload, keys.secretOrKey, {
+        const accessToken = jwt.sign(payload, KEYS.SECRET_OR_KEY, {
           expiresIn: 31556926, // 1 year in seconds
           // expiresIn: new Date(new Date()).setDate(new Date().getDate() + 30), // 30 days from now, does this work?
         });
@@ -180,7 +180,7 @@ const verifyUser = async (req, res) => {
           name: foundUser.name,
         };
 
-        const accessToken = jwt.sign(payload, keys.secretOrKey, {
+        const accessToken = jwt.sign(payload, KEYS.SECRET_OR_KEY, {
           expiresIn: 31556926, // 1 year in seconds
           // expiresIn: new Date(new Date()).setDate(new Date().getDate() + 30), // 30 days from now, does this work?
         });
