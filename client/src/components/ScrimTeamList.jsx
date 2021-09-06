@@ -220,7 +220,7 @@ export default function ScrimTeamList({
                       <Grid container alignItems="center">
                         <a
                           className="link"
-                          href={`https://${playerAssigned?._user?.region}.op.gg/summoner/userName=${playerAssigned?.name}`}
+                          href={`https://${userInfo?.region}.op.gg/summoner/userName=${userInfo?.name}`}
                           target="_blank"
                           rel="noreferrer">
                           {userInfo?.name}
