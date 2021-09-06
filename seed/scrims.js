@@ -3,6 +3,7 @@ const faker = require('faker');
 const Scrim = require('../models/scrim');
 const setHours = require('../utils/setHours');
 const sample = require('../utils/sample');
+// const User = require('../models/user'); // maybe need this?
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
@@ -20,48 +21,67 @@ const main = async () => {
 
   const teamOnePlayers = [
     {
-      name: 'GitCat',
       role: 'Top',
-      rank: 'Diamond 1',
-      region: 'NA',
-      discord: 'Test#123',
+      team: { name: 'teamOne' }, //  using an object so it's scalable. right now it only contains name
+      _user: {
+        name: 'GitCat',
+        rank: 'Diamond 1',
+        region: 'NA',
+        discord: 'Test#123',
+      },
     },
     {
-      name: 'AmumuCrying',
+      team: { name: 'teamOne' },
       role: 'Jungle',
-      rank: 'Silver 2',
-      region: 'NA',
-      discord: 'Test#143',
+      _user: {
+        rank: 'Silver 2',
+        region: 'NA',
+        discord: 'Test#143',
+      },
     },
     {
-      name: 'Azuru',
-      role: 'Mid',
-      rank: 'Platinum 2',
-      region: 'NA',
-      discord: 'Test#113',
+      team: { name: 'teamOne' },
+      role: 'Jungle',
+
+      _user: {
+        name: 'Azuru',
+        rank: 'Platinum 2',
+        region: 'NA',
+        discord: 'Test#113',
+      },
     },
     {
-      name: 'Cailtyn Bot',
+      team: { name: 'teamOne' },
       role: 'ADC',
-      rank: 'Challenger',
-      region: 'NA',
-      discord: 'Test#11123',
+
+      _user: {
+        name: 'Cailtyn Bot',
+        rank: 'Challenger',
+        region: 'NA',
+        discord: 'Test#11123',
+      },
     },
     {
-      name: 'EloInflatedYummiOTP',
+      team: { name: 'teamOne' },
       role: 'Support',
-      rank: 'Platinum 1',
-      region: 'NA',
-      discord: 'Test#222',
+      _user: {
+        name: 'EloInflatedYummiOTP',
+        rank: 'Platinum 1',
+        region: 'NA',
+        discord: 'Test#222',
+      },
     },
   ];
 
   const teamTwoPlayers = [...roles].map((role, index) => ({
-    name: faker.name.firstName(),
     role: role,
-    rank: sample(ranks),
-    region: 'NA',
-    discord: `${faker.name.firstName()}#1${index}3`,
+    team: { name: 'teamTwo' },
+    _user: {
+      name: faker.name.firstName(),
+      rank: sample(ranks),
+      region: 'NA',
+      discord: `${faker.name.firstName()}#1${index}3`,
+    },
   }));
 
   const scrims = [
@@ -72,7 +92,7 @@ const main = async () => {
       casters: ['jimmy', 'bob'],
       gameStartTime: setHours(new Date(), '3:00pm'),
       lobbyHost: sample([...teamOnePlayers, ...teamTwoPlayers]),
-      createdBy: teamOnePlayers[0],
+      createdBy: teamOnePlayers[0]._user,
     },
 
     {
@@ -83,7 +103,7 @@ const main = async () => {
       casters: ['YummiFan', 'AurelionSolNerfPls'],
       gameStartTime: setHours(new Date(), '9:15pm'),
       lobbyHost: sample([...teamOnePlayers, ...teamTwoPlayers]),
-      createdBy: teamOnePlayers[3],
+      createdBy: teamOnePlayers[3]._user,
     },
   ];
 
