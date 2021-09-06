@@ -30,33 +30,44 @@ const compareDates = (scrim) => {
 };
 
 export default function Scrims() {
-  const today = useMemo(() => moment(), []);
+  const today = useMemo(() => moment(), []); // not necessary to use useMemo.
 
   const { currentUser } = useAuth();
 
   const { scrims, toggleFetch, scrimsLoaded } = useContext(ScrimsContext);
 
-  const [filteredScrims, setFilteredScrims] = useState([]); // the array of filtered scrims
+  const [filteredScrims, setFilteredScrims] = useState([]); // the array of filtered scrims (both scrimsDate and scrimsRegion)
 
-  const [scrimsDate, setScrimsDate] = useState(today); // the value for the date to filter scrims by
+  /**
+   * @stateName {scrimsDate}
+   * @return {Date} the date value to filter the scrims by
+   */
+  const [scrimsDate, setScrimsDate] = useState(today); // the date value for the date to filter scrims by
 
-  const [hidePreviousScrims, setHidePreviousScrims] = useState(false);
-  const [hideCurrentScrims, setHideCurrentScrims] = useState(false);
-  const [hideUpcomingScrims, setHideUpcomingScrims] = useState(false);
-
+  /**
+   * @stateName {scrimsRegion}
+   * @return {String} the string value to filter the scrims by
+   */
   const [scrimsRegion, setScrimsRegion] = useState(
     // the value for the region to filter scrims by
     () => currentUser?.region ?? 'NA'
   );
 
+  // the hide/unhide toggle buttons on the drawer navbar.
+  const [hidePreviousScrims, setHidePreviousScrims] = useState(false);
+  const [hideCurrentScrims, setHideCurrentScrims] = useState(false);
+  const [hideUpcomingScrims, setHideUpcomingScrims] = useState(false);
+
   useEffect(() => {
     const fetchScrims = async () => {
       const dateFilteredScrims = scrims.filter(
         ({ gameStartTime }) =>
+          // make sure the specific scrim's gameStartTime is equal to what the value is in the state to filter it by.
           new Date(gameStartTime).toLocaleDateString() ===
           new Date(scrimsDate).toLocaleDateString()
       );
 
+      // take the date filtered scrims and then filter by region
       const filteredScrimsByDateAndRegion = dateFilteredScrims.filter(
         (scrim) => scrim.region === currentUser?.region
       );
@@ -65,6 +76,7 @@ export default function Scrims() {
       setFilteredScrims(filteredScrimsByDateAndRegion);
     };
 
+    // does this have to be async?
     fetchScrims();
   }, [scrims, currentUser?.region, today, scrimsDate]);
 
@@ -77,15 +89,18 @@ export default function Scrims() {
           new Date(scrimsDate).toLocaleDateString()
         );
       }),
+    // change date filtered scrims whenever scrims and scrimsDate cahnges.
     [scrims, scrimsDate]
   );
 
   const filteredScrimsByDateAndRegion = useMemo(
     () => dateFilteredScrims.filter((scrim) => scrim.region === scrimsRegion),
+    // change filteredScrimsByDateAndRegion whenever dateFilteredScrims and scrimsRegion changes
     [dateFilteredScrims, scrimsRegion]
   );
 
   useEffect(() => {
+    //  set filteredScrims to filteredScrimsByDateAndRegion.
     setFilteredScrims(filteredScrimsByDateAndRegion);
     // this runs everytime scrimsRegion and datefilteredScrims changes.
   }, [filteredScrimsByDateAndRegion]);
