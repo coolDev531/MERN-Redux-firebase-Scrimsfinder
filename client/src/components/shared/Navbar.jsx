@@ -21,8 +21,10 @@ import {
   Checkbox,
   InputLabel,
   TextField,
+  FormHelperText,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import NavbarDrawer from './NavbarDrawer';
 // import { BOOTCAMP_LOL_SRC } from '../../utils/bootcampImg'; // need license
 import moment from 'moment';
 import 'moment-timezone';
@@ -32,8 +34,6 @@ import Tooltip from './Tooltip';
 // icons
 import KeyIcon from '@material-ui/icons/VpnKey';
 import MenuIcon from '@material-ui/icons/Menu'; // burger icon
-import NavbarDrawer from './NavbarDrawer';
-import { FormHelperText } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   offset: theme.mixins.offset,
