@@ -69,9 +69,9 @@ export default function NavbarDrawer({
   const history = useHistory();
   let allRegions = ['NA', 'EUW', 'EUNE', 'LAN'];
   const theme = useTheme();
-  const matchesSm = theme.breakpoints.down('sm');
-  const matchesXs = theme.breakpoints.down('xs');
-
+  const matchesSm = useMediaQuery(theme.breakpoints.down('sm'));
+  const matchesXs = useMediaQuery(theme.breakpoints.down('xs'));
+  console.log({ matchesSm });
   let selectRegions = [
     currentUser?.region,
     ...allRegions.filter((r) => r !== currentUser?.region),
@@ -183,10 +183,13 @@ export default function NavbarDrawer({
                 <Grid
                   item
                   container
-                  xs={4}
-                  alignItems="center"
+                  xs={6}
+                  md={4}
+                  alignItems={matchesSm ? 'flex-start' : 'center'}
+                  justifyContent="flex-start"
+                  direction={matchesSm ? 'column' : 'row'}
                   id="nav__selects--container">
-                  {/* date regions and filters */}
+                  {/* date and regions filters */}
                   <Grid item>
                     <TextField
                       id="date"
@@ -209,8 +212,8 @@ export default function NavbarDrawer({
                     </FormHelperText>
                   </Grid>
 
-                  <Hidden smUp>
-                    <Box marginbottom={2} />
+                  <Hidden mdUp>
+                    <br />
                   </Hidden>
 
                   <Hidden xsDown>
@@ -239,11 +242,21 @@ export default function NavbarDrawer({
 
               {/* Show scrims (current, previous, upcoming) buttons */}
               {showCheckboxes && (
-                <Grid item alignItems="center" container xs={6}>
+                <Grid
+                  item
+                  alignItems="center"
+                  container
+                  justifyContent="flex-end"
+                  direction={matchesXs ? 'column' : 'row'}
+                  spacing={2}
+                  xs={6}
+                  md={8}>
                   <FormGroup
                     row
                     className="text-white"
-                    style={{ justifyContent: 'center' }}>
+                    style={{
+                      justifyContent: 'flex-end',
+                    }}>
                     <FormControlLabel
                       control={
                         <Checkbox
