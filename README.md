@@ -112,7 +112,8 @@ REACT_APP_FIREBASE_API_KEY
 
 
 ## pull requests
-Please link your issue to your pull request when making one. Please the request to merge into develop instead of master.
-Do not merge without being approved.
-Please squash your commits before merging.
+- Please link your issue to your pull request when making one. 
+- Please the request to merge into develop instead of master.
+- Do not merge without being approved.
+- Please squash your commits before merging.
 
