@@ -71,7 +71,7 @@ export default function NavbarDrawer({
   const theme = useTheme();
   const matchesSm = useMediaQuery(theme.breakpoints.down('sm'));
   const matchesXs = useMediaQuery(theme.breakpoints.down('xs'));
-  console.log({ matchesSm });
+
   let selectRegions = [
     currentUser?.region,
     ...allRegions.filter((r) => r !== currentUser?.region),
