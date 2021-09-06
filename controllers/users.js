@@ -17,6 +17,8 @@ const getAllUsers = async (req, res) => {
         'discord',
         'name',
         'region',
+        'createdAt',
+        'updatedAt',
       ]);
       return res.json(users);
     } catch (error) {
