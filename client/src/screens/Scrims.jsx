@@ -16,13 +16,14 @@ import { compareDateWithCurrentTime } from './../utils/compareDateWithCurrentTim
 import { useAuth } from './../context/currentUser';
 
 const compareDates = (scrim) => {
-  let currentTime = new Date().toISOString();
+  let currentTime = new Date().getTime();
   let gameStartTime = new Date(scrim.gameStartTime).getTime();
-  let now = new Date(currentTime).getTime();
 
-  if (gameStartTime < now) {
+  if (currentTime < gameStartTime) {
+    // if the currentTime is less than the game start time, that means the game didn't start
     return -1;
-  } else if (gameStartTime > now) {
+  } else if (currentTime > gameStartTime) {
+    // if the current time is greater than the game start time, that means the game started
     return 1;
   } else {
     return 0;
@@ -58,28 +59,6 @@ export default function Scrims() {
   const [hideCurrentScrims, setHideCurrentScrims] = useState(false);
   const [hideUpcomingScrims, setHideUpcomingScrims] = useState(false);
 
-  useEffect(() => {
-    const fetchScrims = async () => {
-      const dateFilteredScrims = scrims.filter(
-        ({ gameStartTime }) =>
-          // make sure the specific scrim's gameStartTime is equal to what the value is in the state to filter it by.
-          new Date(gameStartTime).toLocaleDateString() ===
-          new Date(scrimsDate).toLocaleDateString()
-      );
-
-      // take the date filtered scrims and then filter by region
-      const filteredScrimsByDateAndRegion = dateFilteredScrims.filter(
-        (scrim) => scrim.region === currentUser?.region
-      );
-
-      // set filtered scrims by date and region
-      setFilteredScrims(filteredScrimsByDateAndRegion);
-    };
-
-    // does this have to be async?
-    fetchScrims();
-  }, [scrims, currentUser?.region, today, scrimsDate]);
-
   const dateFilteredScrims = useMemo(
     () =>
       scrims.filter(({ gameStartTime }) => {
@@ -108,7 +87,8 @@ export default function Scrims() {
   let upcomingScrims = useMemo(
     () =>
       showEarliestFirst(filteredScrims).filter(
-        (scrim) => compareDates(scrim) > -1
+        // make sure the scrim game startTime
+        (scrim) => compareDates(scrim) < 0
       ),
     [filteredScrims]
   );

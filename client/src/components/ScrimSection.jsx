@@ -32,8 +32,10 @@ const compareDates = (scrim) => {
   let gameStartTime = new Date(scrim.gameStartTime).getTime();
 
   if (currentTime < gameStartTime) {
+    // if the currentTime is less than the game start time, that means the game didn't start
     return -1;
   } else if (currentTime > gameStartTime) {
+    // if the current time is greater than the game start time, that means the game started
     return 1;
   } else {
     return 0;
