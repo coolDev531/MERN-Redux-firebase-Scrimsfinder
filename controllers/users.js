@@ -27,7 +27,13 @@ const getAllUsers = async (req, res) => {
   } else {
     // if no region, just get all users.
     try {
-      const users = await User.find().select(['discord', 'name', 'region']); // show only discord and name.
+      const users = await User.find().select([
+        'discord',
+        'name',
+        'region',
+        'createdAt',
+        'updatedAt',
+      ]);
       return res.json(users);
     } catch (error) {
       return res.status(500).json({ error: error.message });
