@@ -15,15 +15,16 @@ import 'moment-timezone';
 import { compareDateWithCurrentTime } from './../utils/compareDateWithCurrentTime';
 import { useAuth } from './../context/currentUser';
 
+// compare scrim start time with now.
 const compareDates = (scrim) => {
   let currentTime = new Date().getTime();
   let gameStartTime = new Date(scrim.gameStartTime).getTime();
 
   if (currentTime < gameStartTime) {
-    // if the currentTime is less than the game start time, that means the game didn't start
+    // if the currentTime is less than the game start time, that means the game didn't start (game is in future)
     return -1;
   } else if (currentTime > gameStartTime) {
-    // if the current time is greater than the game start time, that means the game started
+    // if the current time is greater than the game start time, that means the game started (game is in past)
     return 1;
   } else {
     return 0;
@@ -86,19 +87,20 @@ export default function Scrims() {
 
   let upcomingScrims = useMemo(
     () =>
+      // showEarliestFirst is a sorting method. (getSortedScrims.js)
       showEarliestFirst(filteredScrims).filter(
-        // make sure the scrim game startTime
-        (scrim) => compareDates(scrim) < 0
+        (scrim) => compareDates(scrim) < 0 // game didn't start
       ),
     [filteredScrims]
   );
 
   let previousScrims = useMemo(
     () =>
+      // showLatestFirst is a sorting method.
       showLatestFirst(
         filteredScrims.filter(
           // if the scrim has a winning team then it ended
-          (scrim) => compareDates(scrim) < 1 && scrim.teamWon
+          (scrim) => compareDates(scrim) > 0 && scrim.teamWon
         )
       ),
     [filteredScrims]
@@ -109,7 +111,7 @@ export default function Scrims() {
       showEarliestFirst(
         filteredScrims.filter(
           // scrims that have started but didn't end (don't have winning team)
-          (scrim) => compareDates(scrim) < 1 && !scrim.teamWon
+          (scrim) => compareDates(scrim) > 0 && !scrim.teamWon
         )
       ),
     [filteredScrims]
@@ -117,6 +119,7 @@ export default function Scrims() {
 
   useEffect(() => {
     // if scrimsDate < currentTime
+    // if the scrim is in the past compared to filtered scrims date.
     if (compareDateWithCurrentTime(scrimsDate) > 0) {
       setHideUpcomingScrims(true);
     } else {
