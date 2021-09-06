@@ -22,6 +22,7 @@ import {
   Divider,
   ListItemText,
   ListItemIcon,
+  Hidden,
   makeStyles,
 } from '@material-ui/core';
 import AdminArea from './AdminArea';
@@ -179,7 +180,9 @@ export default function NavbarDrawer({
                 <Grid
                   item
                   container
-                  xs={6}
+                  xs={4}
+                  sm={4}
+                  md={4}
                   alignItems="center"
                   id="nav__selects--container">
                   {/* date regions and filters */}
@@ -205,7 +208,12 @@ export default function NavbarDrawer({
                     </FormHelperText>
                   </Grid>
 
-                  <Box marginRight={4} />
+                  <Hidden smUp>
+                    <br />
+                  </Hidden>
+                  <Hidden xsDown>
+                    <Box marginRight={4} />
+                  </Hidden>
 
                   <Grid item id="nav__region-filter--container">
                     <InputLabel className="text-white">Region</InputLabel>

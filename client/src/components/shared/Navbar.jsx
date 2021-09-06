@@ -12,18 +12,28 @@ import {
   Toolbar,
   Typography,
   IconButton,
+  MenuItem,
+  Box,
+  Select,
+  Hidden,
+  FormControlLabel,
+  FormGroup,
+  Checkbox,
+  InputLabel,
+  TextField,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 // import { BOOTCAMP_LOL_SRC } from '../../utils/bootcampImg'; // need license
+import moment from 'moment';
 import 'moment-timezone';
 import HideOnScroll from './HideOnScroll';
 import { InnerColumn } from './PageComponents';
 import Tooltip from './Tooltip';
-
 // icons
 import KeyIcon from '@material-ui/icons/VpnKey';
 import MenuIcon from '@material-ui/icons/Menu'; // burger icon
 import NavbarDrawer from './NavbarDrawer';
+import { FormHelperText } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   offset: theme.mixins.offset,
@@ -73,6 +83,23 @@ export default function Navbar({
     return true;
   };
 
+  let allRegions = ['NA', 'EUW', 'EUNE', 'LAN'];
+
+  let selectRegions = [
+    currentUser?.region,
+    ...allRegions.filter((r) => r !== currentUser?.region),
+  ];
+
+  const onSelectRegion = (e) => {
+    const region = e.target.value;
+    toggleFetch((prev) => !prev); // not necessary, trying to ping the server.
+    setScrimsRegion(region); // set the navbar select value to selected region
+  };
+
+  const onSelectDate = (e) => {
+    setScrimsDate(moment(e.target.value));
+  };
+
   return (
     <>
       <HideOnScroll>
@@ -90,7 +117,7 @@ export default function Navbar({
                   direction="row"
                   alignItems="center"
                   justifyContent="space-between">
-                  <Grid item container alignItems="center" xs={12} sm={6}>
+                  <Grid item container alignItems="center" xs={6} sm={6}>
                     {/* need license to use img */}
                     {/* <img
                   src={BOOTCAMP_LOL_SRC}
@@ -108,7 +135,7 @@ export default function Navbar({
                   <Grid
                     item
                     container
-                    xs={12}
+                    xs={6}
                     sm={6}
                     alignItems="center"
                     spacing={2}
@@ -154,6 +181,140 @@ export default function Navbar({
                   </Grid>
                 </Grid>
                 <br />
+
+                {/* checkboxes for hide/show scrims, repeating in drawer, need separate component */}
+                {!showLess && (
+                  <Hidden mdDown>
+                    <Grid
+                      container
+                      alignItems="center"
+                      direction="row"
+                      justifyContent="space-between"
+                      xs={12}>
+                      {/* Show scrims (current, previous, upcoming) buttons */}
+                      {showCheckboxes && (
+                        <Hidden mdDown>
+                          <Grid item xs={6} alignItems="center" container>
+                            <FormGroup
+                              row
+                              className="text-white"
+                              style={{ justifyContent: 'center' }}>
+                              <FormControlLabel
+                                control={
+                                  <Checkbox
+                                    // the UI says "show X scrims", so in this case we are reversing the boolean for checked, lol.
+                                    // doesn't matter functionally.
+                                    checked={!hideProps?.hideCurrentScrims}
+                                    color="primary"
+                                    onChange={() =>
+                                      hideProps?.setHideCurrentScrims(
+                                        (prevState) => !prevState
+                                      )
+                                    }
+                                    name="hideCurrentScrims"
+                                  />
+                                }
+                                label="Show current scrims"
+                                labelPlacement="bottom"
+                              />
+
+                              <FormControlLabel
+                                control={
+                                  <Checkbox
+                                    checked={!hideProps?.hideUpcomingScrims}
+                                    color="primary"
+                                    onChange={() =>
+                                      hideProps?.setHideUpcomingScrims(
+                                        (prevState) => !prevState
+                                      )
+                                    }
+                                    name="hideUpcomingScrims"
+                                  />
+                                }
+                                label="Show upcoming scrims"
+                                labelPlacement="bottom"
+                              />
+                              <FormControlLabel
+                                control={
+                                  <Checkbox
+                                    color="primary"
+                                    checked={!hideProps?.hidePreviousScrims}
+                                    onChange={() =>
+                                      hideProps?.setHidePreviousScrims(
+                                        (prevState) => !prevState
+                                      )
+                                    }
+                                    name="hidePreviousScrims"
+                                  />
+                                }
+                                label="Show previous scrims"
+                                labelPlacement="bottom"
+                              />
+                            </FormGroup>
+                          </Grid>
+                        </Hidden>
+                      )}
+
+                      {/* date filter and region filter */}
+                      {showDropdowns && (
+                        <Grid
+                          item
+                          container
+                          md={12}
+                          lg={6}
+                          justifyContent="flex-end"
+                          alignItems="center"
+                          id="nav__selects--container">
+                          {/* date regions and filters */}
+                          <Grid item>
+                            <TextField
+                              id="date"
+                              required
+                              label="Scrims Date"
+                              type="date"
+                              name="scrimsDate"
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
+                              value={
+                                moment(new Date(scrimsDate)).format(
+                                  'yyyy-MM-DD'
+                                ) || moment().format('yyyy-MM-DD')
+                              }
+                              onChange={onSelectDate}
+                            />
+
+                            <FormHelperText className="text-white">
+                              Filter scrims by date
+                            </FormHelperText>
+                          </Grid>
+
+                          <Box marginRight={4} />
+
+                          <Grid item id="nav__region-filter--container">
+                            <InputLabel className="text-white">
+                              Region
+                            </InputLabel>
+
+                            <Select
+                              value={scrimsRegion}
+                              className="text-white"
+                              onChange={onSelectRegion}>
+                              {selectRegions.map((region, key) => (
+                                <MenuItem value={region} key={key}>
+                                  {region}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                            <FormHelperText className="text-white">
+                              Filter scrims by region
+                            </FormHelperText>
+                          </Grid>
+                        </Grid>
+                      )}
+                    </Grid>
+                  </Hidden>
+                )}
               </Grid>
             </InnerColumn>
           </Toolbar>
