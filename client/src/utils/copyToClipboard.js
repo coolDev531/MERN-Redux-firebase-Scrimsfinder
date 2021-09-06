@@ -1,3 +1,5 @@
+import devLog from './devLog';
+
 export const copyTextToClipboard = (text) => {
   let textArea = document.createElement('textarea');
 
@@ -47,9 +49,9 @@ export const copyTextToClipboard = (text) => {
   try {
     var successful = document.execCommand('copy');
     var msg = successful ? 'successful' : 'unsuccessful';
-    console.log('Copying text command was ' + msg);
+    devLog('Copying text command was ' + msg);
   } catch (err) {
-    console.log('Oops, unable to copy');
+    devLog('Oops, unable to copy');
   }
 
   document.body.removeChild(textArea);

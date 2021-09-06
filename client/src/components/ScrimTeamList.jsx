@@ -26,6 +26,7 @@ import SwapIcon from '@material-ui/icons/SwapHoriz';
 import JoinIcon from '@material-ui/icons/MeetingRoom';
 import ExitIcon from '@material-ui/icons/NoMeetingRoom';
 import KickIcon from '@material-ui/icons/HighlightOff';
+import { copyTextToClipboard } from './../utils/copyToClipboard';
 
 const compareArrays = (arr1, arr2) => {
   if (arr1.length !== arr2.length) return false;
@@ -220,13 +221,15 @@ export default function ScrimTeamList({
                   <ListItemText
                     primary={
                       <Grid container alignItems="center">
-                        <a
-                          className="link"
-                          href={`https://${userInfo?.region}.op.gg/summoner/userName=${userInfo?.name}`}
-                          target="_blank"
-                          rel="noreferrer">
-                          {truncate(userInfo?.name, 14)}
-                        </a>
+                        <Tooltip title={`visit ${userInfo?.name}'s op.gg`}>
+                          <a
+                            className="link"
+                            href={`https://${userInfo?.region}.op.gg/summoner/userName=${userInfo?.name}`}
+                            target="_blank"
+                            rel="noreferrer">
+                            {truncate(userInfo?.name, 14)}
+                          </a>
+                        </Tooltip>
                         {userInfo?.rank !== 'Unranked' && (
                           <>
                             &nbsp;
@@ -243,17 +246,23 @@ export default function ScrimTeamList({
                     secondary={
                       <>
                         {userInfo?.discord && (
-                          <>
+                          <Grid item container direction="row" xs={12}>
                             Discord -&nbsp;
-                            <Typography
-                              component="span"
-                              variant="body2"
-                              className={classes.inline}
-                              color="textPrimary">
-                              {userInfo?.discord}
-                            </Typography>
+                            <Tooltip title="Copy discord name">
+                              <Typography
+                                component="span"
+                                variant="body2"
+                                className="link"
+                                color="textPrimary"
+                                style={{ cursor: 'pointer' }}
+                                onClick={() =>
+                                  copyTextToClipboard(userInfo?.discord)
+                                }>
+                                {truncate(userInfo?.discord, 10)}
+                              </Typography>
+                            </Tooltip>
                             <br />
-                          </>
+                          </Grid>
                         )}
                         {'Role - '}
                         <Typography
