@@ -224,6 +224,7 @@ export default function ScrimTeamList({
                         : '#424242',
 
                     // if game has started, but the game didn't end, and the player is the lobby host, make his background green.
+                    // we don't care if the guy is the lobby host if game ended.
                     // eslint-disable-next-line
                     background:
                       isLobbyHost && !gameEnded && gameStarted

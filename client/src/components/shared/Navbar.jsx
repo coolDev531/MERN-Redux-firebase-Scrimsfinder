@@ -191,9 +191,9 @@ export default function Navbar({
                       justifyContent="space-between"
                       item
                       xs={12}>
-                      {/* Show scrims (current, previous, upcoming) buttons */}
                       {showCheckboxes && (
                         <Hidden mdDown>
+                          {/* Show scrims (current, previous, upcoming) buttons */}
                           <Grid item xs={6} alignItems="center" container>
                             <FormGroup
                               row
@@ -261,7 +261,7 @@ export default function Navbar({
                           item
                           container
                           md={12}
-                          lg={6}
+                          lg={4}
                           justifyContent="flex-end"
                           alignItems="center"
                           id="nav__selects--container">
