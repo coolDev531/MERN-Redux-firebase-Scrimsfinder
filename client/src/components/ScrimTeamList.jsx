@@ -53,6 +53,7 @@ export default function ScrimTeamList({
   teamTwo,
   teamData,
   casterEntered,
+  gameStarted,
 }) {
   const { currentUser } = useContext(CurrentUserContext);
   const classes = useScrimSectionStyles({ scrim });
@@ -206,11 +207,28 @@ export default function ScrimTeamList({
 
           const isCurrentUser = userInfo?._id === currentUser?._id;
 
+          const isLobbyHost = scrim.lobbyHost?._id === userInfo?._id;
+
           if (playerAssigned) {
             return (
               <Fragment key={idx}>
                 {idx !== 0 ? <Divider component="div" /> : null}
-                <ListItem alignItems="center" className={classes.teamListItem}>
+                <ListItem
+                  alignItems="center"
+                  className={classes.teamListItem}
+                  style={{
+                    // fallback for non-supporting browsers
+                    background:
+                      isLobbyHost && !gameEnded && gameStarted && '#63d471',
+
+                    // if game has started, but the game didn't end, and the player is the lobby host, make his background green.
+                    // eslint-disable-next-line
+                    background:
+                      isLobbyHost &&
+                      !gameEnded &&
+                      gameStarted &&
+                      'linear-gradient(315deg, #63d471 0%, #233329 74%)',
+                  }}>
                   <ListItemAvatar>
                     <Avatar
                       alt={playerAssigned.role}
@@ -246,7 +264,7 @@ export default function ScrimTeamList({
                     secondary={
                       <>
                         {userInfo?.discord && (
-                          <Grid item container direction="row" xs={12}>
+                          <>
                             Discord -&nbsp;
                             <Tooltip title="Copy discord name">
                               <Typography
@@ -262,7 +280,7 @@ export default function ScrimTeamList({
                               </Typography>
                             </Tooltip>
                             <br />
-                          </Grid>
+                          </>
                         )}
                         {'Role - '}
                         <Typography

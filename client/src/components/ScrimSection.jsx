@@ -338,6 +338,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
             playerEntered={playerEntered}
             casterEntered={casterEntered}
             getNewScrimsData={() => toggleFetch((prevState) => !prevState)}
+            gameStarted={gameStarted === scrim._id}
           />
 
           <div className={classes.teamsVersusSeparator}>
@@ -551,6 +552,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
             playerEntered={playerEntered}
             casterEntered={casterEntered}
             getNewScrimsData={getNewScrimsData}
+            gameStarted={gameStarted === scrim._id}
           />
         </div>
       </div>

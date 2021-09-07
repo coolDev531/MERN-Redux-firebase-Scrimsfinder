@@ -47,6 +47,7 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     opacity: '0.99',
     transition: 'all 250ms ease-in-out',
+    paddingBottom: 0,
     '&:hover': {
       opacity: '1',
     },
