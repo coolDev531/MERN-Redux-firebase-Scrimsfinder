@@ -262,7 +262,7 @@ export default function Scrims() {
               <Box style={{ cursor: 'help' }}>
                 <Tooltip
                   title={`use the Region dropdown in the ${
-                    matchesMd ? '"More Options" menu' : 'Navbar'
+                    matchesMd ? '"More Options" menu' : 'Navbar/Header'
                   } to change the region`}
                   placement="top">
                   <HelpIcon fontSize="large" />
