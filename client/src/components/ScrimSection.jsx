@@ -523,16 +523,6 @@ export default function ScrimSection({ scrim, isInDetail }) {
                       ) : null}
                       to unlock lobby name and password
                     </h5>
-                    {scrim.createdBy?.email === currentUser?.email ? (
-                      <AdminArea>
-                        <Button
-                          color="secondary"
-                          variant="contained"
-                          onClick={handleDeleteScrim}>
-                          Close event
-                        </Button>
-                      </AdminArea>
-                    ) : null}
                   </>
                 ))}
             </div>
