@@ -36,8 +36,6 @@ import moment from 'moment';
 import clsx from 'clsx';
 import { KEYCODES } from '../../utils/keycodes';
 
-const DRAWER_ANCHOR = 'top';
-
 const useStyles = makeStyles({
   drawerList: {
     width: 250,
@@ -71,6 +69,9 @@ export default function NavbarDrawer({
   const theme = useTheme();
   const matchesSm = useMediaQuery(theme.breakpoints.down('sm'));
   const matchesXs = useMediaQuery(theme.breakpoints.down('xs'));
+  const matchesMd = useMediaQuery(theme.breakpoints.down('md'));
+
+  const DRAWER_ANCHOR = matchesMd ? 'top' : 'right';
 
   let selectRegions = [
     currentUser?.region,
@@ -172,7 +173,8 @@ export default function NavbarDrawer({
         </div>
 
         {!showLess && (
-          <>
+          // don't show checkboxes and filters at lg screens because they already are on navbar
+          <Hidden lgUp>
             <Grid
               container
               alignItems="center"
@@ -211,10 +213,6 @@ export default function NavbarDrawer({
                       Filter scrims by date
                     </FormHelperText>
                   </Grid>
-
-                  <Hidden mdUp>
-                    <br />
-                  </Hidden>
 
                   <Hidden xsDown>
                     <Box marginRight={4} />
@@ -306,7 +304,7 @@ export default function NavbarDrawer({
                 </Grid>
               )}
             </Grid>
-          </>
+          </Hidden>
         )}
       </InnerColumn>
     </Drawer>
