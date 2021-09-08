@@ -1,5 +1,5 @@
 // hooks
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useAuth } from './../../context/currentUser';
 import { useHistory } from 'react-router-dom';
 import { useMediaQuery, useTheme } from '@material-ui/core';
@@ -71,7 +71,10 @@ export default function NavbarDrawer({
   const matchesXs = useMediaQuery(theme.breakpoints.down('xs'));
   const matchesMd = useMediaQuery(theme.breakpoints.down('md'));
 
-  const DRAWER_ANCHOR = matchesMd ? 'top' : 'right';
+  const drawerAnchor = useMemo(
+    () => (matchesMd ? 'top' : 'right'),
+    [matchesMd]
+  );
 
   let selectRegions = [
     currentUser?.region,
@@ -125,14 +128,14 @@ export default function NavbarDrawer({
 
   return (
     <Drawer
-      anchor={DRAWER_ANCHOR}
+      anchor={drawerAnchor}
       open={isDrawerOpen}
       onClose={() => setIsDrawerOpen(false)}>
       <InnerColumn>
         <div
           className={clsx(classes.drawerList, {
             [classes.drawerFullList]:
-              DRAWER_ANCHOR === 'top' || DRAWER_ANCHOR === 'bottom',
+              drawerAnchor === 'top' || drawerAnchor === 'bottom',
           })}>
           <List>
             {/* Settings button */}
