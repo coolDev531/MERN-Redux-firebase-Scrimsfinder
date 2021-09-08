@@ -1,3 +1,4 @@
+// https://stackoverflow.com/questions/17415579/how-to-iso-8601-format-a-date-with-timezone-offset-in-javascript
 const toIsoString = (date) => {
   date = new Date(date);
   var tzo = -date.getTimezoneOffset(),
