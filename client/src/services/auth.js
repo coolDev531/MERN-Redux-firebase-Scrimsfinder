@@ -81,6 +81,9 @@ export const verifyUser = async ({ uid, email }) => {
       devLog(
         'heroku is hibernating, cannot verify user, pushing to /user-setup'
       );
+      
+      localStorage.removeItem('jwtToken');
+      
       let path = window.location.origin + '/user-setup';
       // and the path isn't user-setup
       if (window.location.origin + '/login' !== path) {
