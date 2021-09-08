@@ -21,19 +21,12 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
   },
-  exitIcon: {
-    color: theme.primary,
-    cursor: 'pointer',
-    position: 'absolute',
-    top: '16px',
-    right: '5px',
-  },
   iconButton: {
     color: theme.primary,
     cursor: 'pointer',
     position: 'absolute',
-    top: '16px',
-    right: '5px',
+    top: '30%',
+    right: '4px',
   },
   teamsContainer: {
     display: 'grid',
@@ -54,8 +47,20 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
   },
 
   teamListItem: {
-    minHeight: '100px',
-    maxHeight: '100px',
+    minHeight: '120px',
+    maxHeight: '120px',
+    [theme.breakpoints.down('md')]: {
+      minHeight: '130px',
+      maxHeight: '130px',
+      overflowY: 'scroll',
+      '&::-webkit-scrollbar': {
+        display: 'none',
+      },
+    },
+    [theme.breakpoints.down('sm')]: {
+      minHeight: '150px',
+      maxHeight: '150px',
+    },
   },
 
   teamsVersusSeparator: {
