@@ -113,27 +113,29 @@ export default function ScrimSectionHeader({
 
       <div className={classes.gameMetaInfo}>
         <div>
-          <h2 className="text-black">
+          <Typography variant="h2" className="text-black">
             Game Start:&nbsp;
             <Moment format="MM/DD/yyyy | hh:mm A">{scrim.gameStartTime}</Moment>
-          </h2>
+          </Typography>
 
-          <div className="casters-container ">
+          <div className="casters-container">
             {casters.length === 2 ? (
-              <h2 className="text-black">
+              <Typography variant="h2" className="text-black">
                 Casters: {casters.map((caster) => caster?.name).join(' & ')}
-              </h2>
+              </Typography>
             ) : (
               <div className="d-flex align-center gap-20">
                 {casters.length === 0 ? (
-                  <h2 className="text-black">No Casters</h2>
+                  <Typography variant="h2" className="text-black">
+                    No Casters
+                  </Typography>
                 ) : null}
                 {casters[0] && (
-                  <h2 className="text-black">
+                  <Typography variant="h2" className="text-black">
                     {/* if game didn't and say current casters, else say one caster: */}
                     {!gameEnded ? 'Current Casters:' : 'Caster:'}{' '}
                     {casters[0].name}
-                  </h2>
+                  </Typography>
                 )}
               </div>
             )}
