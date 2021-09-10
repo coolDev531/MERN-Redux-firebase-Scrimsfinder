@@ -29,6 +29,17 @@ const theme = createTheme({
       fontSize: '1.5em',
       fontFamily: ['Montserrat', 'sans-serif'].join(','),
       fontWeight: 'bold',
+      marginBlockStart: '0.83em',
+      marginBlockEnd: '0.83em',
+      color: 'black',
+    },
+
+    h5: {
+      fontSize: '0.83em',
+      fontWeight: 'bold',
+      fontFamily: ['Montserrat', 'sans-serif'].join(','),
+      lineHeight: '1.4',
+      color: '#000',
     },
 
     p: {

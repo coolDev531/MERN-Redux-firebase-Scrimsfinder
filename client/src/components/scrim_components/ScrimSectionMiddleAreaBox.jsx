@@ -5,7 +5,7 @@ import { useScrims } from './../../context/scrimsContext';
 // components
 import CountdownTimer from './CountdownTimer';
 import UploadPostGameImage from './UploadPostGameImage';
-import { Box, Button, Grid, makeStyles } from '@material-ui/core';
+import { Box, Button, Grid, makeStyles, Typography } from '@material-ui/core';
 
 // utils
 import pluralize from 'pluralize';
@@ -181,11 +181,11 @@ export default function ScrimSectionMiddleAreaBox({
             </>
           ) : (
             <>
-              <h2 className="text-black">
+              <Typography variant="h2">
                 Not enough players:&nbsp;
                 {`${teamOne.length + teamTwo.length}/10`}
-              </h2>
-              <h5 className="text-black">
+              </Typography>
+              <Typography variant="h5" component="p">
                 Please get
                 {/* if teamOne still needs players show this else don't show */}
                 {teamOneDifference > 0 ? (
@@ -207,7 +207,7 @@ export default function ScrimSectionMiddleAreaBox({
                   </>
                 ) : null}
                 to unlock lobby name and password
-              </h5>
+              </Typography>
             </>
           ))}
       </div>
