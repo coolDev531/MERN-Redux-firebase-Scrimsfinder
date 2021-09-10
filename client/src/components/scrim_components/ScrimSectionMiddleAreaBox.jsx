@@ -168,7 +168,9 @@ export default function ScrimSectionMiddleAreaBox({
                   alignItems="center"
                   spacing={2}>
                   <Grid item>
-                    <h3 className="text-black">Post-game image uploaded!</h3>
+                    <Typography variant="h3" className="text-black">
+                      Post-game image uploaded!
+                    </Typography>
                   </Grid>
                   <Grid item>
                     <Button
