@@ -46,6 +46,12 @@ const theme = createTheme({
       fontFamily: ['Montserrat', 'sans-serif'].join(','),
       color: 'green',
       fontWeight: 600,
+      display: 'block',
+      marginBlockStart: '1em',
+      marginBlockEnd: '1em',
+      marginInlineStart: '0px',
+      marginInlineEnd: '0px',
+      fontSize: '22px',
     },
   },
 });

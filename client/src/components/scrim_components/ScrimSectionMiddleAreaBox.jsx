@@ -50,7 +50,11 @@ export default function ScrimSectionMiddleAreaBox({
       alignItems="center"
       justifyContent="center">
       <div className={classes.infoBoxRoot}>
-        {!gameStarted && <h2 className="text-black">Game starting in...</h2>}
+        {!gameStarted && (
+          <Typography variant="h2" className="text-black">
+            Game starting in...
+          </Typography>
+        )}
 
         <CountdownTimer
           gameStarted={gameStarted}
