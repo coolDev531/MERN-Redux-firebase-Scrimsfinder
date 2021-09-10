@@ -72,15 +72,15 @@ export default function ScrimSectionMiddleAreaBox({
                   casterEntered ||
                   process.env.REACT_APP_ADMIN_KEY === currentUser?.adminKey ? (
                     <>
-                      <h2 className="text-black">
+                      <Typography variant="h2">
                         Lobby host / captain: {scrim.lobbyHost?.name}
-                      </h2>
-                      <h3 className="text-black">
+                      </Typography>
+                      <Typography variant="h3" className="text-black">
                         please make the lobby name: <br />"{scrim.lobbyName}"
-                      </h3>
-                      <h3 className="text-black">
+                      </Typography>
+                      <Typography variant="h3" className="text-black">
                         with the password: {scrim.lobbyPassword}
-                      </h3>
+                      </Typography>
                     </>
                   ) : (
                     <></>
