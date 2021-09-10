@@ -1,6 +1,6 @@
 import { useContext, Fragment, useMemo } from 'react';
-import { useScrimSectionStyles } from '../styles/scrimSection.styles';
-import { CurrentUserContext } from '../context/currentUser';
+import { useScrimSectionStyles } from '../../styles/scrimSection.styles';
+import { CurrentUserContext } from '../../context/currentUser';
 
 // components
 import List from '@material-ui/core/List';
@@ -10,23 +10,26 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import { Grid, IconButton, Typography } from '@material-ui/core';
-import Tooltip from '../components/shared/Tooltip';
-import AdminArea from './shared/AdminArea';
+import Tooltip from '../shared/Tooltip';
+import AdminArea from '../shared/AdminArea';
 import ListSubheader from '@material-ui/core/ListSubheader';
 
 // utils
-import { RANK_IMAGES, ROLE_IMAGES } from '../utils/imageMaps';
-import { truncate } from './../utils/truncate';
+import { RANK_IMAGES, ROLE_IMAGES } from '../../utils/imageMaps';
+import { truncate } from '../../utils/truncate';
 
 // services
-import { insertPlayerInScrim, removePlayerFromScrim } from '../services/scrims';
+import {
+  insertPlayerInScrim,
+  removePlayerFromScrim,
+} from '../../services/scrims';
 
 // icons
 import SwapIcon from '@material-ui/icons/SwapHoriz';
 import JoinIcon from '@material-ui/icons/MeetingRoom';
 import ExitIcon from '@material-ui/icons/NoMeetingRoom';
 import KickIcon from '@material-ui/icons/HighlightOff';
-import { copyTextToClipboard } from './../utils/copyToClipboard';
+import { copyTextToClipboard } from '../../utils/copyToClipboard';
 
 const compareArrays = (arr1, arr2) => {
   if (arr1.length !== arr2.length) return false;

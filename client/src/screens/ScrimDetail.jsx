@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import ScrimSection from '../components/ScrimSection';
+import ScrimSection from '../components/scrim_components/ScrimSection';
 import { getScrimById } from '../services/scrims';
 import { ScrimsContext } from '../context/scrimsContext';
 import Navbar from '../components/shared/Navbar';

@@ -1,10 +1,10 @@
 import { useContext, useRef } from 'react';
 import { Tooltip, Grid, Button } from '@material-ui/core';
 import S3FileUpload from 'react-s3';
-import { ScrimsContext } from '../context/scrimsContext';
-import { addImageToScrim } from './../services/scrims';
-import AdminArea from './shared/AdminArea';
-import { CurrentUserContext } from '../context/currentUser';
+import { ScrimsContext } from '../../context/scrimsContext';
+import { addImageToScrim } from '../../services/scrims';
+import AdminArea from '../shared/AdminArea';
+import { CurrentUserContext } from '../../context/currentUser';
 
 const MAX_FILE_SIZE_MIB = 0.953674; // 1 megabyte (in Memibyte format)
 

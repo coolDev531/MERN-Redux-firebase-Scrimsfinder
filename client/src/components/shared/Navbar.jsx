@@ -25,7 +25,6 @@ import {
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import NavbarDrawer from './NavbarDrawer';
-// import { BOOTCAMP_LOL_SRC } from '../../utils/bootcampImg'; // need license
 import moment from 'moment';
 import 'moment-timezone';
 import HideOnScroll from './HideOnScroll';
@@ -118,13 +117,6 @@ export default function Navbar({
                   alignItems="center"
                   justifyContent="space-between">
                   <Grid item container alignItems="center" xs={6} sm={6}>
-                    {/* need license to use img */}
-                    {/* <img
-                  src={BOOTCAMP_LOL_SRC}
-                  alt="logo"
-                  style={{ marginRight: '10px' }}
-                /> */}
-                    &nbsp;
                     <Link to="/" className="link">
                       <Typography component="h1" variant="h1">
                         LoL Scrims Finder

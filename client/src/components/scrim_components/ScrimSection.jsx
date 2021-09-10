@@ -1,25 +1,25 @@
 import { useContext, useEffect, useState, useMemo } from 'react';
-import { CurrentUserContext } from '../context/currentUser';
-import { useScrimSectionStyles } from '../styles/scrimSection.styles';
+import { CurrentUserContext } from '../../context/currentUser';
+import { useScrimSectionStyles } from '../../styles/scrimSection.styles';
 
 //  components
 import CountdownTimer from './CountdownTimer';
 import ScrimTeamList from './ScrimTeamList';
 import Moment from 'react-moment';
-import AdminArea from './shared/AdminArea';
+import AdminArea from '../shared/AdminArea';
 import { Box, Button, Grid } from '@material-ui/core';
 import { Link, useHistory } from 'react-router-dom';
-import { PageSection } from './shared/PageComponents';
+import { PageSection } from '../shared/PageComponents';
 
 // utils / services
 import {
   updateScrim,
   deleteScrim,
   removeCasterFromScrim,
-} from '../services/scrims';
-import { copyTextToClipboard } from '../utils/copyToClipboard';
-import { ScrimsContext } from '../context/scrimsContext';
-import { insertCasterInScrim } from './../services/scrims';
+} from '../../services/scrims';
+import { copyTextToClipboard } from '../../utils/copyToClipboard';
+import { ScrimsContext } from '../../context/scrimsContext';
+import { insertCasterInScrim } from '../../services/scrims';
 
 // icons
 import ShareIcon from '@material-ui/icons/Share';
@@ -174,6 +174,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
   const teamOneDifference = 5 - teamOne.length;
   const teamTwoDifference = 5 - teamTwo.length;
 
+  // the "Scrim Box"
   return (
     <PageSection aria-label="scrim section">
       <div className={classes.scrimBox}>

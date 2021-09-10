@@ -7,7 +7,7 @@ import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import { showEarliestFirst, showLatestFirst } from '../utils/getSortedScrims';
 import { InnerColumn, PageContent } from '../components/shared/PageComponents';
-import ScrimSection from '../components/ScrimSection';
+import ScrimSection from '../components/scrim_components/ScrimSection';
 import Loading from '../components/shared/Loading';
 import Navbar from '../components/shared/Navbar';
 import { useTheme, useMediaQuery } from '@material-ui/core';
