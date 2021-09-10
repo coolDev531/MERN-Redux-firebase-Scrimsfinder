@@ -52,7 +52,7 @@ export default function ScrimBoxMiddleArea({
           scrim={scrim}
         />
 
-        {!gameStarted &&
+        {gameStarted &&
           (scrim.teamOne.length === 5 && scrim.teamTwo.length === 5 ? (
             <>
               {!gameEnded && (
