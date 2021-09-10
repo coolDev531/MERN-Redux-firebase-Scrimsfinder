@@ -1,6 +1,6 @@
 import { useContext, useMemo } from 'react';
-import { useAuth } from './../../context/currentUser';
-import { useScrimSectionStyles } from './../../styles/scrimSection.styles';
+import { useAuth } from '../../context/currentUser';
+import { useScrimSectionStyles } from '../../styles/scrimSection.styles';
 import { ScrimsContext } from '../../context/scrimsContext';
 
 // components
@@ -13,7 +13,7 @@ import pluralize from 'pluralize';
 import { updateScrim } from '../../services/scrims';
 
 //  this is the area that contains the countdown timer for the scrim section and the other details.
-export default function ScrimBoxMiddleArea({
+export default function ScrimSectionMiddleAreaBox({
   imageUploaded,
   scrim,
   gameStarted,
