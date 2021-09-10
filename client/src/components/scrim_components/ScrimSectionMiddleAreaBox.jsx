@@ -1,18 +1,30 @@
 import { useMemo } from 'react';
 import { useAuth } from '../../context/currentUser';
 import { useScrims } from './../../context/scrimsContext';
-import { useScrimSectionStyles } from '../../styles/scrimSection.styles';
 
 // components
 import CountdownTimer from './CountdownTimer';
 import UploadPostGameImage from './UploadPostGameImage';
-import { Box, Button, Grid } from '@material-ui/core';
+import { Box, Button, Grid, makeStyles } from '@material-ui/core';
 
 // utils
 import pluralize from 'pluralize';
 import { updateScrim } from '../../services/scrims';
 
 //  this is the area that contains the countdown timer for the scrim section and the other details.
+
+const useStyles = makeStyles((theme) => ({
+  infoBoxRoot: {
+    background: ({ imageUploaded, gameStarted }) =>
+      `rgba(255, 255, 255,${
+        imageUploaded ? '0.8' : gameStarted ? '0.7' : '0.5'
+      })`,
+
+    padding: '10px',
+    borderRadius: '4px',
+  },
+}));
+
 export default function ScrimSectionMiddleAreaBox({
   imageUploaded,
   scrim,
@@ -23,8 +35,7 @@ export default function ScrimSectionMiddleAreaBox({
   casterEntered,
 }) {
   const { currentUser } = useAuth();
-  const classes = useScrimSectionStyles();
-
+  const classes = useStyles({ gameStarted, imageUploaded });
   const { fetchScrims } = useScrims();
 
   const { teamOne, teamTwo } = scrim;
@@ -33,16 +44,12 @@ export default function ScrimSectionMiddleAreaBox({
   const teamTwoDifference = useMemo(() => 5 - teamTwo.length, [teamTwo]);
 
   return (
-    <div className={classes.teamsVersusSeparator}>
-      <div
-        className="lobby__info-box"
-        style={{
-          background: `rgba(255, 255, 255,${
-            imageUploaded ? '0.8' : gameStarted ? '0.7' : '0.5'
-          })`,
-          padding: '10px',
-          borderRadius: '4px',
-        }}>
+    <Grid
+      container
+      direction="column"
+      alignItems="center"
+      justifyContent="center">
+      <div className={classes.infoBoxRoot}>
         {!gameStarted && <h2 className="text-black">Game starting in...</h2>}
 
         <CountdownTimer
@@ -204,6 +211,6 @@ export default function ScrimSectionMiddleAreaBox({
             </>
           ))}
       </div>
-    </div>
+    </Grid>
   );
 }

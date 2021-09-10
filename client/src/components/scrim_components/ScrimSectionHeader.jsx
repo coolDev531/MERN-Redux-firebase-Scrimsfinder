@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useAuth } from './../../context/currentUser';
-import { Button, Grid, Box } from '@material-ui/core';
+import { Button, Grid } from '@material-ui/core';
 import { Link, useHistory } from 'react-router-dom';
 import Moment from 'react-moment';
 import 'moment-timezone';
