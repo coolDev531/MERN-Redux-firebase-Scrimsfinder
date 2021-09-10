@@ -162,7 +162,7 @@ REACT_APP_FIREBASE_API_KEY
 
 
 ## running it on your machine
-- to run back-end, type in cmd: `yarn` to install latest-dependencies, then run the command: `npm run dev`.
+- to run back-end, type in cmd: `yarn` to install latest-dependencies, then run the command: `yarn dev`.
 - to run front-end, cd into `client` directory and run `yarn` to install dependencies, then run `yarn start` to run the server.
 
 
