@@ -17,10 +17,6 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
       imageUploaded === scrim?._id ? '100% 100%' : 'cover',
     border: '1px solid white',
   },
-  gameMetaInfo: {
-    display: 'flex',
-    justifyContent: 'space-between',
-  },
   iconButton: {
     color: theme.primary,
     cursor: 'pointer',

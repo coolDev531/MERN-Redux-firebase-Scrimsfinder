@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { useAuth } from './../../context/currentUser';
 import { Button, Grid, Typography } from '@material-ui/core';
 import { Link, useHistory } from 'react-router-dom';
 import Moment from 'react-moment';
@@ -12,7 +11,6 @@ import AdminArea from './../shared/AdminArea';
 // icons
 import ShareIcon from '@material-ui/icons/Share';
 import SettingsIcon from '@material-ui/icons/Settings';
-import { useScrimSectionStyles } from './../../styles/scrimSection.styles';
 
 const MAX_CASTER_AMOUNT = 2;
 
@@ -25,9 +23,7 @@ export default function ScrimSectionHeader({
   leaveCast,
   handleDeleteScrim,
 }) {
-  const { currentUser } = useAuth();
   const { casters } = scrim;
-  const classes = useScrimSectionStyles();
 
   const history = useHistory();
 
@@ -111,72 +107,66 @@ export default function ScrimSectionHeader({
         </Grid>
       </Grid>
 
-      <div className={classes.gameMetaInfo}>
-        <div>
-          <Typography variant="h2" className="text-black">
-            Game Start:&nbsp;
-            <Moment format="MM/DD/yyyy | hh:mm A">{scrim.gameStartTime}</Moment>
-          </Typography>
+      <Grid container>
+        <Typography variant="h2" className="text-black">
+          Game Start:&nbsp;
+          <Moment format="MM/DD/yyyy | hh:mm A">{scrim.gameStartTime}</Moment>
+        </Typography>
 
-          <div className="casters-container">
-            {casters.length === 2 ? (
-              <Typography variant="h2" className="text-black">
-                Casters: {casters.map((caster) => caster?.name).join(' & ')}
-              </Typography>
-            ) : (
-              <div className="d-flex align-center gap-20">
-                {casters.length === 0 ? (
-                  <Typography variant="h2" className="text-black">
-                    No Casters
-                  </Typography>
-                ) : null}
-                {casters[0] && (
-                  <Typography variant="h2" className="text-black">
-                    {/* if game didn't and say current casters, else say one caster: */}
-                    {!gameEnded ? 'Current Casters:' : 'Caster:'}{' '}
-                    {casters[0].name}
-                  </Typography>
-                )}
-              </div>
-            )}
+        {/*  casters text and buttons*/}
+        <Grid container direction="column">
+          {casters.length === 2 ? (
+            <Typography variant="h2" className="text-black">
+              Casters: {casters.map((caster) => caster?.name).join(' & ')}
+            </Typography>
+          ) : (
+            <Grid item container direction="column" alignItems="flex-start">
+              {casters.length === 0 ? (
+                <Typography variant="h2" className="text-black">
+                  No Casters
+                </Typography>
+              ) : null}
+              {casters[0] && (
+                <Typography variant="h2" className="text-black">
+                  {/* if game didn't and say current casters, else say one caster: */}
+                  {!gameEnded ? 'Current Casters:' : 'Caster:'}{' '}
+                  {casters[0].name}
+                </Typography>
+              )}
+            </Grid>
+          )}
 
-            {/* don't show cast buttons if game ended */}
-            {!gameEnded && (
-              <Grid container alignItems="center" direction="row" spacing={2}>
-                {casters.length !== MAX_CASTER_AMOUNT && (
-                  <Grid item>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      disabled={
-                        casters.length === MAX_CASTER_AMOUNT ||
-                        scrim.casters.find(
-                          ({ _id }) => _id === currentUser?._id
-                        )
-                          ? true
-                          : false
-                      }
-                      onClick={joinCast}>
-                      join cast
-                    </Button>
-                  </Grid>
-                )}
+          {/* don't show cast buttons if game ended */}
+          {!gameEnded && (
+            <Grid container alignItems="center" direction="row" spacing={2}>
+              {casters.length !== MAX_CASTER_AMOUNT && (
+                <Grid item>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    disabled={
+                      casters.length === MAX_CASTER_AMOUNT || casterEntered
+                    }
+                    onClick={joinCast}>
+                    join cast
+                  </Button>
+                </Grid>
+              )}
 
-                {casterEntered && (
-                  <Grid item>
-                    <Button
-                      color="secondary"
-                      variant="contained"
-                      onClick={leaveCast}>
-                      Leave cast
-                    </Button>
-                  </Grid>
-                )}
-              </Grid>
-            )}
-          </div>
-        </div>
-      </div>
+              {casterEntered && (
+                <Grid item>
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    onClick={leaveCast}>
+                    Leave cast
+                  </Button>
+                </Grid>
+              )}
+            </Grid>
+          )}
+        </Grid>
+      </Grid>
     </Grid>
   );
 }
