@@ -17,6 +17,10 @@ const appTheme = createTheme({
       fontFamily: ['Montserrat', 'sans-serif'].join(','),
       fontSize: '2em',
       fontWeight: 'bold',
+      marginTop: '0.67em',
+      marginBottom: '0.67em',
+      marginLeft: 0,
+      marginRight: 0,
     },
 
     h2: {

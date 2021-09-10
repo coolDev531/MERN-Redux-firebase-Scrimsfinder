@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useAuth } from './../../context/currentUser';
-import { Button, Grid } from '@material-ui/core';
+import { Button, Grid, Typography } from '@material-ui/core';
 import { Link, useHistory } from 'react-router-dom';
 import Moment from 'react-moment';
 import 'moment-timezone';
@@ -54,12 +54,12 @@ export default function ScrimSectionHeader({
             className="link"
             style={{ textDecorationColor: '#000' }}
             to={`/scrims/${scrim._id}`}>
-            <h1 className="text-black">
+            <Typography variant="h1" className="text-black">
               {/* if scrim has a title show title, else show createdby.name's scrim */}
               {`${scrim.title ?? `${scrim.createdBy.name}'s Scrim`} (${
                 scrim.region
               })`}
-            </h1>
+            </Typography>
           </Link>
         </Grid>
         <Grid

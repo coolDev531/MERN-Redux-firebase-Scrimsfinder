@@ -11,8 +11,6 @@ import { Box, Button, Grid, makeStyles, Typography } from '@material-ui/core';
 import pluralize from 'pluralize';
 import { updateScrim } from '../../services/scrims';
 
-//  this is the area that contains the countdown timer for the scrim section and the other details.
-
 const useStyles = makeStyles((theme) => ({
   infoBoxRoot: {
     background: ({ imageUploaded, gameStarted }) =>
@@ -25,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+//  this is the area that contains the countdown timer for the scrim section and the other details.
 export default function ScrimSectionMiddleAreaBox({
   imageUploaded,
   scrim,
@@ -102,7 +101,9 @@ export default function ScrimSectionMiddleAreaBox({
                     direction="row"
                     spacing={2}>
                     <Grid item>
-                      <h3 className="text-black">Who won?</h3>
+                      <Typography variant="h3" className="text-black">
+                        Who won?
+                      </Typography>
                     </Grid>
 
                     {['Team 1 (Blue Side)', 'Team 2 (Red Side)'].map(
