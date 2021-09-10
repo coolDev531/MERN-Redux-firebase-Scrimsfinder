@@ -1,8 +1,8 @@
 import { useContext, useState, useEffect, useMemo } from 'react';
+import { useScrims } from './../context/scrimsContext';
 import { CurrentUserContext } from '../context/currentUser';
 import { Redirect, useParams, useHistory } from 'react-router-dom';
 import { updateScrim, getScrimById } from '../services/scrims';
-import { ScrimsContext } from '../context/scrimsContext';
 import Navbar from './../components/shared/Navbar';
 import {
   Button,
@@ -33,7 +33,7 @@ const RANDOM_HOST_CODE = '_$random';
 
 export default function ScrimEdit() {
   const { currentUser } = useContext(CurrentUserContext);
-  const { toggleFetch } = useContext(ScrimsContext);
+  const { fetchScrims } = useScrims();
 
   const [scrimData, setScrimData] = useState({
     teamWon: '',
@@ -224,7 +224,7 @@ export default function ScrimEdit() {
     const updatedScrim = await updateScrim(id, dataSending);
 
     if (updatedScrim) {
-      toggleFetch((prev) => !prev);
+      fetchScrims();
       console.log(`%c updated scrim: ${id}`, 'color: lightgreen');
       setUpdated(true);
     }

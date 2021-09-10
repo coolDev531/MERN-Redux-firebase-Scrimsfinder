@@ -1,17 +1,17 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
+import { useScrims } from './../context/scrimsContext';
 import { useParams, useHistory } from 'react-router-dom';
 import ScrimSection from '../components/scrim_components/ScrimSection';
-import { getScrimById } from '../services/scrims';
-import { ScrimsContext } from '../context/scrimsContext';
 import Navbar from '../components/shared/Navbar';
 import { Helmet } from 'react-helmet';
 import Loading from '../components/shared/Loading';
 import { PageContent } from '../components/shared/PageComponents';
+import { getScrimById } from '../services/scrims';
 
 export default function ScrimDetail() {
   const { id } = useParams();
   const [scrim, setScrim] = useState(null);
-  const { scrims } = useContext(ScrimsContext);
+  const { scrims } = useScrims();
   const history = useHistory();
 
   useEffect(() => {

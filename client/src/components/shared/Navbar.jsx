@@ -33,6 +33,7 @@ import Tooltip from './Tooltip';
 // icons
 import KeyIcon from '@material-ui/icons/VpnKey';
 import MenuIcon from '@material-ui/icons/Menu'; // burger icon
+import { useScrims } from './../../context/scrimsContext';
 
 const useStyles = makeStyles((theme) => ({
   offset: theme.mixins.offset,
@@ -50,7 +51,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Navbar({
-  toggleFetch,
   setScrimsRegion,
   scrimsRegion,
   scrimsDate,
@@ -65,6 +65,7 @@ export default function Navbar({
   const classes = useStyles();
   const { pathname } = useLocation();
   const history = useHistory();
+  const { fetchScrims } = useScrims();
 
   const noBackButtonPaths = [
     /^\/user-setup/,
@@ -91,7 +92,7 @@ export default function Navbar({
 
   const onSelectRegion = (e) => {
     const region = e.target.value;
-    toggleFetch((prev) => !prev); // not necessary, trying to ping the server.
+    fetchScrims(); // not necessary, trying to ping the server.
     setScrimsRegion(region); // set the navbar select value to selected region
   };
 
@@ -324,7 +325,6 @@ export default function Navbar({
         setScrimsRegion={setScrimsRegion}
         scrimsDate={scrimsDate}
         setScrimsDate={setScrimsDate}
-        fetchScrims={() => toggleFetch((prev) => !prev)}
       />
 
       <div className={classes.offset} />

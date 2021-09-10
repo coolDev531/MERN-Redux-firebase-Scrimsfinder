@@ -1,24 +1,15 @@
-import { useContext, useEffect, useState, useMemo } from 'react';
-import { CurrentUserContext } from '../../context/currentUser';
+import { useEffect, useState, useMemo } from 'react';
+import { useScrims } from './../../context/scrimsContext';
+import { useAuth } from './../../context/currentUser';
 import { useScrimSectionStyles } from '../../styles/scrimSection.styles';
 
 //  components
-import CountdownTimer from './CountdownTimer';
 import ScrimTeamList from './ScrimTeamList';
-import Moment from 'react-moment';
-import AdminArea from '../shared/AdminArea';
-import { Box, Button, Grid } from '@material-ui/core';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { PageSection } from '../shared/PageComponents';
 
 // utils / services
-import {
-  updateScrim,
-  deleteScrim,
-  removeCasterFromScrim,
-} from '../../services/scrims';
-import { copyTextToClipboard } from '../../utils/copyToClipboard';
-import { ScrimsContext } from '../../context/scrimsContext';
+import { deleteScrim, removeCasterFromScrim } from '../../services/scrims';
 import { insertCasterInScrim } from '../../services/scrims';
 import ScrimSectionMiddleAreaBox from './ScrimSectionMiddleAreaBox';
 import ScrimSectionHeader from './ScrimSectionHeader';
@@ -41,8 +32,8 @@ const compareDates = (scrim) => {
 const MAX_CASTER_AMOUNT = 2;
 
 export default function ScrimSection({ scrim, isInDetail }) {
-  const { toggleFetch, setScrims } = useContext(ScrimsContext);
-  const { currentUser } = useContext(CurrentUserContext);
+  const { setScrims, fetchScrims } = useScrims();
+  const { currentUser } = useAuth();
   const [playerEntered, setPlayerEntered] = useState(false);
   const [casterEntered, setCasterEntered] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
@@ -55,8 +46,6 @@ export default function ScrimSection({ scrim, isInDetail }) {
   const history = useHistory();
 
   const { teamOne, teamTwo, casters } = scrim;
-
-  const getNewScrimsData = () => toggleFetch((prevState) => !prevState);
 
   useEffect(() => {
     let gameHasStarted = compareDates(scrim) > 0;
@@ -107,7 +96,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
     if (casterEntered) return;
     if (casters.length === MAX_CASTER_AMOUNT) return;
 
-    getNewScrimsData();
+    fetchScrims();
 
     const dataSending = {
       casterData: {
@@ -126,12 +115,12 @@ export default function ScrimSection({ scrim, isInDetail }) {
         `%cadded ${currentUser?.name} as a caster for scrim: ${scrim._id}`,
         'color: #99ff99'
       );
-      getNewScrimsData();
+      fetchScrims();
     }
   };
 
   const leaveCast = async () => {
-    getNewScrimsData();
+    fetchScrims();
 
     const updatedScrim = await removeCasterFromScrim(scrim._id, {
       casterData: casterEntered,
@@ -142,7 +131,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
         `%cremoved ${currentUser?.name} from the caster list for scrim: ${scrim._id}`,
         'color: #99ff99'
       );
-      getNewScrimsData();
+      fetchScrims();
     }
   };
 
@@ -157,7 +146,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
 
       if (isInDetail) {
         history.push('/');
-        getNewScrimsData();
+        fetchScrims();
       }
     }
   };
@@ -189,7 +178,6 @@ export default function ScrimSection({ scrim, isInDetail }) {
             scrim={scrim}
             playerEntered={playerEntered}
             casterEntered={casterEntered}
-            getNewScrimsData={() => toggleFetch((prevState) => !prevState)}
             gameStarted={gameStarted === scrim._id}
           />
 
@@ -217,7 +205,6 @@ export default function ScrimSection({ scrim, isInDetail }) {
             scrim={scrim}
             playerEntered={playerEntered}
             casterEntered={casterEntered}
-            getNewScrimsData={getNewScrimsData}
             gameStarted={gameStarted === scrim._id}
           />
         </div>

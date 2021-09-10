@@ -1,7 +1,7 @@
-import { useContext, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useAuth } from '../../context/currentUser';
+import { useScrims } from './../../context/scrimsContext';
 import { useScrimSectionStyles } from '../../styles/scrimSection.styles';
-import { ScrimsContext } from '../../context/scrimsContext';
 
 // components
 import CountdownTimer from './CountdownTimer';
@@ -25,8 +25,7 @@ export default function ScrimSectionMiddleAreaBox({
   const { currentUser } = useAuth();
   const classes = useScrimSectionStyles();
 
-  const { toggleFetch } = useContext(ScrimsContext);
-  const getNewScrimsData = () => toggleFetch((prev) => !prev);
+  const { fetchScrims } = useScrims();
 
   const { teamOne, teamTwo } = scrim;
 
@@ -121,7 +120,7 @@ export default function ScrimSectionMiddleAreaBox({
                                 dataSending
                               );
                               if (updatedScrim) {
-                                getNewScrimsData();
+                                fetchScrims();
                               }
                             }}>
                             {teamTitle}

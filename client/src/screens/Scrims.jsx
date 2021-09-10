@@ -21,6 +21,7 @@ import { compareDateWithCurrentTime } from './../utils/compareDateWithCurrentTim
 
 // icons
 import HelpIcon from '@material-ui/icons/Help';
+import { useScrims } from './../context/scrimsContext';
 
 // compare scrim start time with now.
 const compareDates = (scrim) => {
@@ -43,7 +44,7 @@ export default function Scrims() {
 
   const { currentUser } = useAuth();
 
-  const { scrims, toggleFetch, scrimsLoaded } = useContext(ScrimsContext);
+  const { scrims, fetchScrims, scrimsLoaded } = useScrims();
 
   const [filteredScrims, setFilteredScrims] = useState([]); // the array of filtered scrims (both scrimsDate and scrimsRegion)
 
@@ -148,7 +149,6 @@ export default function Scrims() {
         setScrimsRegion={setScrimsRegion}
         scrimsDate={scrimsDate}
         setScrimsDate={setScrimsDate}
-        toggleFetch={toggleFetch}
         showDropdowns
         showCheckboxes
         hideProps={{

@@ -1,10 +1,12 @@
-import React, { useState, createContext, useEffect } from 'react';
+import React, { useState, createContext, useEffect, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import useInterval from '../hooks/useInterval';
 import { getAllScrims } from './../services/scrims';
 import devLog from '../utils/devLog';
 
 const ScrimsContext = createContext();
+
+export const useScrims = () => useContext(ScrimsContext);
 
 function ScrimsProvider({ children }) {
   const [scrims, setScrims] = useState([]);
@@ -36,17 +38,19 @@ function ScrimsProvider({ children }) {
   const FETCH_INTERVAL = 10000;
   useInterval(loadScrims, FETCH_INTERVAL);
 
+  const fetchScrims = () => toggleFetch((prevState) => !prevState);
+
+  const value = {
+    scrims,
+    setScrims,
+    fetch,
+    toggleFetch,
+    scrimsLoaded,
+    fetchScrims,
+  };
+
   return (
-    <ScrimsContext.Provider
-      value={{
-        scrims,
-        setScrims,
-        fetch,
-        toggleFetch,
-        scrimsLoaded,
-      }}>
-      {children}
-    </ScrimsContext.Provider>
+    <ScrimsContext.Provider value={value}>{children}</ScrimsContext.Provider>
   );
 }
 

@@ -35,6 +35,7 @@ import CreateIcon from '@material-ui/icons/BorderColor';
 import moment from 'moment';
 import clsx from 'clsx';
 import { KEYCODES } from '../../utils/keycodes';
+import { useScrims } from './../../context/scrimsContext';
 
 const useStyles = makeStyles({
   drawerList: {
@@ -60,12 +61,13 @@ export default function NavbarDrawer({
   setScrimsRegion,
   scrimsDate, // the date the scrims are going to be filtered by
   setScrimsDate,
-  fetchScrims,
 }) {
-  const classes = useStyles();
   const { currentUser, logOutUser } = useAuth();
+  const { fetchScrims } = useScrims();
+
+  const classes = useStyles();
   const history = useHistory();
-  let allRegions = ['NA', 'EUW', 'EUNE', 'LAN'];
+
   const theme = useTheme();
   const matchesSm = useMediaQuery(theme.breakpoints.down('sm'));
   const matchesXs = useMediaQuery(theme.breakpoints.down('xs'));
@@ -75,11 +77,6 @@ export default function NavbarDrawer({
     () => (matchesMd ? 'top' : 'right'),
     [matchesMd]
   );
-
-  let selectRegions = [
-    currentUser?.region,
-    ...allRegions.filter((r) => r !== currentUser?.region),
-  ];
 
   // this is terrible but I'm doing it this way because it will cause an error that it can't find props of undefined
   let hidePreviousScrims = hideProps?.hidePreviousScrims,
@@ -96,6 +93,13 @@ export default function NavbarDrawer({
     await sleep(80);
     history.push(path);
   };
+
+  let allRegions = ['NA', 'EUW', 'EUNE', 'LAN'];
+
+  let selectRegions = [
+    currentUser?.region,
+    ...allRegions.filter((r) => r !== currentUser?.region),
+  ];
 
   const onSelectRegion = (e) => {
     const region = e.target.value;

@@ -1,6 +1,7 @@
-import { useContext, Fragment, useMemo } from 'react';
+import { Fragment, useMemo } from 'react';
+import { useScrims } from './../../context/scrimsContext';
+import { useAuth } from './../../context/currentUser';
 import { useScrimSectionStyles } from '../../styles/scrimSection.styles';
-import { CurrentUserContext } from '../../context/currentUser';
 
 // components
 import List from '@material-ui/core/List';
@@ -51,14 +52,15 @@ const getRankImage = (user) => {
 export default function ScrimTeamList({
   playerEntered,
   scrim,
-  getNewScrimsData,
   teamOne,
   teamTwo,
   teamData,
   casterEntered,
   gameStarted,
 }) {
-  const { currentUser } = useContext(CurrentUserContext);
+  const { fetchScrims } = useScrims();
+  const { currentUser } = useAuth();
+
   const classes = useScrimSectionStyles({ scrim });
 
   const gameEnded = useMemo(() => scrim.teamWon, [scrim.teamWon]);
@@ -66,7 +68,7 @@ export default function ScrimTeamList({
   const { teamRoles, teamName, teamTitleName, teamArray } = teamData;
 
   const joinGame = async (teamJoiningName, role) => {
-    getNewScrimsData();
+    fetchScrims();
 
     if (casterEntered) {
       alert("You're already a caster for this game!");
@@ -88,12 +90,12 @@ export default function ScrimTeamList({
         `%c added ${currentUser?.name} to scrim: ${scrim._id} in team: ${teamJoiningName}`,
         'color: #99ff99'
       );
-      getNewScrimsData();
+      fetchScrims();
     }
   };
 
   const handleMovePlayer = async (teamStr, role) => {
-    getNewScrimsData();
+    fetchScrims();
 
     let currentTeamName = playerEntered.team.name;
     const currentTeamArr = currentTeamName === 'teamOne' ? teamOne : teamTwo;
@@ -140,7 +142,7 @@ export default function ScrimTeamList({
         `%cswapped ${currentUser?.name} in scrim: ${scrim._id} to: ${teamStr} as ${role}`,
         'color: #99ff99'
       );
-      getNewScrimsData();
+      fetchScrims();
     }
   };
 
@@ -160,7 +162,7 @@ export default function ScrimTeamList({
         `%cremoved ${currentUser?.name} from scrim: ${scrim._id}`,
         'color: #99ff99'
       );
-      getNewScrimsData();
+      fetchScrims();
     }
   };
 
@@ -183,7 +185,7 @@ export default function ScrimTeamList({
         `%ckicked ${dataSending?.playerData?.name} from scrim: ${scrim._id}`,
         'color: #99ff99'
       );
-      getNewScrimsData();
+      fetchScrims();
     }
   };
 
