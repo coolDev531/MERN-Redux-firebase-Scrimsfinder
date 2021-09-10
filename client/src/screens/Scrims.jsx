@@ -1,5 +1,5 @@
 import { useAuth } from './../context/currentUser';
-import { useContext, useState, useEffect, Fragment, useMemo } from 'react';
+import { useState, useEffect, Fragment, useMemo } from 'react';
 
 // components
 import Typography from '@material-ui/core/Typography';
@@ -9,12 +9,11 @@ import { showEarliestFirst, showLatestFirst } from '../utils/getSortedScrims';
 import { InnerColumn, PageContent } from '../components/shared/PageComponents';
 import ScrimSection from '../components/scrim_components/ScrimSection';
 import Loading from '../components/shared/Loading';
-import Navbar from '../components/shared/Navbar';
+import Navbar from '../components/shared/Navbar/Navbar';
 import { useTheme, useMediaQuery } from '@material-ui/core';
 import Tooltip from '../components/shared/Tooltip';
 
 // utils
-import { ScrimsContext } from '../context/scrimsContext';
 import moment from 'moment';
 import 'moment-timezone';
 import { compareDateWithCurrentTime } from './../utils/compareDateWithCurrentTime';
@@ -44,7 +43,7 @@ export default function Scrims() {
 
   const { currentUser } = useAuth();
 
-  const { scrims, fetchScrims, scrimsLoaded } = useScrims();
+  const { scrims, scrimsLoaded } = useScrims();
 
   const [filteredScrims, setFilteredScrims] = useState([]); // the array of filtered scrims (both scrimsDate and scrimsRegion)
 

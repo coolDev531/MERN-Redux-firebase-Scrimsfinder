@@ -1,5 +1,5 @@
 import { useLocation } from 'react-router-dom';
-import Navbar from '../components/shared/Navbar';
+import Navbar from '../components/shared/Navbar/Navbar';
 import { PageContent } from '../components/shared/PageComponents';
 
 export default function NotFound() {

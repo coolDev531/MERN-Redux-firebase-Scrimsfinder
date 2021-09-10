@@ -8,7 +8,7 @@ import IntroForms from '../components/IntroForms';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
-import Navbar from './../components/shared/Navbar';
+import Navbar from '../components/shared/Navbar/Navbar';
 import {
   InnerColumn,
   PageSection,

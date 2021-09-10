@@ -10,7 +10,7 @@ import {
   makeStyles,
   FormHelperText,
 } from '@material-ui/core';
-import Navbar from '../components/shared/Navbar';
+import Navbar from '../components/shared/Navbar/Navbar';
 import {
   InnerColumn,
   PageContent,

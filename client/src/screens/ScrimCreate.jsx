@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useScrims } from './../context/scrimsContext';
-import Navbar from './../components/shared/Navbar';
+import Navbar from '../components/shared/Navbar/Navbar';
 import {
   Grid,
   TextField,

@@ -5,7 +5,7 @@ import { updateScrim, getScrimById } from '../services/scrims';
 import { useAuth } from './../context/currentUser';
 
 // components
-import Navbar from './../components/shared/Navbar';
+import Navbar from '../components/shared/Navbar/Navbar';
 import {
   Button,
   FormHelperText,

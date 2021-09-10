@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useScrims } from './../context/scrimsContext';
 import { useParams, useHistory } from 'react-router-dom';
 import ScrimSection from '../components/scrim_components/ScrimSection';
-import Navbar from '../components/shared/Navbar';
+import Navbar from '../components/shared/Navbar/Navbar';
 import { Helmet } from 'react-helmet';
 import Loading from '../components/shared/Loading';
 import { PageContent } from '../components/shared/PageComponents';

@@ -1,10 +1,10 @@
 // hooks
 import { useEffect, useMemo } from 'react';
-import { useAuth } from './../../context/currentUser';
+import { useAuth } from '../../../context/currentUser';
 import { useHistory } from 'react-router-dom';
 import { useMediaQuery, useTheme } from '@material-ui/core';
 // components
-import { InnerColumn } from './PageComponents';
+import { InnerColumn } from '../PageComponents';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -25,7 +25,7 @@ import {
   Hidden,
   makeStyles,
 } from '@material-ui/core';
-import AdminArea from './AdminArea';
+import AdminArea from '../AdminArea';
 
 // icons
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -34,8 +34,8 @@ import CreateIcon from '@material-ui/icons/BorderColor';
 // utils
 import moment from 'moment';
 import clsx from 'clsx';
-import { KEYCODES } from '../../utils/keycodes';
-import { useScrims } from './../../context/scrimsContext';
+import { KEYCODES } from '../../../utils/keycodes';
+import { useScrims } from '../../../context/scrimsContext';
 
 const useStyles = makeStyles({
   drawerList: {

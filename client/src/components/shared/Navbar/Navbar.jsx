@@ -1,6 +1,6 @@
 // hooks
 import { useState } from 'react';
-import { useAuth } from '../../context/currentUser';
+import { useAuth } from '../../../context/currentUser';
 import { useLocation, useHistory } from 'react-router-dom';
 
 // components
@@ -27,13 +27,14 @@ import { Link } from 'react-router-dom';
 import NavbarDrawer from './NavbarDrawer';
 import moment from 'moment';
 import 'moment-timezone';
-import HideOnScroll from './HideOnScroll';
-import { InnerColumn } from './PageComponents';
-import Tooltip from './Tooltip';
+import HideOnScroll from '../HideOnScroll';
+import { InnerColumn } from '../PageComponents';
+import Tooltip from '../Tooltip';
+
 // icons
 import KeyIcon from '@material-ui/icons/VpnKey';
 import MenuIcon from '@material-ui/icons/Menu'; // burger icon
-import { useScrims } from './../../context/scrimsContext';
+import { useScrims } from '../../../context/scrimsContext';
 
 const useStyles = makeStyles((theme) => ({
   offset: theme.mixins.offset,
