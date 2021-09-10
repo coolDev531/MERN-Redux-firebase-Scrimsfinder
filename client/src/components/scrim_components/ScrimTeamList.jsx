@@ -230,7 +230,7 @@ export default function ScrimTeamList({
                     // we don't care if the guy is the lobby host if game ended.
                     // eslint-disable-next-line
                     background:
-                      isLobbyHost && !gameEnded && gameStarted
+                      isLobbyHost && !gameEnded
                         ? 'linear-gradient(315deg, #63d471 0%, #233329 74%)'
                         : '#424242',
                   }}>
