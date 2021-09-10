@@ -1,8 +1,10 @@
-import { useContext, useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useScrims } from './../context/scrimsContext';
-import { CurrentUserContext } from '../context/currentUser';
 import { Redirect, useParams, useHistory } from 'react-router-dom';
 import { updateScrim, getScrimById } from '../services/scrims';
+import { useAuth } from './../context/currentUser';
+
+// components
 import Navbar from './../components/shared/Navbar';
 import {
   Button,
@@ -12,15 +14,17 @@ import {
   Select,
   TextField,
 } from '@material-ui/core';
-import moment from 'moment';
-import 'moment-timezone';
-import { getDateAndTimeSeparated } from '../utils/getDateAndTimeSeparated';
-import devLog from '../utils/devLog';
 import {
   PageContent,
   PageSection,
   InnerColumn,
 } from '../components/shared/PageComponents';
+
+// utils
+import moment from 'moment';
+import 'moment-timezone';
+import { getDateAndTimeSeparated } from '../utils/getDateAndTimeSeparated';
+import devLog from '../utils/devLog';
 
 /**
  * @method sample
@@ -32,7 +36,7 @@ const sample = (array) => array[Math.floor(Math.random() * array.length)];
 const RANDOM_HOST_CODE = '_$random';
 
 export default function ScrimEdit() {
-  const { currentUser } = useContext(CurrentUserContext);
+  const { currentUser } = useAuth();
   const { fetchScrims } = useScrims();
 
   const [scrimData, setScrimData] = useState({

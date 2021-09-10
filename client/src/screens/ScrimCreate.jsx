@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { useScrims } from './../context/scrimsContext';
 import Navbar from './../components/shared/Navbar';
 import {
@@ -10,7 +10,7 @@ import {
   Button,
 } from '@material-ui/core';
 import { Redirect } from 'react-router';
-import { CurrentUserContext } from '../context/currentUser';
+import { useAuth } from './../context/currentUser';
 import { Select } from '@material-ui/core';
 import {
   InnerColumn,
@@ -27,7 +27,7 @@ import devLog from './../utils/devLog';
 
 export default function ScrimCreate() {
   const { fetchScrims } = useScrims();
-  const { currentUser } = useContext(CurrentUserContext);
+  const { currentUser } = useAuth();
   const [scrimData, setScrimData] = useState({
     gameStartTime: new Date().toISOString(),
     lobbyHost: currentUser,
