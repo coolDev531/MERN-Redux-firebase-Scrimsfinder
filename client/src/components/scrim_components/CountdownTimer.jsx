@@ -1,5 +1,10 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { makeStyles, Typography, LinearProgress } from '@material-ui/core';
+import {
+  makeStyles,
+  Typography,
+  LinearProgress,
+  Grid,
+} from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   timer: {
@@ -100,14 +105,14 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
   if (!isTimerStarted) {
     return (
       <Fragment>
-        <div className="timer loading">
-          <section>
-            <Typography gutterBottom variant="p" className="text-black">
+        <Grid container direction="column">
+          <Grid item component="section">
+            <Typography gutterBottom variant="body2" className="text-black">
               Loading...
             </Typography>
             <LinearProgress className="linear-progress" />
-          </section>
-        </div>
+          </Grid>
+        </Grid>
       </Fragment>
     );
   }
