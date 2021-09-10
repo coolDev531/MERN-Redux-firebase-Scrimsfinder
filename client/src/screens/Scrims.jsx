@@ -254,7 +254,11 @@ export default function Scrims() {
               direction="row"
               alignItems="center"
               justifyContent="center">
-              <Typography align="center" variant="h2" component="h1">
+              <Typography
+                align="center"
+                variant="h2"
+                component="h1"
+                className="text-white">
                 No scrims found in {scrimsRegion}
               </Typography>
               <Box marginRight={2} />

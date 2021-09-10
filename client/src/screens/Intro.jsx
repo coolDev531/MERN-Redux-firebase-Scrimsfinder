@@ -236,7 +236,9 @@ export default function Intro() {
       <PageContent>
         <PageSection>
           <InnerColumn>
-            <h1>Welcome to LoL Scrims Finder, please fill in your details</h1>
+            <Typography variant="h1">
+              Welcome to LoL Scrims Finder, please fill in your details
+            </Typography>
 
             <Grid container item direction="column" md={12}>
               {[...errors.values()].map((error, key) => (
