@@ -75,7 +75,7 @@ export default function ScrimSectionMiddleAreaBox({
                     <>
                       <Grid item container direction="row" alignItems="center">
                         <Typography variant="h2">
-                          Lobby captain: {scrim.lobbyHost?.name}
+                          Lobby host / captain: {scrim.lobbyHost?.name}
                         </Typography>
                         <Box marginRight={2} />
                         <Tooltip title="It's expected of the lobby captain to create the custom lobby and select who won after the game">
