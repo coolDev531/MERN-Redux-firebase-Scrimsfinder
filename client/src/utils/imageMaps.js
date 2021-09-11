@@ -6,6 +6,7 @@ import adcImg from '../assets/images/roles/adc.png';
 import supportImg from '../assets/images/roles/support.png';
 
 // ranks imports
+import unrankedImg from '../assets/images/ranks/unranked.png';
 import ironImg from '../assets/images/ranks/iron.png';
 import bronzeImg from '../assets/images/ranks/bronze.png';
 import silverImg from '../assets/images/ranks/silver.png';
@@ -25,6 +26,7 @@ export const ROLE_IMAGES = {
 };
 
 export const RANK_IMAGES = {
+  Unranked: unrankedImg,
   Iron: ironImg,
   Bronze: bronzeImg,
   Silver: silverImg,

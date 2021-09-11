@@ -255,17 +255,17 @@ export default function ScrimTeamList({
                             {truncate(userInfo?.name, 16)}
                           </a>
                         </Tooltip>
-                        {userInfo?.rank !== 'Unranked' && (
-                          <>
-                            &nbsp;
-                            <img
-                              width="25px"
-                              style={{ objectFit: 'cover' }}
-                              alt={playerAssigned?.role}
-                              src={getRankImage(userInfo)}
-                            />
-                          </>
-                        )}
+
+                        <>
+                          {/* rank image */}
+                          &nbsp;
+                          <img
+                            width="25px"
+                            style={{ objectFit: 'cover' }}
+                            alt={playerAssigned?.role}
+                            src={getRankImage(userInfo)}
+                          />
+                        </>
                       </Grid>
                     }
                     secondary={
