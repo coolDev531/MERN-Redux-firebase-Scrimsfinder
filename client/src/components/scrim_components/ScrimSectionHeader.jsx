@@ -37,8 +37,8 @@ export default function ScrimSectionHeader({
       item
       container
       direction="column"
-      className="scrim__metadata pd-1"
-      style={{ background: 'rgba(240,234,240,0.8)' }}>
+      className="scrim__metadata"
+      style={{ background: 'rgba(240,234,240,0.8)', padding: '10px' }}>
       <Grid
         item
         container

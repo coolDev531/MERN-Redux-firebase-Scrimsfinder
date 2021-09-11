@@ -28,18 +28,6 @@ p {
   font-weight: 600;
 }
 
-.d-flex {
-  display: flex;
-}
-
-.align-center {
-  align-items: center;
-}
-
-.gap-20 {
-  gap: 20px;
-}
-
 .link {
   color: inherit;
   text-decoration: none;
@@ -56,38 +44,8 @@ p {
   color: white !important;
 }
 
-.ml-4 {
-  margin-left: 4%;
-}
-
-@media screen and (max-width: 768px) {
-  .ml-4 {
-    margin-left: 0;
-  }
-}
-
 .text-black {
   color: black !important;
-}
-
-.pd-0 {
-  padding: 0 !important;
-}
-
-.pd-1 {
-  padding: 10px !important;
-}
-
-.border-white {
-  border: 1px solid #fff;
-}
-
-.justify-between {
-  justify-content: space-between !important;
-}
-
-.direction-column {
-  flex-direction: column;
 }
 
 .mr-3 {
