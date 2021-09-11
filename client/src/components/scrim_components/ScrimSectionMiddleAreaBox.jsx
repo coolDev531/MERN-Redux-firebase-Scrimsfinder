@@ -6,10 +6,12 @@ import { useScrims } from './../../context/scrimsContext';
 import CountdownTimer from './CountdownTimer';
 import UploadPostGameImage from './UploadPostGameImage';
 import { Box, Button, Grid, makeStyles, Typography } from '@material-ui/core';
+import Tooltip from '../shared/Tooltip';
 
 // utils
 import pluralize from 'pluralize';
 import { updateScrim } from '../../services/scrims';
+import HelpIcon from '@material-ui/icons/Help';
 
 const useStyles = makeStyles((theme) => ({
   infoBoxRoot: {
@@ -71,9 +73,18 @@ export default function ScrimSectionMiddleAreaBox({
                   casterEntered ||
                   process.env.REACT_APP_ADMIN_KEY === currentUser?.adminKey ? (
                     <>
-                      <Typography variant="h2">
-                        Lobby host / captain: {scrim.lobbyHost?.name}
-                      </Typography>
+                      <Grid item container direction="row" alignItems="center">
+                        <Typography variant="h2">
+                          Lobby captain: {scrim.lobbyHost?.name}
+                        </Typography>
+                        <Box marginRight={2} />
+                        <Tooltip title="It's expected of the lobby captain to create the custom lobby and select who won after the game">
+                          <HelpIcon
+                            style={{ color: '#000', cursor: 'help' }}
+                            fontSize="large"
+                          />
+                        </Tooltip>
+                      </Grid>
                       <Typography variant="h3" className="text-black">
                         please make the lobby name: <br />"{scrim.lobbyName}"
                       </Typography>
