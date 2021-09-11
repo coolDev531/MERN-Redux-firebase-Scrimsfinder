@@ -1,6 +1,6 @@
 import './App.css';
 import AppRouter from './navigation/AppRouter';
-import { ThemeProvider } from '@material-ui/core';
+import { ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Footer from './components/shared/Footer';
 import { useAuth } from './context/currentUser';
