@@ -34,6 +34,7 @@ const appTheme = createTheme({
 
     h3: {
       display: 'block',
+      fontFamily: ['Montserrat', 'sans-serif'].join(','),
       fontSize: '1.17em',
       marginTop: '1em',
       marginBottom: '1em',
