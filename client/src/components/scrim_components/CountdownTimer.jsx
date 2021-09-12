@@ -1,6 +1,10 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core';
-import LinearProgress from '@material-ui/core/LinearProgress';
+import {
+  makeStyles,
+  Typography,
+  LinearProgress,
+  Grid,
+} from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   timer: {
@@ -10,8 +14,8 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     textAlign: 'center',
     borderRadius: '3px',
-    padding: '0rem 1rem',
     justifyContent: 'center',
+    padding: '20px',
     '@supports (gap: 10px)': {
       gap: '10px',
     },
@@ -24,6 +28,12 @@ const useStyles = makeStyles((theme) => ({
     height: '20px',
   },
 }));
+
+const Text = ({ children }) => (
+  <Typography component="p" variant="p">
+    {children}
+  </Typography>
+);
 
 function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
   const [isTimerStarted, setIsTimerStarted] = useState(false);
@@ -95,12 +105,14 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
   if (!isTimerStarted) {
     return (
       <Fragment>
-        <div className="timer loading">
-          <section>
-            <p>Loading...</p>
+        <Grid container direction="column">
+          <Grid item component="section">
+            <Typography gutterBottom variant="body2" className="text-black">
+              Loading...
+            </Typography>
             <LinearProgress className="linear-progress" />
-          </section>
-        </div>
+          </Grid>
+        </Grid>
       </Fragment>
     );
   }
@@ -108,7 +120,9 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
   if (gameStarted) {
     return (
       <div className={classes.timer}>
-        <p>{!scrim.teamWon ? 'GAME IN PROGRESS' : `${scrim.teamWon} Won!`}</p>
+        <Text>
+          {!scrim.teamWon ? 'GAME IN PROGRESS' : `${scrim.teamWon} Won!`}
+        </Text>
       </div>
     );
   }
@@ -119,41 +133,41 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
         {timerDays != '00' && (
           <>
             <section aria-label="timer-days">
-              <p>{timerDays}</p>
-              <p>
+              <Text>{timerDays}</Text>
+              <Text>
                 <small>Days</small>
-              </p>
+              </Text>
             </section>
-            <p>:</p>
+            <Text>:</Text>
           </>
         )}
         {timerHours != '00' && (
           <>
             <section aria-label="timer-hours">
-              <p>{timerHours}</p>
-              <p>
+              <Text>{timerHours}</Text>
+              <Text>
                 <small>Hours</small>
-              </p>
+              </Text>
             </section>
-            <p>:</p>
+            <Text>:</Text>
           </>
         )}
         {timerMinutes != '00' && (
           <>
             <section aria-label="timer-minutes">
-              <p>{timerMinutes}</p>
-              <p>
+              <Text>{timerMinutes}</Text>
+              <Text>
                 <small>Minutes</small>
-              </p>
+              </Text>
             </section>
-            <p>:</p>
+            <Text>:</Text>
           </>
         )}
         <section aria-label="timer-seconds">
-          <p>{timerSeconds}</p>
-          <p>
+          <Text>{timerSeconds}</Text>
+          <Text>
             <small>Seconds</small>
-          </p>
+          </Text>
         </section>
       </div>
     </Fragment>

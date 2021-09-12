@@ -1,6 +1,7 @@
-import { useContext, Fragment, useMemo } from 'react';
-import { useScrimSectionStyles } from '../styles/scrimSection.styles';
-import { CurrentUserContext } from '../context/currentUser';
+import { Fragment, useMemo } from 'react';
+import { useScrims } from './../../context/scrimsContext';
+import { useAuth } from './../../context/currentUser';
+import { useScrimSectionStyles } from '../../styles/scrimSection.styles';
 
 // components
 import List from '@material-ui/core/List';
@@ -10,23 +11,26 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import { Grid, IconButton, Typography } from '@material-ui/core';
-import Tooltip from '../components/shared/Tooltip';
-import AdminArea from './shared/AdminArea';
+import Tooltip from '../shared/Tooltip';
+import AdminArea from '../shared/AdminArea';
 import ListSubheader from '@material-ui/core/ListSubheader';
 
 // utils
-import { RANK_IMAGES, ROLE_IMAGES } from '../utils/imageMaps';
-import { truncate } from './../utils/truncate';
+import { RANK_IMAGES, ROLE_IMAGES } from '../../utils/imageMaps';
+import { truncate } from '../../utils/truncate';
 
 // services
-import { insertPlayerInScrim, removePlayerFromScrim } from '../services/scrims';
+import {
+  insertPlayerInScrim,
+  removePlayerFromScrim,
+} from '../../services/scrims';
 
 // icons
 import SwapIcon from '@material-ui/icons/SwapHoriz';
 import JoinIcon from '@material-ui/icons/MeetingRoom';
 import ExitIcon from '@material-ui/icons/NoMeetingRoom';
 import KickIcon from '@material-ui/icons/HighlightOff';
-import { copyTextToClipboard } from './../utils/copyToClipboard';
+import { copyTextToClipboard } from '../../utils/copyToClipboard';
 
 const compareArrays = (arr1, arr2) => {
   if (arr1.length !== arr2.length) return false;
@@ -48,14 +52,15 @@ const getRankImage = (user) => {
 export default function ScrimTeamList({
   playerEntered,
   scrim,
-  getNewScrimsData,
   teamOne,
   teamTwo,
   teamData,
   casterEntered,
   gameStarted,
 }) {
-  const { currentUser } = useContext(CurrentUserContext);
+  const { fetchScrims } = useScrims();
+  const { currentUser } = useAuth();
+
   const classes = useScrimSectionStyles({ scrim });
 
   const gameEnded = useMemo(() => scrim.teamWon, [scrim.teamWon]);
@@ -63,7 +68,7 @@ export default function ScrimTeamList({
   const { teamRoles, teamName, teamTitleName, teamArray } = teamData;
 
   const joinGame = async (teamJoiningName, role) => {
-    getNewScrimsData();
+    fetchScrims();
 
     if (casterEntered) {
       alert("You're already a caster for this game!");
@@ -85,12 +90,12 @@ export default function ScrimTeamList({
         `%c added ${currentUser?.name} to scrim: ${scrim._id} in team: ${teamJoiningName}`,
         'color: #99ff99'
       );
-      getNewScrimsData();
+      fetchScrims();
     }
   };
 
   const handleMovePlayer = async (teamStr, role) => {
-    getNewScrimsData();
+    fetchScrims();
 
     let currentTeamName = playerEntered.team.name;
     const currentTeamArr = currentTeamName === 'teamOne' ? teamOne : teamTwo;
@@ -137,7 +142,7 @@ export default function ScrimTeamList({
         `%cswapped ${currentUser?.name} in scrim: ${scrim._id} to: ${teamStr} as ${role}`,
         'color: #99ff99'
       );
-      getNewScrimsData();
+      fetchScrims();
     }
   };
 
@@ -157,7 +162,7 @@ export default function ScrimTeamList({
         `%cremoved ${currentUser?.name} from scrim: ${scrim._id}`,
         'color: #99ff99'
       );
-      getNewScrimsData();
+      fetchScrims();
     }
   };
 
@@ -180,7 +185,7 @@ export default function ScrimTeamList({
         `%ckicked ${dataSending?.playerData?.name} from scrim: ${scrim._id}`,
         'color: #99ff99'
       );
-      getNewScrimsData();
+      fetchScrims();
     }
   };
 
@@ -227,7 +232,7 @@ export default function ScrimTeamList({
                     // we don't care if the guy is the lobby host if game ended.
                     // eslint-disable-next-line
                     background:
-                      isLobbyHost && !gameEnded && gameStarted
+                      isLobbyHost && !gameEnded
                         ? 'linear-gradient(315deg, #63d471 0%, #233329 74%)'
                         : '#424242',
                   }}>
@@ -250,17 +255,17 @@ export default function ScrimTeamList({
                             {truncate(userInfo?.name, 16)}
                           </a>
                         </Tooltip>
-                        {userInfo?.rank !== 'Unranked' && (
-                          <>
-                            &nbsp;
-                            <img
-                              width="25px"
-                              style={{ objectFit: 'cover' }}
-                              alt={playerAssigned?.role}
-                              src={getRankImage(userInfo)}
-                            />
-                          </>
-                        )}
+
+                        <>
+                          {/* rank image */}
+                          &nbsp;
+                          <img
+                            width="25px"
+                            style={{ objectFit: 'cover' }}
+                            alt={playerAssigned?.role}
+                            src={getRankImage(userInfo)}
+                          />
+                        </>
                       </Grid>
                     }
                     secondary={

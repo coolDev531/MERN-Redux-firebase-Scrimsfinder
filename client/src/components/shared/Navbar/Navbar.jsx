@@ -1,6 +1,6 @@
 // hooks
 import { useState } from 'react';
-import { useAuth } from '../../context/currentUser';
+import { useAuth } from '../../../context/currentUser';
 import { useLocation, useHistory } from 'react-router-dom';
 
 // components
@@ -25,15 +25,16 @@ import {
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import NavbarDrawer from './NavbarDrawer';
-// import { BOOTCAMP_LOL_SRC } from '../../utils/bootcampImg'; // need license
 import moment from 'moment';
 import 'moment-timezone';
-import HideOnScroll from './HideOnScroll';
-import { InnerColumn } from './PageComponents';
-import Tooltip from './Tooltip';
+import HideOnScroll from '../HideOnScroll';
+import { InnerColumn } from '../PageComponents';
+import Tooltip from '../Tooltip';
+
 // icons
 import KeyIcon from '@material-ui/icons/VpnKey';
 import MenuIcon from '@material-ui/icons/Menu'; // burger icon
+import { useScrims } from '../../../context/scrimsContext';
 
 const useStyles = makeStyles((theme) => ({
   offset: theme.mixins.offset,
@@ -51,7 +52,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Navbar({
-  toggleFetch,
   setScrimsRegion,
   scrimsRegion,
   scrimsDate,
@@ -66,6 +66,7 @@ export default function Navbar({
   const classes = useStyles();
   const { pathname } = useLocation();
   const history = useHistory();
+  const { fetchScrims } = useScrims();
 
   const noBackButtonPaths = [
     /^\/user-setup/,
@@ -92,7 +93,7 @@ export default function Navbar({
 
   const onSelectRegion = (e) => {
     const region = e.target.value;
-    toggleFetch((prev) => !prev); // not necessary, trying to ping the server.
+    fetchScrims(); // not necessary, trying to ping the server.
     setScrimsRegion(region); // set the navbar select value to selected region
   };
 
@@ -118,13 +119,6 @@ export default function Navbar({
                   alignItems="center"
                   justifyContent="space-between">
                   <Grid item container alignItems="center" xs={6} sm={6}>
-                    {/* need license to use img */}
-                    {/* <img
-                  src={BOOTCAMP_LOL_SRC}
-                  alt="logo"
-                  style={{ marginRight: '10px' }}
-                /> */}
-                    &nbsp;
                     <Link to="/" className="link">
                       <Typography component="h1" variant="h1">
                         LoL Scrims Finder
@@ -332,7 +326,6 @@ export default function Navbar({
         setScrimsRegion={setScrimsRegion}
         scrimsDate={scrimsDate}
         setScrimsDate={setScrimsDate}
-        fetchScrims={() => toggleFetch((prev) => !prev)}
       />
 
       <div className={classes.offset} />

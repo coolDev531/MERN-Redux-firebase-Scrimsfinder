@@ -1,9 +1,11 @@
-import { useContext, useState, useEffect, useMemo } from 'react';
-import { CurrentUserContext } from '../context/currentUser';
+import { useState, useEffect, useMemo } from 'react';
+import { useScrims } from './../context/scrimsContext';
 import { Redirect, useParams, useHistory } from 'react-router-dom';
 import { updateScrim, getScrimById } from '../services/scrims';
-import { ScrimsContext } from '../context/scrimsContext';
-import Navbar from './../components/shared/Navbar';
+import { useAuth } from './../context/currentUser';
+
+// components
+import Navbar from '../components/shared/Navbar/Navbar';
 import {
   Button,
   FormHelperText,
@@ -12,15 +14,17 @@ import {
   Select,
   TextField,
 } from '@material-ui/core';
-import moment from 'moment';
-import 'moment-timezone';
-import { getDateAndTimeSeparated } from '../utils/getDateAndTimeSeparated';
-import devLog from '../utils/devLog';
 import {
   PageContent,
   PageSection,
   InnerColumn,
 } from '../components/shared/PageComponents';
+
+// utils
+import moment from 'moment';
+import 'moment-timezone';
+import { getDateAndTimeSeparated } from '../utils/getDateAndTimeSeparated';
+import devLog from '../utils/devLog';
 
 /**
  * @method sample
@@ -32,8 +36,8 @@ const sample = (array) => array[Math.floor(Math.random() * array.length)];
 const RANDOM_HOST_CODE = '_$random';
 
 export default function ScrimEdit() {
-  const { currentUser } = useContext(CurrentUserContext);
-  const { toggleFetch } = useContext(ScrimsContext);
+  const { currentUser } = useAuth();
+  const { fetchScrims } = useScrims();
 
   const [scrimData, setScrimData] = useState({
     teamWon: '',
@@ -224,7 +228,7 @@ export default function ScrimEdit() {
     const updatedScrim = await updateScrim(id, dataSending);
 
     if (updatedScrim) {
-      toggleFetch((prev) => !prev);
+      fetchScrims();
       console.log(`%c updated scrim: ${id}`, 'color: lightgreen');
       setUpdated(true);
     }

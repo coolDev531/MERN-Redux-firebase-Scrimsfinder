@@ -1,5 +1,6 @@
-import { useState, useEffect, useContext } from 'react';
-import Navbar from './../components/shared/Navbar';
+import { useState, useEffect } from 'react';
+import { useScrims } from './../context/scrimsContext';
+import Navbar from '../components/shared/Navbar/Navbar';
 import {
   Grid,
   TextField,
@@ -9,9 +10,8 @@ import {
   Button,
 } from '@material-ui/core';
 import { Redirect } from 'react-router';
-import { CurrentUserContext } from '../context/currentUser';
+import { useAuth } from './../context/currentUser';
 import { Select } from '@material-ui/core';
-import { ScrimsContext } from '../context/scrimsContext';
 import {
   InnerColumn,
   PageContent,
@@ -23,10 +23,11 @@ import { createScrim } from './../services/scrims';
 import { getMinutes } from './../utils/getMinutes';
 import moment from 'moment';
 import 'moment-timezone';
+import devLog from './../utils/devLog';
 
 export default function ScrimCreate() {
-  const { toggleFetch } = useContext(ScrimsContext);
-  const { currentUser } = useContext(CurrentUserContext);
+  const { fetchScrims } = useScrims();
+  const { currentUser } = useAuth();
   const [scrimData, setScrimData] = useState({
     gameStartTime: new Date().toISOString(),
     lobbyHost: currentUser,
@@ -100,8 +101,9 @@ export default function ScrimCreate() {
 
     const createdScrim = await createScrim(scrimToCreate);
 
-    toggleFetch((prevState) => !prevState);
+    fetchScrims();
 
+    devLog('created new scrim!', createdScrim);
     setCreated({ createdScrim });
   };
 

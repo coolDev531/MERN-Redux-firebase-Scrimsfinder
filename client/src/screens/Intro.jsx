@@ -8,7 +8,7 @@ import IntroForms from '../components/IntroForms';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
-import Navbar from './../components/shared/Navbar';
+import Navbar from '../components/shared/Navbar/Navbar';
 import {
   InnerColumn,
   PageSection,
@@ -236,7 +236,9 @@ export default function Intro() {
       <PageContent>
         <PageSection>
           <InnerColumn>
-            <h1>Welcome to LoL Scrims Finder, please fill in your details</h1>
+            <Typography variant="h1">
+              Welcome to LoL Scrims Finder, please fill in your details
+            </Typography>
 
             <Grid container item direction="column" md={12}>
               {[...errors.values()].map((error, key) => (

@@ -30,7 +30,11 @@ export default function Loading({ text }) {
       <div className="centered">
         <div className="loading-wrapper">
           <div className="content-container">
-            <Typography variant="h4" align="center" gutterBottom>
+            <Typography
+              variant="h4"
+              align="center"
+              className="text-white"
+              gutterBottom>
               {displayText}
             </Typography>
             <img className="loading" src={LoadingGif} alt="loading" />

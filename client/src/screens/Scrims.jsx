@@ -1,5 +1,5 @@
 import { useAuth } from './../context/currentUser';
-import { useContext, useState, useEffect, Fragment, useMemo } from 'react';
+import { useState, useEffect, Fragment, useMemo } from 'react';
 
 // components
 import Typography from '@material-ui/core/Typography';
@@ -7,20 +7,20 @@ import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import { showEarliestFirst, showLatestFirst } from '../utils/getSortedScrims';
 import { InnerColumn, PageContent } from '../components/shared/PageComponents';
-import ScrimSection from '../components/ScrimSection';
+import ScrimSection from '../components/scrim_components/ScrimSection';
 import Loading from '../components/shared/Loading';
-import Navbar from '../components/shared/Navbar';
+import Navbar from '../components/shared/Navbar/Navbar';
 import { useTheme, useMediaQuery } from '@material-ui/core';
 import Tooltip from '../components/shared/Tooltip';
 
 // utils
-import { ScrimsContext } from '../context/scrimsContext';
 import moment from 'moment';
 import 'moment-timezone';
 import { compareDateWithCurrentTime } from './../utils/compareDateWithCurrentTime';
 
 // icons
 import HelpIcon from '@material-ui/icons/Help';
+import { useScrims } from './../context/scrimsContext';
 
 // compare scrim start time with now.
 const compareDates = (scrim) => {
@@ -43,7 +43,7 @@ export default function Scrims() {
 
   const { currentUser } = useAuth();
 
-  const { scrims, toggleFetch, scrimsLoaded } = useContext(ScrimsContext);
+  const { scrims, scrimsLoaded } = useScrims();
 
   const [filteredScrims, setFilteredScrims] = useState([]); // the array of filtered scrims (both scrimsDate and scrimsRegion)
 
@@ -148,7 +148,6 @@ export default function Scrims() {
         setScrimsRegion={setScrimsRegion}
         scrimsDate={scrimsDate}
         setScrimsDate={setScrimsDate}
-        toggleFetch={toggleFetch}
         showDropdowns
         showCheckboxes
         hideProps={{
@@ -255,7 +254,11 @@ export default function Scrims() {
               direction="row"
               alignItems="center"
               justifyContent="center">
-              <Typography align="center" variant="h2" component="h1">
+              <Typography
+                align="center"
+                variant="h2"
+                component="h1"
+                className="text-white">
                 No scrims found in {scrimsRegion}
               </Typography>
               <Box marginRight={2} />

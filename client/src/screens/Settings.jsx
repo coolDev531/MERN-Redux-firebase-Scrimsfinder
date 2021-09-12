@@ -9,8 +9,9 @@ import {
   FormControl,
   makeStyles,
   FormHelperText,
+  Typography,
 } from '@material-ui/core';
-import Navbar from '../components/shared/Navbar';
+import Navbar from '../components/shared/Navbar/Navbar';
 import {
   InnerColumn,
   PageContent,
@@ -207,7 +208,7 @@ export default function Settings() {
                 width: 'auto',
               }}>
               <Grid item>
-                <h1>Settings</h1>
+                <Typography variant="h1">Settings</Typography>
               </Grid>
 
               <Grid
