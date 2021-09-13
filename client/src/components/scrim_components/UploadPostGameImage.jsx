@@ -172,7 +172,7 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
     <AdminArea>
       <Grid item container direction="row" xs={12}>
         <Grid item>
-          <Tooltip title="Delete image (admin only)" position="top">
+          <Tooltip title="Delete post-game image (admin only)" position="top">
             <Button variant="contained" color="secondary" onClick={deleteImage}>
               Delete Image
             </Button>
