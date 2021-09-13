@@ -36,7 +36,7 @@ import { copyTextToClipboard } from '../../utils/copyToClipboard';
 /**
  * @method compareArrays
     compare if the previous state of team that the player is joining is identical.
-    If it is, he isn't swapping teams (will return true), if it isn't, he is swapping teams (will return false)
+    If it is, he isn't swapping teams (will return true), if it isn't identical, he is swapping teams (will return false)
  * @param {Array} arr1
  * @param {Array} arr2
  * @returns {Boolean}
