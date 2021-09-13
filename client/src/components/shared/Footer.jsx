@@ -2,7 +2,7 @@ import { Grid, styled } from '@material-ui/core';
 import { InnerColumn } from './PageComponents';
 
 const StyledFooter = styled('footer')({
-  background: '#000',
+  backgroundColor: 'rgba(18,25,35,.65)',
   boxShadow: '1px 2px 4px 1px#fff',
   scrollMarginTop: '2em',
 });

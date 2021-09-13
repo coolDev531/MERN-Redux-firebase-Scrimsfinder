@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
   siteHeader: {
     top: '0',
     zIndex: '5',
-    backgroundColor: 'black',
+    backgroundColor: 'rgba(18,25,35,.65)',
     borderBottom: '1px solid white',
   },
   toolbar: {
