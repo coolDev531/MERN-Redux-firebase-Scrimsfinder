@@ -42,7 +42,7 @@ const Scrim = new Schema(
       min: 0,
       max: 2,
     },
-    title: { type: String },
+    title: { type: String, required: true },
     gameStartTime: {
       type: Date,
       default: getThirtyMinFromNow(),

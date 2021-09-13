@@ -5,19 +5,22 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { CurrentUserProvider } from './context/currentUser';
+import { AlertsProvider } from './context/alertsContext';
 import { ScrimsProvider } from './context/scrimsContext';
 import ReactComment from './components/shared/ReactComment';
 import { creditsComment } from './creditsComment';
 
 ReactDOM.render(
   <Router>
-    <ScrimsProvider>
-      <CurrentUserProvider>
-        {/* the only way I know to render a comment in react */}
-        <ReactComment text={creditsComment} trim={false} />
-        <App />
-      </CurrentUserProvider>
-    </ScrimsProvider>
+    <AlertsProvider>
+      <ScrimsProvider>
+        <CurrentUserProvider>
+          {/* the only way I know to render a comment in react */}
+          <ReactComment text={creditsComment} trim={false} />
+          <App />
+        </CurrentUserProvider>
+      </ScrimsProvider>
+    </AlertsProvider>
   </Router>,
   document.getElementById('root')
 );

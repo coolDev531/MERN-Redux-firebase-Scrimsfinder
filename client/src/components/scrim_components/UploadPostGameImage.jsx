@@ -9,6 +9,7 @@ import { Tooltip, Grid, Button, Typography } from '@material-ui/core';
 // utils
 import S3FileUpload from 'react-s3';
 import { addImageToScrim } from '../../services/scrims';
+import { useAlerts } from '../../context/alertsContext';
 
 const MAX_FILE_SIZE_MIB = 0.953674; // 1 megabyte (in Memibyte format)
 
@@ -16,6 +17,7 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
   const { currentUser } = useAuth();
   const fileInputRef = useRef();
   const { fetchScrims } = useScrims();
+  const { setCurrentAlert } = useAlerts();
 
   const config = {
     bucketName: 'lol-scrimsfinder-bucket',
@@ -25,7 +27,7 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
     secretAccessKey: process.env.REACT_APP_S3_SECRET_ACCESS_KEY,
   };
 
-  const upload = (e) => {
+  const handleUpload = async (e) => {
     if (e.target.files.length === 0) return;
 
     let file = e.target.files[0];
@@ -36,20 +38,29 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
     if (!/^image\//.test(file.type)) {
       // if file type isn't an image, return
       fileInputRef.current.value = '';
-      alert(`File ${file.name} is not an image! \nonly images are allowed.`);
+      setCurrentAlert({
+        type: 'Error',
+        message: `File ${file.name} is not an image! \nonly images are allowed.`,
+      });
       return;
     }
 
     if (fileSize > MAX_FILE_SIZE_MIB) {
       fileInputRef.current.value = '';
-      alert(`File ${file.name} is too big! \nmax allowed size: 1 MB.`);
+      setCurrentAlert({
+        type: 'Error',
+        message: `File ${file.name} is too big! \nmax allowed size: 1 MB.`,
+      });
       return;
     }
 
     // if file name has sapces, return.
     if (fileName.includes(' ')) {
       fileInputRef.current.value = '';
-      alert(`No spaces in name of file allowed \n name of file: ${file?.name}`);
+      setCurrentAlert({
+        type: 'Error',
+        message: `No spaces in name of file allowed \n name of file: ${file?.name}`,
+      });
       return;
     }
 
@@ -61,24 +72,34 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
       return;
     }
 
-    S3FileUpload.uploadFile(file, config)
-      .then(async (bucketData) => {
-        let dataSending = {
-          ...bucketData,
-          uploadedBy: { ...currentUser },
-        };
-        const addedImg = await addImageToScrim(scrim._id, dataSending);
-        if (addedImg) {
-          console.log(
-            '%csuccessfully added an image for scrim: ' + scrim._id,
-            'color: lightgreen'
-          );
-          fetchScrims();
-        }
-      })
-      .catch((err) => {
-        alert(err);
+    try {
+      const bucketData = await S3FileUpload.uploadFile(file, config);
+      let dataSending = {
+        ...bucketData,
+        uploadedBy: { ...currentUser },
+      };
+
+      const addedImg = await addImageToScrim(scrim._id, dataSending);
+      if (addedImg) {
+        console.log(
+          '%csuccessfully uploaded an image for scrim: ' + scrim._id,
+          'color: lightgreen'
+        );
+
+        setCurrentAlert({
+          type: 'Success',
+          message: 'image uploaded successfully',
+        });
+
+        fetchScrims();
+      }
+    } catch (err) {
+      console.log('error uploading image:', err);
+      setCurrentAlert({
+        type: 'Error',
+        message: err,
       });
+    }
   };
 
   // only show this if image hasn't been uploaded
@@ -106,7 +127,7 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
               ref={fileInputRef}
               hidden
               type="file"
-              onChange={upload}
+              onChange={handleUpload}
             />
           </Button>
         </Tooltip>
@@ -120,7 +141,12 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
         <Tooltip title="Re-upload image (admin only)" position="top">
           <Button variant="contained" color="primary" component="label">
             Re-upload Image
-            <input ref={fileInputRef} hidden type="file" onChange={upload} />
+            <input
+              ref={fileInputRef}
+              hidden
+              type="file"
+              onChange={handleUpload}
+            />
           </Button>
         </Tooltip>
       </Grid>
