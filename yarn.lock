@@ -1351,11 +1351,6 @@ rc@^1.2.8:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-favicon@^0.0.23:
-  version "0.0.23"
-  resolved "https://registry.yarnpkg.com/react-favicon/-/react-favicon-0.0.23.tgz#fbe7788615b98113276cee2bffb51b8b4bae5acd"
-  integrity sha512-szqPlwnTLGTYBB1Zo3AptHr2OM26BOeNQEr1jazgkLfC10wLG4wFcjuBwLLuM7oVnrdk7vDw2FFLIhYKb9/eRQ==
-
 readable-stream@^2.3.5:
   version "2.3.7"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.3.7.tgz#1eca1cf711aef814c04f62252a36a62f6cb23b57"
