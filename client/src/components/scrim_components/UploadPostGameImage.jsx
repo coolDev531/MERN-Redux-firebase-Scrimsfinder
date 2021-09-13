@@ -153,23 +153,28 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
     // if is uploaded
     // admin only, re-upload image
     <AdminArea>
-      <Grid item xs={12}>
-        <Tooltip title="Delete image (admin only)" position="top">
-          <Button variant="contained" color="secondary" onClick={deleteImage}>
-            Delete
-          </Button>
-        </Tooltip>
-        <Tooltip title="Re-upload image (admin only)" position="top">
-          <Button variant="contained" color="primary" component="label">
-            Re-upload Image
-            <input
-              ref={fileInputRef}
-              hidden
-              type="file"
-              onChange={handleUpload}
-            />
-          </Button>
-        </Tooltip>
+      <Grid item container direction="row" xs={12} spacing={2}>
+        <Grid item>
+          <Tooltip title="Re-upload image (admin only)" position="top">
+            <Button variant="contained" color="primary" component="label">
+              Re-upload Image
+              <input
+                ref={fileInputRef}
+                hidden
+                type="file"
+                onChange={handleUpload}
+              />
+            </Button>
+          </Tooltip>
+        </Grid>
+
+        <Grid item>
+          <Tooltip title="Delete image (admin only)" position="top">
+            <Button variant="contained" color="secondary" onClick={deleteImage}>
+              Delete Image
+            </Button>
+          </Tooltip>
+        </Grid>
       </Grid>
     </AdminArea>
   );

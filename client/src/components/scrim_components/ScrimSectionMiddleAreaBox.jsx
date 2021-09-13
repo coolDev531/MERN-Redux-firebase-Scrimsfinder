@@ -62,7 +62,7 @@ export default function ScrimSectionMiddleAreaBox({
           setGameStarted={setGameStarted}
           scrim={scrim}
         />
-        <UploadPostGameImage scrim={scrim} isUploaded={imageUploaded} />
+
         {gameStarted &&
           (scrim.teamOne.length === 5 && scrim.teamTwo.length === 5 ? (
             <>
@@ -163,6 +163,7 @@ export default function ScrimSectionMiddleAreaBox({
                 <>
                   <Box marginTop={2} />
 
+                  {/* UPLOAD OR DELETE IMAGE */}
                   <UploadPostGameImage
                     isUploaded={imageUploaded}
                     scrim={scrim}
