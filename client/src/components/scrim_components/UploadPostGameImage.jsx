@@ -27,7 +27,7 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
     secretAccessKey: process.env.REACT_APP_S3_SECRET_ACCESS_KEY,
   };
 
-  const upload = (e) => {
+  const handleUpload = async (e) => {
     if (e.target.files.length === 0) return;
 
     let file = e.target.files[0];
@@ -72,27 +72,34 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
       return;
     }
 
-    S3FileUpload.uploadFile(file, config)
-      .then(async (bucketData) => {
-        let dataSending = {
-          ...bucketData,
-          uploadedBy: { ...currentUser },
-        };
-        const addedImg = await addImageToScrim(scrim._id, dataSending);
-        if (addedImg) {
-          console.log(
-            '%csuccessfully added an image for scrim: ' + scrim._id,
-            'color: lightgreen'
-          );
-          fetchScrims();
-        }
-      })
-      .catch((err) => {
+    try {
+      const bucketData = await S3FileUpload.uploadFile(file, config);
+      let dataSending = {
+        ...bucketData,
+        uploadedBy: { ...currentUser },
+      };
+
+      const addedImg = await addImageToScrim(scrim._id, dataSending);
+      if (addedImg) {
+        console.log(
+          '%csuccessfully uploaded an image for scrim: ' + scrim._id,
+          'color: lightgreen'
+        );
+
         setCurrentAlert({
-          type: 'Error',
-          message: err,
+          type: 'Success',
+          message: 'image uploaded successfully',
         });
+
+        fetchScrims();
+      }
+    } catch (err) {
+      console.log('error uploading image:', err);
+      setCurrentAlert({
+        type: 'Error',
+        message: err,
       });
+    }
   };
 
   // only show this if image hasn't been uploaded
@@ -120,7 +127,7 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
               ref={fileInputRef}
               hidden
               type="file"
-              onChange={upload}
+              onChange={handleUpload}
             />
           </Button>
         </Tooltip>
@@ -134,7 +141,12 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
         <Tooltip title="Re-upload image (admin only)" position="top">
           <Button variant="contained" color="primary" component="label">
             Re-upload Image
-            <input ref={fileInputRef} hidden type="file" onChange={upload} />
+            <input
+              ref={fileInputRef}
+              hidden
+              type="file"
+              onChange={handleUpload}
+            />
           </Button>
         </Tooltip>
       </Grid>

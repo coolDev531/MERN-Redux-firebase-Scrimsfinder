@@ -176,7 +176,7 @@ export default function Scrims() {
                             marginBottom: '40px',
                             borderBottom: '1px solid white',
                           }}>
-                          <Typography align="center" variant="h3" gutterBottom>
+                          <Typography align="center" variant="h1" gutterBottom>
                             {currentScrims.length > 0 && 'Current scrims'}
                           </Typography>
                         </div>
@@ -204,7 +204,7 @@ export default function Scrims() {
                         marginBottom: '40px',
                         borderBottom: '1px solid white',
                       }}>
-                      <Typography align="center" variant="h3" gutterBottom>
+                      <Typography align="center" variant="h1" gutterBottom>
                         {upcomingScrims.length > 0
                           ? 'Upcoming scrims'
                           : 'No upcoming scrims'}
@@ -233,7 +233,7 @@ export default function Scrims() {
                           marginBottom: '40px',
                           borderBottom: '1px solid white',
                         }}>
-                        <Typography align="center" variant="h3">
+                        <Typography align="center" variant="h1">
                           Previous scrims
                         </Typography>
                       </div>

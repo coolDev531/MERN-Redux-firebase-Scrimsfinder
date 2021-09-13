@@ -169,7 +169,6 @@ export default function ScrimSectionMiddleAreaBox({
                   />
                 </>
               )}
-
               {imageUploaded && (
                 <Grid
                   item
