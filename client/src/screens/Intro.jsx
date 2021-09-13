@@ -237,7 +237,7 @@ export default function Intro() {
         <PageSection>
           <InnerColumn>
             <Typography variant="h1">
-              Welcome to LoL Scrims Finder, please fill in your details
+              Welcome to Bootcamp LoL Scrim Gym, please fill in your details
             </Typography>
 
             <Grid container item direction="column" md={12}>

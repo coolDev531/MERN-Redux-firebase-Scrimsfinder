@@ -3,6 +3,9 @@ import { useState } from 'react';
 import { useAuth } from '../../../context/currentUser';
 import { useScrims } from '../../../context/scrimsContext';
 import { useLocation, useHistory } from 'react-router-dom';
+import Logo from '../../../assets/images/bootcamp_llc_media_kit/coin_logo_new2021.png';
+import { useTheme } from '@material-ui/core';
+import { useMediaQuery } from '@material-ui/core';
 
 // components
 import {
@@ -35,8 +38,6 @@ import Tooltip from '../Tooltip';
 // icons
 import KeyIcon from '@material-ui/icons/VpnKey';
 import MenuIcon from '@material-ui/icons/Menu'; // burger icon
-import Logo from '../../../assets/images/bootcamp_llc_media_kit/coin_logo_new2021.png';
-import Text from '../../../assets/images/bootcamp_llc_media_kit/Logo_-_new2021shdbc.png';
 
 const useStyles = makeStyles((theme) => ({
   offset: theme.mixins.offset,
@@ -69,6 +70,8 @@ export default function Navbar({
   const { pathname } = useLocation();
   const history = useHistory();
   const { fetchScrims } = useScrims();
+  const theme = useTheme();
+  const matchesSm = useMediaQuery(theme.breakpoints.down('sm'));
 
   const noBackButtonPaths = [
     /^\/user-setup/,
@@ -128,10 +131,16 @@ export default function Navbar({
                     xs={6}
                     sm={6}>
                     <Grid item container aligmItems="center">
-                      <Link to="/" className="link" style={{ display: 'flex' }}>
+                      <Link
+                        to="/"
+                        className="link"
+                        style={{ display: 'flex', alignItems: 'center' }}>
                         <img src={Logo} width="80px" alt="Logo" />
                         {/* <Hidden mdDown> */}
-                        <Typography component="h1" variant="h1">
+                        <Typography
+                          component="h1"
+                          variant={matchesSm ? 'h3' : 'h1'}
+                          className="text-white">
                           &nbsp; Bootcamp LoL Scrim Gym
                         </Typography>
                         {/* </Hidden> */}
