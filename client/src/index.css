@@ -10,22 +10,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #000;
 }
 
-body::before {
-  background-color: rgba(255, 255, 255, 0.5);
-  background: url('./assets/images/summoners_rift.jpg');
-  background-size: cover;
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  filter: blur(20px);
-  z-index: -1;
-}
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
@@ -36,11 +22,4 @@ code {
 ::-webkit-calendar-picker-indicator {
   filter: invert(81%) sepia(15%) saturate(613%) hue-rotate(339deg)
     brightness(106%) contrast(101%);
-}
-
-#root {
-  justify-content: space-between;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
 }
