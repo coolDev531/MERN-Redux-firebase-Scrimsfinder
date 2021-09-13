@@ -136,14 +136,14 @@ export default function Navbar({
                         className="link"
                         style={{ display: 'flex', alignItems: 'center' }}>
                         <img src={Logo} width="80px" alt="Logo" />
-                        {/* <Hidden mdDown> */}
-                        <Typography
-                          component="h1"
-                          variant={matchesSm ? 'h3' : 'h1'}
-                          className="text-white">
-                          &nbsp; Bootcamp LoL Scrim Gym
-                        </Typography>
-                        {/* </Hidden> */}
+                        <Box marginLeft={2}>
+                          <Typography
+                            component="h1"
+                            variant={matchesSm ? 'h3' : 'h1'}
+                            className="text-white">
+                            Bootcamp LoL Scrim Gym
+                          </Typography>
+                        </Box>
                       </Link>
                     </Grid>
                   </Grid>
