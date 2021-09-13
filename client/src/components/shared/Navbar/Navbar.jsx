@@ -128,12 +128,13 @@ export default function Navbar({
                     xs={6}
                     sm={6}>
                     <Grid item container aligmItems="center">
-                      <img src={Logo} width="80px" alt="Logo" />
-
-                      <Link to="/" className="link">
+                      <Link to="/" className="link" style={{ display: 'flex' }}>
+                        <img src={Logo} width="80px" alt="Logo" />
+                        {/* <Hidden mdDown> */}
                         <Typography component="h1" variant="h1">
-                          &nbsp; LoL Scrim Gym
+                          &nbsp; Bootcamp LoL Scrim Gym
                         </Typography>
+                        {/* </Hidden> */}
                       </Link>
                     </Grid>
                   </Grid>

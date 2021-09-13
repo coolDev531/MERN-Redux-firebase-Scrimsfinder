@@ -22,12 +22,6 @@ picture img {
   padding: 20px;
 }
 
-p {
-  font-family: 'Montserrat', sans-serif;
-  color: green;
-  font-weight: 600;
-}
-
 .link {
   color: inherit;
   text-decoration: none;

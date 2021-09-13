@@ -1,10 +1,13 @@
 import { useMemo } from 'react';
-import { Button, Grid, Typography } from '@material-ui/core';
 import { Link, useHistory } from 'react-router-dom';
+import { useAlerts } from '../../context/alertsContext';
+
+// components
 import Moment from 'react-moment';
-import 'moment-timezone';
+import { Button, Grid, Typography } from '@material-ui/core';
 
 // utils
+import 'moment-timezone';
 import { copyTextToClipboard } from './../../utils/copyToClipboard';
 import AdminArea from './../shared/AdminArea';
 
@@ -24,6 +27,7 @@ export default function ScrimSectionHeader({
   handleDeleteScrim,
 }) {
   const { casters } = scrim;
+  const { setCurrentAlert } = useAlerts();
 
   const history = useHistory();
 
@@ -69,7 +73,10 @@ export default function ScrimSectionHeader({
             variant="contained"
             color="primary"
             onClick={() => {
-              alert('copied scrim link to clipboard!');
+              setCurrentAlert({
+                type: 'Success',
+                message: 'copied game link to clipboard!',
+              });
               copyTextToClipboard(gameUrl);
             }}>
             <ShareIcon /> Share Link

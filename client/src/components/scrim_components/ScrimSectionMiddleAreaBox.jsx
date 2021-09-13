@@ -163,13 +163,13 @@ export default function ScrimSectionMiddleAreaBox({
                 <>
                   <Box marginTop={2} />
 
+                  {/* UPLOAD OR DELETE IMAGE */}
                   <UploadPostGameImage
                     isUploaded={imageUploaded}
                     scrim={scrim}
                   />
                 </>
               )}
-
               {imageUploaded && (
                 <Grid
                   item

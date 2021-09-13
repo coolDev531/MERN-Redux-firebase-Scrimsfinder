@@ -27,13 +27,23 @@ const useStyles = makeStyles((theme) => ({
     width: '25%',
     height: '20px',
   },
+
+  timerText: {
+    fontFamily: ['Montserrat', 'sans-serif'].join(','),
+    fontWeight: 600,
+    color: 'green',
+    fontSize: '22px',
+  },
 }));
 
-const Text = ({ children }) => (
-  <Typography component="p" variant="p">
-    {children}
-  </Typography>
-);
+const Text = ({ children }) => {
+  const classes = useStyles();
+  return (
+    <Typography className={classes.timerText} variant="body2">
+      {children}
+    </Typography>
+  );
+};
 
 function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
   const [isTimerStarted, setIsTimerStarted] = useState(false);
@@ -120,6 +130,7 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
   if (gameStarted) {
     return (
       <div className={classes.timer}>
+        {/* typography variant="p" is invalid in Mui */}
         <Text>
           {!scrim.teamWon ? 'GAME IN PROGRESS' : `${scrim.teamWon} Won!`}
         </Text>

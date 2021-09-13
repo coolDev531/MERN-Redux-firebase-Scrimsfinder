@@ -77,6 +77,9 @@ There are a few .env variables you need to set-up.
 X_API_KEY=api_key_here
 SECRET_OR_KEY=secret_or_key_here
 ADMIN_KEY=admin_key_here
+
+REACT_APP_S3_ACCESS_KEY_ID=value
+REACT_APP_S3_SECRET_ACCESS_KEY=value
 ```
 
 There are 2 models currently, the `User` and the `Scrim` models.
@@ -162,7 +165,7 @@ REACT_APP_FIREBASE_API_KEY
 
 
 ## running it on your machine
-- to run back-end, type in cmd: `yarn` to install latest-dependencies, then run the command: `npm run dev`.
+- to run back-end, type in cmd: `yarn` to install latest-dependencies, then run the command: `yarn dev`.
 - to run front-end, cd into `client` directory and run `yarn` to install dependencies, then run `yarn start` to run the server.
 
 

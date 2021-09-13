@@ -12,8 +12,15 @@ const {
   checkIfScrimIsInACertainDate,
 } = require('../utils/scrimUtils');
 const capitalizeWord = require('../utils/capitalizeWord');
+const AWS = require('aws-sdk');
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
+let s3bucket = new AWS.S3({
+  Bucket: 'lol-scrimsfinder-bucket',
+  accessKeyId: process.env.REACT_APP_S3_ACCESS_KEY_ID,
+  secretAccessKey: process.env.REACT_APP_S3_SECRET_ACCESS_KEY,
+});
 
 const getLobbyName = async (region, createdScrimStartTime) => {
   const scrims = await Scrim.find();
@@ -524,6 +531,55 @@ const addImageToScrim = async (req, res) => {
   );
 };
 
+const removeImageFromScrim = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const scrim = await Scrim.findById(id);
+
+    if (!scrim) {
+      return res.status(500).send('Scrim not found');
+    }
+
+    if (scrim.postGameImage === null) {
+      return res.status(500).send('Image does not exist!');
+    }
+
+    const params = {
+      Bucket: 'lol-scrimsfinder-bucket',
+      Key: scrim.postGameImage.key,
+    };
+
+    const dataSending = {
+      postGameImage: null,
+    };
+
+    s3bucket.deleteObject(params, function (err, data) {
+      if (err) return res.status(500).json({ error: err });
+      // an error occurred
+      else return data; // successful response
+    });
+
+    await Scrim.findByIdAndUpdate(
+      id,
+      dataSending,
+      { new: true },
+      (error, scrim) => {
+        if (error) {
+          return res.status(500).json({ error: error.message });
+        }
+        if (!scrim) {
+          return res.status(500).send('Scrim not found');
+        }
+
+        return res.status(200).json(scrim);
+      }
+    );
+  } catch (err) {
+    return res.status(500).json({ error: err });
+  }
+};
+
 module.exports = {
   getAllScrims,
   getTodaysScrims,
@@ -536,4 +592,5 @@ module.exports = {
   removeCasterFromScrim,
   insertCasterInScrim,
   addImageToScrim,
+  removeImageFromScrim,
 };
