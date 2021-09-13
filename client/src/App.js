@@ -26,14 +26,14 @@ function App() {
         // if there is an alert in the context, show it
         <Snackbar
           anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-          autoHideDuration={6000}
-          open={currentAlert}
+          autoHideDuration={6000} // autohide will set the current alert to null in the state.
+          open={currentAlert.message ? true : false}
           onClose={closeAlert}
           message={currentAlert.message}>
           <Alert
             variant="filled"
             onClose={closeAlert}
-            severity={currentAlert.type}>
+            severity={currentAlert.type.toLowerCase()}>
             <strong>{currentAlert.type}</strong> - {currentAlert.message}
           </Alert>
         </Snackbar>

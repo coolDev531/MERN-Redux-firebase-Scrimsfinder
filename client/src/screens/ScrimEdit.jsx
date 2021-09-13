@@ -25,6 +25,7 @@ import moment from 'moment';
 import 'moment-timezone';
 import { getDateAndTimeSeparated } from '../utils/getDateAndTimeSeparated';
 import devLog from '../utils/devLog';
+import { useAlerts } from '../context/alertsContext';
 
 /**
  * @method sample
@@ -38,6 +39,7 @@ const RANDOM_HOST_CODE = '_$random';
 export default function ScrimEdit() {
   const { currentUser } = useAuth();
   const { fetchScrims } = useScrims();
+  const { setCurrentAlert } = useAlerts();
 
   const [scrimData, setScrimData] = useState({
     teamWon: '',
@@ -215,22 +217,37 @@ export default function ScrimEdit() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let yes = window.confirm('are you sure you want to update this scrim?');
-    if (!yes) return;
 
-    const dataSending = {
-      ...scrimData,
-      lobbyHost: await getLobbyHost(),
-      // if user selected N//A send null for teamWon, else send the actual value and result to null if undefined
-      teamWon: scrimData?.teamWon === 'N/A' ? null : scrimData?.teamWon ?? null,
-    };
+    try {
+      let yes = window.confirm('are you sure you want to update this scrim?');
+      if (!yes) return;
 
-    const updatedScrim = await updateScrim(id, dataSending);
+      const dataSending = {
+        ...scrimData,
+        lobbyHost: await getLobbyHost(),
+        // if user selected N//A send null for teamWon, else send the actual value and result to null if undefined
+        teamWon:
+          scrimData?.teamWon === 'N/A' ? null : scrimData?.teamWon ?? null,
+      };
 
-    if (updatedScrim) {
-      fetchScrims();
-      console.log(`%c updated scrim: ${id}`, 'color: lightgreen');
-      setUpdated(true);
+      const updatedScrim = await updateScrim(id, dataSending);
+
+      if (updatedScrim) {
+        fetchScrims();
+        console.log(`%c updated scrim: ${id}`, 'color: lightgreen');
+        setCurrentAlert({
+          type: 'Success',
+          message: 'Scrim updated successfully!',
+        });
+        setUpdated(true);
+        return;
+      }
+    } catch (error) {
+      setCurrentAlert({
+        type: 'Error',
+        message: 'Error updating Scrim',
+      });
+      return;
     }
   };
 
