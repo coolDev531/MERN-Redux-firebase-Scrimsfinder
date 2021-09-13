@@ -1,6 +1,7 @@
 // hooks
 import { useState } from 'react';
 import { useAuth } from '../../../context/currentUser';
+import { useScrims } from '../../../context/scrimsContext';
 import { useLocation, useHistory } from 'react-router-dom';
 
 // components
@@ -34,7 +35,8 @@ import Tooltip from '../Tooltip';
 // icons
 import KeyIcon from '@material-ui/icons/VpnKey';
 import MenuIcon from '@material-ui/icons/Menu'; // burger icon
-import { useScrims } from '../../../context/scrimsContext';
+import Logo from '../../../assets/images/bootcamp_llc_media_kit/coin_logo_new2021.png';
+import Text from '../../../assets/images/bootcamp_llc_media_kit/Logo_-_new2021shdbc.png';
 
 const useStyles = makeStyles((theme) => ({
   offset: theme.mixins.offset,
@@ -118,12 +120,22 @@ export default function Navbar({
                   direction="row"
                   alignItems="center"
                   justifyContent="space-between">
-                  <Grid item container alignItems="center" xs={6} sm={6}>
-                    <Link to="/" className="link">
-                      <Typography component="h1" variant="h1">
-                        LoL Scrims Finder
-                      </Typography>
-                    </Link>
+                  <Grid
+                    item
+                    container
+                    direction="row"
+                    alignItems="center"
+                    xs={6}
+                    sm={6}>
+                    <Grid item container aligmItems="center">
+                      <img src={Logo} width="80px" alt="Logo" />
+
+                      <Link to="/" className="link">
+                        <Typography component="h1" variant="h1">
+                          &nbsp; LoL Scrim Gym
+                        </Typography>
+                      </Link>
+                    </Grid>
                   </Grid>
 
                   <Grid

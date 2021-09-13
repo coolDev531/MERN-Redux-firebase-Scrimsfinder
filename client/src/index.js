@@ -9,16 +9,23 @@ import { ScrimsProvider } from './context/scrimsContext';
 import ReactComment from './components/shared/ReactComment';
 import { creditsComment } from './creditsComment';
 
+import Favicon from 'react-favicon';
+import Logo from './assets/images/bootcamp_llc_media_kit/coin_logo_new2021shd.png';
+
 ReactDOM.render(
-  <Router>
-    <ScrimsProvider>
-      <CurrentUserProvider>
-        {/* the only way I know to render a comment in react */}
-        <ReactComment text={creditsComment} trim={false} />
-        <App />
-      </CurrentUserProvider>
-    </ScrimsProvider>
-  </Router>,
+  <>
+    <Favicon url={Logo} />
+
+    <Router>
+      <ScrimsProvider>
+        <CurrentUserProvider>
+          {/* the only way I know to render a comment in react */}
+          <ReactComment text={creditsComment} trim={false} />
+          <App />
+        </CurrentUserProvider>
+      </ScrimsProvider>
+    </Router>
+  </>,
   document.getElementById('root')
 );
 

@@ -24,6 +24,7 @@
     "morgan": "^1.10.0",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
+    "react-favicon": "^0.0.23",
     "yarn": "^1.22.11"
   },
   "devDependencies": {
