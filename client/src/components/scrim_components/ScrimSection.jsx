@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { useScrims } from './../../context/scrimsContext';
 import { useAuth } from './../../context/currentUser';
 import { useScrimSectionStyles } from '../../styles/scrimSection.styles';
+import { useAlerts } from '../../context/alertsContext';
 
 //  components
 import ScrimTeamList from './ScrimTeamList';
@@ -34,6 +35,8 @@ const MAX_CASTER_AMOUNT = 2;
 export default function ScrimSection({ scrim, isInDetail }) {
   const { setScrims, fetchScrims } = useScrims();
   const { currentUser } = useAuth();
+  const { setCurrentAlert } = useAlerts();
+
   const [playerEntered, setPlayerEntered] = useState(false);
   const [casterEntered, setCasterEntered] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
@@ -89,7 +92,16 @@ export default function ScrimSection({ scrim, isInDetail }) {
 
   const joinCast = async () => {
     if (playerEntered) {
-      alert("You're already in a team!");
+      // alert("You're already in a team!");
+      setCurrentAlert({
+        type: 'Error',
+        message: (
+          <span>
+            cannot join cast,
+            <strong>You're already in a team!</strong>
+          </span>
+        ),
+      });
       return;
     }
 

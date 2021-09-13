@@ -1,8 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useScrims } from './../context/scrimsContext';
 import { Redirect, useParams, useHistory } from 'react-router-dom';
-import { updateScrim, getScrimById } from '../services/scrims';
 import { useAuth } from './../context/currentUser';
+import { useAlerts } from '../context/alertsContext';
 
 // components
 import Navbar from '../components/shared/Navbar/Navbar';
@@ -20,12 +20,12 @@ import {
   InnerColumn,
 } from '../components/shared/PageComponents';
 
-// utils
+// utils // services
 import moment from 'moment';
 import 'moment-timezone';
 import { getDateAndTimeSeparated } from '../utils/getDateAndTimeSeparated';
 import devLog from '../utils/devLog';
-import { useAlerts } from '../context/alertsContext';
+import { updateScrim, getScrimById } from '../services/scrims';
 
 /**
  * @method sample
