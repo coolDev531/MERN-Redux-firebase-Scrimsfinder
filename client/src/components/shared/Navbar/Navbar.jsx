@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
   siteHeader: {
     top: '0',
     zIndex: '5',
-    backgroundColor: 'rgba(18,25,35,.65)',
+    backgroundColor: 'rgba(18,25,35,.80)',
     borderBottom: '1px solid white',
   },
   toolbar: {
@@ -133,7 +133,7 @@ export default function Navbar({
                     <Grid item container aligmItems="center">
                       <Link
                         to="/"
-                        className="link"
+                        className="link-2"
                         style={{ display: 'flex', alignItems: 'center' }}>
                         <img src={Logo} width="80px" alt="Logo" />
                         <Box marginLeft={2}>

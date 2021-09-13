@@ -34,6 +34,18 @@ picture img {
   text-decoration: underline;
 }
 
+.link-2 {
+  color: inherit;
+  text-decoration: none;
+  transition: all 250ms ease-in-out;
+  display: inline-block;
+}
+
+.link-2:hover {
+  /* no underline for link-2 */
+  transform: scale(1.01);
+}
+
 .text-white {
   color: white !important;
 }

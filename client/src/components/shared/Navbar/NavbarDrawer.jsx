@@ -38,6 +38,9 @@ import { KEYCODES } from '../../../utils/keycodes';
 import { useScrims } from '../../../context/scrimsContext';
 
 const useStyles = makeStyles({
+  drawerRoot: {
+    backgroundColor: 'rgba(18,25,35)',
+  },
   drawerList: {
     width: 250,
   },
@@ -134,6 +137,7 @@ export default function NavbarDrawer({
     <Drawer
       anchor={drawerAnchor}
       open={isDrawerOpen}
+      classes={{ paper: classes.drawerRoot }}
       onClose={() => setIsDrawerOpen(false)}>
       <InnerColumn>
         <div
