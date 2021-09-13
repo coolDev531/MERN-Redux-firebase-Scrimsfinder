@@ -8,12 +8,12 @@ import { Tooltip, Grid, Button, Typography } from '@material-ui/core';
 
 // utils
 import S3FileUpload from 'react-s3';
-import { addImageToScrim } from '../../services/scrims';
+import { addImageToScrim, removeImageFromScrim } from '../../services/scrims';
 import { useAlerts } from '../../context/alertsContext';
-import AWS from 'aws-sdk';
 
 const MAX_FILE_SIZE_MIB = 0.953674; // 1 megabyte (in Memibyte format)
 
+// can also delete image here... maybe needs renaming
 export default function UploadPostGameImage({ scrim, isUploaded }) {
   const { currentUser } = useAuth();
   const fileInputRef = useRef();
@@ -28,37 +28,26 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
     secretAccessKey: process.env.REACT_APP_S3_SECRET_ACCESS_KEY,
   };
 
-  const deleteS3Object = async () => {
-    return new Promise((resolve, reject) => {
-      try {
-        let s3bucket = new AWS.S3({
-          Bucket: config.bucketName,
-          Key: scrim.postGameImage?.key, // location of file: /postgameLobbyImages/id/filename
-          accessKeyId: config.accessKeyId,
-          secretAccessKey: config.secretAccessKey,
-        });
+  const deleteImage = async () => {
+    try {
+      await removeImageFromScrim(scrim._id);
 
-        const params = {
-          Bucket: config.bucketName,
-          Key: scrim.postGameImage?.key,
-        };
+      setCurrentAlert({
+        type: 'Success',
+        message: 'image deleted successfully',
+      });
 
-        s3bucket.deleteObject(params, function (err, data) {
-          if (err) reject(err);
-          // an error occurred
-          else resolve(data); // successful response
-        });
-      } catch (e) {
-        reject(e);
-      }
-    });
+      fetchScrims();
+    } catch (err) {
+      setCurrentAlert({ type: 'Error', message: 'error removing image' });
+    }
   };
 
   const handleUpload = async (e) => {
     if (e.target.files.length === 0) return;
 
     let file = e.target.files[0];
-    file.name = `game-${scrim._id}-${Date.now()}`;
+    let fileName = [...file.name];
 
     const fileSize = file.size / 1024 / 1024; // in MiB
 
@@ -77,6 +66,16 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
       setCurrentAlert({
         type: 'Error',
         message: `File ${file.name} is too big! \nmax allowed size: 1 MB.`,
+      });
+      return;
+    }
+
+    // if file name has sapces, return.
+    if (fileName.includes(' ')) {
+      fileInputRef.current.value = '';
+      setCurrentAlert({
+        type: 'Error',
+        message: `No spaces in name of file allowed \n name of file: ${file?.name}`,
       });
       return;
     }
@@ -155,9 +154,11 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
     // admin only, re-upload image
     <AdminArea>
       <Grid item xs={12}>
-        <Button variant="contained" onClick={deleteS3Object}>
-          Delete
-        </Button>
+        <Tooltip title="Delete image (admin only)" position="top">
+          <Button variant="contained" color="secondary" onClick={deleteImage}>
+            Delete
+          </Button>
+        </Tooltip>
         <Tooltip title="Re-upload image (admin only)" position="top">
           <Button variant="contained" color="primary" component="label">
             Re-upload Image

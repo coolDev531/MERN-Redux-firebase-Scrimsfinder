@@ -86,6 +86,15 @@ export const addImageToScrim = async (id, data) => {
   }
 };
 
+export const removeImageFromScrim = async (id) => {
+  try {
+    const response = await api.put(`/scrims/${id}/remove-image`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export const deleteScrim = async (id) => {
   try {
     const response = await api.delete(`/scrims/${id}`);
