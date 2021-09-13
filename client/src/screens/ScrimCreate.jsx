@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useScrims } from './../context/scrimsContext';
+import { useAlerts } from './../context/alertsContext';
+
+// components
 import Navbar from '../components/shared/Navbar/Navbar';
 import {
   Grid,
@@ -28,6 +31,8 @@ import devLog from './../utils/devLog';
 export default function ScrimCreate() {
   const { fetchScrims } = useScrims();
   const { currentUser } = useAuth();
+  const { setCurrentAlert } = useAlerts();
+
   const [scrimData, setScrimData] = useState({
     gameStartTime: new Date().toISOString(),
     lobbyHost: currentUser,
@@ -93,18 +98,27 @@ export default function ScrimCreate() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    try {
+      const scrimToCreate = {
+        ...scrimData,
+        lobbyHost: scrimData.lobbyHost === 'random' ? null : currentUser,
+      };
 
-    const scrimToCreate = {
-      ...scrimData,
-      lobbyHost: scrimData.lobbyHost === 'random' ? null : currentUser,
-    };
+      const createdScrim = await createScrim(scrimToCreate);
 
-    const createdScrim = await createScrim(scrimToCreate);
+      fetchScrims();
 
-    fetchScrims();
+      devLog('created new scrim!', createdScrim);
+      setCreated({ createdScrim });
 
-    devLog('created new scrim!', createdScrim);
-    setCreated({ createdScrim });
+      setCurrentAlert({
+        type: 'Success',
+        message: 'scrim created successfully!',
+      });
+    } catch (error) {
+      setCurrentAlert({ type: 'Error', message: 'error creating scrim' });
+      console.error(error);
+    }
   };
 
   if (process.env.REACT_APP_ADMIN_KEY !== currentUser?.adminKey) {

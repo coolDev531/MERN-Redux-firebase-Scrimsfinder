@@ -147,18 +147,28 @@ export default function ScrimSection({ scrim, isInDetail }) {
   };
 
   const handleDeleteScrim = async () => {
-    let yes = window.confirm('Are you sure you want to close this scrim?');
-    if (!yes) return;
+    try {
+      let yes = window.confirm('Are you sure you want to close this scrim?');
+      if (!yes) return;
 
-    let deletedScrim = await deleteScrim(scrim._id);
+      let deletedScrim = await deleteScrim(scrim._id);
 
-    if (deletedScrim) {
-      setScrims((prevState) => prevState.filter((s) => s._id !== scrim._id));
+      if (deletedScrim) {
+        setScrims((prevState) => prevState.filter((s) => s._id !== scrim._id));
 
-      if (isInDetail) {
-        history.push('/');
-        fetchScrims();
+        setCurrentAlert({
+          type: 'Success',
+          message: 'Scrim removed successfully',
+        });
+
+        if (isInDetail) {
+          history.push('/');
+          fetchScrims();
+        }
       }
+    } catch (err) {
+      console.error(err);
+      setCurrentAlert({ type: 'Error', message: 'Error removing scrim' });
     }
   };
 
