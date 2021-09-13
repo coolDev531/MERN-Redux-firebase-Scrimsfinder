@@ -9,6 +9,7 @@ import { Tooltip, Grid, Button, Typography } from '@material-ui/core';
 // utils
 import S3FileUpload from 'react-s3';
 import { addImageToScrim } from '../../services/scrims';
+import { useAlerts } from '../../context/alertsContext';
 
 const MAX_FILE_SIZE_MIB = 0.953674; // 1 megabyte (in Memibyte format)
 
@@ -16,6 +17,7 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
   const { currentUser } = useAuth();
   const fileInputRef = useRef();
   const { fetchScrims } = useScrims();
+  const { setCurrentAlert } = useAlerts();
 
   const config = {
     bucketName: 'lol-scrimsfinder-bucket',
@@ -36,20 +38,29 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
     if (!/^image\//.test(file.type)) {
       // if file type isn't an image, return
       fileInputRef.current.value = '';
-      alert(`File ${file.name} is not an image! \nonly images are allowed.`);
+      setCurrentAlert({
+        type: 'Error',
+        message: `File ${file.name} is not an image! \nonly images are allowed.`,
+      });
       return;
     }
 
     if (fileSize > MAX_FILE_SIZE_MIB) {
       fileInputRef.current.value = '';
-      alert(`File ${file.name} is too big! \nmax allowed size: 1 MB.`);
+      setCurrentAlert({
+        type: 'Error',
+        message: `File ${file.name} is too big! \nmax allowed size: 1 MB.`,
+      });
       return;
     }
 
     // if file name has sapces, return.
     if (fileName.includes(' ')) {
       fileInputRef.current.value = '';
-      alert(`No spaces in name of file allowed \n name of file: ${file?.name}`);
+      setCurrentAlert({
+        type: 'Error',
+        message: `No spaces in name of file allowed \n name of file: ${file?.name}`,
+      });
       return;
     }
 
@@ -77,7 +88,10 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
         }
       })
       .catch((err) => {
-        alert(err);
+        setCurrentAlert({
+          type: 'Error',
+          message: err,
+        });
       });
   };
 

@@ -92,7 +92,6 @@ export default function ScrimSection({ scrim, isInDetail }) {
 
   const joinCast = async () => {
     if (playerEntered) {
-      // alert("You're already in a team!");
       setCurrentAlert({
         type: 'Error',
         message: (
