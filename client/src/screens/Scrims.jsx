@@ -256,7 +256,7 @@ export default function Scrims() {
               justifyContent="center">
               <Typography
                 align="center"
-                variant="h2"
+                variant="h1"
                 component="h1"
                 className="text-white">
                 No scrims found in {scrimsRegion}
