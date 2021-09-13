@@ -531,6 +531,10 @@ const removeImageFromScrim = async (req, res) => {
   try {
     const scrim = await Scrim.findById(id);
 
+    if (!scrim) {
+      return res.status(500).send('Scrim not found');
+    }
+
     let s3bucket = new AWS.S3({
       Bucket: 'lol-scrimsfinder-bucket',
       Key: scrim.postGameImage?.key, // location of file: /postgameLobbyImages/id/filename
