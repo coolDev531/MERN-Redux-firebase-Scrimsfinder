@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useScrims } from './../../context/scrimsContext';
 import { useAuth } from './../../context/currentUser';
 
@@ -19,6 +19,7 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
   const fileInputRef = useRef();
   const { fetchScrims } = useScrims();
   const { setCurrentAlert } = useAlerts();
+  const [buttonDisabled, setButtonDisabled] = useState(false); // disable when uploading / deleting img
 
   const config = {
     bucketName: 'lol-scrimsfinder-bucket',
@@ -30,6 +31,11 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
 
   const deleteImage = async () => {
     try {
+      let yes = window.confirm('Are you sure you want to delete this image?');
+
+      if (!yes) return;
+
+      setButtonDisabled(true);
       await removeImageFromScrim(scrim._id);
 
       setCurrentAlert({
@@ -38,8 +44,10 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
       });
 
       fetchScrims();
+      setButtonDisabled(false);
     } catch (err) {
       setCurrentAlert({ type: 'Error', message: 'error removing image' });
+      setButtonDisabled(false);
     }
   };
 
@@ -89,6 +97,8 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
     }
 
     try {
+      setButtonDisabled(true);
+
       const bucketData = await S3FileUpload.uploadFile(file, config);
       let dataSending = {
         ...bucketData,
@@ -108,6 +118,8 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
         });
 
         fetchScrims();
+
+        setButtonDisabled(false);
       }
     } catch (err) {
       console.log('error uploading image:', err);
@@ -115,6 +127,7 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
         type: 'Error',
         message: err,
       });
+      setButtonDisabled(false);
     }
   };
 
@@ -136,7 +149,11 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
         <Tooltip
           title="Validate winner by uploading end of game results"
           position="top">
-          <Button variant="contained" color="primary" component="label">
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={buttonDisabled}
+            component="label">
             Upload Image
             <input
               accept="image/*"
@@ -153,21 +170,7 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
     // if is uploaded
     // admin only, re-upload image
     <AdminArea>
-      <Grid item container direction="row" xs={12} spacing={2}>
-        <Grid item>
-          <Tooltip title="Re-upload image (admin only)" position="top">
-            <Button variant="contained" color="primary" component="label">
-              Re-upload Image
-              <input
-                ref={fileInputRef}
-                hidden
-                type="file"
-                onChange={handleUpload}
-              />
-            </Button>
-          </Tooltip>
-        </Grid>
-
+      <Grid item container direction="row" xs={12}>
         <Grid item>
           <Tooltip title="Delete image (admin only)" position="top">
             <Button variant="contained" color="secondary" onClick={deleteImage}>

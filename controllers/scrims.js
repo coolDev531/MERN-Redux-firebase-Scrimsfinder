@@ -16,6 +16,12 @@ const AWS = require('aws-sdk');
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
+let s3bucket = new AWS.S3({
+  Bucket: 'lol-scrimsfinder-bucket',
+  accessKeyId: process.env.REACT_APP_S3_ACCESS_KEY_ID,
+  secretAccessKey: process.env.REACT_APP_S3_SECRET_ACCESS_KEY,
+});
+
 const getLobbyName = async (region, createdScrimStartTime) => {
   const scrims = await Scrim.find();
   const scrimsInRegion = scrims.filter((scrim) => scrim.region === region);
@@ -535,16 +541,13 @@ const removeImageFromScrim = async (req, res) => {
       return res.status(500).send('Scrim not found');
     }
 
-    let s3bucket = new AWS.S3({
-      Bucket: 'lol-scrimsfinder-bucket',
-      Key: scrim.postGameImage?.key, // location of file: /postgameLobbyImages/id/filename
-      accessKeyId: process.env.REACT_APP_S3_ACCESS_KEY_ID,
-      secretAccessKey: process.env.REACT_APP_S3_SECRET_ACCESS_KEY,
-    });
+    if (scrim.postGameImage === null) {
+      return res.status(500).send('Image does not exist!');
+    }
 
     const params = {
       Bucket: 'lol-scrimsfinder-bucket',
-      Key: scrim.postGameImage?.key,
+      Key: scrim.postGameImage.key,
     };
 
     const dataSending = {
@@ -552,7 +555,7 @@ const removeImageFromScrim = async (req, res) => {
     };
 
     s3bucket.deleteObject(params, function (err, data) {
-      if (err) return res.status(500).json({ error: err, stack: err.stack });
+      if (err) return res.status(500).json({ error: err });
       // an error occurred
       else return data; // successful response
     });
