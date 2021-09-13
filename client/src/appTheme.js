@@ -3,6 +3,7 @@ import createTheme from '@material-ui/core/styles/createTheme';
 const appTheme = createTheme({
   palette: {
     type: 'dark',
+
     primary: {
       main: '#FBC02D',
       contrastText: '#000',

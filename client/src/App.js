@@ -21,18 +21,24 @@ function App() {
   return (
     <ThemeProvider theme={appTheme}>
       <CssBaseline />
+
       {currentAlert && (
+        // if there is an alert in the context, show it
         <Snackbar
           anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
           autoHideDuration={6000}
           open={currentAlert}
           onClose={closeAlert}
           message={currentAlert.message}>
-          <Alert onClose={closeAlert} severity={currentAlert.type}>
-            {currentAlert.message}
+          <Alert
+            variant="filled"
+            onClose={closeAlert}
+            severity={currentAlert.type}>
+            <strong>{currentAlert.type}</strong> - {currentAlert.message}
           </Alert>
         </Snackbar>
       )}
+
       <AppRouter />
       <Footer />
     </ThemeProvider>

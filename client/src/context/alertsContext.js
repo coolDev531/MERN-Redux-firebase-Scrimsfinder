@@ -5,10 +5,7 @@ const useAlerts = () => useContext(AlertsContext);
 
 function AlertsProvider({ children }) {
   // alert : {type: 'error', message: 'error xxx'}
-  const [currentAlert, setCurrentAlert] = useState({
-    type: 'success',
-    message: 'success hello test',
-  });
+  const [currentAlert, setCurrentAlert] = useState(null);
 
   const pushAlert = ({ message, type }) => setCurrentAlert({ type, message });
   const closeAlert = () => setCurrentAlert(null);
