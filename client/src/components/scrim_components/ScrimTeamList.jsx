@@ -242,15 +242,13 @@ export default function ScrimTeamList({
                   style={{
                     // fallback for non-supporting browsers
                     background:
-                      isLobbyHost && !gameEnded && gameStarted
-                        ? '#63d471'
-                        : '#424242',
+                      isLobbyHost && gameStarted ? '#63d471' : '#424242',
 
                     // if game has started, but the game didn't end, and the player is the lobby host, make his background green.
                     // we don't care if the guy is the lobby host if game ended.
                     // eslint-disable-next-line
                     background:
-                      isLobbyHost && !gameEnded
+                      isLobbyHost && gameStarted
                         ? 'linear-gradient(315deg, #63d471 0%, #233329 74%)'
                         : '#424242',
                   }}>

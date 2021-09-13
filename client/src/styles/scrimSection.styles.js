@@ -1,5 +1,8 @@
 import { makeStyles } from '@material-ui/core';
 
+const BG_GIF =
+  'https://pa1.narvii.com/5779/8d76b2b8112e6aa9494a93f0ca6bbffe96e2f6c3_hq.gif';
+
 export const useScrimSectionStyles = makeStyles((theme) => ({
   scrimBox: {
     display: 'block',
@@ -9,8 +12,8 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
     marginLeft: 'auto',
     backgroundImage: ({ imageUploaded, scrim }) =>
       imageUploaded === scrim?._id
-        ? `url(${scrim?.postGameImage?.location})`
-        : 'url(https://pa1.narvii.com/5779/8d76b2b8112e6aa9494a93f0ca6bbffe96e2f6c3_hq.gif)',
+        ? `url(${scrim?.postGameImage?.location}), url(${BG_GIF})` // fallback with ,
+        : `url(${BG_GIF})`,
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
     backgroundSize: ({ imageUploaded, scrim }) =>
