@@ -7,13 +7,11 @@ function AlertsProvider({ children }) {
   // alert : {type: 'error', message: 'error xxx'}
   const [currentAlert, setCurrentAlert] = useState(null);
 
-  const pushAlert = ({ message, type }) => setCurrentAlert({ type, message });
   const closeAlert = () => setCurrentAlert(null);
 
   const value = {
     currentAlert,
     setCurrentAlert,
-    pushAlert,
     closeAlert,
   };
 
