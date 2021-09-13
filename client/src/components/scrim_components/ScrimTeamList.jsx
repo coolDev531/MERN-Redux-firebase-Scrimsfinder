@@ -2,6 +2,7 @@ import { Fragment, useMemo } from 'react';
 import { useScrims } from './../../context/scrimsContext';
 import { useAuth } from './../../context/currentUser';
 import { useScrimSectionStyles } from '../../styles/scrimSection.styles';
+import { useAlerts } from '../../context/alertsContext';
 
 // components
 import List from '@material-ui/core/List';
@@ -32,6 +33,14 @@ import ExitIcon from '@material-ui/icons/NoMeetingRoom';
 import KickIcon from '@material-ui/icons/HighlightOff';
 import { copyTextToClipboard } from '../../utils/copyToClipboard';
 
+/**
+ * @method compareArrays
+    compare if the previous state of team that the player is joining is identical.
+    If it is, he isn't swapping teams (will return true), if it isn't, he is swapping teams (will return false)
+ * @param {Array} arr1
+ * @param {Array} arr2
+ * @returns {Boolean}
+ */
 const compareArrays = (arr1, arr2) => {
   if (arr1.length !== arr2.length) return false;
 
@@ -60,6 +69,7 @@ export default function ScrimTeamList({
 }) {
   const { fetchScrims } = useScrims();
   const { currentUser } = useAuth();
+  const { setCurrentAlert } = useAlerts();
 
   const classes = useScrimSectionStyles({ scrim });
 
@@ -71,7 +81,15 @@ export default function ScrimTeamList({
     fetchScrims();
 
     if (casterEntered) {
-      alert("You're already a caster for this game!");
+      setCurrentAlert({
+        type: 'Error',
+        message: (
+          <span>
+            cannot join team:&nbsp;
+            <strong>You're already a caster for this game!</strong>
+          </span>
+        ),
+      });
       return;
     }
 

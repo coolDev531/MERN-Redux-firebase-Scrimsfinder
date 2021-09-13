@@ -97,7 +97,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
         type: 'Error',
         message: (
           <span>
-            cannot join cast,
+            cannot join cast:&nbsp;
             <strong>You're already in a team!</strong>
           </span>
         ),
