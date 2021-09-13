@@ -27,7 +27,23 @@ const useStyles = makeStyles((theme) => ({
     width: '25%',
     height: '20px',
   },
+
+  timerText: {
+    fontFamily: ['Montserrat', 'sans-serif'].join(','),
+    fontWeight: 600,
+    color: 'green',
+    fontSize: '22px',
+  },
 }));
+
+const Text = ({ children }) => {
+  const classes = useStyles();
+  return (
+    <Typography className={classes.timerText} variant="body2">
+      {children}
+    </Typography>
+  );
+};
 
 function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
   const [isTimerStarted, setIsTimerStarted] = useState(false);
@@ -115,7 +131,9 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
     return (
       <div className={classes.timer}>
         {/* typography variant="p" is invalid in Mui */}
-        <p>{!scrim.teamWon ? 'GAME IN PROGRESS' : `${scrim.teamWon} Won!`}</p>
+        <Text>
+          {!scrim.teamWon ? 'GAME IN PROGRESS' : `${scrim.teamWon} Won!`}
+        </Text>
       </div>
     );
   }
@@ -126,41 +144,41 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
         {timerDays != '00' && (
           <>
             <section aria-label="timer-days">
-              <p>{timerDays}</p>
-              <p>
+              <Text>{timerDays}</Text>
+              <Text>
                 <small>Days</small>
-              </p>
+              </Text>
             </section>
-            <p>:</p>
+            <Text>:</Text>
           </>
         )}
         {timerHours != '00' && (
           <>
             <section aria-label="timer-hours">
-              <p>{timerHours}</p>
-              <p>
+              <Text>{timerHours}</Text>
+              <Text>
                 <small>Hours</small>
-              </p>
+              </Text>
             </section>
-            <p>:</p>
+            <Text>:</Text>
           </>
         )}
         {timerMinutes != '00' && (
           <>
             <section aria-label="timer-minutes">
-              <p>{timerMinutes}</p>
-              <p>
+              <Text>{timerMinutes}</Text>
+              <Text>
                 <small>Minutes</small>
-              </p>
+              </Text>
             </section>
-            <p>:</p>
+            <Text>:</Text>
           </>
         )}
         <section aria-label="timer-seconds">
-          <p>{timerSeconds}</p>
-          <p>
+          <Text>{timerSeconds}</Text>
+          <Text>
             <small>Seconds</small>
-          </p>
+          </Text>
         </section>
       </div>
     </Fragment>
