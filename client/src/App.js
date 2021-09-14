@@ -10,9 +10,8 @@ import Snackbar from '@material-ui/core/Snackbar';
 import { useAlerts } from './context/alertsContext';
 import Alert from '@material-ui/lab/Alert';
 import BgImage from './assets/images/summoners_rift.jpg';
-import { useLocation } from 'react-router-dom';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
   root: {
     justifyContent: 'spaceBetween',
     display: 'flex',
@@ -25,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: 'rgba(0, 0, 0, 0.61)',
       background: `url(${BgImage})`, // background image
       backgroundSize: 'cover',
-      content: ({ pathname }) => '""',
+      content: '""',
       position: 'absolute',
       top: 0,
       right: 0,
@@ -35,13 +34,12 @@ const useStyles = makeStyles((theme) => ({
       zIndex: -1,
     },
   },
-}));
+});
 
 function App() {
-  const { pathname } = useLocation();
   const { loading: verifyingUser } = useAuth();
   const { currentAlert, closeAlert } = useAlerts();
-  const classes = useStyles({ pathname });
+  const classes = useStyles();
 
   if (verifyingUser) {
     return <Loading text="Verifying user..." />;
