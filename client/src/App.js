@@ -13,7 +13,6 @@ import BgImage from './assets/images/summoners_rift.jpg';
 
 const useStyles = makeStyles({
   root: {
-    justifyContent: 'spaceBetween',
     display: 'flex',
     flexDirection: 'column',
     minHeight: '100vh',
