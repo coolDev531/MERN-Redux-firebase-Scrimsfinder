@@ -16,8 +16,8 @@ const useStyles = makeStyles({
     display: 'flex',
     flexDirection: 'column',
     minHeight: '100vh',
-    backgroundColor: '#121923', // fallback for no rgba support
-    background: 'rgba(0, 0, 0, 0.61)', // dark filter to darken bg image
+    background: '#121923', // fallback for no rgba support
+    backgroundColor: 'rgba(0, 0, 0, 0.61)', // dark filter to darken bg image
 
     '&::before': {
       background: `url(${BgImage})`, // background image
