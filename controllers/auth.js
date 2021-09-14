@@ -104,6 +104,8 @@ const registerUser = async (req, res) => {
 
     const userExists = await User.findOne({ email });
 
+    const summonerNameTaken = await User.findOne({ name, region });
+
     const discordTaken = await User.findOne({ discord: noSpacesDiscord });
 
     if (discordTaken) {
@@ -115,6 +117,12 @@ const registerUser = async (req, res) => {
     if (userExists) {
       return res.status(500).json({
         error: `Error: User with email ${email} already exists!`,
+      });
+    }
+
+    if (summonerNameTaken) {
+      return res.status(500).json({
+        error: `Error: User with summoer name ${name} already exists in ${region}!`,
       });
     }
 
