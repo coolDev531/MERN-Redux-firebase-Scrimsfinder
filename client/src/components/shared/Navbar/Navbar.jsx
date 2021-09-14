@@ -46,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
     top: '0',
     zIndex: '5',
     borderBottom: '1px solid white',
+    background: '#101820', // fallback
     backgroundColor: 'rgba(18,25,35,.85)',
     backdropFilter: 'blur(8px)',
   },
