@@ -24,7 +24,7 @@ const useStyles = makeStyles({
       background: `url(${BgImage})`, // background image
       backgroundSize: 'cover',
       content: '""',
-      position: 'absolute',
+      position: 'fixed', // background scrolls with user (user doesn't notice), absolute: doesn't scroll with user
       top: 0,
       right: 0,
       bottom: 0,
