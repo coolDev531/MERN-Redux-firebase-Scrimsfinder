@@ -132,7 +132,7 @@ export default function Navbar({
                     alignItems="center"
                     xs={6}
                     sm={6}>
-                    <Grid item container aligmItems="center">
+                    <Grid item container alignItems="center">
                       <Link
                         to="/"
                         className="link-2"
@@ -212,7 +212,7 @@ export default function Navbar({
                       {showCheckboxes && (
                         <Hidden mdDown>
                           {/* Show scrims (current, previous, upcoming) buttons */}
-                          <Grid item xs={6} alignItems="center" container>
+                          <Grid item xs={7} alignItems="center" container>
                             <FormGroup
                               row
                               className="text-white"
