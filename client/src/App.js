@@ -28,7 +28,7 @@ const useStyles = makeStyles({
       right: 0,
       bottom: 0,
       left: 0,
-      filter: 'blur(10px)', // blurred
+      filter: 'blur(20px)', // blurred
       zIndex: -1, // behind page-content z-index
     },
   },

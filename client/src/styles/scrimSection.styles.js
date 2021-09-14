@@ -32,6 +32,11 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
     gridTemplateColumns: '1fr 2fr 1fr',
     gridGap: '20px',
     padding: '10px',
+
+    '@media screen and (max-width: 630px)': {
+      gridTemplateColumns: 'inherit',
+      gridTemplateRows: '1fr 1fr 1fr',
+    },
   },
   teamList: {
     width: '100%',
@@ -42,6 +47,10 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
     paddingBottom: 0,
     '&:hover': {
       opacity: '1',
+    },
+    '@media screen and (max-width: 630px)': {
+      // display: 'flex',
+      maxWidth: '100%',
     },
   },
 
