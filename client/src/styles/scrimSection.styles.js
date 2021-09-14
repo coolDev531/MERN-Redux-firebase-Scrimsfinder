@@ -49,7 +49,6 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
       opacity: '1',
     },
     '@media screen and (max-width: 630px)': {
-      // display: 'flex',
       maxWidth: '100%',
     },
   },
