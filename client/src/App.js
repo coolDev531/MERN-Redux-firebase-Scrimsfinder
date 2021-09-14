@@ -40,7 +40,11 @@ function App() {
   const classes = useStyles();
 
   if (verifyingUser) {
-    return <Loading text="Verifying user..." />;
+    return (
+      <div className={classes.root}>
+        <Loading text="Verifying user..." />;
+      </div>
+    );
   }
 
   return (
