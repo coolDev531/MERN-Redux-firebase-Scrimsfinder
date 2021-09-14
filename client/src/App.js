@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     minHeight: '100vh',
-    backgroundColor: "#303030", // fallback for no rgba support
+    background: '#303030', // fallback for no rgba support
     backgroundColor: 'rgba(0, 0, 0, 0.61)', // dark filter
 
     '&::before': {
