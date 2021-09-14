@@ -16,11 +16,10 @@ const useStyles = makeStyles({
     display: 'flex',
     flexDirection: 'column',
     minHeight: '100vh',
-    background: '#303030', // fallback for no rgba support
-    backgroundColor: 'rgba(0, 0, 0, 0.61)', // dark filter
+    backgroundColor: '#121923', // fallback for no rgba support
+    background: 'rgba(0, 0, 0, 0.61)', // dark filter to darken bg image
 
     '&::before': {
-      backgroundColor: 'rgba(0, 0, 0, 0.61)',
       background: `url(${BgImage})`, // background image
       backgroundSize: 'cover',
       content: '""',
@@ -29,8 +28,8 @@ const useStyles = makeStyles({
       right: 0,
       bottom: 0,
       left: 0,
-      filter: 'blur(20px)', // blurred
-      zIndex: -1,
+      filter: 'blur(6px)', // blurred
+      zIndex: -1, // behind page-content z-index
     },
   },
 });
