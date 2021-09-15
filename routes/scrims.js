@@ -27,8 +27,16 @@ router.patch(
   '/scrims/:scrimId/move-player/:userId',
   controllers.movePlayerInScrim
 ); // PATCH
-router.patch('/scrims/:id/insert-caster', controllers.insertCasterInScrim); // PATCH
-router.patch('/scrims/:id/remove-caster', controllers.removeCasterFromScrim); // PATCH
+
+router.patch(
+  '/scrims/:scrimId/insert-caster/:casterId',
+  controllers.insertCasterInScrim
+); // PATCH
+router.patch(
+  '/scrims/:scrimId/remove-caster/:casterId',
+  controllers.removeCasterFromScrim
+); // PATCH
+
 router.delete('/scrims/:id', controllers.deleteScrim); // DELETE
 
 module.exports = router;

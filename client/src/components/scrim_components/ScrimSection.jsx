@@ -109,17 +109,10 @@ export default function ScrimSection({ scrim, isInDetail }) {
 
     fetchScrims();
 
-    const dataSending = {
-      casterData: {
-        _id: currentUser._id,
-        name: currentUser?.name,
-        uid: currentUser?.uid,
-        email: currentUser?.email,
-        discord: currentUser?.discord,
-      },
-    };
-
-    const updatedScrim = await insertCasterInScrim(scrim._id, dataSending);
+    const updatedScrim = await insertCasterInScrim({
+      scrimId: scrim._id,
+      userId: currentUser?._id,
+    });
 
     if (updatedScrim) {
       console.log(
@@ -133,8 +126,9 @@ export default function ScrimSection({ scrim, isInDetail }) {
   const leaveCast = async () => {
     fetchScrims();
 
-    const updatedScrim = await removeCasterFromScrim(scrim._id, {
-      casterData: casterEntered,
+    const updatedScrim = await removeCasterFromScrim({
+      scrimId: scrim._id,
+      userId: casterEntered?._id,
     });
 
     if (updatedScrim) {

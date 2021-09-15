@@ -51,10 +51,12 @@ export const insertPlayerInScrim = async ({
     return response.data;
   } catch (error) {
     const errorMsg = error.response.data.error;
+
     if (typeof setAlert === 'function') {
       return setAlert({ type: 'Error', message: errorMsg });
     }
 
+    // if dev forgot to add setAlert
     return alert(errorMsg);
   }
 };
@@ -105,9 +107,11 @@ export const movePlayerInScrim = async ({
   }
 };
 
-export const insertCasterInScrim = async (id, data) => {
+export const insertCasterInScrim = async ({ scrimId, userId }) => {
   try {
-    const response = await api.patch(`/scrims/${id}/insert-caster`, data);
+    const response = await api.patch(
+      `/scrims/${scrimId}/insert-caster/${userId}`
+    );
     return response.data;
   } catch (error) {
     const errorMsg = error.response.data.error;
@@ -115,9 +119,11 @@ export const insertCasterInScrim = async (id, data) => {
   }
 };
 
-export const removeCasterFromScrim = async (id, data) => {
+export const removeCasterFromScrim = async ({ scrimId, userId }) => {
   try {
-    const response = await api.patch(`/scrims/${id}/remove-caster`, data);
+    const response = await api.patch(
+      `/scrims/${scrimId}/remove-caster/${userId}`
+    );
     return response.data;
   } catch (error) {
     const errorMsg = error.response.data.error;

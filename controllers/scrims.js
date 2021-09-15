@@ -525,13 +525,13 @@ const movePlayerInScrim = async (req, res) => {
       // if moving but not changing teams
 
       // remove the player from the team
-      let filtered = [...teamJoiningArr].filter(
+      let restOfTeam = [...teamJoiningArr].filter(
         (player) => String(player._user) !== String(user._id)
       );
 
       // re-insert him in the same team in his new role.
       newBody = {
-        [teamJoiningName]: [...filtered, playerInTransaction],
+        [teamJoiningName]: [...restOfTeam, playerInTransaction],
       };
     }
 
@@ -585,20 +585,35 @@ const movePlayerInScrim = async (req, res) => {
 
 const insertCasterInScrim = async (req, res) => {
   const session = await Scrim.startSession();
-  const { id } = req.params;
-  const { casterData } = req.body;
+  const { scrimId, casterId } = req.params;
 
   await session.withTransaction(async () => {
-    const scrim = await Scrim.findById(id);
+    let isValidScrim = mongoose.Types.ObjectId.isValid(scrimId);
+    let isValidCaster = mongoose.Types.ObjectId.isValid(casterId);
 
-    const casterId = casterData._id;
+    if (!isValidCaster) {
+      return res.status(500).json('invalid user id.');
+    }
 
+    if (!isValidScrim) {
+      return res.status(500).json('invalid scrim id.');
+    }
+
+    const scrim = await Scrim.findById(scrimId);
     const casterJoining = await User.findOne({ _id: casterId });
 
-    let isValid = mongoose.Types.ObjectId.isValid(casterJoining._id);
+    if (!casterJoining) {
+      return res.status(500).json('user not found');
+    }
 
-    if (!isValid) {
-      return res(500).json('invalid user id.');
+    const casterFound = scrim._doc.casters.find(
+      (caster) => String(caster._id) === String(casterId)
+    );
+
+    if (casterFound) {
+      return res
+        .status(500)
+        .json(`caster ${casterJoining.name} already joined!.`);
     }
 
     let bodyData = {
@@ -607,7 +622,7 @@ const insertCasterInScrim = async (req, res) => {
 
     if (scrim._doc.casters.length < 2) {
       await Scrim.findByIdAndUpdate(
-        id,
+        scrimId,
         bodyData,
         { new: true },
         (error, scrim) => {
@@ -632,20 +647,22 @@ const insertCasterInScrim = async (req, res) => {
 
 const removeCasterFromScrim = async (req, res) => {
   const session = await Scrim.startSession();
-  const { id } = req.params; // scrim id
-  const { casterData } = req.body;
 
   await session.withTransaction(async () => {
-    const scrim = await Scrim.findOne({ _id: id });
+    const { scrimId, casterId } = req.params; // scrim id
 
-    const casterId = casterData._id;
+    const scrim = await Scrim.findOne({ _id: scrimId });
+
+    let isValid = mongoose.Types.ObjectId.isValid(casterId);
+
+    if (!isValid) {
+      return res.status(500).json('invalid response.');
+    }
 
     const casterLeaving = await User.findOne({ _id: casterId });
 
-    let isValid = mongoose.Types.ObjectId.isValid(casterLeaving._id);
-
-    if (!isValid) {
-      return res(500).json('invalid response.');
+    if (!casterLeaving) {
+      return res.status(500).json(`caster not found in scrim ${scrimId}`);
     }
 
     const { casters } = scrim;
@@ -658,7 +675,7 @@ const removeCasterFromScrim = async (req, res) => {
     };
 
     await Scrim.findByIdAndUpdate(
-      id,
+      scrimId,
       bodyData,
       { new: true },
       (error, scrim) => {

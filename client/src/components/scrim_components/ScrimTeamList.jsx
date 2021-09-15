@@ -120,9 +120,9 @@ export default function ScrimTeamList({
   const leaveGame = async (teamLeavingName) => {
     const updatedScrim = await removePlayerFromScrim({
       scrimId: scrim._id,
-      userId: currentUser._id,
+      userId: playerEntered?._user?._id,
       playerData: {
-        role: playerEntered.role,
+        role: playerEntered?.role,
         teamLeavingName,
       },
       setAlert: setCurrentAlert,
