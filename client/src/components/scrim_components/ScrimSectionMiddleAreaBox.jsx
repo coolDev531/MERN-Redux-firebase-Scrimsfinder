@@ -78,7 +78,7 @@ export default function ScrimSectionMiddleAreaBox({
                           Lobby host / captain: {scrim.lobbyHost?.name}
                         </Typography>
                         <Box marginRight={2} />
-                        <Tooltip title="It's expected of the lobby captain to create the custom lobby and select who won after the game">
+                        <Tooltip title="It's expected of the lobby captain to create the custom lobby and select who won after the game, AND to upload the post-game image to verify the winner">
                           <HelpIcon
                             style={{ color: '#000', cursor: 'help' }}
                             fontSize="large"

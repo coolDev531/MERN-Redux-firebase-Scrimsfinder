@@ -41,6 +41,27 @@ const compareArrays = (arr1, arr2) => {
   return true;
 };
 
+const getLobbyHost = async (scrim) => {
+  if (!scrim) {
+    return console.error('Error, scrim not provided for getLobbyHost function');
+  }
+
+  const lobbyHost = scrim.lobbyHost ?? null;
+
+  // select lobby host
+  if (lobbyHost !== null) {
+    //  if scrim already has a lobby host, just select it.
+    return lobbyHost;
+  } else if (scrim.teamOne.length === 5 && scrim.teamTwo.length === 5) {
+    // if lobby is going to be full after user will join (players length = 10)
+    const result = sample([...scrim.teamOne, ...scrim.teamTwo]);
+    const userResult = await User.findById(result._user);
+    return userResult;
+  } else {
+    return null;
+  }
+};
+
 const getLobbyName = async (region, createdScrimStartTime) => {
   const scrims = await Scrim.find();
   const scrimsInRegion = scrims.filter((scrim) => scrim.region === region);
@@ -369,19 +390,9 @@ const insertPlayerInScrim = async (req, res) => {
           return res.status(500).send('Scrim not found');
         }
 
-        const lobbyHost = scrim.lobbyHost ?? null;
-
-        // select lobby host
-        if (lobbyHost !== null) {
-          scrim.lobbyHost = lobbyHost;
-          // if lobby is full after user is joining
-        } else if (scrim.teamOne.length === 5 && scrim.teamTwo.length === 5) {
-          const result = sample([...scrim.teamOne, ...scrim.teamTwo]);
-          const userResult = await User.findById(result._user);
-          scrim.lobbyHost = userResult;
-        } else {
-          scrim.lobbyHost = null;
-        }
+        // check for lobby host / captain everytime player joins
+        const lobbyHost = await getLobbyHost(scrim);
+        scrim.lobbyHost = lobbyHost;
 
         scrim.save();
         return res.status(200).json(scrim);
@@ -485,6 +496,13 @@ const movePlayerInScrim = async (req, res) => {
     const playerFound = [...scrim._doc.teamOne, ...scrim._doc.teamTwo].find(
       (player) => String(player._user) === String(user._id)
     );
+
+    if (!playerData?.role) {
+      return res.status(500).json({
+        error:
+          'role string not provided! looks like this: playerData {role: String}',
+      });
+    }
 
     // when somebody makes an api call for /insert-player but actually meant to move the player.
     if (!playerFound) {
@@ -598,19 +616,9 @@ const movePlayerInScrim = async (req, res) => {
           return res.status(500).send('Scrim not found');
         }
 
-        const lobbyHost = scrim.lobbyHost ?? null;
-
-        // select lobby host
-        if (lobbyHost !== null) {
-          scrim.lobbyHost = lobbyHost;
-          // if lobby is full after user is joining
-        } else if (scrim.teamOne.length === 5 && scrim.teamTwo.length === 5) {
-          const result = sample([...scrim.teamOne, ...scrim.teamTwo]);
-          const userResult = await User.findById(result._user);
-          scrim.lobbyHost = userResult;
-        } else {
-          scrim.lobbyHost = null;
-        }
+        // check to select lobby host / captain for the scrim everytime someone moves
+        const lobbyHost = await getLobbyHost(scrim);
+        scrim.lobbyHost = lobbyHost;
 
         scrim.save();
         return res.status(200).json(scrim);
