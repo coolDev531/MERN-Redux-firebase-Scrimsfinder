@@ -154,7 +154,7 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
             color="primary"
             disabled={buttonDisabled}
             component="label">
-            Upload Image
+            Upload
             <input
               accept="image/*"
               ref={fileInputRef}
