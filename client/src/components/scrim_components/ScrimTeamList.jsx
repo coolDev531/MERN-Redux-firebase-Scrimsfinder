@@ -74,15 +74,16 @@ export default function ScrimTeamList({
       return;
     }
 
-    const dataSending = {
+    const updatedScrim = await insertPlayerInScrim({
+      scrimId: scrim._id,
+      userId: currentUser._id,
+
+      // sending the role joining and the team name in the req.body.
       playerData: {
-        ...currentUser,
         role,
         team: { name: teamJoiningName },
       },
-    };
-
-    const updatedScrim = await insertPlayerInScrim(scrim._id, dataSending);
+    });
 
     if (updatedScrim) {
       console.log(

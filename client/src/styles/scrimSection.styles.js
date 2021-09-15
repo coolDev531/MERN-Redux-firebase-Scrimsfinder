@@ -63,6 +63,9 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
       '&::-webkit-scrollbar': {
         display: 'none',
       },
+
+      '-ms-overflow-style': 'none' /* IE 11 */,
+      scrollbarWidth: 'none' /* Firefox 64 */,
     },
     [theme.breakpoints.down('sm')]: {
       minHeight: '150px',

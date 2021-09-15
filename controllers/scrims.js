@@ -252,19 +252,31 @@ const insertPlayerInScrim = async (req, res) => {
 
   // beginning of session
   await session.withTransaction(async () => {
-    const { id } = req.params;
+    const { scrimId, userId } = req.params;
 
+    let isValidUser = mongoose.Types.ObjectId.isValid(userId);
+    let isValidScrim = mongoose.Types.ObjectId.isValid(scrimId);
+
+    if (!isValidUser) {
+      return res(500).json('invalid user id.');
+    }
+
+    if (!isValidScrim) {
+      return res(500).json('invalid scrim id.');
+    }
+    console.log(req.body);
     const { playerData } = req.body;
 
     if (!playerData) {
-      return res.status(500).json({ error: 'playerData object not provided' });
+      return res.status(500).json({
+        error:
+          'playerData object not provided, requires: team: {name: String}, role: String',
+      });
     }
 
-    const teamJoiningName = playerData.team.name;
+    const scrim = await Scrim.findById(scrimId);
 
-    const scrim = await Scrim.findById(id);
-
-    const user = await User.findById(playerData._id);
+    const user = await User.findById(userId);
 
     const playerExists = [...scrim._doc.teamOne, ...scrim._doc.teamTwo].find(
       (player) => String(player._user) === String(user._id)
@@ -273,9 +285,12 @@ const insertPlayerInScrim = async (req, res) => {
     // when somebody makes an api call for /insert-player but actually meant to move the player.
     if (playerExists) {
       return res.status(500).json({
-        error: `Player already exists in game. Did you mean to move the player? use the /move-player endpoint instead.`,
+        error:
+          'Player already exists in game. Did you mean to move the player? use the /move-player endpoint instead.',
       });
     }
+
+    const teamJoiningName = playerData.team.name;
 
     const playerInTransaction = {
       role: capitalizeWord(playerData.role),
@@ -291,10 +306,7 @@ const insertPlayerInScrim = async (req, res) => {
 
     const spotsAvailable = getAvailableRoles(teamJoiningArr);
 
-    let newBody = {};
-
-    // if  just joining
-    newBody = {
+    let reqBody = {
       [teamJoiningName]: [...teamJoiningArr, playerInTransaction],
     };
 
@@ -314,8 +326,8 @@ const insertPlayerInScrim = async (req, res) => {
     }
 
     await Scrim.findByIdAndUpdate(
-      id,
-      newBody,
+      scrimId,
+      reqBody,
       { new: true },
       async (error, scrim) => {
         if (error) {
@@ -551,7 +563,7 @@ const insertCasterInScrim = async (req, res) => {
     let isValid = mongoose.Types.ObjectId.isValid(casterJoining._id);
 
     if (!isValid) {
-      return res(500).json('invalid response.');
+      return res(500).json('invalid user id.');
     }
 
     let bodyData = {

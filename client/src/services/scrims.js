@@ -36,9 +36,14 @@ export const updateScrim = async (id, scrim) => {
   }
 };
 
-export const insertPlayerInScrim = async (id, playerData) => {
+export const insertPlayerInScrim = async ({ scrimId, userId, playerData }) => {
+  // sending the role joining and the team name in the req.body.
+
   try {
-    const response = await api.patch(`/scrims/${id}/insert-player`, playerData);
+    const response = await api.patch(
+      `/scrims/${scrimId}/insert-player/${userId}`,
+      { playerData: playerData }
+    );
     return response.data;
   } catch (error) {
     const errorMsg = error.response.data.error;
@@ -56,9 +61,12 @@ export const removePlayerFromScrim = async (id, playerData) => {
   }
 };
 
-export const movePlayerInScrim = async (id, playerData) => {
+export const movePlayerInScrim = async (scrimId, userId, playerData) => {
   try {
-    const response = await api.patch(`/scrims/${id}/move-player`, playerData);
+    const response = await api.patch(
+      `/scrims/${scrimId}/move-player/${userId}`,
+      playerData
+    );
     return response.data;
   } catch (error) {
     const errorMsg = error.response.data.error;
