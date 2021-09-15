@@ -11,7 +11,13 @@ import Divider from '@material-ui/core/Divider';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
-import { Grid, IconButton, Typography, useMediaQuery } from '@material-ui/core';
+import {
+  Grid,
+  IconButton,
+  Typography,
+  useMediaQuery,
+  Box,
+} from '@material-ui/core';
 import Tooltip from '../shared/Tooltip';
 import AdminArea from '../shared/AdminArea';
 import ListSubheader from '@material-ui/core/ListSubheader';
@@ -19,11 +25,13 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 // utils
 import { RANK_IMAGES, ROLE_IMAGES } from '../../utils/imageMaps';
 import { truncate } from '../../utils/truncate';
+import { copyTextToClipboard } from '../../utils/copyToClipboard';
 
 // services
 import {
   insertPlayerInScrim,
   removePlayerFromScrim,
+  movePlayerInScrim,
 } from '../../services/scrims';
 
 // icons
@@ -31,26 +39,7 @@ import SwapIcon from '@material-ui/icons/SwapHoriz';
 import JoinIcon from '@material-ui/icons/MeetingRoom';
 import ExitIcon from '@material-ui/icons/NoMeetingRoom';
 import KickIcon from '@material-ui/icons/HighlightOff';
-import { copyTextToClipboard } from '../../utils/copyToClipboard';
-
-/**
- * @method compareArrays
-    compare if the previous state of team that the player is joining is identical.
-    If it is, he isn't swapping teams (will return true), if it isn't identical, he is swapping teams (will return false)
- * @param {Array} arr1
- * @param {Array} arr2
- * @returns {Boolean}
- */
-const compareArrays = (arr1, arr2) => {
-  if (arr1.length !== arr2.length) return false;
-
-  for (let i = 0; i < arr1.length; i++) {
-    if (arr1[i]._id !== arr2[i]._id) return false;
-  }
-
-  // If all elements were same.
-  return true;
-};
+import InfoIcon from '@material-ui/icons/Help';
 
 const getRankImage = (user) => {
   // replace number with empty string: Diamond 1 => Diamond
@@ -61,8 +50,6 @@ const getRankImage = (user) => {
 export default function ScrimTeamList({
   playerEntered,
   scrim,
-  teamOne,
-  teamTwo,
   teamData,
   casterEntered,
   gameStarted,
@@ -94,15 +81,17 @@ export default function ScrimTeamList({
       return;
     }
 
-    const dataSending = {
+    const updatedScrim = await insertPlayerInScrim({
+      scrimId: scrim._id,
+      userId: currentUser._id,
+
+      // sending the role joining and the team name in the req.body.
       playerData: {
-        ...currentUser,
         role,
         team: { name: teamJoiningName },
       },
-    };
-
-    const updatedScrim = await insertPlayerInScrim(scrim._id, dataSending);
+      setAlert: setCurrentAlert,
+    });
 
     if (updatedScrim) {
       console.log(
@@ -113,68 +102,37 @@ export default function ScrimTeamList({
     }
   };
 
-  const handleMovePlayer = async (teamStr, role) => {
+  const handleMovePlayer = async (teamName, role) => {
     fetchScrims();
 
-    let currentTeamName = playerEntered.team.name;
-    const currentTeamArr = currentTeamName === 'teamOne' ? teamOne : teamTwo;
-
-    let teamArr = teamStr === 'teamOne' ? teamOne : teamTwo;
-
-    let dataSending = {};
-
-    // if is the array that the user is moving to is different, that means he is changing teams.
-    if (compareArrays(currentTeamArr, teamArr) === false) {
-      console.log(`swapping teams for summoner ${currentUser?.name}`);
-
-      dataSending = {
-        playerData: {
-          ...currentUser,
-          role,
-          team: { name: teamStr },
-        },
-
-        swapData: {
-          isChangingTeams: true,
-          isMoving: true,
-          currentTeamName: playerEntered.team.name,
-          teamChangingToName: teamStr,
-        },
-      };
-    } else {
-      dataSending = {
-        playerData: {
-          ...currentUser,
-          role,
-          team: { name: teamStr },
-        },
-        swapData: {
-          isMoving: true,
-        },
-      };
-    }
-
-    const updatedScrim = await insertPlayerInScrim(scrim._id, dataSending);
+    const updatedScrim = await movePlayerInScrim({
+      scrimId: scrim._id,
+      userId: currentUser._id,
+      playerData: {
+        role,
+        team: { name: teamName },
+      },
+      setAlert: setCurrentAlert,
+    });
 
     if (updatedScrim) {
       console.log(
-        `%cswapped ${currentUser?.name} in scrim: ${scrim._id} to: ${teamStr} as ${role}`,
+        `%cswapped ${currentUser?.name} in scrim: ${scrim._id} to: ${teamName} as ${role}`,
         'color: #99ff99'
       );
       fetchScrims();
     }
   };
 
-  const leaveGame = async (teamLeavingName) => {
-    const dataSending = {
+  const leaveGame = async () => {
+    const updatedScrim = await removePlayerFromScrim({
+      scrimId: scrim._id,
+      userId: playerEntered?._user?._id,
       playerData: {
-        ...currentUser,
-        role: playerEntered.role,
-        teamLeavingName,
+        role: playerEntered?.role,
       },
-    };
-
-    const updatedScrim = await removePlayerFromScrim(scrim._id, dataSending);
+      setAlert: setCurrentAlert,
+    });
 
     if (updatedScrim) {
       console.log(
@@ -185,23 +143,22 @@ export default function ScrimTeamList({
     }
   };
 
-  const kickPlayerFromGame = async (playerToKick, teamLeavingName) => {
+  const kickPlayerFromGame = async (playerToKick) => {
+    // if person kicking isn't an admin, return.
     if (currentUser?.adminKey !== process.env.REACT_APP_ADMIN_KEY) return;
-    const dataSending = {
-      playerData: {
-        ...playerToKick,
-        role: playerToKick.role,
-        teamLeavingName,
-        _id: playerToKick._user?._id,
-        name: playerToKick._user?.name,
-      },
-    };
 
-    const updatedScrim = await removePlayerFromScrim(scrim._id, dataSending);
+    const updatedScrim = await removePlayerFromScrim({
+      scrimId: scrim._id,
+      userId: playerToKick?._user?._id,
+      playerData: {
+        role: playerEntered.role,
+      },
+      setAlert: setCurrentAlert,
+    });
 
     if (updatedScrim) {
       console.log(
-        `%ckicked ${dataSending?.playerData?.name} from scrim: ${scrim._id}`,
+        `%ckicked ${playerToKick?._user?.name} from scrim: ${scrim._id}`,
         'color: #99ff99'
       );
       fetchScrims();
@@ -308,7 +265,7 @@ export default function ScrimTeamList({
                                 }}>
                                 {isSmScreen
                                   ? userInfo?.discord
-                                  : truncate(userInfo?.discord, 10)}
+                                  : truncate(userInfo?.discord, 9)}
                               </Typography>
                             </Tooltip>
                             <br />
@@ -335,6 +292,18 @@ export default function ScrimTeamList({
                     }
                   />
 
+                  {isLobbyHost && (
+                    <Tooltip
+                      title={`This player is the lobby captain. \n 
+                      It's expected of the lobby captain to create the custom lobby and select who won after the game,\n
+                      AND to upload the post-game image to verify the winner`}>
+                      <Box
+                        style={{ cursor: 'help' }}
+                        className={classes.infoIcon}>
+                        <InfoIcon />
+                      </Box>
+                    </Tooltip>
+                  )}
                   {isCurrentUser
                     ? // don't let user leave if game has already ended
                       !gameEnded && (

@@ -22,6 +22,46 @@ let s3bucket = new AWS.S3({
   secretAccessKey: process.env.REACT_APP_S3_SECRET_ACCESS_KEY,
 });
 
+/**
+ * @method compareArrays
+    compare if the previous state of team that the player is joining is identical.
+    If it is, he isn't swapping teams (will return true), if it isn't identical, he is swapping teams (will return false)
+ * @param {Array} arr1
+ * @param {Array} arr2
+ * @returns {Boolean}
+ */
+const compareArrays = (arr1, arr2) => {
+  if (arr1.length !== arr2.length) return false;
+
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr1[i]._id !== arr2[i]._id) return false;
+  }
+
+  // If all elements were same.
+  return true;
+};
+
+const getLobbyHost = async (scrim) => {
+  if (!scrim) {
+    return console.error('Error, scrim not provided for getLobbyHost function');
+  }
+
+  const lobbyHost = scrim.lobbyHost ?? null;
+
+  // select lobby host
+  if (lobbyHost !== null) {
+    //  if scrim already has a lobby host, just select it.
+    return lobbyHost;
+  } else if (scrim.teamOne.length === 5 && scrim.teamTwo.length === 5) {
+    // if lobby is going to be full after user will join (players length = 10)
+    const result = sample([...scrim.teamOne, ...scrim.teamTwo]);
+    const userResult = await User.findById(result._user);
+    return userResult;
+  } else {
+    return null;
+  }
+};
+
 const getLobbyName = async (region, createdScrimStartTime) => {
   const scrims = await Scrim.find();
   const scrimsInRegion = scrims.filter((scrim) => scrim.region === region);
@@ -228,25 +268,82 @@ const deleteScrim = async (req, res) => {
 };
 
 const insertPlayerInScrim = async (req, res) => {
+  // when player joins
   const session = await Scrim.startSession();
 
   // beginning of session
   await session.withTransaction(async () => {
-    const { id } = req.params;
+    const { scrimId, userId } = req.params;
+
+    let isValidUser = mongoose.Types.ObjectId.isValid(userId);
+    let isValidScrim = mongoose.Types.ObjectId.isValid(scrimId);
+
+    if (!isValidUser) {
+      return res.status(500).json('invalid user id.');
+    }
+
+    if (!isValidScrim) {
+      return res.status(500).json('invalid scrim id.');
+    }
 
     const { playerData } = req.body;
 
-    const isMoving = req.body.swapData?.isMoving ?? false;
-    const isChangingTeams = req.body.swapData?.isChangingTeams ?? false;
+    if (!playerData) {
+      return res.status(500).json({
+        error:
+          'playerData object not provided, looks like this: team: {name: String}, role: String',
+      });
+    }
+
+    // if req.body has no team name
+    if (!playerData.team?.name) {
+      return res.status(500).json({
+        error:
+          'team object not provided! looks like this: playerData {team: {name: String}}',
+      });
+    }
+
+    if (!playerData?.role) {
+      return res.status(500).json({
+        error:
+          'role string not provided! looks like this: playerData {role: String}',
+      });
+    }
+
+    const scrim = await Scrim.findById(scrimId);
+
+    const user = await User.findById(userId);
+
+    const playerExists = [...scrim._doc.teamOne, ...scrim._doc.teamTwo].find(
+      (player) => String(player._user) === String(user._id)
+    );
+
+    const casterExists = scrim._doc.casters.find(
+      (caster) => String(caster._id) === String(user._id)
+    );
+
+    // when somebody makes an api call for /insert-player but actually meant to move the player.
+    if (playerExists) {
+      return res.status(500).json({
+        error:
+          'Player already exists in game. Did you mean to move the player? use the /move-player endpoint instead.',
+      });
+    }
+
+    if (casterExists) {
+      return res.status(500).json({
+        error:
+          'User already is a caster. you cannot be a caster and a player in the same game!.',
+      });
+    }
 
     const teamJoiningName = playerData.team.name;
 
-    const scrim = await Scrim.findById(id);
-
-    const user = await User.findById(playerData._id);
-
     const playerInTransaction = {
-      role: capitalizeWord(playerData.role),
+      // if role is adc make it all uppercase, else just capitalize first letter of role.
+      role: /adc/gi.test(playerData.role)
+        ? playerData.role.toUpperCase()
+        : capitalizeWord(playerData.role),
       team: playerData.team,
 
       _user: {
@@ -257,108 +354,50 @@ const insertPlayerInScrim = async (req, res) => {
     const teamJoiningArr =
       teamJoiningName === 'teamOne' ? scrim._doc.teamOne : scrim._doc.teamTwo;
 
-    const spotTaken = scrim._doc[teamJoiningName].find(
-      (player) => player.role === playerInTransaction.role
-    );
-
     const spotsAvailable = getAvailableRoles(teamJoiningArr);
 
-    let newBody = {};
-
-    if (isMoving) {
-      if (isChangingTeams) {
-        // if moving and changing teams
-        const { currentTeamName, teamChangingToName } = req.body.swapData;
-        const teamLeavingName = currentTeamName;
-
-        const currentTeamArray =
-          currentTeamName === 'teamOne'
-            ? scrim._doc.teamOne
-            : scrim._doc.teamTwo;
-
-        const teamChangingToArray =
-          teamChangingToName === 'teamOne'
-            ? scrim._doc.teamOne
-            : scrim._doc.teamTwo;
-
-        let [teamLeft, teamJoined] = swapPlayer(
-          currentTeamArray,
-          teamChangingToArray,
-          playerInTransaction
-        );
-
-        newBody = {
-          [teamLeavingName]: teamLeft,
-          [teamJoiningName]: [
-            ...teamJoined.map((player) =>
-              // ._user is just an id here because of no populate
-              player._user === playerInTransaction._user._id
-                ? { ...playerInTransaction }
-                : player
-            ),
-          ],
-        };
-      } else {
-        // if moving but not changing teams
-        // remove the player from the team
-        let filtered = [...teamJoiningArr].filter(
-          (player) => String(player._user) !== String(user._id)
-        );
-
-        // re-insert him in his new role.
-        newBody = {
-          [teamJoiningName]: [...filtered, playerInTransaction],
-        };
-      }
-    } else {
-      // if  just joining
-      newBody = {
-        [teamJoiningName]: [...teamJoiningArr, playerInTransaction],
-      };
-    }
+    let reqBody = {
+      [teamJoiningName]: [...teamJoiningArr, playerInTransaction],
+    };
 
     const teamJoiningTitle =
       teamJoiningName === 'teamOne'
         ? 'Team 1 (Blue Side)'
         : 'Team 2 (Red Side)';
 
+    const spotTaken = scrim._doc[teamJoiningName].find(
+      (player) => player.role === playerInTransaction.role
+    );
+
     if (spotTaken) {
       return res.status(500).json({
-        error: `spot taken! spots available for ${teamJoiningTitle}: ${spotsAvailable}`,
+        error: `spot taken! spots available for ${teamJoiningTitle}: ${
+          spotsAvailable ? spotsAvailable : 'no spots available!'
+        }`,
       });
-    } else {
-      await Scrim.findByIdAndUpdate(
-        id,
-        newBody,
-        { new: true },
-        async (error, scrim) => {
-          if (error) {
-            return res.status(500).json({ error: error.message });
-          }
-
-          if (!scrim) {
-            return res.status(500).send('Scrim not found');
-          }
-
-          const lobbyHost = scrim.lobbyHost ?? null;
-
-          // select lobby host
-          if (lobbyHost !== null) {
-            scrim.lobbyHost = lobbyHost;
-            // if lobby is full after user is joining
-          } else if (scrim.teamOne.length === 5 && scrim.teamTwo.length === 5) {
-            const result = sample([...scrim.teamOne, ...scrim.teamTwo]);
-            const userResult = await User.findById(result._user);
-            scrim.lobbyHost = userResult;
-          } else {
-            scrim.lobbyHost = null;
-          }
-
-          scrim.save();
-          return res.status(200).json(scrim);
-        }
-      );
     }
+
+    await Scrim.findByIdAndUpdate(
+      scrimId,
+      reqBody,
+      { new: true },
+      async (error, scrim) => {
+        if (error) {
+          return res.status(500).json({ error: error.message });
+        }
+
+        if (!scrim) {
+          return res.status(500).send('Scrim not found');
+        }
+
+        // check for lobby host / captain everytime player joins
+        const lobbyHost = await getLobbyHost(scrim);
+        scrim.lobbyHost = lobbyHost;
+
+        scrim.save();
+        return res.status(200).json(scrim);
+      }
+    );
   });
 
   // end of session
@@ -366,13 +405,31 @@ const insertPlayerInScrim = async (req, res) => {
 };
 
 const removePlayerFromScrim = async (req, res) => {
+  // when player leaves or gets kicked
   const { playerData } = req.body;
-  const { id } = req.params;
+  const { userId, scrimId } = req.params;
 
-  const teamLeavingName = playerData?.teamLeavingName;
+  let isValidUser = mongoose.Types.ObjectId.isValid(userId);
+  let isValidScrim = mongoose.Types.ObjectId.isValid(scrimId);
 
-  const scrim = await Scrim.findById(id);
-  const _user = await User.findById(playerData._id); // user leaving or being kicked
+  if (!isValidUser) {
+    return res.status(500).json('invalid user id.');
+  }
+
+  if (!isValidScrim) {
+    return res.status(500).json('invalid scrim id.');
+  }
+
+  const scrim = await Scrim.findById(scrimId);
+  const _user = await User.findById(userId); // user leaving or being kicked
+
+  if (!_user) {
+    return res.status(500).json('user not found!');
+  }
+
+  const teamLeavingName = [...scrim._doc.teamOne, ...scrim._doc.teamTwo].find(
+    (player) => String(player._user) === String(userId)
+  ).team.name;
 
   const teamLeavingArr =
     teamLeavingName === 'teamOne' ? scrim._doc.teamOne : scrim._doc.teamTwo;
@@ -390,7 +447,7 @@ const removePlayerFromScrim = async (req, res) => {
   };
 
   await Scrim.findByIdAndUpdate(
-    id,
+    scrimId,
     scrimData,
     { new: true },
     (error, scrim) => {
@@ -406,22 +463,220 @@ const removePlayerFromScrim = async (req, res) => {
   );
 };
 
+// move roles/teams
+const movePlayerInScrim = async (req, res) => {
+  // when player moves positions and/or teams
+  const session = await Scrim.startSession();
+
+  // beginning of session
+  await session.withTransaction(async () => {
+    const { scrimId, userId } = req.params;
+
+    let isValidUser = mongoose.Types.ObjectId.isValid(userId);
+    let isValidScrim = mongoose.Types.ObjectId.isValid(scrimId);
+
+    if (!isValidUser) {
+      return res.status(500).json('invalid user id.');
+    }
+
+    if (!isValidScrim) {
+      return res.status(500).json('invalid scrim id.');
+    }
+
+    const { playerData } = req.body;
+
+    const scrim = await Scrim.findById(scrimId);
+    const user = await User.findById(userId);
+
+    const teamJoiningName = playerData.team.name;
+
+    const teamJoiningArr =
+      teamJoiningName === 'teamOne' ? scrim._doc.teamOne : scrim._doc.teamTwo;
+
+    const playerFound = [...scrim._doc.teamOne, ...scrim._doc.teamTwo].find(
+      (player) => String(player._user) === String(user._id)
+    );
+
+    if (!playerData?.role) {
+      return res.status(500).json({
+        error:
+          'role string not provided! looks like this: playerData {role: String}',
+      });
+    }
+
+    // when somebody makes an api call for /insert-player but actually meant to move the player.
+    if (!playerFound) {
+      return res.status(500).json({
+        error:
+          'Player does not exist in game. Did you mean to join or insert the player? use the /insert-player endpoint instead.',
+      });
+    }
+
+    // the player state before the transaction
+    const previousPlayerState = [
+      ...scrim._doc.teamOne,
+      ...scrim._doc.teamTwo,
+    ].find((player) => String(player._user) === String(user._id));
+
+    let previousTeamArr =
+      previousPlayerState.team.name === 'teamOne'
+        ? scrim._doc.teamOne
+        : scrim._doc.teamTwo;
+
+    const isChangingTeams =
+      compareArrays(previousTeamArr, teamJoiningArr) === false;
+
+    const playerInTransaction = {
+      // if it's adc, make it all uppercase, else capitalize it.
+      role: /adc/gi.test(playerData.role)
+        ? playerData.role.toUpperCase()
+        : capitalizeWord(playerData.role),
+      team: playerData.team,
+
+      _user: {
+        ...user._doc,
+      },
+    };
+
+    const spotTaken = scrim._doc[teamJoiningName].find(
+      (player) => player.role === playerInTransaction.role
+    );
+
+    const spotsAvailable = getAvailableRoles(teamJoiningArr);
+
+    let newBody = {};
+
+    if (isChangingTeams) {
+      // if player is changing teams-
+
+      const teamChangingToName = playerData.team.name,
+        teamLeavingName = previousPlayerState.team.name;
+
+      const teamLeavingArray =
+        teamLeavingName === 'teamOne' ? scrim._doc.teamOne : scrim._doc.teamTwo;
+
+      const teamChangingToArray =
+        teamChangingToName === 'teamOne'
+          ? scrim._doc.teamOne
+          : scrim._doc.teamTwo;
+
+      let [teamLeft, teamJoined] = swapPlayer(
+        teamLeavingArray,
+        teamChangingToArray,
+        playerInTransaction
+      );
+
+      newBody = {
+        // team left array state after swap player function
+        [teamLeavingName]: teamLeft,
+        [teamJoiningName]: [
+          ...teamJoined.map((player) =>
+            // ._user is just an id here because of no populate
+            player._user === playerInTransaction._user._id
+              ? playerInTransaction
+              : player
+          ),
+        ],
+      };
+    } else {
+      // if moving but not changing teams
+
+      // remove the player from the team
+      let restOfTeam = [...teamJoiningArr].filter(
+        (player) => String(player._user) !== String(user._id)
+      );
+
+      // re-insert him in the same team in his new role.
+      newBody = {
+        [teamJoiningName]: [...restOfTeam, playerInTransaction],
+      };
+    }
+
+    const teamJoiningTitle =
+      teamJoiningName === 'teamOne'
+        ? 'Team 1 (Blue Side)'
+        : 'Team 2 (Red Side)';
+
+    if (spotTaken) {
+      return res.status(500).json({
+        error: `spot taken! spots available for ${teamJoiningTitle}: ${spotsAvailable}`,
+      });
+    }
+
+    await Scrim.findByIdAndUpdate(
+      scrimId,
+      newBody,
+      { new: true },
+      async (error, scrim) => {
+        if (error) {
+          return res.status(500).json({ error: error.message });
+        }
+
+        if (!scrim) {
+          return res.status(500).send('Scrim not found');
+        }
+
+        // check to select lobby host / captain for the scrim everytime someone moves
+        const lobbyHost = await getLobbyHost(scrim);
+        scrim.lobbyHost = lobbyHost;
+
+        scrim.save();
+        return res.status(200).json(scrim);
+      }
+    );
+  });
+
+  // end of session
+  session.endSession();
+};
+
 const insertCasterInScrim = async (req, res) => {
   const session = await Scrim.startSession();
-  const { id } = req.params;
-  const { casterData } = req.body;
+  const { scrimId, casterId } = req.params;
 
   await session.withTransaction(async () => {
-    const scrim = await Scrim.findById(id);
+    let isValidScrim = mongoose.Types.ObjectId.isValid(scrimId);
+    let isValidCaster = mongoose.Types.ObjectId.isValid(casterId);
 
-    const casterId = casterData._id;
+    if (!isValidCaster) {
+      return res.status(500).json('invalid user id.');
+    }
 
-    const casterJoining = await User.findOne({ _id: casterId });
+    if (!isValidScrim) {
+      return res.status(500).json('invalid scrim id.');
+    }
 
-    let isValid = mongoose.Types.ObjectId.isValid(casterJoining._id);
+    const scrim = await Scrim.findById(scrimId);
+    const casterJoining = await User.findById(casterId);
 
-    if (!isValid) {
-      return res(500).json('invalid response.');
+    if (!casterJoining) {
+      return res.status(500).json('user not found');
+    }
+
+    const casterFound = scrim._doc.casters.find(
+      (caster) => String(caster._id) === String(casterId)
+    );
+
+    if (casterFound) {
+      return res
+        .status(500)
+        .json(
+          `caster ${casterJoining.name} is already a caster for this game!.`
+        );
+    }
+
+    const teams = [...scrim._doc.teamOne, ...scrim._doc.teamTwo];
+
+    const playerFound = teams.find(
+      (player) => String(player?._user) === String(casterJoining._id)
+    );
+
+    if (playerFound) {
+      return res
+        .status(500)
+        .json(
+          `player ${casterJoining.name} (team: ${playerFound.team.name}, role: ${playerFound.role}) cannot be a player and a caster at the same time!.`
+        );
     }
 
     let bodyData = {
@@ -430,7 +685,7 @@ const insertCasterInScrim = async (req, res) => {
 
     if (scrim._doc.casters.length < 2) {
       await Scrim.findByIdAndUpdate(
-        id,
+        scrimId,
         bodyData,
         { new: true },
         (error, scrim) => {
@@ -455,20 +710,22 @@ const insertCasterInScrim = async (req, res) => {
 
 const removeCasterFromScrim = async (req, res) => {
   const session = await Scrim.startSession();
-  const { id } = req.params; // scrim id
-  const { casterData } = req.body;
 
   await session.withTransaction(async () => {
-    const scrim = await Scrim.findOne({ _id: id });
+    const { scrimId, casterId } = req.params; // scrim id
 
-    const casterId = casterData._id;
+    const scrim = await Scrim.findOne({ _id: scrimId });
+
+    let isValid = mongoose.Types.ObjectId.isValid(casterId);
+
+    if (!isValid) {
+      return res.status(500).json('invalid response.');
+    }
 
     const casterLeaving = await User.findOne({ _id: casterId });
 
-    let isValid = mongoose.Types.ObjectId.isValid(casterLeaving._id);
-
-    if (!isValid) {
-      return res(500).json('invalid response.');
+    if (!casterLeaving) {
+      return res.status(500).json(`caster not found in scrim ${scrimId}`);
     }
 
     const { casters } = scrim;
@@ -481,7 +738,7 @@ const removeCasterFromScrim = async (req, res) => {
     };
 
     await Scrim.findByIdAndUpdate(
-      id,
+      scrimId,
       bodyData,
       { new: true },
       (error, scrim) => {
@@ -592,5 +849,6 @@ module.exports = {
   removeCasterFromScrim,
   insertCasterInScrim,
   addImageToScrim,
+  movePlayerInScrim,
   removeImageFromScrim,
 };

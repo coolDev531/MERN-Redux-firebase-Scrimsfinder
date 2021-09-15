@@ -36,9 +36,82 @@ export const updateScrim = async (id, scrim) => {
   }
 };
 
-export const insertPlayerInScrim = async (id, playerData) => {
+export const insertPlayerInScrim = async ({
+  scrimId,
+  userId,
+  playerData,
+  setAlert,
+}) => {
+  // sending the role joining and the team name inside playerData in the req.body.
   try {
-    const response = await api.patch(`/scrims/${id}/insert-player`, playerData);
+    const response = await api.patch(
+      `/scrims/${scrimId}/insert-player/${userId}`,
+      { playerData }
+    );
+    return response.data;
+  } catch (error) {
+    const errorMsg = error.response.data.error;
+
+    if (typeof setAlert === 'function') {
+      return setAlert({ type: 'Error', message: errorMsg });
+    }
+
+    // if dev forgot to add setAlert
+    return alert(errorMsg);
+  }
+};
+
+export const removePlayerFromScrim = async ({
+  scrimId,
+  userId,
+  playerData,
+  setAlert,
+}) => {
+  try {
+    const response = await api.patch(
+      `/scrims/${scrimId}/remove-player/${userId}`,
+      { playerData }
+    );
+    return response.data;
+  } catch (error) {
+    const errorMsg = error.response.data?.error ?? error;
+
+    if (typeof setAlert === 'function') {
+      return setAlert({ type: 'Error', message: errorMsg });
+    }
+
+    return alert(errorMsg);
+  }
+};
+
+export const movePlayerInScrim = async ({
+  scrimId,
+  userId,
+  playerData,
+  setAlert,
+}) => {
+  try {
+    const response = await api.patch(
+      `/scrims/${scrimId}/move-player/${userId}`,
+      { playerData }
+    );
+    return response.data;
+  } catch (error) {
+    const errorMsg = error.response.data.error;
+
+    if (typeof setAlert === 'function') {
+      return setAlert({ type: 'Error', message: errorMsg });
+    }
+
+    return alert(errorMsg);
+  }
+};
+
+export const insertCasterInScrim = async ({ scrimId, userId }) => {
+  try {
+    const response = await api.patch(
+      `/scrims/${scrimId}/insert-caster/${userId}`
+    );
     return response.data;
   } catch (error) {
     const errorMsg = error.response.data.error;
@@ -46,29 +119,11 @@ export const insertPlayerInScrim = async (id, playerData) => {
   }
 };
 
-export const removePlayerFromScrim = async (id, playerData) => {
+export const removeCasterFromScrim = async ({ scrimId, userId }) => {
   try {
-    const response = await api.patch(`/scrims/${id}/remove-player`, playerData);
-    return response.data;
-  } catch (error) {
-    const errorMsg = error.response.data.error;
-    alert(errorMsg);
-  }
-};
-
-export const insertCasterInScrim = async (id, data) => {
-  try {
-    const response = await api.patch(`/scrims/${id}/insert-caster`, data);
-    return response.data;
-  } catch (error) {
-    const errorMsg = error.response.data.error;
-    alert(errorMsg);
-  }
-};
-
-export const removeCasterFromScrim = async (id, data) => {
-  try {
-    const response = await api.patch(`/scrims/${id}/remove-caster`, data);
+    const response = await api.patch(
+      `/scrims/${scrimId}/remove-caster/${userId}`
+    );
     return response.data;
   } catch (error) {
     const errorMsg = error.response.data.error;

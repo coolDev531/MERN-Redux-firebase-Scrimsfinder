@@ -204,7 +204,7 @@ export default function ScrimEdit() {
       // if the lobby is full get a random player from the lobby to be the host.
       if ([...teamOne, ...teamTwo].length === 10) {
         devLog('getting random user to host');
-        return sample([...teamOne, ...teamTwo]);
+        return sample([...teamOne, ...teamTwo])._user;
       } else {
         devLog("team size isn't 10, returning null");
         // if lobby isn't full return null so it will generate a host on the backend.
@@ -263,6 +263,13 @@ export default function ScrimEdit() {
       ...prevState,
       gameStartTime: gameStartTime.toISOString(),
     }));
+
+    return () => {
+      setScrimData((prevState) => ({
+        ...prevState,
+        gameStartTime: gameStartTime.toISOString(),
+      }));
+    };
   }, [dateData]);
 
   //  if user doesn't have admin key, push to '/'

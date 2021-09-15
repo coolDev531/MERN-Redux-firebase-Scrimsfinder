@@ -8,10 +8,12 @@ import UploadPostGameImage from './UploadPostGameImage';
 import { Box, Button, Grid, makeStyles, Typography } from '@material-ui/core';
 import Tooltip from '../shared/Tooltip';
 
+//icons
+import InfoIcon from '@material-ui/icons/Help';
+
 // utils
 import pluralize from 'pluralize';
 import { updateScrim } from '../../services/scrims';
-import HelpIcon from '@material-ui/icons/Help';
 
 const useStyles = makeStyles((theme) => ({
   infoBoxRoot: {
@@ -78,8 +80,10 @@ export default function ScrimSectionMiddleAreaBox({
                           Lobby host / captain: {scrim.lobbyHost?.name}
                         </Typography>
                         <Box marginRight={2} />
-                        <Tooltip title="It's expected of the lobby captain to create the custom lobby and select who won after the game">
-                          <HelpIcon
+                        <Tooltip
+                          title="It's expected of the lobby captain to create the custom lobby and select who won after the game, 
+                        AND to upload the post-game image to verify the winner">
+                          <InfoIcon
                             style={{ color: '#000', cursor: 'help' }}
                             fontSize="large"
                           />
@@ -101,7 +105,7 @@ export default function ScrimSectionMiddleAreaBox({
               {/* WHO WON ? BUTTONS */}
               {/* show buttons if is admin or is lobby captain */}
               {/* don't show if game has ended */}
-              {(scrim.lobbyHost.email === currentUser?.email ||
+              {(scrim.lobbyHost?._id === currentUser?._id ||
                 currentUser?.adminKey === process.env.REACT_APP_ADMIN_KEY) &&
                 !gameEnded && (
                   // WHO WON BUTTONS
