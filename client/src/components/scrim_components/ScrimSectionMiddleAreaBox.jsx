@@ -101,7 +101,7 @@ export default function ScrimSectionMiddleAreaBox({
               {/* WHO WON ? BUTTONS */}
               {/* show buttons if is admin or is lobby captain */}
               {/* don't show if game has ended */}
-              {(scrim.lobbyHost.email === currentUser?.email ||
+              {(scrim.lobbyHost?._id === currentUser?._id ||
                 currentUser?.adminKey === process.env.REACT_APP_ADMIN_KEY) &&
                 !gameEnded && (
                   // WHO WON BUTTONS
