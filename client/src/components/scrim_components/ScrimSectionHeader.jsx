@@ -70,27 +70,31 @@ export default function ScrimSectionHeader({
           direction="row"
           justifyContent="flex-end"
           spacing={2}>
-          <Tooltip arrow placement="top" title="Copy game link to clipboard">
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                setCurrentAlert({
-                  type: 'Success',
-                  message: 'copied game link to clipboard!',
-                });
-                copyTextToClipboard(gameUrl);
-              }}>
-              <ShareIcon /> Share
-            </Button>
-          </Tooltip>
+          {/* Share button */}
+          <Grid item>
+            <Tooltip arrow placement="top" title="Copy game link to clipboard">
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  setCurrentAlert({
+                    type: 'Success',
+                    message: 'copied game link to clipboard!',
+                  });
+                  copyTextToClipboard(gameUrl);
+                }}>
+                <ShareIcon /> Share
+              </Button>
+            </Tooltip>
+          </Grid>
+
           <AdminArea>
             {/* Edit and close event buttons */}
             <Grid item>
               <Tooltip
                 arrow
                 placement="top"
-                title="Edit game details (name, password, etc...)">
+                title="Admin only: edit game details (name, password, etc...)">
                 <Button
                   color="primary"
                   variant="contained"
@@ -102,7 +106,7 @@ export default function ScrimSectionHeader({
             </Grid>
 
             <Grid item>
-              <Tooltip arrow placement="top" title="Remove game">
+              <Tooltip arrow placement="top" title="Admin only: delete scrim">
                 <Button
                   color="secondary"
                   variant="contained"
