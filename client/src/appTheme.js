@@ -13,9 +13,10 @@ const appTheme = createTheme({
   },
   typography: {
     // Use the system font instead of the default Roboto font.
+    fontFamily: ['Montserrat', 'sans-serif'].join(','),
+
     h1: {
       color: '#fff',
-      fontFamily: ['Montserrat', 'sans-serif'].join(','),
       fontSize: '2em',
       fontWeight: 'bold',
       marginTop: '0.67em',
@@ -26,7 +27,6 @@ const appTheme = createTheme({
 
     h2: {
       fontSize: '1.5em',
-      fontFamily: ['Montserrat', 'sans-serif'].join(','),
       fontWeight: 'bold',
       marginBlockStart: '0.83em',
       marginBlockEnd: '0.83em',
@@ -35,7 +35,6 @@ const appTheme = createTheme({
 
     h3: {
       display: 'block',
-      fontFamily: ['Montserrat', 'sans-serif'].join(','),
       fontSize: '1.17em',
       marginTop: '1em',
       marginBottom: '1em',
@@ -47,13 +46,11 @@ const appTheme = createTheme({
     h5: {
       fontSize: '0.83em',
       fontWeight: 'bold',
-      fontFamily: ['Montserrat', 'sans-serif'].join(','),
       lineHeight: '1.4',
       color: '#000',
     },
 
     p: {
-      fontFamily: ['Montserrat', 'sans-serif'].join(','),
       color: 'green',
       fontWeight: 600,
       display: 'block',
