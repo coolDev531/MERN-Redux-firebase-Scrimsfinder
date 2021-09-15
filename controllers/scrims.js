@@ -445,6 +445,18 @@ const movePlayerInScrim = async (req, res) => {
     const teamJoiningArr =
       teamJoiningName === 'teamOne' ? scrim._doc.teamOne : scrim._doc.teamTwo;
 
+    const playerFound = [...scrim._doc.teamOne, ...scrim._doc.teamTwo].find(
+      (player) => String(player._user) === String(user._id)
+    );
+
+    // when somebody makes an api call for /insert-player but actually meant to move the player.
+    if (!playerFound) {
+      return res.status(500).json({
+        error:
+          'Player does not exist in game. Did you mean to join or insert the player? use the /insert-player endpoint instead.',
+      });
+    }
+
     const previousPlayerState = [
       ...scrim._doc.teamOne,
       ...scrim._doc.teamTwo,

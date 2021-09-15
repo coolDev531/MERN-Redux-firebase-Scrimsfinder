@@ -36,18 +36,26 @@ export const updateScrim = async (id, scrim) => {
   }
 };
 
-export const insertPlayerInScrim = async ({ scrimId, userId, playerData }) => {
-  // sending the role joining and the team name in the req.body.
-
+export const insertPlayerInScrim = async ({
+  scrimId,
+  userId,
+  playerData,
+  setAlert,
+}) => {
+  // sending the role joining and the team name inside playerData in the req.body.
   try {
     const response = await api.patch(
       `/scrims/${scrimId}/insert-player/${userId}`,
-      { playerData: playerData }
+      { playerData }
     );
     return response.data;
   } catch (error) {
     const errorMsg = error.response.data.error;
-    alert(errorMsg);
+    if (typeof setAlert === 'function') {
+      return setAlert({ type: 'Error', message: errorMsg });
+    }
+
+    return alert(errorMsg);
   }
 };
 
@@ -55,29 +63,45 @@ export const removePlayerFromScrim = async ({
   scrimId,
   userId,
   playerData,
+  setAlert,
 }) => {
   try {
     const response = await api.patch(
       `/scrims/${scrimId}/remove-player/${userId}`,
-      { playerData: playerData }
+      { playerData }
     );
     return response.data;
   } catch (error) {
-    const errorMsg = error.response.data.error;
-    alert(errorMsg);
+    const errorMsg = error.response.data?.error ?? error;
+
+    if (typeof setAlert === 'function') {
+      return setAlert({ type: 'Error', message: errorMsg });
+    }
+
+    return alert(errorMsg);
   }
 };
 
-export const movePlayerInScrim = async ({ scrimId, userId, playerData }) => {
+export const movePlayerInScrim = async ({
+  scrimId,
+  userId,
+  playerData,
+  setAlert,
+}) => {
   try {
     const response = await api.patch(
       `/scrims/${scrimId}/move-player/${userId}`,
-      { playerData: playerData }
+      { playerData }
     );
     return response.data;
   } catch (error) {
     const errorMsg = error.response.data.error;
-    alert(errorMsg);
+
+    if (typeof setAlert === 'function') {
+      return setAlert({ type: 'Error', message: errorMsg });
+    }
+
+    return alert(errorMsg);
   }
 };
 

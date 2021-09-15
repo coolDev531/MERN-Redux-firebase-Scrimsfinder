@@ -83,6 +83,7 @@ export default function ScrimTeamList({
         role,
         team: { name: teamJoiningName },
       },
+      setAlert: setCurrentAlert,
     });
 
     if (updatedScrim) {
@@ -104,6 +105,7 @@ export default function ScrimTeamList({
         role,
         team: { name: teamName },
       },
+      setAlert: setCurrentAlert,
     });
 
     if (updatedScrim) {
@@ -123,6 +125,7 @@ export default function ScrimTeamList({
         role: playerEntered.role,
         teamLeavingName,
       },
+      setAlert: setCurrentAlert,
     });
 
     if (updatedScrim) {
@@ -138,21 +141,19 @@ export default function ScrimTeamList({
     // if person kicking isn't an admin, return.
     if (currentUser?.adminKey !== process.env.REACT_APP_ADMIN_KEY) return;
 
-    const dataSending = {
+    const updatedScrim = await removePlayerFromScrim({
+      scrimId: scrim._id,
+      userId: playerToKick?._user?._id,
       playerData: {
-        ...playerToKick,
-        role: playerToKick.role,
+        role: playerEntered.role,
         teamLeavingName,
-        _id: playerToKick._user?._id,
-        name: playerToKick._user?.name,
       },
-    };
-
-    const updatedScrim = await removePlayerFromScrim(scrim._id, dataSending);
+      setAlert: setCurrentAlert,
+    });
 
     if (updatedScrim) {
       console.log(
-        `%ckicked ${dataSending?.playerData?.name} from scrim: ${scrim._id}`,
+        `%ckicked ${playerToKick?._user?.name} from scrim: ${scrim._id}`,
         'color: #99ff99'
       );
       fetchScrims();
