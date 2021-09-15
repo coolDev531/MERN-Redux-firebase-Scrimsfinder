@@ -56,6 +56,16 @@ export const removePlayerFromScrim = async (id, playerData) => {
   }
 };
 
+export const movePlayerInScrim = async (id, playerData) => {
+  try {
+    const response = await api.patch(`/scrims/${id}/move-player`, playerData);
+    return response.data;
+  } catch (error) {
+    const errorMsg = error.response.data.error;
+    alert(errorMsg);
+  }
+};
+
 export const insertCasterInScrim = async (id, data) => {
   try {
     const response = await api.patch(`/scrims/${id}/insert-caster`, data);

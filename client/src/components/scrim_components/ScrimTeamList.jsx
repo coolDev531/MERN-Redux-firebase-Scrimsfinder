@@ -32,25 +32,7 @@ import JoinIcon from '@material-ui/icons/MeetingRoom';
 import ExitIcon from '@material-ui/icons/NoMeetingRoom';
 import KickIcon from '@material-ui/icons/HighlightOff';
 import { copyTextToClipboard } from '../../utils/copyToClipboard';
-
-/**
- * @method compareArrays
-    compare if the previous state of team that the player is joining is identical.
-    If it is, he isn't swapping teams (will return true), if it isn't identical, he is swapping teams (will return false)
- * @param {Array} arr1
- * @param {Array} arr2
- * @returns {Boolean}
- */
-const compareArrays = (arr1, arr2) => {
-  if (arr1.length !== arr2.length) return false;
-
-  for (let i = 0; i < arr1.length; i++) {
-    if (arr1[i]._id !== arr2[i]._id) return false;
-  }
-
-  // If all elements were same.
-  return true;
-};
+import { movePlayerInScrim } from './../../services/scrims';
 
 const getRankImage = (user) => {
   // replace number with empty string: Diamond 1 => Diamond
@@ -116,45 +98,15 @@ export default function ScrimTeamList({
   const handleMovePlayer = async (teamStr, role) => {
     fetchScrims();
 
-    let currentTeamName = playerEntered.team.name;
-    const currentTeamArr = currentTeamName === 'teamOne' ? teamOne : teamTwo;
+    let dataSending = {
+      playerData: {
+        ...currentUser,
+        role,
+        team: { name: teamStr },
+      },
+    };
 
-    let teamArr = teamStr === 'teamOne' ? teamOne : teamTwo;
-
-    let dataSending = {};
-
-    // if is the array that the user is moving to is different, that means he is changing teams.
-    if (compareArrays(currentTeamArr, teamArr) === false) {
-      console.log(`swapping teams for summoner ${currentUser?.name}`);
-
-      dataSending = {
-        playerData: {
-          ...currentUser,
-          role,
-          team: { name: teamStr },
-        },
-
-        swapData: {
-          isChangingTeams: true,
-          isMoving: true,
-          currentTeamName: playerEntered.team.name,
-          teamChangingToName: teamStr,
-        },
-      };
-    } else {
-      dataSending = {
-        playerData: {
-          ...currentUser,
-          role,
-          team: { name: teamStr },
-        },
-        swapData: {
-          isMoving: true,
-        },
-      };
-    }
-
-    const updatedScrim = await insertPlayerInScrim(scrim._id, dataSending);
+    const updatedScrim = await movePlayerInScrim(scrim._id, dataSending);
 
     if (updatedScrim) {
       console.log(
