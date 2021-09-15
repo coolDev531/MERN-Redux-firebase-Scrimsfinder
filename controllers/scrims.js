@@ -600,7 +600,7 @@ const insertCasterInScrim = async (req, res) => {
     }
 
     const scrim = await Scrim.findById(scrimId);
-    const casterJoining = await User.findOne({ _id: casterId });
+    const casterJoining = await User.findById(casterId);
 
     if (!casterJoining) {
       return res.status(500).json('user not found');
@@ -613,7 +613,23 @@ const insertCasterInScrim = async (req, res) => {
     if (casterFound) {
       return res
         .status(500)
-        .json(`caster ${casterJoining.name} already joined!.`);
+        .json(
+          `caster ${casterJoining.name} is already a caster for this game!.`
+        );
+    }
+
+    const teams = [...scrim._doc.teamOne, ...scrim._doc.teamTwo];
+
+    const playerFound = teams.find(
+      (player) => String(player?._user) === String(casterJoining._id)
+    );
+
+    if (playerFound) {
+      return res
+        .status(500)
+        .json(
+          `player ${casterJoining.name} (team: ${playerFound.team.name}, role: ${playerFound.role}) cannot be a player and a caster at the same time!.`
+        );
     }
 
     let bodyData = {
