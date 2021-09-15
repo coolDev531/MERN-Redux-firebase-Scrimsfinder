@@ -27,14 +27,18 @@ const main = async () => {
     );
   };
 
-  let users = new Array(10).fill().map((_user, idx) => ({
-    name: faker.name.firstName(),
-    rank: sample(ranks),
-    discord: `${faker.name.firstName()}#1${idx}3`,
-    email: faker.internet.email(faker.name.firstName()),
-    region: 'NA',
-    uid: makeUuid(),
-  }));
+  let users = new Array(10).fill().map((_user, idx) => {
+    let name = faker.name.firstName();
+
+    return {
+      name: name,
+      rank: sample(ranks),
+      discord: `${name}#1${idx}3`,
+      email: faker.internet.email(name),
+      region: 'NA',
+      uid: makeUuid(),
+    };
+  });
 
   await User.insertMany(users);
 
