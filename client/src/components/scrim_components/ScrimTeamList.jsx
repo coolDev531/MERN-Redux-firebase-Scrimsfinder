@@ -299,9 +299,13 @@ export default function ScrimTeamList({
                                 className="link"
                                 color="textPrimary"
                                 style={{ cursor: 'pointer' }}
-                                onClick={() =>
-                                  copyTextToClipboard(userInfo?.discord)
-                                }>
+                                onClick={() => {
+                                  copyTextToClipboard(userInfo?.discord);
+                                  setCurrentAlert({
+                                    type: 'Success',
+                                    message: `copied player discord (${userInfo?.discord}) to clipboard`,
+                                  });
+                                }}>
                                 {isSmScreen
                                   ? userInfo?.discord
                                   : truncate(userInfo?.discord, 10)}
