@@ -54,16 +54,19 @@ If you have an admin key, you can host a scrim/lobby. Then players just have to 
 - users can edit their account information as long as it isn't taken
 
 ### 9/4/2021
+
 - Database is now fully relational (teams and casters of scrim reference the user, etc).
 - Added JWT & bcrypt ontop of google authentication with firebase.
 
 ### 9/5/2021
+
 - Created a navbar drawer/burger-menu
 - Moved the date select filter and region filter for scrims into the drawer
 - Moved the show/hide current, previous, upcoming scrims toggles into the drawer.
 
 ---
 
+<br />
 <br />
 
 # Developer area
@@ -90,8 +93,8 @@ The `User` is authenticated using both Google (for email) and JWT (to save decod
 
 Front-end is made using the `React` library and was bootstrapped using `Create-React-App`. It uses `@material-ui/core` as the UI framework, please check the documentation for Material-UI here: https://material-ui.com/ if not familiar with it.
 
-
 The folder hiearchy for the react-app looks something like this:
+
 ```
 src
 |__ assets/
@@ -102,11 +105,11 @@ src
         |__ roles
           |__ top.png
           |__ bottom.png
-          
+
 |__ context
   |__ currentUser.js
   |__ scrimsContext.js
-  
+
 |__ components
   |__ CountdownTimer.jsx
   |__ IntroForms.jsx
@@ -117,17 +120,17 @@ src
     |__ NavbarDrawer.jsx
     |__ Loading.jsx
     |__ Footer.jsx
-    |__ Tooltip.jsx    
-    
+    |__ Tooltip.jsx
+
 |__ services/
    |__ apiConfig.js
    |__ users.js
    |__ auth.js
    |__ scrims.js
-   
+
 |_ styles/
    |__ scrimSection.styles.js
-   
+
 |_ screens/
    |__ Intro.jsx
    |__ Scrims.jsx
@@ -135,13 +138,14 @@ src
    |__ ScrimCreate.jsx
    |__ ScrimEdit.jsx
    |__ Settings.jsx
-   
+
 |__ utils/
  |__ keycodes.js
  |__ copyToClipboard.js
 ```
 
 There are some .env variables you need to set up before getting started:
+
 ```
 REACT_APP_ADMIN_KEY
 
@@ -163,15 +167,14 @@ REACT_APP_FIREBASE_AUTH_DOMAIN
 REACT_APP_FIREBASE_API_KEY
 ```
 
-
 ## running it on your machine
+
 - to run back-end, type in cmd: `yarn` to install latest-dependencies, then run the command: `yarn dev`.
 - to run front-end, cd into `client` directory and run `yarn` to install dependencies, then run `yarn start` to run the server.
 
-
 ## pull requests
-- Please link your issue to your pull request when making one. 
+
+- Please link your issue to your pull request when making one.
 - Please the request to merge into develop instead of master.
 - Do not merge without being approved.
 - Please squash your commits before merging.
-
