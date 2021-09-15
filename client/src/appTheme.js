@@ -1,6 +1,11 @@
 import createTheme from '@material-ui/core/styles/createTheme';
 
-const appTheme = createTheme({
+export const COLORS = {
+  DK_BLUE: '#101820',
+  DK_BLUE_TRANSPARENT: 'rgba(0, 0, 0, 0.61)', // dark filter to darken bg image
+};
+
+export const appTheme = createTheme({
   palette: {
     type: 'dark',
 
@@ -61,6 +66,13 @@ const appTheme = createTheme({
       fontSize: '22px',
     },
   },
-});
 
-export default appTheme;
+  overrides: {
+    MuiAppBar: {
+      colorDefault: {
+        backgroundColor: COLORS.DK_TEXT,
+        color: COLORS.PRIMARY,
+      },
+    },
+  },
+});

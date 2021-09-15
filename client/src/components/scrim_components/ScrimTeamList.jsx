@@ -1,7 +1,7 @@
 import { Fragment, useMemo } from 'react';
 import { useScrims } from './../../context/scrimsContext';
 import { useAuth } from './../../context/currentUser';
-import { useScrimSectionStyles } from '../../styles/scrimSection.styles';
+import { useScrimSectionStyles } from '../../styles/ScrimSection.styles';
 import { useAlerts } from '../../context/alertsContext';
 
 // components

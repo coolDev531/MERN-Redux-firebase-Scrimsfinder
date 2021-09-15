@@ -1,43 +1,25 @@
 import './App.css';
-import AppRouter from './navigation/AppRouter';
-import { ThemeProvider, makeStyles } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Footer from './components/shared/Footer';
+// hooks
 import { useAuth } from './context/currentUser';
-import Loading from './components/shared/Loading';
-import appTheme from './appTheme';
-import Snackbar from '@material-ui/core/Snackbar';
 import { useAlerts } from './context/alertsContext';
+
+// styles
+import { appTheme } from './appTheme';
+import { useAppStyles } from './styles/App.styles';
+
+// components
+import AppRouter from './navigation/AppRouter';
+import ThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Loading from './components/shared/Loading';
+import Footer from './components/shared/Footer';
+import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
-import BgImage from './assets/images/summoners_rift.jpg';
-
-const useStyles = makeStyles({
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    minHeight: '100vh',
-    background: '#424242', // fallback for no rgba support
-    backgroundColor: 'rgba(0, 0, 0, 0.61)', // dark filter to darken bg image
-
-    '&::before': {
-      background: `url(${BgImage})`, // background image
-      backgroundSize: 'cover',
-      content: '""',
-      position: 'fixed', // background scrolls with user (user doesn't notice), absolute: doesn't scroll with user
-      top: 0,
-      right: 0,
-      bottom: 0,
-      left: 0,
-      filter: 'blur(20px)', // blurred
-      zIndex: -1, // behind page-content z-index
-    },
-  },
-});
 
 function App() {
   const { loading: verifyingUser } = useAuth();
   const { currentAlert, closeAlert } = useAlerts();
-  const classes = useStyles();
+  const classes = useAppStyles();
 
   if (verifyingUser) {
     return (
@@ -64,6 +46,7 @@ function App() {
               variant="filled"
               onClose={closeAlert}
               severity={currentAlert.type.toLowerCase()}>
+              {/* example: success - scrim created successfully! */}
               <strong>{currentAlert.type}</strong> - {currentAlert.message}
             </Alert>
           </Snackbar>
