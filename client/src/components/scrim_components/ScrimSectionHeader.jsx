@@ -148,10 +148,10 @@ export default function ScrimSectionHeader({
             </Grid>
           )}
 
-          {/* don't show cast buttons if game ended */}
+          {/* don't show cast buttons if game ended or we have max casters or currentUser has joined cast*/}
           {!gameEnded && (
             <Grid container alignItems="center" direction="row" spacing={2}>
-              {casters.length !== MAX_CASTER_AMOUNT && (
+              {casters.length !== MAX_CASTER_AMOUNT && !casterEntered && (
                 <Grid item>
                   <Button
                     variant="contained"
