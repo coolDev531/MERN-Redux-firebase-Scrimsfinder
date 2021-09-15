@@ -9,6 +9,10 @@ const main = async () => {
   const ranks = [
     'Diamond 2',
     'Platinum 1',
+    'Platinum 4',
+    'Grandmaster',
+    'Challenger',
+    'Gold 3',
     'Silver 3',
     'Bronze 1',
     'Gold 2',

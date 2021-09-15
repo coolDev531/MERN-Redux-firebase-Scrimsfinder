@@ -117,13 +117,12 @@ export default function ScrimTeamList({
     }
   };
 
-  const leaveGame = async (teamLeavingName) => {
+  const leaveGame = async () => {
     const updatedScrim = await removePlayerFromScrim({
       scrimId: scrim._id,
       userId: playerEntered?._user?._id,
       playerData: {
         role: playerEntered?.role,
-        teamLeavingName,
       },
       setAlert: setCurrentAlert,
     });
@@ -137,7 +136,7 @@ export default function ScrimTeamList({
     }
   };
 
-  const kickPlayerFromGame = async (playerToKick, teamLeavingName) => {
+  const kickPlayerFromGame = async (playerToKick) => {
     // if person kicking isn't an admin, return.
     if (currentUser?.adminKey !== process.env.REACT_APP_ADMIN_KEY) return;
 
@@ -146,7 +145,6 @@ export default function ScrimTeamList({
       userId: playerToKick?._user?._id,
       playerData: {
         role: playerEntered.role,
-        teamLeavingName,
       },
       setAlert: setCurrentAlert,
     });

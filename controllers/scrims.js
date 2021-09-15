@@ -293,7 +293,10 @@ const insertPlayerInScrim = async (req, res) => {
     const teamJoiningName = playerData.team.name;
 
     const playerInTransaction = {
-      role: capitalizeWord(playerData.role),
+      // if role is adc make it all uppercase, else just capitalize first letter of role.
+      role: /adc/gi.test(playerData.role)
+        ? playerData.role.toUpperCase()
+        : capitalizeWord(playerData.role),
       team: playerData.team,
 
       _user: {
@@ -378,10 +381,16 @@ const removePlayerFromScrim = async (req, res) => {
     return res.status(500).json('invalid scrim id.');
   }
 
-  const teamLeavingName = playerData?.teamLeavingName;
-
   const scrim = await Scrim.findById(scrimId);
   const _user = await User.findById(userId); // user leaving or being kicked
+
+  if (!_user) {
+    return res.status(500).json('user not found!');
+  }
+
+  const teamLeavingName = [...scrim._doc.teamOne, ...scrim._doc.teamTwo].find(
+    (player) => String(player._user) === String(userId)
+  ).team.name;
 
   const teamLeavingArr =
     teamLeavingName === 'teamOne' ? scrim._doc.teamOne : scrim._doc.teamTwo;
@@ -457,6 +466,7 @@ const movePlayerInScrim = async (req, res) => {
       });
     }
 
+    // the player state before the transaction
     const previousPlayerState = [
       ...scrim._doc.teamOne,
       ...scrim._doc.teamTwo,
@@ -471,7 +481,10 @@ const movePlayerInScrim = async (req, res) => {
       compareArrays(previousTeamArr, teamJoiningArr) === false;
 
     const playerInTransaction = {
-      role: capitalizeWord(playerData.role),
+      // if it's adc, make it all uppercase, else capitalize it.
+      role: /adc/gi.test(playerData.role)
+        ? playerData.role.toUpperCase()
+        : capitalizeWord(playerData.role),
       team: playerData.team,
 
       _user: {
@@ -489,15 +502,12 @@ const movePlayerInScrim = async (req, res) => {
 
     if (isChangingTeams) {
       // if player is changing teams-
-      const { currentTeamName, teamChangingToName } = {
-        currentTeamName: previousPlayerState.team.name,
-        teamChangingToName: playerData.team.name,
-      };
 
-      const teamLeavingName = currentTeamName;
+      const teamChangingToName = playerData.team.name,
+        teamLeavingName = previousPlayerState.team.name;
 
-      const currentTeamArray =
-        currentTeamName === 'teamOne' ? scrim._doc.teamOne : scrim._doc.teamTwo;
+      const teamLeavingArray =
+        teamLeavingName === 'teamOne' ? scrim._doc.teamOne : scrim._doc.teamTwo;
 
       const teamChangingToArray =
         teamChangingToName === 'teamOne'
@@ -505,18 +515,19 @@ const movePlayerInScrim = async (req, res) => {
           : scrim._doc.teamTwo;
 
       let [teamLeft, teamJoined] = swapPlayer(
-        currentTeamArray,
+        teamLeavingArray,
         teamChangingToArray,
         playerInTransaction
       );
 
       newBody = {
+        // team left array state after swap player function
         [teamLeavingName]: teamLeft,
         [teamJoiningName]: [
           ...teamJoined.map((player) =>
             // ._user is just an id here because of no populate
             player._user === playerInTransaction._user._id
-              ? { ...playerInTransaction }
+              ? playerInTransaction
               : player
           ),
         ],
