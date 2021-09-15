@@ -9,7 +9,7 @@ import { useAppStyles } from './styles/App.styles';
 
 // components
 import AppRouter from './navigation/AppRouter';
-import ThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import { ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Loading from './components/shared/Loading';
 import Footer from './components/shared/Footer';

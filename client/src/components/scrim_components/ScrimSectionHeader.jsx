@@ -4,7 +4,7 @@ import { useAlerts } from '../../context/alertsContext';
 
 // components
 import Moment from 'react-moment';
-import { Button, Grid, Typography } from '@material-ui/core';
+import { Button, Grid, Typography, Tooltip } from '@material-ui/core';
 
 // utils
 import 'moment-timezone';
@@ -38,7 +38,6 @@ export default function ScrimSectionHeader({
 
   return (
     <Grid
-      item
       container
       direction="column"
       className="scrim__metadata"
@@ -68,30 +67,30 @@ export default function ScrimSectionHeader({
           sm={8}
           md={6}
           alignItems="center"
-          justifyContent="flex-end">
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              setCurrentAlert({
-                type: 'Success',
-                message: 'copied game link to clipboard!',
-              });
-              copyTextToClipboard(gameUrl);
-            }}>
-            <ShareIcon /> Share Link
-          </Button>
-
+          direction="row"
+          justifyContent="flex-end"
+          spacing={2}>
+          <Tooltip arrow placement="top" title="Copy game link to clipboard">
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                setCurrentAlert({
+                  type: 'Success',
+                  message: 'copied game link to clipboard!',
+                });
+                copyTextToClipboard(gameUrl);
+              }}>
+              <ShareIcon /> Share
+            </Button>
+          </Tooltip>
           <AdminArea>
-            <Grid
-              container
-              item
-              direction="row"
-              alignItems="center"
-              xs={6}
-              justifyContent="flex-end"
-              spacing={2}>
-              <Grid item>
+            {/* Edit and close event buttons */}
+            <Grid item>
+              <Tooltip
+                arrow
+                placement="top"
+                title="Edit game details (name, password, etc...)">
                 <Button
                   color="primary"
                   variant="contained"
@@ -99,16 +98,18 @@ export default function ScrimSectionHeader({
                   <SettingsIcon />
                   &nbsp; Edit
                 </Button>
-              </Grid>
+              </Tooltip>
+            </Grid>
 
-              <Grid item>
+            <Grid item>
+              <Tooltip arrow placement="top" title="Remove game">
                 <Button
                   color="secondary"
                   variant="contained"
                   onClick={handleDeleteScrim}>
                   Close event
                 </Button>
-              </Grid>
+              </Tooltip>
             </Grid>
           </AdminArea>
         </Grid>
