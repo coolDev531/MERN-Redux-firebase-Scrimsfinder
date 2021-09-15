@@ -43,8 +43,6 @@ const getRankImage = (user) => {
 export default function ScrimTeamList({
   playerEntered,
   scrim,
-  teamOne,
-  teamTwo,
   teamData,
   casterEntered,
   gameStarted,
@@ -138,7 +136,9 @@ export default function ScrimTeamList({
   };
 
   const kickPlayerFromGame = async (playerToKick, teamLeavingName) => {
+    // if person kicking isn't an admin, return.
     if (currentUser?.adminKey !== process.env.REACT_APP_ADMIN_KEY) return;
+
     const dataSending = {
       playerData: {
         ...playerToKick,

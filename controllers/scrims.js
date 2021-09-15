@@ -247,6 +247,7 @@ const deleteScrim = async (req, res) => {
 };
 
 const insertPlayerInScrim = async (req, res) => {
+  // when player joins
   const session = await Scrim.startSession();
 
   // beginning of session
@@ -254,6 +255,10 @@ const insertPlayerInScrim = async (req, res) => {
     const { id } = req.params;
 
     const { playerData } = req.body;
+
+    if (!playerData) {
+      return res.status(500).json({ error: 'playerData object not provided' });
+    }
 
     const teamJoiningName = playerData.team.name;
 
@@ -265,9 +270,10 @@ const insertPlayerInScrim = async (req, res) => {
       (player) => String(player._user) === String(user._id)
     );
 
+    // when somebody makes an api call for /insert-player but actually meant to move the player.
     if (playerExists) {
       return res.status(500).json({
-        error: `User exists`,
+        error: `Player already exists in game. Did you mean to move the player? use the /move-player endpoint instead.`,
       });
     }
 
@@ -345,6 +351,7 @@ const insertPlayerInScrim = async (req, res) => {
 };
 
 const removePlayerFromScrim = async (req, res) => {
+  // when player leaves
   const { playerData } = req.body;
   const { id } = req.params;
 
@@ -387,6 +394,7 @@ const removePlayerFromScrim = async (req, res) => {
 
 // move roles/teams
 const movePlayerInScrim = async (req, res) => {
+  // when player moves positions and/or teams
   const session = await Scrim.startSession();
 
   // beginning of session
@@ -434,8 +442,7 @@ const movePlayerInScrim = async (req, res) => {
     let newBody = {};
 
     if (isChangingTeams) {
-      // if moving and changing teams
-
+      // if player is changing teams-
       const { currentTeamName, teamChangingToName } = {
         currentTeamName: previousPlayerState.team.name,
         teamChangingToName: playerData.team.name,
@@ -490,39 +497,39 @@ const movePlayerInScrim = async (req, res) => {
       return res.status(500).json({
         error: `spot taken! spots available for ${teamJoiningTitle}: ${spotsAvailable}`,
       });
-    } else {
-      await Scrim.findByIdAndUpdate(
-        id,
-        newBody,
-        { new: true },
-        async (error, scrim) => {
-          if (error) {
-            return res.status(500).json({ error: error.message });
-          }
-
-          if (!scrim) {
-            return res.status(500).send('Scrim not found');
-          }
-
-          const lobbyHost = scrim.lobbyHost ?? null;
-
-          // select lobby host
-          if (lobbyHost !== null) {
-            scrim.lobbyHost = lobbyHost;
-            // if lobby is full after user is joining
-          } else if (scrim.teamOne.length === 5 && scrim.teamTwo.length === 5) {
-            const result = sample([...scrim.teamOne, ...scrim.teamTwo]);
-            const userResult = await User.findById(result._user);
-            scrim.lobbyHost = userResult;
-          } else {
-            scrim.lobbyHost = null;
-          }
-
-          scrim.save();
-          return res.status(200).json(scrim);
-        }
-      );
     }
+
+    await Scrim.findByIdAndUpdate(
+      id,
+      newBody,
+      { new: true },
+      async (error, scrim) => {
+        if (error) {
+          return res.status(500).json({ error: error.message });
+        }
+
+        if (!scrim) {
+          return res.status(500).send('Scrim not found');
+        }
+
+        const lobbyHost = scrim.lobbyHost ?? null;
+
+        // select lobby host
+        if (lobbyHost !== null) {
+          scrim.lobbyHost = lobbyHost;
+          // if lobby is full after user is joining
+        } else if (scrim.teamOne.length === 5 && scrim.teamTwo.length === 5) {
+          const result = sample([...scrim.teamOne, ...scrim.teamTwo]);
+          const userResult = await User.findById(result._user);
+          scrim.lobbyHost = userResult;
+        } else {
+          scrim.lobbyHost = null;
+        }
+
+        scrim.save();
+        return res.status(200).json(scrim);
+      }
+    );
   });
 
   // end of session
