@@ -11,7 +11,7 @@ import Divider from '@material-ui/core/Divider';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
-import { Grid, IconButton, Typography } from '@material-ui/core';
+import { Grid, IconButton, Typography, useMediaQuery } from '@material-ui/core';
 import Tooltip from '../shared/Tooltip';
 import AdminArea from '../shared/AdminArea';
 import ListSubheader from '@material-ui/core/ListSubheader';
@@ -72,6 +72,7 @@ export default function ScrimTeamList({
   const { setCurrentAlert } = useAlerts();
 
   const classes = useScrimSectionStyles({ scrim });
+  const isSmScreen = useMediaQuery('@media (max-width: 630px)');
 
   const gameEnded = useMemo(() => scrim.teamWon, [scrim.teamWon]);
 
@@ -268,7 +269,9 @@ export default function ScrimTeamList({
                             href={`https://${userInfo?.region}.op.gg/summoner/userName=${userInfo?.name}`}
                             target="_blank"
                             rel="noreferrer">
-                            {truncate(userInfo?.name, 16)}
+                            {isSmScreen
+                              ? userInfo?.name
+                              : truncate(userInfo?.name, 16)}
                           </a>
                         </Tooltip>
 
@@ -299,7 +302,9 @@ export default function ScrimTeamList({
                                 onClick={() =>
                                   copyTextToClipboard(userInfo?.discord)
                                 }>
-                                {truncate(userInfo?.discord, 10)}
+                                {isSmScreen
+                                  ? userInfo?.discord
+                                  : truncate(userInfo?.discord, 10)}
                               </Typography>
                             </Tooltip>
                             <br />
