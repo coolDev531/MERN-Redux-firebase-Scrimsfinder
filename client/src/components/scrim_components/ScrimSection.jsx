@@ -188,8 +188,6 @@ export default function ScrimSection({ scrim, isInDetail }) {
         <div className={classes.teamsContainer}>
           {/* teamOne */}
           <ScrimTeamList
-            teamOne={teamOne}
-            teamTwo={teamTwo}
             teamData={{
               teamRoles: ['Top', 'Jungle', 'Mid', 'ADC', 'Support'],
               teamName: 'teamOne',
@@ -215,8 +213,6 @@ export default function ScrimSection({ scrim, isInDetail }) {
 
           {/* teamTwo */}
           <ScrimTeamList
-            teamOne={teamOne}
-            teamTwo={teamTwo}
             teamData={{
               teamRoles: ['Top', 'Jungle', 'Mid', 'ADC', 'Support'],
               teamName: 'teamTwo',
