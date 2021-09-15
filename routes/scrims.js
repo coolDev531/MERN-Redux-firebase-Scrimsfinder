@@ -19,7 +19,10 @@ router.patch(
   '/scrims/:scrimId/insert-player/:userId',
   controllers.insertPlayerInScrim
 ); // PATCH
-router.patch('/scrims/:id/remove-player', controllers.removePlayerFromScrim); // PATCH
+router.patch(
+  '/scrims/:scrimId/remove-player/:userId',
+  controllers.removePlayerFromScrim
+); // PATCH
 router.patch(
   '/scrims/:scrimId/move-player/:userId',
   controllers.movePlayerInScrim

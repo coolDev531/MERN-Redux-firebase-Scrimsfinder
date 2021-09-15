@@ -51,9 +51,16 @@ export const insertPlayerInScrim = async ({ scrimId, userId, playerData }) => {
   }
 };
 
-export const removePlayerFromScrim = async (id, playerData) => {
+export const removePlayerFromScrim = async ({
+  scrimId,
+  userId,
+  playerData,
+}) => {
   try {
-    const response = await api.patch(`/scrims/${id}/remove-player`, playerData);
+    const response = await api.patch(
+      `/scrims/${scrimId}/remove-player/${userId}`,
+      { playerData: playerData }
+    );
     return response.data;
   } catch (error) {
     const errorMsg = error.response.data.error;

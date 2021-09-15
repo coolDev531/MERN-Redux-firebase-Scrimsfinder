@@ -363,14 +363,25 @@ const insertPlayerInScrim = async (req, res) => {
 };
 
 const removePlayerFromScrim = async (req, res) => {
-  // when player leaves
+  // when player leaves or gets kicked
   const { playerData } = req.body;
-  const { id } = req.params;
+  const { userId, scrimId } = req.params;
+
+  let isValidUser = mongoose.Types.ObjectId.isValid(userId);
+  let isValidScrim = mongoose.Types.ObjectId.isValid(scrimId);
+
+  if (!isValidUser) {
+    return res.status(500).json('invalid user id.');
+  }
+
+  if (!isValidScrim) {
+    return res.status(500).json('invalid scrim id.');
+  }
 
   const teamLeavingName = playerData?.teamLeavingName;
 
-  const scrim = await Scrim.findById(id);
-  const _user = await User.findById(playerData._id); // user leaving or being kicked
+  const scrim = await Scrim.findById(scrimId);
+  const _user = await User.findById(userId); // user leaving or being kicked
 
   const teamLeavingArr =
     teamLeavingName === 'teamOne' ? scrim._doc.teamOne : scrim._doc.teamTwo;
@@ -388,7 +399,7 @@ const removePlayerFromScrim = async (req, res) => {
   };
 
   await Scrim.findByIdAndUpdate(
-    id,
+    scrimId,
     scrimData,
     { new: true },
     (error, scrim) => {
