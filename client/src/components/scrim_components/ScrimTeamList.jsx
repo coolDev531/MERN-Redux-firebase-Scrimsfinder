@@ -11,7 +11,13 @@ import Divider from '@material-ui/core/Divider';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
-import { Grid, IconButton, Typography, useMediaQuery } from '@material-ui/core';
+import {
+  Grid,
+  IconButton,
+  Typography,
+  useMediaQuery,
+  Box,
+} from '@material-ui/core';
 import Tooltip from '../shared/Tooltip';
 import AdminArea from '../shared/AdminArea';
 import ListSubheader from '@material-ui/core/ListSubheader';
@@ -19,11 +25,13 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 // utils
 import { RANK_IMAGES, ROLE_IMAGES } from '../../utils/imageMaps';
 import { truncate } from '../../utils/truncate';
+import { copyTextToClipboard } from '../../utils/copyToClipboard';
 
 // services
 import {
   insertPlayerInScrim,
   removePlayerFromScrim,
+  movePlayerInScrim,
 } from '../../services/scrims';
 
 // icons
@@ -31,8 +39,7 @@ import SwapIcon from '@material-ui/icons/SwapHoriz';
 import JoinIcon from '@material-ui/icons/MeetingRoom';
 import ExitIcon from '@material-ui/icons/NoMeetingRoom';
 import KickIcon from '@material-ui/icons/HighlightOff';
-import { copyTextToClipboard } from '../../utils/copyToClipboard';
-import { movePlayerInScrim } from './../../services/scrims';
+import InfoIcon from '@material-ui/icons/Help';
 
 const getRankImage = (user) => {
   // replace number with empty string: Diamond 1 => Diamond
@@ -258,7 +265,7 @@ export default function ScrimTeamList({
                                 }}>
                                 {isSmScreen
                                   ? userInfo?.discord
-                                  : truncate(userInfo?.discord, 10)}
+                                  : truncate(userInfo?.discord, 9)}
                               </Typography>
                             </Tooltip>
                             <br />
@@ -285,6 +292,18 @@ export default function ScrimTeamList({
                     }
                   />
 
+                  {isLobbyHost && (
+                    <Tooltip
+                      title={`This player is the lobby captain. \n 
+                      It's expected of the lobby captain to create the custom lobby and select who won after the game,\n
+                      AND to upload the post-game image to verify the winner`}>
+                      <Box
+                        style={{ cursor: 'help' }}
+                        className={classes.infoIcon}>
+                        <InfoIcon />
+                      </Box>
+                    </Tooltip>
+                  )}
                   {isCurrentUser
                     ? // don't let user leave if game has already ended
                       !gameEnded && (
