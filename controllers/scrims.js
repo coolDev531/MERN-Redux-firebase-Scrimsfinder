@@ -270,7 +270,22 @@ const insertPlayerInScrim = async (req, res) => {
     if (!playerData) {
       return res.status(500).json({
         error:
-          'playerData object not provided, requires: team: {name: String}, role: String',
+          'playerData object not provided, looks like this: team: {name: String}, role: String',
+      });
+    }
+
+    // if req.body has no team name
+    if (!playerData.team?.name) {
+      return res.status(500).json({
+        error:
+          'team object not provided! looks like this: playerData {team: {name: String}}',
+      });
+    }
+
+    if (!playerData?.role) {
+      return res.status(500).json({
+        error:
+          'role string not provided! looks like this: playerData {role: String}',
       });
     }
 
@@ -282,11 +297,22 @@ const insertPlayerInScrim = async (req, res) => {
       (player) => String(player._user) === String(user._id)
     );
 
+    const casterExists = scrim._doc.casters.find(
+      (caster) => String(caster._id) === String(user._id)
+    );
+
     // when somebody makes an api call for /insert-player but actually meant to move the player.
     if (playerExists) {
       return res.status(500).json({
         error:
           'Player already exists in game. Did you mean to move the player? use the /move-player endpoint instead.',
+      });
+    }
+
+    if (casterExists) {
+      return res.status(500).json({
+        error:
+          'User already is a caster. you cannot be a caster and a player in the same game!.',
       });
     }
 
@@ -324,7 +350,9 @@ const insertPlayerInScrim = async (req, res) => {
 
     if (spotTaken) {
       return res.status(500).json({
-        error: `spot taken! spots available for ${teamJoiningTitle}: ${spotsAvailable}`,
+        error: `spot taken! spots available for ${teamJoiningTitle}: ${
+          spotsAvailable ? spotsAvailable : 'no spots available!'
+        }`,
       });
     }
 
