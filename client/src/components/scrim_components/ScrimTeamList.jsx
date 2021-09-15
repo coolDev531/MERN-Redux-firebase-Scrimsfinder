@@ -94,22 +94,21 @@ export default function ScrimTeamList({
     }
   };
 
-  const handleMovePlayer = async (teamStr, role) => {
+  const handleMovePlayer = async (teamName, role) => {
     fetchScrims();
 
-    let dataSending = {
+    const updatedScrim = await movePlayerInScrim({
+      scrimId: scrim._id,
+      userId: currentUser._id,
       playerData: {
-        ...currentUser,
         role,
-        team: { name: teamStr },
+        team: { name: teamName },
       },
-    };
-
-    const updatedScrim = await movePlayerInScrim(scrim._id, dataSending);
+    });
 
     if (updatedScrim) {
       console.log(
-        `%cswapped ${currentUser?.name} in scrim: ${scrim._id} to: ${teamStr} as ${role}`,
+        `%cswapped ${currentUser?.name} in scrim: ${scrim._id} to: ${teamName} as ${role}`,
         'color: #99ff99'
       );
       fetchScrims();

@@ -61,11 +61,11 @@ export const removePlayerFromScrim = async (id, playerData) => {
   }
 };
 
-export const movePlayerInScrim = async (scrimId, userId, playerData) => {
+export const movePlayerInScrim = async ({ scrimId, userId, playerData }) => {
   try {
     const response = await api.patch(
       `/scrims/${scrimId}/move-player/${userId}`,
-      playerData
+      { playerData: playerData }
     );
     return response.data;
   } catch (error) {

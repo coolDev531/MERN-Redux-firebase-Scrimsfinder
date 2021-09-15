@@ -258,13 +258,13 @@ const insertPlayerInScrim = async (req, res) => {
     let isValidScrim = mongoose.Types.ObjectId.isValid(scrimId);
 
     if (!isValidUser) {
-      return res(500).json('invalid user id.');
+      return res.status(500).json('invalid user id.');
     }
 
     if (!isValidScrim) {
-      return res(500).json('invalid scrim id.');
+      return res.status(500).json('invalid scrim id.');
     }
-    console.log(req.body);
+
     const { playerData } = req.body;
 
     if (!playerData) {
@@ -411,12 +411,23 @@ const movePlayerInScrim = async (req, res) => {
 
   // beginning of session
   await session.withTransaction(async () => {
-    const { id } = req.params;
+    const { scrimId, userId } = req.params;
+
+    let isValidUser = mongoose.Types.ObjectId.isValid(userId);
+    let isValidScrim = mongoose.Types.ObjectId.isValid(scrimId);
+
+    if (!isValidUser) {
+      return res.status(500).json('invalid user id.');
+    }
+
+    if (!isValidScrim) {
+      return res.status(500).json('invalid scrim id.');
+    }
 
     const { playerData } = req.body;
 
-    const scrim = await Scrim.findById(id);
-    const user = await User.findById(playerData._id);
+    const scrim = await Scrim.findById(scrimId);
+    const user = await User.findById(userId);
 
     const teamJoiningName = playerData.team.name;
 
@@ -426,7 +437,7 @@ const movePlayerInScrim = async (req, res) => {
     const previousPlayerState = [
       ...scrim._doc.teamOne,
       ...scrim._doc.teamTwo,
-    ].find((p) => String(p._user) === String(user._id));
+    ].find((player) => String(player._user) === String(user._id));
 
     let previousTeamArr =
       previousPlayerState.team.name === 'teamOne'
@@ -489,12 +500,13 @@ const movePlayerInScrim = async (req, res) => {
       };
     } else {
       // if moving but not changing teams
+
       // remove the player from the team
       let filtered = [...teamJoiningArr].filter(
         (player) => String(player._user) !== String(user._id)
       );
 
-      // re-insert him in his new role.
+      // re-insert him in the same team in his new role.
       newBody = {
         [teamJoiningName]: [...filtered, playerInTransaction],
       };
@@ -512,7 +524,7 @@ const movePlayerInScrim = async (req, res) => {
     }
 
     await Scrim.findByIdAndUpdate(
-      id,
+      scrimId,
       newBody,
       { new: true },
       async (error, scrim) => {
