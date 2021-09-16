@@ -53,6 +53,8 @@ export default function ScrimTeamList({
   teamData,
   casterEntered,
   gameStarted,
+  buttonsDisabled,
+  setButtonsDisabled,
 }) {
   const { fetchScrims } = useScrims();
   const { currentUser, isCurrentUserAdmin } = useAuth();
@@ -65,7 +67,15 @@ export default function ScrimTeamList({
 
   const { teamRoles, teamName, teamTitleName, teamArray } = teamData;
 
+  const toggleDisableButtons = async () => {
+    setButtonsDisabled(true);
+    setTimeout(async () => {
+      setButtonsDisabled(false);
+    }, 400);
+  };
+
   const joinGame = async (teamJoiningName, role) => {
+    toggleDisableButtons();
     fetchScrims();
 
     if (casterEntered) {
@@ -103,6 +113,7 @@ export default function ScrimTeamList({
   };
 
   const handleMovePlayer = async (teamName, role) => {
+    toggleDisableButtons();
     fetchScrims();
 
     const updatedScrim = await movePlayerInScrim({
@@ -125,6 +136,8 @@ export default function ScrimTeamList({
   };
 
   const leaveGame = async () => {
+    toggleDisableButtons();
+
     const updatedScrim = await removePlayerFromScrim({
       scrimId: scrim._id,
       userId: playerEntered?._user?._id,
@@ -146,6 +159,7 @@ export default function ScrimTeamList({
   const kickPlayerFromGame = async (playerToKick) => {
     // if person kicking isn't an admin, return.
     if (!isCurrentUserAdmin) return;
+    toggleDisableButtons();
 
     const updatedScrim = await removePlayerFromScrim({
       scrimId: scrim._id,
@@ -308,30 +322,36 @@ export default function ScrimTeamList({
                     ? // don't let user leave if game has already ended
                       !gameEnded && (
                         <Tooltip title="Leave">
-                          <IconButton
-                            onMouseDown={(e) => e.preventDefault()}
-                            className={classes.iconButton}
-                            onClick={() => leaveGame(teamName)}>
-                            <ExitIcon />
-                          </IconButton>
+                          <span>
+                            <IconButton
+                              disabled={buttonsDisabled}
+                              onMouseDown={(e) => e.preventDefault()}
+                              className={classes.iconButton}
+                              onClick={() => leaveGame(teamName)}>
+                              <ExitIcon />
+                            </IconButton>
+                          </span>
                         </Tooltip>
                       )
                     : // don't let admins kick if game has ended.
                       !gameEnded && (
                         <AdminArea>
                           <Tooltip title={`Kick ${userInfo?.name}`}>
-                            <IconButton
-                              onMouseDown={(e) => e.preventDefault()}
-                              className={classes.iconButton}
-                              onClick={() => {
-                                let yes = window.confirm(
-                                  `Are you sure you want to kick ${userInfo?.name}?`
-                                );
-                                if (!yes) return;
-                                kickPlayerFromGame(playerAssigned, teamName);
-                              }}>
-                              <KickIcon />
-                            </IconButton>
+                            <span>
+                              <IconButton
+                                disabled={buttonsDisabled}
+                                onMouseDown={(e) => e.preventDefault()}
+                                className={classes.iconButton}
+                                onClick={() => {
+                                  let yes = window.confirm(
+                                    `Are you sure you want to kick ${userInfo?.name}?`
+                                  );
+                                  if (!yes) return;
+                                  kickPlayerFromGame(playerAssigned, teamName);
+                                }}>
+                                <KickIcon />
+                              </IconButton>
+                            </span>
                           </Tooltip>
                         </AdminArea>
                       )}
@@ -353,23 +373,31 @@ export default function ScrimTeamList({
                   <ListItemText primary={teamRole} />
                   {!playerEntered ? (
                     <Tooltip title={`Join: ${teamTitleName} as ${teamRole}`}>
-                      <IconButton
-                        onMouseDown={(e) => e.preventDefault()}
-                        onClick={() => joinGame(teamName, teamRole)}
-                        className={classes.iconButton}>
-                        <JoinIcon />
-                      </IconButton>
+                      <span>
+                        <IconButton
+                          disabled={buttonsDisabled}
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => joinGame(teamName, teamRole)}
+                          className={classes.iconButton}>
+                          <JoinIcon />
+                        </IconButton>
+                      </span>
                     </Tooltip>
                   ) : (
                     <>
                       <Tooltip
                         title={`Move to: ${teamTitleName} as ${teamRole}`}>
-                        <IconButton
-                          onMouseDown={(e) => e.preventDefault()}
-                          className={classes.iconButton}
-                          onClick={() => handleMovePlayer(teamName, teamRole)}>
-                          <SwapIcon />
-                        </IconButton>
+                        <span>
+                          <IconButton
+                            disabled={buttonsDisabled}
+                            onMouseDown={(e) => e.preventDefault()}
+                            className={classes.iconButton}
+                            onClick={() =>
+                              handleMovePlayer(teamName, teamRole)
+                            }>
+                            <SwapIcon />
+                          </IconButton>
+                        </span>
                       </Tooltip>
                     </>
                   )}

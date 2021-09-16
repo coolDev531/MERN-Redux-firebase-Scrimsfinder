@@ -41,6 +41,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
   const [casterEntered, setCasterEntered] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
   const [imageUploaded, setImageUploaded] = useState(false);
+  const [buttonsDisabled, setButtonsDisabled] = useState(false); // for when players spam joining or leaving.
 
   // if the scrim has a winning team, it means it has ended.
   const gameEnded = useMemo(() => scrim.teamWon, [scrim.teamWon]);
@@ -194,6 +195,8 @@ export default function ScrimSection({ scrim, isInDetail }) {
             playerEntered={playerEntered}
             casterEntered={casterEntered}
             gameStarted={gameStarted === scrim._id}
+            buttonsDisabled={buttonsDisabled}
+            setButtonsDisabled={setButtonsDisabled}
           />
 
           {/* the middle box that contains the countdown timer and other details. */}
@@ -219,6 +222,8 @@ export default function ScrimSection({ scrim, isInDetail }) {
             playerEntered={playerEntered}
             casterEntered={casterEntered}
             gameStarted={gameStarted === scrim._id}
+            buttonsDisabled={buttonsDisabled}
+            setButtonsDisabled={setButtonsDisabled}
           />
         </div>
       </div>
