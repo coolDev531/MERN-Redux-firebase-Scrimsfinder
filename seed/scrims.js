@@ -12,7 +12,7 @@ const toIsoString = require('../utils/toIsoString');
 const main = async () => {
   let users = await User.find();
 
-  if (users.length < 0) {
+  if (users.length <= 0) {
     return console.error(
       'Error: no users found, please seed or create users first.'
     );
