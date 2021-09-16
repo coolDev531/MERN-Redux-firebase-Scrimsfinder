@@ -37,7 +37,7 @@ const sample = (array) => array[Math.floor(Math.random() * array.length)];
 const RANDOM_HOST_CODE = '_$random';
 
 export default function ScrimEdit() {
-  const { currentUser } = useAuth();
+  const { currentUser, isCurrentUserAdmin } = useAuth();
   const { fetchScrims } = useScrims();
   const { setCurrentAlert } = useAlerts();
 
@@ -273,7 +273,7 @@ export default function ScrimEdit() {
   }, [dateData]);
 
   //  if user doesn't have admin key, push to '/'
-  if (process.env.REACT_APP_ADMIN_KEY !== currentUser?.adminKey) {
+  if (!isCurrentUserAdmin) {
     return <Redirect to="/" />;
   }
 

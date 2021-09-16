@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const db = require('../db/connection');
+
 // models
 const Scrim = require('../models/scrim');
 const User = require('../models/user');
@@ -13,13 +13,12 @@ const {
 } = require('../utils/scrimUtils');
 const capitalizeWord = require('../utils/capitalizeWord');
 const AWS = require('aws-sdk');
-
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+const KEYS = require('../config/keys');
 
 let s3bucket = new AWS.S3({
   Bucket: 'lol-scrimsfinder-bucket',
-  accessKeyId: process.env.REACT_APP_S3_ACCESS_KEY_ID,
-  secretAccessKey: process.env.REACT_APP_S3_SECRET_ACCESS_KEY,
+  accessKeyId: KEYS.S3_ACCESS_KEY_ID,
+  secretAccessKey: KEYS.S3_SECRET_ACCESS_KEY,
 });
 
 /**

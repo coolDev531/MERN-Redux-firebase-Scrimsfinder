@@ -9,7 +9,7 @@ import { Box, Button, Grid, makeStyles, Typography } from '@material-ui/core';
 import Tooltip from '../shared/Tooltip';
 
 //icons
-import InfoIcon from '@material-ui/icons/Help';
+import InfoIcon from '@material-ui/icons/Info';
 
 // utils
 import pluralize from 'pluralize';
@@ -37,7 +37,7 @@ export default function ScrimSectionMiddleAreaBox({
   playerEntered,
   casterEntered,
 }) {
-  const { currentUser } = useAuth();
+  const { currentUser, isCurrentUserAdmin } = useAuth();
   const classes = useStyles({ gameStarted, imageUploaded });
   const { fetchScrims } = useScrims();
 
@@ -71,9 +71,7 @@ export default function ScrimSectionMiddleAreaBox({
               {!gameEnded && (
                 <>
                   {/* show lobby name and pswd only to players in lobby or admins */}
-                  {playerEntered ||
-                  casterEntered ||
-                  process.env.REACT_APP_ADMIN_KEY === currentUser?.adminKey ? (
+                  {playerEntered || casterEntered || isCurrentUserAdmin ? (
                     <>
                       <Grid item container direction="row" alignItems="center">
                         <Typography variant="h2">
@@ -106,7 +104,7 @@ export default function ScrimSectionMiddleAreaBox({
               {/* show buttons if is admin or is lobby captain */}
               {/* don't show if game has ended */}
               {(scrim.lobbyHost?._id === currentUser?._id ||
-                currentUser?.adminKey === process.env.REACT_APP_ADMIN_KEY) &&
+                isCurrentUserAdmin) &&
                 !gameEnded && (
                   // WHO WON BUTTONS
                   <Grid
@@ -163,7 +161,7 @@ export default function ScrimSectionMiddleAreaBox({
                   */}
               {/* POST GAME IMAGE SECTION */}
               {(scrim.lobbyHost?._id === currentUser?._id ||
-                currentUser?.adminKey === process.env.REACT_APP_ADMIN_KEY) && (
+                isCurrentUserAdmin) && (
                 <>
                   <Box marginTop={2} />
 

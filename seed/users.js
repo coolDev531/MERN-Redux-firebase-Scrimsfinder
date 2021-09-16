@@ -1,9 +1,11 @@
-const db = require('../db/connection');
-const faker = require('faker');
-const sample = require('../utils/sample');
 const User = require('../models/user');
 
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+// utils
+const faker = require('faker');
+const sample = require('../utils/sample');
+const mongooseConnect = require('../db/connection');
+const makeUuid = require('../utils/makeUuid');
+const { MONGODB_URI } = require('../utils/constants');
 
 const main = async () => {
   const ranks = [
@@ -18,18 +20,6 @@ const main = async () => {
     'Gold 2',
     'Master',
   ];
-
-  // https://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid
-  const makeUuid = () => {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
-      /[xy]/g,
-      function (c) {
-        var r = (Math.random() * 16) | 0,
-          v = c == 'x' ? r : (r & 0x3) | 0x8;
-        return v.toString(16);
-      }
-    );
-  };
 
   let users = new Array(10).fill().map((_user, idx) => {
     let name = faker.name.firstName();
@@ -51,8 +41,17 @@ const main = async () => {
 };
 
 const run = async () => {
+  let connection = mongooseConnect.dbConnect(MONGODB_URI);
+  connection.once('open', () =>
+    console.log('running mongoose to seed files on ' + MONGODB_URI)
+  );
+  connection.on('error', (error) => done(error));
+
   await main();
-  db.close();
+
+  await connection.close();
 };
 
 run();
+
+module.exports = run;

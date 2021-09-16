@@ -1,11 +1,8 @@
 const User = require('../models/user');
-const db = require('../db/connection');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const KEYS = require('../config/keys');
 const mongoose = require('mongoose');
-
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 const getAllUsers = async (req, res) => {
   const region = req.query?.region;
@@ -16,11 +13,12 @@ const getAllUsers = async (req, res) => {
       const users = await User.find({ region }).select([
         'discord',
         'name',
+        'rank',
         'region',
         'createdAt',
         'updatedAt',
       ]);
-      return res.json(users);
+      return res.status(200).json(users);
     } catch (error) {
       return res.status(500).json({ error: error.message });
     }
@@ -30,11 +28,12 @@ const getAllUsers = async (req, res) => {
       const users = await User.find().select([
         'discord',
         'name',
+        'rank',
         'region',
         'createdAt',
         'updatedAt',
       ]);
-      return res.json(users);
+      return res.status(200).json(users);
     } catch (error) {
       return res.status(500).json({ error: error.message });
     }

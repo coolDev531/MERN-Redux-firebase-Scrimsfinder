@@ -112,6 +112,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
     const updatedScrim = await insertCasterInScrim({
       scrimId: scrim._id,
       userId: currentUser?._id,
+      setAlert: setCurrentAlert,
     });
 
     if (updatedScrim) {
@@ -129,6 +130,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
     const updatedScrim = await removeCasterFromScrim({
       scrimId: scrim._id,
       userId: casterEntered?._id,
+      setAlert: setCurrentAlert,
     });
 
     if (updatedScrim) {

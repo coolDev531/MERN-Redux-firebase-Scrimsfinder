@@ -64,6 +64,10 @@ If you have an admin key, you can host a scrim/lobby. Then players just have to 
 - Moved the date select filter and region filter for scrims into the drawer
 - Moved the show/hide current, previous, upcoming scrims toggles into the drawer.
 
+### 9/16/2021
+
+- Added back-end unit tests with Travis CI Pipeline
+
 ---
 
 <br />

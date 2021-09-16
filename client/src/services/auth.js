@@ -76,6 +76,7 @@ export const verifyUser = async ({ uid, email }) => {
       });
       return resp.data;
     } catch (error) {
+      localStorage.removeItem('jwtToken');
       // these lines are to handle the case when heroku is hibernating and the home page is loading because the content hasn't loaded but we don't have a user to associate it with.
       // if the user isn't verified and heroku is hibernating.
       devLog(
