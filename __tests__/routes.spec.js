@@ -122,21 +122,6 @@ describe('GET /', () => {
   });
 });
 
-describe('/api/users', () => {
-  it('should show all users', async (done) => {
-    const response = await request(app)
-      .get('/api/users')
-      .set(headers)
-      .expect(200);
-
-    user = response.body[0];
-    expect(response.body[0]).toHaveProperty('_id');
-    expect(response.body[0]).not.toHaveProperty('randomProperty');
-
-    done();
-  });
-});
-
 // get all scrims
 describe('/api/scrims', () => {
   it('should show all scrims', async (done) => {
