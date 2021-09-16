@@ -107,43 +107,64 @@ export const movePlayerInScrim = async ({
   }
 };
 
-export const insertCasterInScrim = async ({ scrimId, userId }) => {
+export const insertCasterInScrim = async ({ scrimId, userId, setAlert }) => {
   try {
     const response = await api.patch(
       `/scrims/${scrimId}/insert-caster/${userId}`
     );
     return response.data;
   } catch (error) {
-    const errorMsg = error.response.data.error;
-    alert(errorMsg);
+    const errorMsg =
+      error.response.data?.error ?? error?.message ?? JSON.stringify(error);
+
+    if (typeof setAlert === 'function') {
+      return setAlert({ type: 'Error', message: errorMsg });
+    }
+
+    return alert(errorMsg);
   }
 };
 
-export const removeCasterFromScrim = async ({ scrimId, userId }) => {
+export const removeCasterFromScrim = async ({ scrimId, userId, setAlert }) => {
   try {
     const response = await api.patch(
       `/scrims/${scrimId}/remove-caster/${userId}`
     );
     return response.data;
   } catch (error) {
-    const errorMsg = error.response.data.error;
-    alert(errorMsg);
+    const errorMsg =
+      error.response.data?.error ?? error?.message ?? JSON.stringify(error);
+
+    if (typeof setAlert === 'function') {
+      return setAlert({ type: 'Error', message: errorMsg });
+    }
+
+    return alert(errorMsg);
   }
 };
 
-export const addImageToScrim = async (id, data) => {
+export const addImageToScrim = async (id, data, setAlert) => {
   try {
-    const response = await api.put(`/scrims/${id}/add-image`, data);
+    const response = await api.patch(`/scrims/${id}/add-image`, data);
     return response.data;
   } catch (error) {
-    const errorMsg = error.response.data.error;
-    alert(errorMsg);
+    const errorMsg =
+      error.response.data?.error ?? error?.message ?? JSON.stringify(error);
+
+    if (typeof setAlert === 'function') {
+      return setAlert({
+        type: 'Error',
+        message: errorMsg,
+      });
+    }
+
+    return alert(errorMsg);
   }
 };
 
 export const removeImageFromScrim = async (id) => {
   try {
-    const response = await api.put(`/scrims/${id}/remove-image`);
+    const response = await api.patch(`/scrims/${id}/remove-image`);
     return response.data;
   } catch (error) {
     console.error(error);

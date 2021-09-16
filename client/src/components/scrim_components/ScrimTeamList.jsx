@@ -39,7 +39,7 @@ import SwapIcon from '@material-ui/icons/SwapHoriz';
 import JoinIcon from '@material-ui/icons/MeetingRoom';
 import ExitIcon from '@material-ui/icons/NoMeetingRoom';
 import KickIcon from '@material-ui/icons/HighlightOff';
-import InfoIcon from '@material-ui/icons/Help';
+import InfoIcon from '@material-ui/icons/Info';
 
 const getRankImage = (user) => {
   // replace number with empty string: Diamond 1 => Diamond
@@ -55,7 +55,7 @@ export default function ScrimTeamList({
   gameStarted,
 }) {
   const { fetchScrims } = useScrims();
-  const { currentUser } = useAuth();
+  const { currentUser, isCurrentUserAdmin } = useAuth();
   const { setCurrentAlert } = useAlerts();
 
   const classes = useScrimSectionStyles({ scrim });
@@ -145,7 +145,7 @@ export default function ScrimTeamList({
 
   const kickPlayerFromGame = async (playerToKick) => {
     // if person kicking isn't an admin, return.
-    if (currentUser?.adminKey !== process.env.REACT_APP_ADMIN_KEY) return;
+    if (!isCurrentUserAdmin) return;
 
     const updatedScrim = await removePlayerFromScrim({
       scrimId: scrim._id,
@@ -292,7 +292,7 @@ export default function ScrimTeamList({
                     }
                   />
 
-                  {isLobbyHost && (
+                  {isLobbyHost && gameStarted && (
                     <Tooltip
                       title={`This player is the lobby captain. \n 
                       It's expected of the lobby captain to create the custom lobby and select who won after the game,\n

@@ -1,0 +1,6 @@
+ "scripts": {
+    "test": "jest __tests__ --detectOpenHandles --forceExit --testTimeout=10000 ",
+    "dev": "nodemon index.js",
+    "start": "node index.js",
+    "coverage": "jest --coverage --detectOpenHandles --forceExit && cat ./coverage/lcov.info | coveralls"
+  },

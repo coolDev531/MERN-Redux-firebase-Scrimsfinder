@@ -1,4 +1,3 @@
-const db = require('../db/connection');
 const KEYS = require('../config/keys');
 // jwt
 const bcrypt = require('bcryptjs');
@@ -24,8 +23,6 @@ const removeSpacesBeforeHashTag = (str) => {
       return el2 + '';
     });
 };
-
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 // get google uid and email by using google auth firebase, then give rest of user data hosted in database.
 // same as verify user but with errors.

@@ -2,6 +2,7 @@ import {
   useState,
   createContext,
   useEffect,
+  useMemo,
   useContext,
   useCallback,
 } from 'react';
@@ -22,6 +23,12 @@ function CurrentUserProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const history = useHistory();
+
+  let isCurrentUserAdmin = useMemo(
+    () => currentUser?.adminKey === process.env.REACT_APP_ADMIN_KEY,
+
+    [currentUser?.adminKey]
+  );
 
   const logOutUser = useCallback(async () => {
     devLog('logging out...');
@@ -102,6 +109,7 @@ function CurrentUserProvider({ children }) {
     logOutUser,
     logInUser,
     loading,
+    isCurrentUserAdmin,
   };
 
   return (

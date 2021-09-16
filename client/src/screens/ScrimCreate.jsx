@@ -30,7 +30,7 @@ import devLog from './../utils/devLog';
 
 export default function ScrimCreate() {
   const { fetchScrims } = useScrims();
-  const { currentUser } = useAuth();
+  const { currentUser, isCurrentUserAdmin } = useAuth();
   const { setCurrentAlert } = useAlerts();
 
   const [scrimData, setScrimData] = useState({
@@ -121,7 +121,7 @@ export default function ScrimCreate() {
     }
   };
 
-  if (process.env.REACT_APP_ADMIN_KEY !== currentUser?.adminKey) {
+  if (!isCurrentUserAdmin) {
     return <Redirect to="/" />;
   }
 
