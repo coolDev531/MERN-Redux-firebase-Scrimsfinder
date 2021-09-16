@@ -50,7 +50,15 @@ export const insertPlayerInScrim = async ({
     );
     return response.data;
   } catch (error) {
-    const errorMsg = error.response.data.error;
+    const errorMsg =
+      error?.response?.data?.error ?? error?.message ?? JSON.stringify(error);
+
+    if (
+      errorMsg ===
+      'Player already exists in game. Did you mean to move the player? use the /move-player endpoint instead.'
+    ) {
+      return;
+    }
 
     if (typeof setAlert === 'function') {
       return setAlert({ type: 'Error', message: errorMsg });
