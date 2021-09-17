@@ -321,12 +321,11 @@ export default function ScrimTeamList({
                   {isCurrentUser
                     ? // don't let user leave if game has already ended
                       !gameEnded && (
-                        <Tooltip title="Leave">
+                        <Tooltip title="Leave" className={classes.iconButton}>
                           <span>
                             <IconButton
                               disabled={buttonsDisabled}
                               onMouseDown={(e) => e.preventDefault()}
-                              className={classes.iconButton}
                               onClick={() => leaveGame(teamName)}>
                               <ExitIcon />
                             </IconButton>
@@ -336,12 +335,13 @@ export default function ScrimTeamList({
                     : // don't let admins kick if game has ended.
                       !gameEnded && (
                         <AdminArea>
-                          <Tooltip title={`Kick ${userInfo?.name}`}>
+                          <Tooltip
+                            title={`Kick ${userInfo?.name}`}
+                            className={classes.iconButton}>
                             <span>
                               <IconButton
                                 disabled={buttonsDisabled}
                                 onMouseDown={(e) => e.preventDefault()}
-                                className={classes.iconButton}
                                 onClick={() => {
                                   let yes = window.confirm(
                                     `Are you sure you want to kick ${userInfo?.name}?`
@@ -372,13 +372,14 @@ export default function ScrimTeamList({
                   </ListItemAvatar>
                   <ListItemText primary={teamRole} />
                   {!playerEntered ? (
-                    <Tooltip title={`Join: ${teamTitleName} as ${teamRole}`}>
+                    <Tooltip
+                      title={`Join: ${teamTitleName} as ${teamRole}`}
+                      className={classes.iconButton}>
                       <span>
                         <IconButton
                           disabled={buttonsDisabled}
                           onMouseDown={(e) => e.preventDefault()}
-                          onClick={() => joinGame(teamName, teamRole)}
-                          className={classes.iconButton}>
+                          onClick={() => joinGame(teamName, teamRole)}>
                           <JoinIcon />
                         </IconButton>
                       </span>
@@ -386,12 +387,12 @@ export default function ScrimTeamList({
                   ) : (
                     <>
                       <Tooltip
-                        title={`Move to: ${teamTitleName} as ${teamRole}`}>
+                        title={`Move to: ${teamTitleName} as ${teamRole}`}
+                        className={classes.iconButton}>
                         <span>
                           <IconButton
                             disabled={buttonsDisabled}
                             onMouseDown={(e) => e.preventDefault()}
-                            className={classes.iconButton}
                             onClick={() =>
                               handleMovePlayer(teamName, teamRole)
                             }>
