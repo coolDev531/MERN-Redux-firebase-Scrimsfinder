@@ -15,9 +15,7 @@ export const getDateAndTimeSeparated = (dt) => {
 
   let dateResult = new Date(date).setMinutes(0, 0, 0); // minutesValue, secondsValue, msValue
 
-  dateResult = new Date(
-    new Date(date).getTime() + new Date(date).getTimezoneOffset() * 60 * 1000
-  );
+  dateResult = new Date(dateResult);
 
   return {
     date: dateResult,

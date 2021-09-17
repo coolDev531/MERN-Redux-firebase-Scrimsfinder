@@ -128,6 +128,7 @@ export default function ScrimEdit() {
       date.setMinutes(0, 0, 0);
 
       date = new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
+
       setDateData((prevState) => ({
         ...prevState,
         gameStartDate: date,
@@ -259,6 +260,10 @@ export default function ScrimEdit() {
     let gameStartTime = new Date(gameStartDate) ?? new Date();
     gameStartTime.setHours(hours, minutes);
 
+    gameStartTime = new Date(
+      gameStartTime.getTime() + gameStartTime.getTimezoneOffset()
+    );
+
     setScrimData((prevState) => ({
       ...prevState,
       gameStartTime: gameStartTime.toISOString(),
@@ -322,7 +327,7 @@ export default function ScrimEdit() {
                           type="date"
                           name="gameStartDate"
                           value={moment(
-                            new Date(scrimData.gameStartTime).toISOString()
+                            new Date(dateData.gameStartDate).toISOString()
                           ).format('yyyy-MM-DD')}
                         />
                       </Grid>
