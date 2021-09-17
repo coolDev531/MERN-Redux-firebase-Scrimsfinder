@@ -13,12 +13,9 @@ const checkIfScrimIsToday = (scrim) => {
 
 const checkIfScrimIsInACertainDate = (scrim, date) => {
   let certainDate = new Date(date).setHours(0, 0, 0, 0);
-  certainDateIso = toIsoString(certainDate);
-
   let scrimGameDay = new Date(scrim.gameStartTime).setHours(0, 0, 0, 0);
-  let scrimIso = toIsoString(scrimGameDay);
 
-  return certainDateIso === scrimIso;
+  return certainDate === scrimGameDay;
 };
 
 module.exports = {
