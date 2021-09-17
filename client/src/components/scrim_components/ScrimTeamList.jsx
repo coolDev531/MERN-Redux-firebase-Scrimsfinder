@@ -233,12 +233,15 @@ export default function ScrimTeamList({
 
                   <ListItemText
                     primary={
-                      <Grid container alignItems="center">
+                      <Grid
+                        container
+                        alignItems="center"
+                        flexWrap="wrap-reverse">
                         <Tooltip title={`visit ${userInfo?.name}'s op.gg`}>
                           <a
                             className="link"
                             href={`https://${userInfo?.region}.op.gg/summoner/userName=${userInfo?.name}`}
-                            target="_blank"      
+                            target="_blank"
                             rel="noreferrer">
                             {isSmScreen
                               ? userInfo?.name
