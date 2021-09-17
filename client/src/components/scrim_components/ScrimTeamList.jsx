@@ -238,10 +238,7 @@ export default function ScrimTeamList({
                           <a
                             className="link"
                             href={`https://${userInfo?.region}.op.gg/summoner/userName=${userInfo?.name}`}
-                            target="_blank"
-                            style={{
-                              fontSize: isSmScreen ? 'inherit' : '0.875rem',
-                            }}
+                            target="_blank"      
                             rel="noreferrer">
                             {isSmScreen
                               ? userInfo?.name
