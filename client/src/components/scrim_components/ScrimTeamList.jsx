@@ -233,10 +233,7 @@ export default function ScrimTeamList({
 
                   <ListItemText
                     primary={
-                      <Grid
-                        container
-                        alignItems="center"
-                        flexWrap="wrap-reverse">
+                      <Grid container alignItems="center" wrap="wrap-reverse">
                         <Tooltip title={`visit ${userInfo?.name}'s op.gg`}>
                           <a
                             className="link"
