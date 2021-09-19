@@ -118,7 +118,7 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
       <Fragment>
         <Grid container direction="column">
           <Grid item component="section">
-            <Typography gutterBottom variant="body2" className="text-black">
+            <Typography gutterBottom variant="body2">
               Loading...
             </Typography>
             <LinearProgress className="linear-progress" />
