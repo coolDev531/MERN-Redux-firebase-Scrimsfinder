@@ -16,9 +16,28 @@ import { useAlerts } from '../../context/alertsContext';
 
 // icons
 import UploadIcon from '@mui/icons-material/CloudUpload';
+import DeleteIcon from '@mui/icons-material/DeleteForever';
 
 // constants
 const MAX_FILE_SIZE_MIB = 0.953674; // 1 megabyte (in Memibyte format)
+
+/**
+ * @method changeFileName
+ * @param {File} file the file that is going to have it's name changes
+ * @param {String} scrimId {scrim._id}
+ */
+
+const changeFileName = async (file, scrimId) => {
+  // does this have to be async?
+  let fileExtension = file.name.substring(file.name.lastIndexOf('.')); // .jpg, .png, etc...
+  let newFileName = `${scrimId}-${Date.now()}${fileExtension}`; // make a new name: scrim._id, current time, and extension
+
+  // change name of file to something more traceable (I don't want users random names).
+  return Object.defineProperty(file, 'name', {
+    writable: true,
+    value: newFileName, // file extension isn't necessary with this approach.
+  });
+};
 
 // can also delete image here... maybe needs renaming
 export default function UploadPostGameImage({ scrim, isUploaded }) {
@@ -36,7 +55,7 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
     secretAccessKey: process.env.REACT_APP_S3_SECRET_ACCESS_KEY,
   };
 
-  const deleteImage = async () => {
+  const handleDeleteImage = async () => {
     try {
       let yes = window.confirm('Are you sure you want to delete this image?');
 
@@ -61,15 +80,6 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
   const handleUpload = async (e) => {
     if (e.target.files.length === 0) return;
     let file = e.target.files[0];
-
-    let fileExtension = file.name.substring(file.name.lastIndexOf('.')); // .jpg, .png, etc...
-    let newFileName = `${scrim._id}-${Date.now()}${fileExtension}`; // make a new name: scrim._id, current time, and extension
-
-    // change name of file to something more traceable (I don't want user's random names).
-    Object.defineProperty(file, 'name', {
-      writable: true,
-      value: newFileName, // file extension isn't necessary with this approach.
-    });
 
     const fileSize = file.size / 1024 / 1024; // in MiB
 
@@ -102,6 +112,9 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
 
     try {
       setButtonDisabled(true);
+
+      // does this have to be a promise?
+      await changeFileName(file, scrim._id); // change the file name to something more traceable.
 
       // upload the image to S3
       const bucketData = await S3FileUpload.uploadFile(file, config);
@@ -187,7 +200,8 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
               disabled={buttonDisabled}
               variant="contained"
               color="secondary"
-              onClick={deleteImage}>
+              startIcon={<DeleteIcon />}
+              onClick={handleDeleteImage}>
               Delete Image
             </Button>
           </Tooltip>
