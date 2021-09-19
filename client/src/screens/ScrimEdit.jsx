@@ -308,7 +308,6 @@ export default function ScrimEdit() {
                   container
                   justifyContent="center"
                   alignItems="center"
-                  xs={4}
                   spacing={2}>
                   <Grid item>
                     <FormHelperText className="text-white">
@@ -350,8 +349,7 @@ export default function ScrimEdit() {
                   direction="column"
                   alignItems="center"
                   justifyContent="center"
-                  spacing={2}
-                  xs={4}>
+                  spacing={2}>
                   <Grid item>
                     <FormHelperText className="text-white">
                       Scrim Title
