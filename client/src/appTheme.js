@@ -112,6 +112,7 @@ export const appTheme = createTheme({
       },
     },
 
+    // step component in signup page
     MuiStepper: {
       styleOverrides: {
         root: {
@@ -119,6 +120,20 @@ export const appTheme = createTheme({
           boxShadow: '1px 0px 7px 1px #fff',
           padding: '20px',
           borderRadius: '4px',
+        },
+      },
+    },
+
+    // Navbar styles
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          top: '0',
+          zIndex: '5',
+          borderBottom: '1px solid white',
+          background: '#101820 !important', // fallback for no rgba support
+          backgroundColor: `${COLORS.DK_BLUE_TRANSPARENT} !important`,
+          backdropFilter: 'blur(8px)',
         },
       },
     },

@@ -42,14 +42,7 @@ import GoBackIcon from '@mui/icons-material/ArrowBack';
 const useStyles = makeStyles((theme) => ({
   offset: theme.mixins.offset,
   toolbarDistance: theme.mixins.toolbar,
-  siteHeader: {
-    top: '0',
-    zIndex: '5',
-    borderBottom: '1px solid white',
-    background: '#101820 !important', // fallback
-    backgroundColor: 'rgba(18,25,35,.85) !important',
-    backdropFilter: 'blur(8px)',
-  },
+
   toolbar: {
     paddingTop: '30px',
     paddingBottom: '20px',
@@ -106,7 +99,7 @@ export default function Navbar({
   return (
     <>
       <HideOnScroll>
-        <AppBar className={classes.siteHeader} position="sticky">
+        <AppBar position="sticky">
           <Toolbar className={classes.toolbar}>
             <InnerColumn>
               <Grid
