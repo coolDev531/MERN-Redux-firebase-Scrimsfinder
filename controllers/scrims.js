@@ -428,9 +428,6 @@ const removePlayerFromScrim = async (req, res) => {
   const scrim = await Scrim.findById(scrimId);
   const _user = await User.findById(userId); // user leaving or being kicked
 
-  const scrim = await Scrim.findById(scrimId);
-  const user = await User.findById(userId);
-
   if (!scrim) {
     return res.status(500).send('Scrim not found');
   }
