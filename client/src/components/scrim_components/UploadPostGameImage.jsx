@@ -4,7 +4,7 @@ import { useAuth } from './../../context/currentUser';
 
 // components
 import AdminArea from '../shared/AdminArea';
-import Tooltip from '@mui/material/Tooltip';
+import Tooltip from '../shared/Tooltip';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -152,14 +152,12 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
       justifyContent="space-between"
       xs={12}>
       <Grid item xs={8}>
-        <Typography variant="h3" className="text-black">
-          Upload post-game lobby image:
-        </Typography>
+        <Typography variant="h3">Upload post-game lobby image:</Typography>
       </Grid>
       <Grid item xs={4}>
         <Tooltip
           title="Validate winner by uploading end of game results"
-          position="top">
+          placement="top">
           <Button
             variant="contained"
             color="primary"

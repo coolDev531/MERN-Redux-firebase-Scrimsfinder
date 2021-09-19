@@ -20,14 +20,15 @@ import InfoIcon from '@mui/icons-material/Info';
 import { makeStyles } from '@mui/styles';
 import pluralize from 'pluralize';
 import { updateScrim } from '../../services/scrims';
+import { COLORS } from './../../appTheme';
 
 const useStyles = makeStyles((theme) => ({
   infoBoxRoot: {
-    background: ({ imageUploaded, gameStarted }) =>
-      `rgba(255, 255, 255,${
-        imageUploaded ? '0.8' : gameStarted ? '0.7' : '0.5'
-      })`,
-
+    // background: ({ imageUploaded, gameStarted }) =>
+    //   `rgba(255, 255, 255,${
+    //     imageUploaded ? '0.8' : gameStarted ? '0.7' : '0.5'
+    //   })`,
+    backgroundColor: COLORS.DK_BLUE_TRANSPARENT,
     padding: '10px',
     borderRadius: '4px',
   },
@@ -60,9 +61,7 @@ export default function ScrimSectionMiddleAreaBox({
       justifyContent="center">
       <div className={classes.infoBoxRoot}>
         {!gameStarted && (
-          <Typography variant="h2" className="text-black">
-            Game starting in...
-          </Typography>
+          <Typography variant="h2">Game starting in...</Typography>
         )}
 
         <CountdownTimer
@@ -88,15 +87,15 @@ export default function ScrimSectionMiddleAreaBox({
                           title="It's expected of the lobby captain to create the custom lobby and select who won after the game, 
                         AND to upload the post-game image to verify the winner">
                           <InfoIcon
-                            style={{ color: '#000', cursor: 'help' }}
+                            style={{ cursor: 'help' }}
                             fontSize="large"
                           />
                         </Tooltip>
                       </Grid>
-                      <Typography variant="h3" className="text-black">
+                      <Typography variant="h3">
                         please make the lobby name: <br />"{scrim.lobbyName}"
                       </Typography>
-                      <Typography variant="h3" className="text-black">
+                      <Typography variant="h3">
                         with the password: {scrim.lobbyPassword}
                       </Typography>
                     </>
@@ -113,52 +112,53 @@ export default function ScrimSectionMiddleAreaBox({
                 isCurrentUserAdmin) &&
                 !gameEnded && (
                   // WHO WON BUTTONS
-                  <Grid
-                    item
-                    container
-                    alignItems="center"
-                    direction="row"
-                    spacing={2}>
+                  <Grid item container direction="column">
                     <Grid item>
-                      <Typography variant="h3" className="text-black">
+                      <Typography
+                        variant="h3"
+                        style={{ textDecoration: 'underline' }}>
                         Who won?
                       </Typography>
                     </Grid>
 
-                    {['Team 1 (Blue Side)', 'Team 2 (Red Side)'].map(
-                      (teamTitle, idx) => (
-                        <Grid item key={idx}>
-                          <Button
-                            style={{
-                              backgroundColor: idx === 0 ? 'blue' : 'red',
-                              color: '#fff',
-                            }}
-                            variant="contained"
-                            onClick={async () => {
-                              // set team won for scrim
-                              let yes =
-                                window.confirm(`Are you sure ${teamTitle} won this game? \n 
+                    <Grid item container direction="row" spacing={2}>
+                      {['Team 1 (Blue Side)', 'Team 2 (Red Side)'].map(
+                        (teamTitle, idx) => (
+                          <Grid item key={idx}>
+                            <Tooltip title={`Select ${teamTitle} as winner`}>
+                              <Button
+                                style={{
+                                  backgroundColor: idx === 0 ? 'blue' : 'red',
+                                  color: '#fff',
+                                }}
+                                variant="contained"
+                                onClick={async () => {
+                                  // set team won for scrim
+                                  let yes =
+                                    window.confirm(`Are you sure ${teamTitle} won this game? \n 
                                   You cannot reverse this.
                                   `);
 
-                              if (!yes) return;
+                                  if (!yes) return;
 
-                              const dataSending = {
-                                teamWon: teamTitle,
-                              };
-                              const updatedScrim = await updateScrim(
-                                scrim._id,
-                                dataSending
-                              );
-                              if (updatedScrim) {
-                                fetchScrims();
-                              }
-                            }}>
-                            {teamTitle}
-                          </Button>
-                        </Grid>
-                      )
-                    )}
+                                  const dataSending = {
+                                    teamWon: teamTitle,
+                                  };
+                                  const updatedScrim = await updateScrim(
+                                    scrim._id,
+                                    dataSending
+                                  );
+                                  if (updatedScrim) {
+                                    fetchScrims();
+                                  }
+                                }}>
+                                {teamTitle}
+                              </Button>
+                            </Tooltip>
+                          </Grid>
+                        )
+                      )}
+                    </Grid>
                   </Grid>
                 )}
 
@@ -187,7 +187,7 @@ export default function ScrimSectionMiddleAreaBox({
                   alignItems="center"
                   spacing={2}>
                   <Grid item>
-                    <Typography variant="h3" className="text-black">
+                    <Typography variant="h3">
                       Post-game image uploaded!
                     </Typography>
                   </Grid>
@@ -211,7 +211,7 @@ export default function ScrimSectionMiddleAreaBox({
                 Not enough players:&nbsp;
                 {`${teamOne.length + teamTwo.length}/10`}
               </Typography>
-              <Typography variant="h5" component="p">
+              <Typography variant="h5" component="p" className="text-white">
                 Please get
                 {/* if teamOne still needs players show this else don't show */}
                 {teamOneDifference > 0 ? (
