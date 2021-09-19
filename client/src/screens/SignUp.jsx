@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, Fragment, useMemo } from 'react';
 import { useAlerts } from '../context/alertsContext';
-import { useAuth } from './../context/currentUser';
+import { useAuth } from '../context/currentUser';
 
 // components
 import { Redirect } from 'react-router-dom';
@@ -17,11 +17,11 @@ import {
   PageSection,
   PageContent,
 } from '../components/shared/PageComponents';
-import IntroForms from '../components/IntroForms';
+import SignUpForms from '../components/SignUpForms';
 
 // utils
 import { auth, provider } from '../firebase';
-import { KEYCODES } from './../utils/keycodes';
+import { KEYCODES } from '../utils/keycodes';
 
 // services
 import { registerUser } from '../services/auth';
@@ -35,8 +35,7 @@ function getSteps() {
 }
 
 // the page where users sign up.
-// can also be named Signup.
-export default function Intro() {
+export default function SignUp() {
   const { currentUser, setCurrentUser } = useAuth();
 
   const [userData, setUserData] = useState({
@@ -213,7 +212,7 @@ export default function Intro() {
   );
 
   if (currentUser) {
-    console.log('redirecting to /');
+    console.log('Already logged in!, redirecting to /');
     return <Redirect to="/" />;
   }
 
@@ -251,7 +250,7 @@ export default function Intro() {
               })}
             </Stepper>
             <form onSubmit={handleSubmit} id="form">
-              <IntroForms
+              <SignUpForms
                 handleChange={handleChange}
                 currentFormIndex={currentFormIndex}
                 userData={userData}

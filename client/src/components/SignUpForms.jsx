@@ -8,7 +8,7 @@ import FormHelperText from '@mui/material/FormHelperText';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 
-export default function IntroForms({
+export default function SignUpForms({
   handleChange,
   currentFormIndex,
   userData,
@@ -20,7 +20,7 @@ export default function IntroForms({
   const theme = useTheme();
   const matchesSm = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const nameForm = (
+  const nameDiscordAndRegionForm = (
     <Grid
       container
       direction={matchesSm ? 'column' : 'row'}
@@ -78,7 +78,7 @@ export default function IntroForms({
     </Grid>
   );
 
-  const divisionForm = (
+  const rankForm = (
     <Grid item container alignItems="center" spacing={4}>
       <Grid item>
         <FormHelperText>Rank Division</FormHelperText>
@@ -129,16 +129,12 @@ export default function IntroForms({
     </Grid>
   );
 
-  const regionForm = (
+  const verificationForm = (
     <Grid item sm={12}>
       <Box>
         <Typography variant="h1">Account details:</Typography>
       </Box>
 
-      {/* window.confirm(`Are you sure you want to create this account? \n Summoner
-      Name: ${userData.name} \n Discord: ${userData.discord} \n Rank: $
-      {userData.rank} \n Region: ${userData.region} \n Email: ${newUser.email}
-      `); */}
       {Object.entries(userData).map(([k, v]) => (
         <Box>
           <Typography variant="h3">
@@ -156,7 +152,7 @@ export default function IntroForms({
     </Grid>
   );
 
-  let forms = [nameForm, divisionForm, regionForm];
+  let forms = [nameDiscordAndRegionForm, rankForm, verificationForm];
 
   return (
     <Grid
