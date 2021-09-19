@@ -310,8 +310,15 @@ const insertPlayerInScrim = async (req, res) => {
     }
 
     const scrim = await Scrim.findById(scrimId);
-
     const user = await User.findById(userId);
+
+    if (!scrim) {
+      return res.status(500).send('Scrim not found');
+    }
+
+    if (!user) {
+      return res.status(500).send('User not found');
+    }
 
     const playerExists = [...scrim._doc.teamOne, ...scrim._doc.teamTwo].find(
       (player) => String(player._user) === String(user._id)
@@ -405,7 +412,6 @@ const insertPlayerInScrim = async (req, res) => {
 
 const removePlayerFromScrim = async (req, res) => {
   // when player leaves or gets kicked
-  const { playerData } = req.body;
   const { userId, scrimId } = req.params;
 
   let isValidUser = mongoose.Types.ObjectId.isValid(userId);
@@ -421,6 +427,13 @@ const removePlayerFromScrim = async (req, res) => {
 
   const scrim = await Scrim.findById(scrimId);
   const _user = await User.findById(userId); // user leaving or being kicked
+
+  const scrim = await Scrim.findById(scrimId);
+  const user = await User.findById(userId);
+
+  if (!scrim) {
+    return res.status(500).send('Scrim not found');
+  }
 
   if (!_user) {
     return res.status(500).json('user not found!');
@@ -486,6 +499,14 @@ const movePlayerInScrim = async (req, res) => {
 
     const scrim = await Scrim.findById(scrimId);
     const user = await User.findById(userId);
+
+    if (!scrim) {
+      return res.status(500).send('Scrim not found');
+    }
+
+    if (!user) {
+      return res.status(500).send('User not found');
+    }
 
     const teamJoiningName = playerData.team.name;
 
