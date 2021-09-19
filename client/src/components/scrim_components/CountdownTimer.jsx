@@ -59,7 +59,7 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
   );
 
   const gameStatusText = useMemo(() => {
-    if (!teamsFilled) return `NOT ENOUGH PLAYERS.`;
+    if (!teamsFilled) return 'WAITING FOR PLAYERS.';
 
     if (scrim.teamWon) return `${scrim.teamWon} Won!`.toUpperCase();
     return `GAME IN PROGRESS`;
