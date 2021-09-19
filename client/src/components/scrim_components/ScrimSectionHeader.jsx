@@ -57,7 +57,7 @@ export default function ScrimSectionHeader({
             className="link"
             style={{ textDecorationColor: '#000' }}
             to={`/scrims/${scrim._id}`}>
-            <Typography variant="h1">
+            <Typography variant="h1" style={{ fontSize: '1.6rem' }}>
               {/* if scrim has a title show title, else show createdby.name's scrim */}
               {`${scrim.title ?? `${scrim.createdBy.name}'s Scrim`} (${
                 scrim.region
