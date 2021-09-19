@@ -1,26 +1,26 @@
 import { Fragment, useMemo } from 'react';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { useScrims } from './../../context/scrimsContext';
 import { useAuth } from './../../context/currentUser';
 import { useScrimSectionStyles } from '../../styles/ScrimSection.styles';
 import { useAlerts } from '../../context/alertsContext';
 
+// MUI components
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import Divider from '@mui/material/Divider';
+import ListItemText from '@mui/material/ListItemText';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import Avatar from '@mui/material/Avatar';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import ListSubheader from '@mui/material/ListSubheader';
+
 // components
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import Divider from '@material-ui/core/Divider';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Avatar from '@material-ui/core/Avatar';
-import {
-  Grid,
-  IconButton,
-  Typography,
-  useMediaQuery,
-  Box,
-} from '@material-ui/core';
 import Tooltip from '../shared/Tooltip';
 import AdminArea from '../shared/AdminArea';
-import ListSubheader from '@material-ui/core/ListSubheader';
 
 // utils
 import { RANK_IMAGES, ROLE_IMAGES } from '../../utils/imageMaps';
@@ -35,11 +35,11 @@ import {
 } from '../../services/scrims';
 
 // icons
-import SwapIcon from '@material-ui/icons/SwapHoriz';
-import JoinIcon from '@material-ui/icons/MeetingRoom';
-import ExitIcon from '@material-ui/icons/NoMeetingRoom';
-import KickIcon from '@material-ui/icons/HighlightOff';
-import InfoIcon from '@material-ui/icons/Info';
+import SwapIcon from '@mui/icons-material/SwapHoriz';
+import JoinIcon from '@mui/icons-material/MeetingRoom';
+import ExitIcon from '@mui/icons-material/NoMeetingRoom';
+import KickIcon from '@mui/icons-material/HighlightOff';
+import InfoIcon from '@mui/icons-material/Info';
 
 const getRankImage = (user) => {
   // replace number with empty string: Diamond 1 => Diamond
@@ -185,7 +185,7 @@ export default function ScrimTeamList({
         className={classes.teamList}
         subheader={
           <>
-            <ListSubheader component="div" style={{ color: '#fff' }}>
+            <ListSubheader component="div" className={classes.teamListHeader}>
               {teamTitleName}
             </ListSubheader>
             <Divider />
@@ -213,16 +213,15 @@ export default function ScrimTeamList({
                   className={classes.teamListItem}
                   style={{
                     // fallback for non-supporting browsers
-                    background:
-                      isLobbyHost && gameStarted ? '#63d471' : '#424242',
+                    background: isLobbyHost && gameStarted && '#63d471',
 
                     // if game has started, but the game didn't end, and the player is the lobby host, make his background green.
                     // we don't care if the guy is the lobby host if game ended.
                     // eslint-disable-next-line
                     background:
-                      isLobbyHost && gameStarted
-                        ? 'linear-gradient(315deg, #63d471 0%, #233329 74%)'
-                        : '#424242',
+                      isLobbyHost &&
+                      gameStarted &&
+                      'linear-gradient(315deg, #63d471 0%, #233329 74%)',
                   }}>
                   <ListItemAvatar>
                     <Avatar
@@ -239,6 +238,9 @@ export default function ScrimTeamList({
                             className="link"
                             href={`https://${userInfo?.region}.op.gg/summoner/userName=${userInfo?.name}`}
                             target="_blank"
+                            style={{
+                              fontSize: isSmScreen ? 'inherit' : '0.9rem',
+                            }}
                             rel="noreferrer">
                             {isSmScreen
                               ? userInfo?.name

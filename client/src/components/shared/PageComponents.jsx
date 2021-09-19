@@ -1,4 +1,4 @@
-import { styled } from '@material-ui/core';
+import { styled } from '@mui/system';
 
 // theme not being used, indicated with _
 const StyledPageContent = styled('main')(({ theme: _theme }) => ({

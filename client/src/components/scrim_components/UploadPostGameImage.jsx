@@ -4,7 +4,10 @@ import { useAuth } from './../../context/currentUser';
 
 // components
 import AdminArea from '../shared/AdminArea';
-import { Tooltip, Grid, Button, Typography } from '@material-ui/core';
+import Tooltip from '@mui/material/Tooltip';
+import Grid from '@mui/material/Grid';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 
 // utils
 import S3FileUpload from 'react-s3';
@@ -12,7 +15,7 @@ import { addImageToScrim, removeImageFromScrim } from '../../services/scrims';
 import { useAlerts } from '../../context/alertsContext';
 
 // icons
-import UploadIcon from '@material-ui/icons/CloudUpload';
+import UploadIcon from '@mui/icons-material/CloudUpload';
 
 // constants
 const MAX_FILE_SIZE_MIB = 0.953674; // 1 megabyte (in Memibyte format)

@@ -1,5 +1,7 @@
 import { useEffect, useState, useRef, useMemo } from 'react';
-import { Typography } from '@material-ui/core';
+
+// components
+import Typography from '@mui/material/Typography';
 import LoadingGif from '../../assets/images/loading.gif';
 import { PageContent } from './PageComponents';
 

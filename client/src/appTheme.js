@@ -1,20 +1,46 @@
-import createTheme from '@material-ui/core/styles/createTheme';
+import { createTheme } from '@mui/material/styles';
 
 export const COLORS = {
-  DK_BLUE: '#101820',
-  DK_BLUE_TRANSPARENT: 'rgba(0, 0, 0, 0.61)', // dark filter to darken bg image
+  DARK: '#101820',
+  DARK_TRANSPARENT: 'rgba(0, 0, 0, 0.61)', // dark filter to darken bg image
+
+  DK_BLUE: 'rgba(18,25,35,.85)',
+  DK_BLUE_TRANSPARENT: 'rgba(18,25,35,.85)', // dark filter to darken bg image
+
+  LIGHT_BLUE: '#d1dcde',
+  BROWN: '#573625',
+  GREY_DEFAULT: '#303030',
+  GREY_PAPER: '#424242',
 };
 
 export const appTheme = createTheme({
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 960,
+      lg: 1280,
+      xl: 1920,
+    },
+  },
+
   palette: {
-    type: 'dark',
+    mode: 'dark',
 
     primary: {
-      main: '#FBC02D',
-      contrastText: '#000',
+      main: '#d1dcde',
+      contrastText: '#573625',
     },
 
-    // secondary: {},
+    secondary: {
+      main: '#573625',
+      constrastText: '#fff',
+    },
+
+    background: {
+      default: '#303030',
+      paper: '#424242',
+    },
   },
   typography: {
     // Use the system font instead of the default Roboto font.
@@ -35,7 +61,11 @@ export const appTheme = createTheme({
       fontWeight: 'bold',
       marginBlockStart: '0.83em',
       marginBlockEnd: '0.83em',
-      color: 'black',
+      color: '#fff',
+    },
+
+    span: {
+      color: '#fff',
     },
 
     h3: {
@@ -67,11 +97,28 @@ export const appTheme = createTheme({
     },
   },
 
-  overrides: {
-    MuiAppBar: {
-      colorDefault: {
-        backgroundColor: COLORS.DK_TEXT,
-        color: COLORS.PRIMARY,
+  // https://mui.com/customization/theme-components/
+  components: {
+    // Name of the component
+    MuiButton: {
+      styleOverrides: {
+        // Name of the slot
+        root: {
+          // Some CSS
+          fontSize: '1rem',
+          fontWeight: 600,
+        },
+      },
+    },
+
+    MuiStepper: {
+      styleOverrides: {
+        root: {
+          backgroundColor: 'rgba(18,25,35)', // dark filter to darken bg image
+          boxShadow: '1px 0px 7px 1px #fff',
+          padding: '20px',
+          borderRadius: '4px',
+        },
       },
     },
   },

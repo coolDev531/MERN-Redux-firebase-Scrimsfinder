@@ -27,6 +27,7 @@ picture img {
   text-decoration: none;
   transition: all 250ms ease-in-out;
   display: inline-block;
+  text-decoration-color: #fff !important;
 }
 
 .link:hover {

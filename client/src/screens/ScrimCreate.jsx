@@ -1,20 +1,18 @@
 import { useState, useEffect } from 'react';
 import { useScrims } from './../context/scrimsContext';
 import { useAlerts } from './../context/alertsContext';
+import { useAuth } from './../context/currentUser';
 
 // components
 import Navbar from '../components/shared/Navbar/Navbar';
-import {
-  Grid,
-  TextField,
-  Box,
-  MenuItem,
-  FormHelperText,
-  Button,
-} from '@material-ui/core';
+import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import MenuItem from '@mui/material/MenuItem';
+import FormHelperText from '@mui/material/FormHelperText';
+import Button from '@mui/material/Button';
+import Select from '@mui/material/Select';
 import { Redirect } from 'react-router';
-import { useAuth } from './../context/currentUser';
-import { Select } from '@material-ui/core';
 import {
   InnerColumn,
   PageContent,
@@ -151,6 +149,7 @@ export default function ScrimCreate() {
                     </FormHelperText>
                   </Grid>
                   <TextField
+                    variant="standard"
                     onChange={handleChange}
                     required
                     name="title"
@@ -171,6 +170,7 @@ export default function ScrimCreate() {
                       Game Start Date
                     </FormHelperText>
                     <TextField
+                      variant="standard"
                       onChange={handleChange}
                       required
                       type="date"
@@ -187,6 +187,7 @@ export default function ScrimCreate() {
                     </FormHelperText>
 
                     <TextField
+                      variant="standard"
                       onChange={handleChange}
                       required
                       type="time"
@@ -208,6 +209,7 @@ export default function ScrimCreate() {
                   spacing={2}>
                   <Grid item xs={12} sm={2} md={2}>
                     <Select
+                      variant="standard"
                       label="region"
                       name="region"
                       value={scrimData.region}
@@ -228,6 +230,7 @@ export default function ScrimCreate() {
 
                   <Grid item>
                     <Select
+                      variant="standard"
                       name="lobbyHost"
                       onChange={(e) =>
                         setScrimData((prevState) => ({
@@ -240,7 +243,7 @@ export default function ScrimCreate() {
                         <MenuItem value={value} key={key}>
                           {value === currentUser
                             ? 'I will host the lobby'
-                            : 'Choose a random player from the teams to host'}
+                            : 'Random host!'}
                         </MenuItem>
                       ))}
                     </Select>

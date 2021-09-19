@@ -9,12 +9,12 @@ import { useAppStyles } from './styles/App.styles';
 
 // components
 import AppRouter from './navigation/AppRouter';
-import { ThemeProvider } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 import Loading from './components/shared/Loading';
 import Footer from './components/shared/Footer';
-import Snackbar from '@material-ui/core/Snackbar';
-import Alert from '@material-ui/lab/Alert';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 function App() {
   const { loading: verifyingUser } = useAuth();

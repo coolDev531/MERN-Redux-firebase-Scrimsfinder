@@ -1,12 +1,14 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import {
-  makeStyles,
-  Typography,
-  LinearProgress,
-  Grid,
-} from '@material-ui/core';
 
-const useStyles = makeStyles((theme) => ({
+// components
+import Typography from '@mui/material/Typography';
+import LinearProgress from '@mui/material/LinearProgress';
+import Grid from '@mui/material/Grid';
+
+// utils
+import { makeStyles } from '@mui/styles';
+
+const useStyles = makeStyles({
   timer: {
     background: 'white',
     color: '#000',
@@ -29,12 +31,11 @@ const useStyles = makeStyles((theme) => ({
   },
 
   timerText: {
-    fontFamily: ['Montserrat', 'sans-serif'].join(','),
     fontWeight: 600,
     color: 'green',
-    fontSize: '22px',
+    fontSize: '22px !important',
   },
-}));
+});
 
 const Text = ({ children }) => {
   const classes = useStyles();

@@ -1,7 +1,7 @@
 import { useLocation } from 'react-router-dom';
 import Navbar from '../components/shared/Navbar/Navbar';
 import { PageContent } from '../components/shared/PageComponents';
-import Typography from '@material-ui/core/Typography';
+import Typography from '@mui/material/Typography';
 
 export default function NotFound() {
   const { pathname } = useLocation();

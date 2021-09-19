@@ -1,5 +1,9 @@
-import { Grid, styled } from '@material-ui/core';
+// components
+import Grid from '@mui/material/Grid';
 import { InnerColumn } from './PageComponents';
+
+// utils
+import { styled } from '@mui/system';
 
 const StyledFooter = styled('footer')({
   backgroundColor: 'rgba(18,25,35,.65)',

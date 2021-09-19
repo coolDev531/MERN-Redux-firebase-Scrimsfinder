@@ -2,44 +2,45 @@
 import { useEffect, useMemo } from 'react';
 import { useAuth } from '../../../context/currentUser';
 import { useHistory } from 'react-router-dom';
-import { useMediaQuery, useTheme } from '@material-ui/core';
+import { useScrims } from '../../../context/scrimsContext';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import useTheme from '@mui/styles/useTheme';
+
 // components
 import { InnerColumn } from '../PageComponents';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import InputLabel from '@material-ui/core/InputLabel';
-import {
-  Box,
-  FormHelperText,
-  TextField,
-  Grid,
-  FormGroup,
-  FormControlLabel,
-  Checkbox,
-  Drawer,
-  List,
-  ListItem,
-  Divider,
-  ListItemText,
-  ListItemIcon,
-  Hidden,
-  makeStyles,
-} from '@material-ui/core';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import InputLabel from '@mui/material/InputLabel';
+import Box from '@mui/material/Box';
+import FormHelperText from '@mui/material/FormHelperText';
+import TextField from '@mui/material/TextField';
+import Grid from '@mui/material/Grid';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import Drawer from '@mui/material/Drawer';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import Divider from '@mui/material/Divider';
+import ListItemText from '@mui/material/ListItemText';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Hidden from '@mui/material/Hidden';
 import AdminArea from '../AdminArea';
 
 // icons
-import SettingsIcon from '@material-ui/icons/Settings';
-import ExitIcon from '@material-ui/icons/ExitToApp';
-import CreateIcon from '@material-ui/icons/BorderColor';
+import SettingsIcon from '@mui/icons-material/Settings';
+import ExitIcon from '@mui/icons-material/ExitToApp';
+import CreateIcon from '@mui/icons-material/BorderColor';
+
 // utils
 import moment from 'moment';
 import clsx from 'clsx';
 import { KEYCODES } from '../../../utils/keycodes';
-import { useScrims } from '../../../context/scrimsContext';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles({
   drawerRoot: {
-    backgroundColor: 'rgba(18,25,35)',
+    background: 'rgba(18,25,35) !important',
   },
   drawerList: {
     width: 250,
@@ -74,11 +75,11 @@ export default function NavbarDrawer({
   const theme = useTheme();
   const matchesSm = useMediaQuery(theme.breakpoints.down('sm'));
   const matchesXs = useMediaQuery(theme.breakpoints.down('xs'));
-  const matchesMd = useMediaQuery(theme.breakpoints.down('md'));
+  const matchesLg = useMediaQuery(theme.breakpoints.down('lg'));
 
   const drawerAnchor = useMemo(
-    () => (matchesMd ? 'top' : 'right'),
-    [matchesMd]
+    () => (matchesLg ? 'top' : 'right'),
+    [matchesLg]
   );
 
   // this is terrible but I'm doing it this way because it will cause an error that it can't find props of undefined
@@ -205,6 +206,7 @@ export default function NavbarDrawer({
                   {/* date and regions filters */}
                   <Grid item>
                     <TextField
+                      variant="standard"
                       id="date"
                       required
                       label="Scrims Date"
@@ -233,6 +235,7 @@ export default function NavbarDrawer({
                     <InputLabel className="text-white">Region</InputLabel>
 
                     <Select
+                      variant="standard"
                       value={scrimsRegion}
                       className="text-white"
                       onChange={onSelectRegion}>
@@ -271,6 +274,7 @@ export default function NavbarDrawer({
                         <Checkbox
                           // the UI says "show X scrims", so in this case we are reversing the boolean for checked, lol.
                           // doesn't matter functionally.
+
                           checked={!hideCurrentScrims}
                           color="primary"
                           onChange={() =>

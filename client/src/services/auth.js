@@ -40,7 +40,7 @@ export const loginUser = async (googleParams) => {
   }
 };
 
-export const registerUser = async (userData) => {
+export const registerUser = async (userData, setAlert) => {
   try {
     const response = await api.post('/auth/register', userData);
 
@@ -57,7 +57,7 @@ export const registerUser = async (userData) => {
     const errorMsg = error?.response?.data?.error;
 
     if (errorMsg) {
-      alert(errorMsg);
+      setAlert({ type: 'Error', message: errorMsg });
       return;
     }
     throw error;
@@ -82,9 +82,9 @@ export const verifyUser = async ({ uid, email }) => {
       devLog(
         'heroku is hibernating, cannot verify user, pushing to /user-setup'
       );
-      
+
       localStorage.removeItem('jwtToken');
-      
+
       let path = window.location.origin + '/user-setup';
       // and the path isn't user-setup
       if (window.location.origin + '/login' !== path) {

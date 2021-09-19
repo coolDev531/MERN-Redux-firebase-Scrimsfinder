@@ -1,8 +1,12 @@
-import { FormHelperText, useMediaQuery, useTheme } from '@material-ui/core';
-import { Select } from '@material-ui/core';
-import { MenuItem } from '@material-ui/core';
-import { TextField } from '@material-ui/core';
-import { Grid } from '@material-ui/core';
+import useTheme from '@mui/material/styles/useTheme';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import TextField from '@mui/material/TextField';
+import Grid from '@mui/material/Grid';
+import FormHelperText from '@mui/material/FormHelperText';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 
 export default function IntroForms({
   handleChange,
@@ -13,10 +17,17 @@ export default function IntroForms({
   setRankData,
   divisionsWithNumbers,
 }) {
+  const theme = useTheme();
+  const matchesSm = useMediaQuery(theme.breakpoints.down('sm'));
+
   const nameForm = (
-    <>
-      <Grid item sm={4}>
+    <Grid
+      container
+      direction={matchesSm ? 'column' : 'row'}
+      alignItems="center">
+      <Grid item sm={3}>
         <TextField
+          variant="standard"
           type="text"
           name="name"
           value={userData.name}
@@ -30,8 +41,31 @@ export default function IntroForms({
           required
         />
       </Grid>
+
+      <Grid item sm={2} mb={'2%'}>
+        <FormHelperText>Region</FormHelperText>
+
+        <Select
+          variant="standard"
+          name="region"
+          value={userData.region}
+          label="region"
+          onChange={(e) => handleChange(e, setUserData)}
+          required>
+          <MenuItem selected disabled>
+            select region
+          </MenuItem>
+          {['NA', 'EUW', 'EUNE', 'LAN'].map((region, key) => (
+            <MenuItem value={region} key={key}>
+              {region}
+            </MenuItem>
+          ))}
+        </Select>
+      </Grid>
+
       <Grid item sm={4}>
         <TextField
+          variant="standard"
           type="text"
           name="discord"
           value={userData.discord}
@@ -41,17 +75,7 @@ export default function IntroForms({
           required
         />
       </Grid>
-      <Grid item sm={4}>
-        <TextField
-          type="text"
-          name="adminKey"
-          value={userData.adminKey}
-          onChange={(e) => handleChange(e, setUserData)}
-          label="Admin key (not required)"
-          helperText="You'll need an admin key to create scrims/lobbies."
-        />
-      </Grid>
-    </>
+    </Grid>
   );
 
   const divisionForm = (
@@ -59,6 +83,7 @@ export default function IntroForms({
       <Grid item>
         <FormHelperText>Rank Division</FormHelperText>
         <Select
+          variant="standard"
           name="rankDivision"
           required
           value={rankData.rankDivision}
@@ -86,6 +111,7 @@ export default function IntroForms({
         <Grid item>
           <FormHelperText>Rank Number</FormHelperText>
           <Select
+            variant="standard"
             name="rankNumber"
             required={divisionsWithNumbers.includes(rankData.rankDivision)}
             value={rankData.rankNumber}
@@ -105,31 +131,37 @@ export default function IntroForms({
 
   const regionForm = (
     <Grid item sm={12}>
-      <FormHelperText>Region</FormHelperText>
-      <Select
-        name="region"
-        value={userData.region}
-        onChange={(e) => handleChange(e, setUserData)}
-        required>
-        <MenuItem selected disabled>
-          select region
-        </MenuItem>
-        {['NA', 'EUW', 'EUNE', 'LAN'].map((region, key) => (
-          <MenuItem value={region} key={key}>
-            {region}
-          </MenuItem>
-        ))}
-      </Select>
+      <Box>
+        <Typography variant="h1">Account details:</Typography>
+      </Box>
+
+      {/* window.confirm(`Are you sure you want to create this account? \n Summoner
+      Name: ${userData.name} \n Discord: ${userData.discord} \n Rank: $
+      {userData.rank} \n Region: ${userData.region} \n Email: ${newUser.email}
+      `); */}
+      {Object.entries(userData).map(([k, v]) => (
+        <Box>
+          <Typography variant="h3">
+            {k.charAt(0).toUpperCase() + k.substring(1)}: {v}
+          </Typography>
+        </Box>
+      ))}
+
+      <Box>
+        <Typography variant="body2">
+          If you're sure you want to sign up with these details, click create my
+          account with google.
+        </Typography>
+      </Box>
     </Grid>
   );
 
   let forms = [nameForm, divisionForm, regionForm];
 
-  const theme = useTheme();
-  const matchesSm = useMediaQuery(theme.breakpoints.down('sm'));
-
   return (
     <Grid
+      mt={4}
+      ml={2}
       container
       justifyContent="flex-start"
       direction={matchesSm ? 'column' : 'row'}

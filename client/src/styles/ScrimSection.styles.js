@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core';
+import { makeStyles } from '@mui/styles';
 
 const BG_GIF =
   'https://pa1.narvii.com/5779/8d76b2b8112e6aa9494a93f0ca6bbffe96e2f6c3_hq.gif';
@@ -20,6 +20,12 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
       imageUploaded === scrim?._id ? '100% 100%' : 'cover',
     border: '1px solid white',
   },
+  scrimSectionHeader: {
+    background: '#101820 !important', // fallback
+    backgroundColor: 'rgba(18,25,35,.85) !important',
+    padding: '10px',
+    backdropFilter: 'blur(8px)',
+  },
   iconButton: {
     color: theme.primary,
     cursor: 'pointer',
@@ -32,7 +38,7 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
     cursor: 'pointer',
     position: 'absolute',
     top: '10%',
-    right: '16.5px',
+    right: '28px',
   },
   teamsContainer: {
     display: 'grid',
@@ -45,15 +51,23 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
       gridTemplateRows: '1fr 1fr 1fr',
     },
   },
+  teamListHeader: {
+    color: '#fff !important',
+    background: '#101820 !important', // fallback
+    backgroundColor: 'rgba(18,25,35, .85) !important',
+    backdropFilter: 'blur(8px)',
+  },
   teamList: {
     width: '100%',
     maxWidth: '36ch',
-    backgroundColor: theme.palette.background.paper,
-    opacity: '0.99',
+    background: '#101820 !important', // fallback
+    backgroundColor: 'rgba(18,25,35, .85) !important',
+    backdropFilter: 'blur(20px)',
+
     transition: 'all 250ms ease-in-out',
     paddingBottom: 0,
     '&:hover': {
-      opacity: '1',
+      backgroundColor: 'rgba(18,25,35) !important',
     },
     '@media screen and (max-width: 630px)': {
       maxWidth: '100%',

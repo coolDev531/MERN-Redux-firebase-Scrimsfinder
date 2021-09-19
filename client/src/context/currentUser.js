@@ -14,7 +14,7 @@ import { loginUser } from './../services/auth';
 import jwt_decode from 'jwt-decode';
 import devLog from './../utils/devLog';
 
-const CurrentUserContext = createContext();
+const CurrentUserContext = createContext([{}, () => {}]);
 
 export const useAuth = () => useContext(CurrentUserContext);
 

@@ -4,29 +4,28 @@ import { useAuth } from '../../../context/currentUser';
 import { useScrims } from '../../../context/scrimsContext';
 import { useLocation, useHistory } from 'react-router-dom';
 import Logo from '../../../assets/images/bootcamp_llc_media_kit/coin_logo_new2021.png';
-import { useTheme } from '@material-ui/core';
-import { useMediaQuery } from '@material-ui/core';
+import { makeStyles, useTheme } from '@mui/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+
+// Mui components
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import MenuItem from '@mui/material/MenuItem';
+import Box from '@mui/material/Box';
+import Select from '@mui/material/Select';
+import Hidden from '@mui/material/Hidden';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormGroup from '@mui/material/FormGroup';
+import Checkbox from '@mui/material/Checkbox';
+import InputLabel from '@mui/material/InputLabel';
+import TextField from '@mui/material/TextField';
+import FormHelperText from '@mui/material/FormHelperText';
 
 // components
-import {
-  Button,
-  Grid,
-  makeStyles,
-  AppBar,
-  Toolbar,
-  Typography,
-  IconButton,
-  MenuItem,
-  Box,
-  Select,
-  Hidden,
-  FormControlLabel,
-  FormGroup,
-  Checkbox,
-  InputLabel,
-  TextField,
-  FormHelperText,
-} from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import NavbarDrawer from './NavbarDrawer';
 import moment from 'moment';
@@ -36,8 +35,9 @@ import { InnerColumn } from '../PageComponents';
 import Tooltip from '../Tooltip';
 
 // icons
-import KeyIcon from '@material-ui/icons/VpnKey';
-import MenuIcon from '@material-ui/icons/Menu'; // burger icon
+import KeyIcon from '@mui/icons-material/VpnKey';
+import MenuIcon from '@mui/icons-material/Menu'; // burger icon
+import GoBackIcon from '@mui/icons-material/ArrowBack';
 
 const useStyles = makeStyles((theme) => ({
   offset: theme.mixins.offset,
@@ -46,8 +46,8 @@ const useStyles = makeStyles((theme) => ({
     top: '0',
     zIndex: '5',
     borderBottom: '1px solid white',
-    background: '#101820', // fallback
-    backgroundColor: 'rgba(18,25,35,.85)',
+    background: '#101820 !important', // fallback
+    backgroundColor: 'rgba(18,25,35,.85) !important',
     backdropFilter: 'blur(8px)',
   },
   toolbar: {
@@ -175,13 +175,16 @@ export default function Navbar({
                      | means or.
                     */}
                     {renderBackButton() ? (
-                      <Button
-                        className="mr-3"
-                        variant="contained"
-                        color="primary"
-                        onClick={() => history.goBack()}>
-                        Go Back
-                      </Button>
+                      <Grid item>
+                        <Button
+                          startIcon={<GoBackIcon />}
+                          className="mr-3"
+                          variant="contained"
+                          color="primary"
+                          onClick={() => history.goBack()}>
+                          Go Back
+                        </Button>
+                      </Grid>
                     ) : null}
 
                     {/* BURGER ICON */}
@@ -201,7 +204,7 @@ export default function Navbar({
 
                 {/* checkboxes for hide/show scrims, repeating in drawer, need separate component */}
                 {!showLess && (
-                  <Hidden mdDown>
+                  <Hidden lgDown>
                     <Grid
                       container
                       alignItems="center"
@@ -210,7 +213,7 @@ export default function Navbar({
                       item
                       xs={12}>
                       {showCheckboxes && (
-                        <Hidden mdDown>
+                        <>
                           {/* Show scrims (current, previous, upcoming) buttons */}
                           <Grid item xs={7} alignItems="center" container>
                             <FormGroup
@@ -270,7 +273,7 @@ export default function Navbar({
                               />
                             </FormGroup>
                           </Grid>
-                        </Hidden>
+                        </>
                       )}
 
                       {/* date filter and region filter */}
@@ -286,6 +289,7 @@ export default function Navbar({
                           {/* date regions and filters */}
                           <Grid item>
                             <TextField
+                              variant="standard"
                               id="date"
                               required
                               label="Scrims Date"
@@ -315,6 +319,7 @@ export default function Navbar({
                             </InputLabel>
 
                             <Select
+                              variant="standard"
                               value={scrimsRegion}
                               className="text-white"
                               onChange={onSelectRegion}>

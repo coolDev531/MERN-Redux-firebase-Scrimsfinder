@@ -1,26 +1,28 @@
 import { useAuth } from './../context/currentUser';
 import { useState, useEffect, Fragment, useMemo } from 'react';
+import { useScrims } from './../context/scrimsContext';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import useTheme from '@mui/styles/useTheme';
 
 // components
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import { showEarliestFirst, showLatestFirst } from '../utils/getSortedScrims';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
 import { InnerColumn, PageContent } from '../components/shared/PageComponents';
 import ScrimSection from '../components/scrim_components/ScrimSection';
 import Loading from '../components/shared/Loading';
 import Navbar from '../components/shared/Navbar/Navbar';
-import { useTheme, useMediaQuery } from '@material-ui/core';
 import Tooltip from '../components/shared/Tooltip';
 
 // utils
+import { showEarliestFirst, showLatestFirst } from '../utils/getSortedScrims';
 import moment from 'moment';
 import 'moment-timezone';
 import { compareDateWithCurrentTime } from './../utils/compareDateWithCurrentTime';
 
 // icons
-import HelpIcon from '@material-ui/icons/Help';
-import { useScrims } from './../context/scrimsContext';
+import HelpIcon from '@mui/icons-material/Help';
+import MenuIcon from '@mui/icons-material/Menu';
 
 // compare scrim start time with now.
 const compareDates = (scrim) => {
@@ -68,7 +70,7 @@ export default function Scrims() {
   const [hideUpcomingScrims, setHideUpcomingScrims] = useState(false);
 
   const theme = useTheme();
-  const matchesMd = useMediaQuery(theme.breakpoints.down('md'));
+  const matchesLg = useMediaQuery(theme.breakpoints.down('lg'));
 
   const dateFilteredScrims = useMemo(
     () =>
@@ -264,9 +266,19 @@ export default function Scrims() {
               <Box marginRight={2} />
               <Box style={{ cursor: 'help' }}>
                 <Tooltip
-                  title={`use the Region dropdown in the ${
-                    matchesMd ? '"More Options" menu' : 'Navbar/Header'
-                  } to change the region`}
+                  title={
+                    <>
+                      use the Region dropdown in the
+                      {matchesLg ? (
+                        <Grid item container alignItems="center">
+                          "More Options" ( <MenuIcon fontSize="small" /> ) menu
+                        </Grid>
+                      ) : (
+                        ' Navbar/Header'
+                      )}
+                      &nbsp;to change the region
+                    </>
+                  }
                   placement="top">
                   <HelpIcon fontSize="large" />
                 </Tooltip>

@@ -4,7 +4,10 @@ import { useAlerts } from '../../context/alertsContext';
 
 // components
 import Moment from 'react-moment';
-import { Button, Grid, Typography, Tooltip } from '@material-ui/core';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import Tooltip from '@mui/material/Tooltip';
 
 // utils
 import 'moment-timezone';
@@ -12,8 +15,9 @@ import { copyTextToClipboard } from './../../utils/copyToClipboard';
 import AdminArea from './../shared/AdminArea';
 
 // icons
-import ShareIcon from '@material-ui/icons/Share';
-import SettingsIcon from '@material-ui/icons/Settings';
+import ShareIcon from '@mui/icons-material/Share';
+import SettingsIcon from '@mui/icons-material/Settings';
+import { useScrimSectionStyles } from '../../styles/ScrimSection.styles';
 
 const MAX_CASTER_AMOUNT = 2;
 
@@ -28,7 +32,7 @@ export default function ScrimSectionHeader({
 }) {
   const { casters } = scrim;
   const { setCurrentAlert } = useAlerts();
-
+  const classes = useScrimSectionStyles();
   const history = useHistory();
 
   const gameUrl = useMemo(
@@ -37,11 +41,7 @@ export default function ScrimSectionHeader({
   );
 
   return (
-    <Grid
-      container
-      direction="column"
-      className="scrim__metadata"
-      style={{ background: 'rgba(240,234,240,0.8)', padding: '10px' }}>
+    <Grid container direction="column" className={classes.scrimSectionHeader}>
       <Grid
         item
         container
@@ -53,7 +53,7 @@ export default function ScrimSectionHeader({
             className="link"
             style={{ textDecorationColor: '#000' }}
             to={`/scrims/${scrim._id}`}>
-            <Typography variant="h1" className="text-black">
+            <Typography variant="h1">
               {/* if scrim has a title show title, else show createdby.name's scrim */}
               {`${scrim.title ?? `${scrim.createdBy.name}'s Scrim`} (${
                 scrim.region
@@ -120,7 +120,7 @@ export default function ScrimSectionHeader({
       </Grid>
 
       <Grid container>
-        <Typography variant="h2" className="text-black">
+        <Typography variant="h2">
           Game Start:&nbsp;
           <Moment format="MM/DD/yyyy | hh:mm A">{scrim.gameStartTime}</Moment>
         </Typography>
@@ -128,20 +128,18 @@ export default function ScrimSectionHeader({
         {/*  casters text and buttons*/}
         <Grid container direction="column">
           {casters.length === 2 ? (
-            <Typography variant="h2" className="text-black">
+            <Typography variant="h2">
               Casters: {casters.map((caster) => caster?.name).join(' & ')}
             </Typography>
           ) : (
             <Grid item container direction="column" alignItems="flex-start">
               {casters.length === 0 ? (
-                <Typography variant="h2" className="text-black">
-                  No Casters
-                </Typography>
+                <Typography variant="h2">No Casters</Typography>
               ) : null}
               {casters[0] && (
-                <Typography variant="h2" className="text-black">
+                <Typography variant="h2">
                   {/* if game didn't and say current casters, else say one caster: */}
-                  {!gameEnded ? 'Current Casters:' : 'Caster:'}{' '}
+                  {!gameEnded ? 'Current Casters:' : 'Caster:'}&nbsp;
                   {casters[0].name}
                 </Typography>
               )}

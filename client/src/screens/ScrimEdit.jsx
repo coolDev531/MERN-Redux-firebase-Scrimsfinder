@@ -6,14 +6,12 @@ import { useAlerts } from '../context/alertsContext';
 
 // components
 import Navbar from '../components/shared/Navbar/Navbar';
-import {
-  Button,
-  FormHelperText,
-  Grid,
-  MenuItem,
-  Select,
-  TextField,
-} from '@material-ui/core';
+import Button from '@mui/material/Button';
+import FormHelperText from '@mui/material/FormHelperText';
+import Grid from '@mui/material/Grid';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import TextField from '@mui/material/TextField';
 import {
   PageContent,
   PageSection,
@@ -34,7 +32,7 @@ import { updateScrim, getScrimById } from '../services/scrims';
  */
 const sample = (array) => array[Math.floor(Math.random() * array.length)];
 
-const RANDOM_HOST_CODE = '_$random';
+const RANDOM_HOST_CODE = '_$random'; // because input doesn't want value to be null, if lobbyhost is equal to this, send it as null in the back end
 
 export default function ScrimEdit() {
   const { currentUser, isCurrentUserAdmin } = useAuth();
@@ -299,85 +297,90 @@ export default function ScrimEdit() {
                 marginLeft: 'auto',
                 marginRight: 'auto',
               }}>
-              <Grid container direction="column" alignItems="center">
+              <Grid
+                mt={2}
+                container
+                direction="column"
+                alignItems="center"
+                spacing={4}
+                style={{ marginLeft: 'auto', marginRight: 'auto' }}>
                 <Grid
                   container
-                  item
-                  direction="column"
+                  justifyContent="center"
                   alignItems="center"
-                  xs={8}
-                  spacing={4}
-                  justifyContent="center">
-                  <Grid
-                    item
-                    container
-                    direction="row"
-                    alignItems="center"
-                    justifyContent="center"
-                    spacing={2}
-                    xs={6}>
-                    <Grid item container justifyContent="space-evenly">
-                      <Grid item>
-                        <FormHelperText className="text-white">
-                          Game Start Date
-                        </FormHelperText>
-                        <TextField
-                          onChange={handleChange}
-                          required
-                          type="date"
-                          name="gameStartDate"
-                          value={moment(
-                            new Date(dateData.gameStartDate).toISOString()
-                          ).format('yyyy-MM-DD')}
-                        />
-                      </Grid>
-                      <Grid item>
-                        <FormHelperText className="text-white">
-                          Game Start Time
-                        </FormHelperText>
-
-                        <TextField
-                          onChange={handleChange}
-                          required
-                          type="time"
-                          name="gameStartHours"
-                          value={
-                            moment(scrimData?.gameStartTime).format('HH:mm') ||
-                            moment().format('HH:mm')
-                          }
-                        />
-                      </Grid>
-                    </Grid>
+                  xs={4}
+                  spacing={2}>
+                  <Grid item>
+                    <FormHelperText className="text-white">
+                      Game Start Date
+                    </FormHelperText>
+                    <TextField
+                      variant="standard"
+                      onChange={handleChange}
+                      required
+                      type="date"
+                      name="gameStartDate"
+                      value={moment(
+                        new Date(scrimData.gameStartTime).toISOString()
+                      ).format('yyyy-MM-DD')}
+                    />
                   </Grid>
+                  <Grid item>
+                    <FormHelperText className="text-white">
+                      Game Start Time
+                    </FormHelperText>
 
-                  <Grid item sm={12}>
-                    <Grid item>Scrim Title</Grid>
                     <TextField
                       onChange={handleChange}
                       required
+                      type="time"
+                      name="gameStartHours"
+                      variant="standard"
+                      value={
+                        moment(scrimData?.gameStartTime).format('HH:mm') ||
+                        moment().format('HH:mm')
+                      }
+                    />
+                  </Grid>
+                </Grid>
+
+                <Grid
+                  mt={2}
+                  container
+                  direction="column"
+                  alignItems="center"
+                  justifyContent="center"
+                  spacing={2}
+                  xs={4}>
+                  <Grid item>
+                    <FormHelperText className="text-white">
+                      Scrim Title
+                    </FormHelperText>
+                    <TextField
+                      onChange={handleChange}
+                      required
+                      type="text"
                       name="title"
+                      variant="standard"
                       value={scrimData.title}
-                      helperText={`Example: ${currentUser?.name}'s scrim`}
+                      helperText={`Example: ${scrimData?.createdBy?.name}'s Scrim`}
                     />
                   </Grid>
 
-                  <Grid container xs={4} item direction="column">
-                    <Grid item>
-                      <FormHelperText className="text-white">
-                        Lobby Name
-                      </FormHelperText>
-                    </Grid>
-                    <Grid item sm={12}>
-                      <TextField
-                        fullWidth
-                        onChange={handleChange}
-                        required
-                        type="text"
-                        name="lobbyName"
-                        value={scrimData.lobbyName}
-                      />
-                    </Grid>
+                  <Grid item>
+                    <FormHelperText className="text-white">
+                      Lobby Name
+                    </FormHelperText>
+                    <TextField
+                      onChange={handleChange}
+                      required
+                      type="text"
+                      name="lobbyName"
+                      variant="standard"
+                      value={scrimData.lobbyName}
+                    />
                   </Grid>
+
                   <Grid item>
                     <FormHelperText className="text-white">
                       Lobby Password
@@ -387,98 +390,104 @@ export default function ScrimEdit() {
                       required
                       type="text"
                       name="lobbyPassword"
+                      variant="standard"
                       value={scrimData.lobbyPassword}
                     />
                   </Grid>
 
-                  <Grid
-                    item
-                    container
-                    direction="row"
-                    alignItems="center"
-                    justifyContent="center"
-                    spacing={2}>
-                    <Grid item xs={12} sm={2} md={2}>
-                      <Select
-                        label="region"
-                        name="region"
-                        value={scrimData.region}
-                        className="text-white"
-                        onChange={handleChange}
-                        fullWidth>
-                        {['NA', 'EUW', 'EUNE', 'LAN'].map((region, key) => (
-                          <MenuItem value={region} key={key}>
-                            {region}
-                          </MenuItem>
-                        ))}
-                      </Select>
+                  {/*  */}
+                </Grid>
 
-                      <FormHelperText className="text-white">
-                        Scrim region
-                      </FormHelperText>
-                    </Grid>
+                <Grid
+                  item
+                  container
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="center"
+                  spacing={2}>
+                  <Grid item xs={12} sm={2} md={2}>
+                    <Select
+                      label="region"
+                      name="region"
+                      value={scrimData.region}
+                      className="text-white"
+                      onChange={handleChange}
+                      fullWidth
+                      variant="standard">
+                      {['NA', 'EUW', 'EUNE', 'LAN'].map((region, key) => (
+                        <MenuItem value={region} key={key}>
+                          {region}
+                        </MenuItem>
+                      ))}
+                    </Select>
 
-                    <Grid item>
-                      <Select
-                        name="_lobbyHost"
-                        onChange={handleChange}
-                        value={scrimData._lobbyHost || RANDOM_HOST_CODE}>
-                        {/* check that names aren't repeating */}
-                        {[RANDOM_HOST_CODE, ...idsArr].map((id, key) => {
-                          if (id === RANDOM_HOST_CODE)
-                            return (
-                              <MenuItem
-                                value={RANDOM_HOST_CODE}
-                                key={RANDOM_HOST_CODE}>
-                                Random Host!
-                              </MenuItem>
-                            );
+                    <FormHelperText className="text-white">
+                      Scrim region
+                    </FormHelperText>
+                  </Grid>
 
-                          if (id === currentUser?._id) {
-                            return (
-                              <MenuItem value={id} key={key}>
-                                I will host!
-                              </MenuItem>
-                            );
-                          }
-
+                  <Grid item>
+                    <Select
+                      variant="standard"
+                      name="_lobbyHost"
+                      onChange={handleChange}
+                      value={scrimData._lobbyHost || RANDOM_HOST_CODE}>
+                      {/* check that names aren't repeating */}
+                      {[RANDOM_HOST_CODE, ...idsArr].map((id, key) => {
+                        if (id === RANDOM_HOST_CODE)
                           return (
-                            <MenuItem value={id} key={key}>
-                              {usersArr.find((user) => user?._id === id)?.name}
+                            <MenuItem
+                              value={RANDOM_HOST_CODE}
+                              key={RANDOM_HOST_CODE}>
+                              Random Host!
                             </MenuItem>
                           );
-                        })}
-                      </Select>
-                      <FormHelperText className="text-white">
-                        Lobby host
-                      </FormHelperText>
-                    </Grid>
-                  </Grid>
 
-                  <Grid item>
-                    <FormHelperText className="text-white">
-                      Who Won?
-                    </FormHelperText>
-                    <Select
-                      name="teamWon"
-                      value={scrimData.teamWon || 'N/A'}
-                      onChange={handleChange}>
-                      {['Team 1 (Blue Side)', 'Team 2 (Red Side)', 'N/A'].map(
-                        (team, key) => (
-                          <MenuItem value={team} key={key}>
-                            {team}
+                        if (id === currentUser?._id) {
+                          return (
+                            <MenuItem value={id} key={key}>
+                              I will host!
+                            </MenuItem>
+                          );
+                        }
+
+                        return (
+                          <MenuItem value={id} key={key}>
+                            {usersArr.find((user) => user?._id === id)?.name}
                           </MenuItem>
-                        )
-                      )}
+                        );
+                      })}
                     </Select>
+                    <FormHelperText className="text-white">
+                      Lobby host
+                    </FormHelperText>
                   </Grid>
+                </Grid>
 
-                  <Grid item>
-                    <div className="page-break" />
-                    <Button variant="contained" color="primary" type="submit">
-                      Submit
-                    </Button>
-                  </Grid>
+                <Grid item>
+                  <FormHelperText className="text-white">
+                    Who Won?
+                  </FormHelperText>
+                  <Select
+                    variant="standard"
+                    name="teamWon"
+                    value={scrimData.teamWon || 'N/A'}
+                    onChange={handleChange}>
+                    {['Team 1 (Blue Side)', 'Team 2 (Red Side)', 'N/A'].map(
+                      (team, key) => (
+                        <MenuItem value={team} key={key}>
+                          {team}
+                        </MenuItem>
+                      )
+                    )}
+                  </Select>
+                </Grid>
+
+                <Grid item>
+                  <div className="page-break" />
+                  <Button variant="contained" color="primary" type="submit">
+                    Submit
+                  </Button>
                 </Grid>
               </Grid>
             </form>

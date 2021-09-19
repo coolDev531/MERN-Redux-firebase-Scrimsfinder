@@ -1,16 +1,21 @@
-import { makeStyles, Tooltip } from '@material-ui/core';
+import makeStyles from '@mui/styles/makeStyles';
+import Tooltip from '@mui/material/Tooltip';
 
 const useStyles = makeStyles((theme) => ({
   arrow: {
-    color: theme.palette.common.white,
+    color: '#fff !important',
   },
   tooltip: {
-    color: '#000',
-    fontSize: ({ fontSize }) => fontSize || 'clamp(0.8rem, 4vw, 1rem)',
+    color: '#000 !important',
+    fontSize: ({ fontSize }) =>
+      fontSize
+        ? `${fontSize} !important`
+        : 'clamp(0.8rem, 4vw, 1rem) !important',
     border: '1px solid #fff',
-    fontWeight: ({ fontWeight }) => fontWeight || 700,
-    backgroundColor: theme.palette.common.white,
-    boxShadow: '1px 2px 4px 1px #999',
+    fontWeight: ({ fontWeight }) =>
+      fontWeight ? `${fontWeight} !important` : '700 !important',
+    backgroundColor: '#fff !important',
+    boxShadow: '1px 2px 4px 1px #999 !important',
   },
 }));
 

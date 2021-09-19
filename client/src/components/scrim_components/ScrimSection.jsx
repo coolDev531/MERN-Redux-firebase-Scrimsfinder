@@ -3,17 +3,17 @@ import { useScrims } from './../../context/scrimsContext';
 import { useAuth } from './../../context/currentUser';
 import { useScrimSectionStyles } from '../../styles/ScrimSection.styles';
 import { useAlerts } from '../../context/alertsContext';
+import { useHistory } from 'react-router-dom';
 
 //  components
 import ScrimTeamList from './ScrimTeamList';
-import { useHistory } from 'react-router-dom';
+import ScrimSectionMiddleAreaBox from './ScrimSectionMiddleAreaBox';
+import ScrimSectionHeader from './ScrimSectionHeader';
 import { PageSection } from '../shared/PageComponents';
 
 // utils / services
 import { deleteScrim, removeCasterFromScrim } from '../../services/scrims';
 import { insertCasterInScrim } from '../../services/scrims';
-import ScrimSectionMiddleAreaBox from './ScrimSectionMiddleAreaBox';
-import ScrimSectionHeader from './ScrimSectionHeader';
 
 const compareDates = (scrim) => {
   let currentTime = new Date().getTime();

@@ -1,5 +1,5 @@
 // utils
-import makeStyles from '@material-ui/core/styles/makeStyles';
+import { makeStyles } from '@mui/styles';
 
 import BgImage from '../assets/images/summoners_rift.jpg';
 import { COLORS } from './../appTheme';
@@ -9,8 +9,8 @@ export const useAppStyles = makeStyles({
     display: 'flex',
     flexDirection: 'column',
     minHeight: '100vh',
-    background: '#303030', // fallback for no rgba support
-    backgroundColor: COLORS.DK_BLUE_TRANSPARENT, // dark filter to darken bg image
+    background: COLORS.GREY_DEFAULT, // fallback for no rgba support
+    backgroundColor: COLORS.DARK_TRANSPARENT, // dark filter to darken bg image
 
     '&::before': {
       background: `url(${BgImage})`, // background image
