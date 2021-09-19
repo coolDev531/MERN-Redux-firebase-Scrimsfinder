@@ -141,9 +141,6 @@ export default function ScrimTeamList({
     const updatedScrim = await removePlayerFromScrim({
       scrimId: scrim._id,
       userId: playerEntered?._user?._id,
-      playerData: {
-        role: playerEntered?.role,
-      },
       setAlert: setCurrentAlert,
     });
 
@@ -164,9 +161,6 @@ export default function ScrimTeamList({
     const updatedScrim = await removePlayerFromScrim({
       scrimId: scrim._id,
       userId: playerToKick?._user?._id,
-      playerData: {
-        role: playerEntered.role,
-      },
       setAlert: setCurrentAlert,
     });
 

@@ -69,16 +69,10 @@ export const insertPlayerInScrim = async ({
   }
 };
 
-export const removePlayerFromScrim = async ({
-  scrimId,
-  userId,
-  playerData,
-  setAlert,
-}) => {
+export const removePlayerFromScrim = async ({ scrimId, userId, setAlert }) => {
   try {
     const response = await api.patch(
-      `/scrims/${scrimId}/remove-player/${userId}`,
-      { playerData }
+      `/scrims/${scrimId}/remove-player/${userId}`
     );
     return response.data;
   } catch (error) {
