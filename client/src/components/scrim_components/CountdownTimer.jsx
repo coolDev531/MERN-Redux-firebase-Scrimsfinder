@@ -113,6 +113,7 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
       timerMinutes == '00' &&
       timerSeconds == '00'
     ) {
+      // when timer reaches 0 (game starts), run the following code.
       clearInterval(interval);
       setGameStarted(scrim._id);
       setIsTimerStarted(false);
