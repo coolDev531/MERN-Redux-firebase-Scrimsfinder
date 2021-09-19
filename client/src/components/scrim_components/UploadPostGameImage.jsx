@@ -62,6 +62,15 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
     if (e.target.files.length === 0) return;
     let file = e.target.files[0];
 
+    let fileExtension = file.name.substring(file.name.lastIndexOf('.')); // .jpg, .png, etc...
+    let newFileName = `${scrim._id}-${Date.now()}${fileExtension}`; // make a new name: scrim._id, current time, and extension
+
+    // change name of file to something more traceable (I don't want user's random names).
+    Object.defineProperty(file, 'name', {
+      writable: true,
+      value: newFileName, // file extension isn't necessary with this approach.
+    });
+
     const fileSize = file.size / 1024 / 1024; // in MiB
 
     if (!/^image\//.test(file.type)) {
@@ -94,15 +103,8 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
     try {
       setButtonDisabled(true);
 
-      // running the following lines so I can change the file name to something to my liking. (99-103)
-      // change the file name, but keep the other attributes
-      let fileExtension = file.name.substring(file.name.lastIndexOf('.')); // .jpg, .png, etc...
-      let blob = file.slice(0, file.size, file.type); // get size and type from file
-      let newName = `${scrim._id}-${Date.now()}${fileExtension}`; // make a new name: scrim._id, current time, and extension
-      let imageToUpload = new File([blob], newName, { type: file.type }); // create a new file out of it.
-
       // upload the image to S3
-      const bucketData = await S3FileUpload.uploadFile(imageToUpload, config);
+      const bucketData = await S3FileUpload.uploadFile(file, config);
 
       // after it has been successfully uploaded to S3, put the new image data in the back-end
       let newImage = {
