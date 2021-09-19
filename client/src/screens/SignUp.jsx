@@ -73,10 +73,9 @@ export default function SignUp() {
             (prevState) => new Map(prevState.set(key, `${key} is empty!`))
           )
         : errors.has(key) &&
-          // else if they do have the key, remove it from the errors map state.
+          /* else if the text input value isn't empty and the key exists (ex: input.name) in the errors map, 
+            remove it from the errors map, therefore removing the alert from the page */
           setErrors((prevState) => {
-            /* else if the text input value isn't empty and the key exists (input.name) in the errors map, 
-              remove it from the errors map */
             let newState = new Map(prevState);
             newState.delete(key);
             return newState;
