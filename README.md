@@ -85,8 +85,8 @@ X_API_KEY=api_key_here
 SECRET_OR_KEY=secret_or_key_here
 ADMIN_KEY=admin_key_here
 
-REACT_APP_S3_ACCESS_KEY_ID=value
-REACT_APP_S3_SECRET_ACCESS_KEY=value
+S3_ACCESS_KEY_ID=value
+S3_SECRET_ACCESS_KEY=value
 ```
 
 There are 2 models currently, the `User` and the `Scrim` models.
