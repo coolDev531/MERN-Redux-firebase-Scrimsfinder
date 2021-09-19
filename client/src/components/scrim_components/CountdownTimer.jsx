@@ -47,6 +47,8 @@ const Text = ({ children }) => {
 };
 
 function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
+  const classes = useStyles();
+
   const [isTimerStarted, setIsTimerStarted] = useState(false);
   const [timerDays, setTimerDays] = useState('00');
   const [timerHours, setTimerHours] = useState('00');
@@ -64,8 +66,6 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
     if (scrim.teamWon) return `${scrim.teamWon} Won!`.toUpperCase();
     return `GAME IN PROGRESS`;
   }, [scrim.teamWon, teamsFilled]);
-
-  const classes = useStyles();
 
   let interval = null;
 
