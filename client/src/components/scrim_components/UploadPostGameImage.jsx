@@ -23,10 +23,10 @@ const MAX_FILE_SIZE_MIB = 0.953674; // 1 megabyte (in Memibyte format)
 
 /**
  * @method changeFileName
+ * takes a file and changes its name
  * @param {File} file the file that is going to have it's name changes
  * @param {String} scrimId {scrim._id}
  */
-
 const changeFileName = async (file, scrimId) => {
   // does this have to be async?
   let fileExtension = file.name.substring(file.name.lastIndexOf('.')); // .jpg, .png, etc...
