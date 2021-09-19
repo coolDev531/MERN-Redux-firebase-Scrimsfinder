@@ -135,8 +135,8 @@ export default function SignUpForms({
         <Typography variant="h1">Account details:</Typography>
       </Box>
 
-      {Object.entries(userData).map(([k, v]) => (
-        <Box>
+      {Object.entries(userData).map(([k, v], idx) => (
+        <Box key={idx}>
           <Typography variant="h3">
             {k.charAt(0).toUpperCase() + k.substring(1)}: {v}
           </Typography>

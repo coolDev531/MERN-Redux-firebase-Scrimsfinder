@@ -99,7 +99,7 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
       let fileExtension = file.name.substring(file.name.lastIndexOf('.')); // .jpg, .png, etc...
       let blob = file.slice(0, file.size, file.type); // get size and type from file
       let newName = `${scrim._id}-${Date.now()}${fileExtension}`; // make a new name: scrim._id, current time, and extension
-      let imageToUpload = new File([blob], newName); // create a new file out of it.
+      let imageToUpload = new File([blob], newName, { type: file.type }); // create a new file out of it.
 
       // upload the image to S3
       const bucketData = await S3FileUpload.uploadFile(imageToUpload, config);
