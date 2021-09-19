@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment, useState, useEffect, useMemo } from 'react';
 
 // components
 import Typography from '@mui/material/Typography';
@@ -52,6 +52,18 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
   const [timerHours, setTimerHours] = useState('00');
   const [timerMinutes, setTimerMinutes] = useState('00');
   const [timerSeconds, setTimerSeconds] = useState('00');
+
+  const teamsFilled = useMemo(
+    () => scrim.teamOne.length === 5 && scrim.teamTwo.length === 5,
+    [scrim.teamOne, scrim.teamTwo]
+  );
+
+  const gameStatusText = useMemo(() => {
+    if (!teamsFilled) return `NOT ENOUGH PLAYERS.`;
+
+    if (scrim.teamWon) return `${scrim.teamWon} Won!`.toUpperCase();
+    return `GAME IN PROGRESS`;
+  }, [scrim.teamWon, teamsFilled]);
 
   const classes = useStyles();
 
@@ -131,10 +143,7 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
   if (gameStarted) {
     return (
       <div className={classes.timer}>
-        {/* typography variant="p" is invalid in Mui */}
-        <Text>
-          {!scrim.teamWon ? 'GAME IN PROGRESS' : `${scrim.teamWon} Won!`}
-        </Text>
+        <Text>{gameStatusText}</Text>
       </div>
     );
   }
