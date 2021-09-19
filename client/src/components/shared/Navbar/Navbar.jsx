@@ -75,12 +75,7 @@ export default function Navbar({
   const theme = useTheme();
   const matchesSm = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const noBackButtonPaths = [
-    /^\/user-setup/,
-    /^\/scrims$/,
-    /^\/scrims\/$/,
-    /^\/$/,
-  ];
+  const noBackButtonPaths = [/^\/signup/, /^\/scrims$/, /^\/scrims\/$/, /^\/$/];
 
   const renderBackButton = () => {
     for (let url of noBackButtonPaths) {

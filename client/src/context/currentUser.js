@@ -36,7 +36,7 @@ function CurrentUserProvider({ children }) {
     localStorage.removeItem('jwtToken'); // remove token from localStorage
     removeToken();
     setCurrentUser(null); // set user to null.
-    history.push('/user-setup'); // push back to signup
+    history.push('/signup'); // push back to signup
   }, [history]);
 
   const logInUser = async () => {
@@ -76,7 +76,7 @@ function CurrentUserProvider({ children }) {
           email: decodedUser?.email,
         });
 
-        // if there is no token PrivateRoute.jsx should send us to /user-setup automatically.
+        // if there is no token PrivateRoute.jsx should send us to /sign-up automatically.
         if (data?.token) {
           localStorage.setItem('jwtToken', data?.token);
           // Set user
@@ -89,7 +89,7 @@ function CurrentUserProvider({ children }) {
             // Logout user
             logOutUser();
             // Redirect to login
-            history.push('/user-setup');
+            history.push('/signup');
           }
         }
       }

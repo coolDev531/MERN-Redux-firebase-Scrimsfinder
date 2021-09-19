@@ -27,7 +27,7 @@ function ScrimsProvider({ children }) {
   }, [fetch, pathname]);
 
   const loadScrims = async () => {
-    if (pathname !== '/user-setup') {
+    if (pathname !== '/sign-up') {
       devLog('fetching scrims (interval)');
       const scrimsData = await getAllScrims();
       setScrims(scrimsData);

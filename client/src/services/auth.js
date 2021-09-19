@@ -79,17 +79,15 @@ export const verifyUser = async ({ uid, email }) => {
       localStorage.removeItem('jwtToken');
       // these lines are to handle the case when heroku is hibernating and the home page is loading because the content hasn't loaded but we don't have a user to associate it with.
       // if the user isn't verified and heroku is hibernating.
-      devLog(
-        'heroku is hibernating, cannot verify user, pushing to /user-setup'
-      );
+      devLog('heroku is hibernating, cannot verify user, pushing to /signup');
 
       localStorage.removeItem('jwtToken');
 
-      let path = window.location.origin + '/user-setup';
-      // and the path isn't user-setup
-      if (window.location.origin + '/login' !== path) {
-        // send the user to user-setup.
-        window.location.href = window.location.origin + '/user-setup';
+      let path = window.location.origin + '/signup';
+      // and the path isn't signup
+      if (window.location.origin + '/signup' !== path) {
+        // send the user to signup.
+        window.location.href = window.location.origin + '/signup';
       }
     }
   }
