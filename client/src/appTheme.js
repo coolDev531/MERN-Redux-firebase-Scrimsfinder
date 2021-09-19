@@ -4,11 +4,12 @@ export const COLORS = {
   DARK: '#101820',
   DARK_TRANSPARENT: 'rgba(0, 0, 0, 0.61)', // dark filter to darken bg image
 
-  DK_BLUE: 'rgba(18,25,35,.85)',
+  DK_BLUE: 'rgba(18,25,35)',
   DK_BLUE_TRANSPARENT: 'rgba(18,25,35,.85)', // dark filter to darken bg image
 
-  LIGHT_BLUE: '#d1dcde',
+  EGGSHELL_WHITE: '#d1dcde',
   BROWN: '#573625',
+
   GREY_DEFAULT: '#303030',
   GREY_PAPER: '#424242',
 };
@@ -28,18 +29,18 @@ export const appTheme = createTheme({
     mode: 'dark',
 
     primary: {
-      main: '#d1dcde',
-      contrastText: '#573625',
+      main: COLORS.EGGSHELL_WHITE,
+      contrastText: COLORS.BROWN,
     },
 
     secondary: {
-      main: '#573625',
+      main: COLORS.BROWN,
       constrastText: '#fff',
     },
 
     background: {
-      default: '#303030',
-      paper: '#424242',
+      default: COLORS.GREY_DEFAULT,
+      paper: COLORS.GREY_PAPER,
     },
   },
   typography: {
@@ -114,7 +115,7 @@ export const appTheme = createTheme({
     MuiStepper: {
       styleOverrides: {
         root: {
-          backgroundColor: 'rgba(18,25,35)', // dark filter to darken bg image
+          backgroundColor: COLORS.DK_BLUE,
           boxShadow: '1px 0px 7px 1px #fff',
           padding: '20px',
           borderRadius: '4px',
