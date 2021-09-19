@@ -60,9 +60,7 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
 
   const handleUpload = async (e) => {
     if (e.target.files.length === 0) return;
-
     let file = e.target.files[0];
-    let fileName = [...file.name];
 
     const fileSize = file.size / 1024 / 1024; // in MiB
 
@@ -85,16 +83,6 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
       return;
     }
 
-    // if file name has sapces, return.
-    if (fileName.includes(' ')) {
-      fileInputRef.current.value = '';
-      setCurrentAlert({
-        type: 'Error',
-        message: `No spaces in name of file allowed \n name of file: ${file?.name}`,
-      });
-      return;
-    }
-
     let yes = window.confirm('Are you sure you want to upload this image?');
 
     if (!yes) {
@@ -106,15 +94,25 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
     try {
       setButtonDisabled(true);
 
-      const bucketData = await S3FileUpload.uploadFile(file, config);
-      let dataSending = {
+      // running the following lines so I can change the file name to something to my liking. (99-103)
+      // change the file name, but keep the other attributes
+      let fileExtension = file.name.substring(file.name.lastIndexOf('.')); // .jpg, .png, etc...
+      let blob = file.slice(0, file.size, file.type); // get size and type from file
+      let newName = `${scrim._id}-${Date.now()}${fileExtension}`; // make a new name: scrim._id, current time, and extension
+      let imageToUpload = new File([blob], newName); // create a new file out of it.
+
+      // upload the image to S3
+      const bucketData = await S3FileUpload.uploadFile(imageToUpload, config);
+
+      // after it has been successfully uploaded to S3, put the new image data in the back-end
+      let newImage = {
         ...bucketData,
         uploadedBy: { ...currentUser },
       };
 
       const addedImg = await addImageToScrim(
         scrim._id,
-        dataSending,
+        newImage,
         setCurrentAlert
       );
       if (addedImg) {
