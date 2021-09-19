@@ -223,6 +223,12 @@ const getAvailableRoles = (team) => {
   return roles.filter((r) => !takenRoles.has(r)).join(', ');
 };
 
+// takes role from req.body.playerData.role and returns true or false if it matches
+const isValidRole = (role) => {
+  const roles = /^Top$|^Jungle$|^Mid$|^ADC$|^Support$/gi; // case insensitive
+  return roles.test(role);
+};
+
 const updateScrim = async (req, res) => {
   // for admins changing scrim data not average user.
 
@@ -273,6 +279,7 @@ const insertPlayerInScrim = async (req, res) => {
   // beginning of session
   await session.withTransaction(async () => {
     const { scrimId, userId } = req.params;
+    const { playerData } = req.body;
 
     let isValidUser = mongoose.Types.ObjectId.isValid(userId);
     let isValidScrim = mongoose.Types.ObjectId.isValid(scrimId);
@@ -284,8 +291,6 @@ const insertPlayerInScrim = async (req, res) => {
     if (!isValidScrim) {
       return res.status(500).json('invalid scrim id.');
     }
-
-    const { playerData } = req.body;
 
     if (!playerData) {
       return res.status(500).json({
@@ -306,6 +311,14 @@ const insertPlayerInScrim = async (req, res) => {
       return res.status(500).json({
         error:
           'role string not provided! looks like this: playerData {role: String}',
+      });
+    }
+
+    let roleIsValid = isValidRole(playerData.role);
+
+    if (!roleIsValid) {
+      return res.status(500).json({
+        error: 'role not valid: has to match: Top, Jungle, Mid, ADC, Support',
       });
     }
 
@@ -480,6 +493,7 @@ const movePlayerInScrim = async (req, res) => {
   // beginning of session
   await session.withTransaction(async () => {
     const { scrimId, userId } = req.params;
+    const { playerData } = req.body;
 
     let isValidUser = mongoose.Types.ObjectId.isValid(userId);
     let isValidScrim = mongoose.Types.ObjectId.isValid(scrimId);
@@ -491,8 +505,6 @@ const movePlayerInScrim = async (req, res) => {
     if (!isValidScrim) {
       return res.status(500).json('invalid scrim id.');
     }
-
-    const { playerData } = req.body;
 
     const scrim = await Scrim.findById(scrimId);
     const user = await User.findById(userId);
@@ -518,6 +530,14 @@ const movePlayerInScrim = async (req, res) => {
       return res.status(500).json({
         error:
           'role string not provided! looks like this: playerData {role: String}',
+      });
+    }
+
+    let roleIsValid = isValidRole(playerData.role);
+
+    if (!roleIsValid) {
+      return res.status(500).json({
+        error: 'role not valid: has to match: Top, Jungle, Mid, ADC, Support',
       });
     }
 
