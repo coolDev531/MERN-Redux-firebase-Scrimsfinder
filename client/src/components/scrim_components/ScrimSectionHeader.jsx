@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { useAlerts } from '../../context/alertsContext';
+import useTheme from '@mui/styles/useTheme';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 // components
 import Moment from 'react-moment';
@@ -34,6 +36,8 @@ export default function ScrimSectionHeader({
   const { setCurrentAlert } = useAlerts();
   const classes = useScrimSectionStyles();
   const history = useHistory();
+  const theme = useTheme();
+  const matchesMd = useMediaQuery(theme.breakpoints.down('md'));
 
   const gameUrl = useMemo(
     () => `${window.location.origin}/scrims/${scrim._id}`,
@@ -48,7 +52,7 @@ export default function ScrimSectionHeader({
         direction="row"
         alignItems="center"
         justifyContent="space-between">
-        <Grid item>
+        <Grid item sm={6}>
           <Link
             className="link"
             style={{ textDecorationColor: '#000' }}
@@ -68,7 +72,7 @@ export default function ScrimSectionHeader({
           md={6}
           alignItems="center"
           direction="row"
-          justifyContent="flex-end"
+          justifyContent={matchesMd ? 'flex-start' : 'flex-end'}
           spacing={2}>
           {/* Share button */}
           <Grid item>
