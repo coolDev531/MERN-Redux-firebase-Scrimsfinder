@@ -251,39 +251,43 @@ export default function Scrims() {
               )}
             </>
           ) : (
-            <Grid
-              container
-              direction="row"
-              alignItems="center"
-              justifyContent="center">
-              <Typography
-                align="center"
-                variant="h1"
-                component="h1"
-                className="text-white">
-                No scrims found in {scrimsRegion}
-              </Typography>
-              <Box marginRight={2} />
-              <Box style={{ cursor: 'help' }}>
-                <Tooltip
-                  title={
-                    <>
-                      use the Region dropdown in the
-                      {matchesLg ? (
-                        <Grid item container alignItems="center">
-                          "More Options" ( <MenuIcon fontSize="small" /> ) menu
-                        </Grid>
-                      ) : (
-                        ' Navbar/Header'
-                      )}
-                      &nbsp;to change the region
-                    </>
-                  }
-                  placement="top">
-                  <HelpIcon fontSize="large" />
-                </Tooltip>
-              </Box>
-            </Grid>
+            // if filteredScrims.length is <= 0
+            <InnerColumn>
+              <Grid
+                container
+                direction="row"
+                alignItems="center"
+                justifyContent="center">
+                <Typography
+                  align="center"
+                  variant="h1"
+                  component="h1"
+                  className="text-white">
+                  No scrims found in {scrimsRegion}
+                </Typography>
+                <Box marginRight={2} />
+                <Box style={{ cursor: 'help' }}>
+                  <Tooltip
+                    title={
+                      <>
+                        use the Region dropdown in the
+                        {matchesLg ? (
+                          <Grid item container alignItems="center">
+                            "More Options" ( <MenuIcon fontSize="small" /> )
+                            menu
+                          </Grid>
+                        ) : (
+                          ' Navbar/Header'
+                        )}
+                        &nbsp;to change the region
+                      </>
+                    }
+                    placement="top">
+                    <HelpIcon fontSize="large" />
+                  </Tooltip>
+                </Box>
+              </Grid>
+            </InnerColumn>
           )}
         </div>
       </PageContent>
