@@ -8,7 +8,7 @@ import Tooltip from '../shared/Tooltip';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-
+import FormHelperText from '@mui/material/FormHelperText';
 // utils
 import S3FileUpload from 'react-s3';
 import { addImageToScrim, removeImageFromScrim } from '../../services/scrims';
@@ -160,16 +160,29 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
     <Grid
       item
       container
-      direction="row"
-      alignItems="center"
-      justifyContent="space-between"
-      xs={12}>
-      <Grid item xs={8}>
-        <Typography variant="h3">Upload post-game lobby image:</Typography>
+      direction="column"
+      alignItems="flex-start"
+      justifyContent="center"
+      xs={12}
+      spacing={1}>
+      <Grid item>
+        <FormHelperText style={{ userSelect: 'none' }}>
+          Upload post-game lobby image
+        </FormHelperText>
       </Grid>
-      <Grid item xs={4}>
+      <Grid item>
         <Tooltip
-          title="Validate winner by uploading end of game results"
+          title={
+            <Typography
+              style={{
+                fontSize: 'clamp(0.8rem, 4vw, 1rem)',
+                fontWeight: 700,
+              }}
+              variant="body2">
+              Validate winner by uploading end of game results. <br />
+              <strong style={{ color: 'red' }}>* image format only</strong>
+            </Typography>
+          }
           placement="top">
           <Button
             variant="contained"
