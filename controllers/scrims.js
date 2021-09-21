@@ -15,7 +15,7 @@ const capitalizeWord = require('../utils/capitalizeWord');
 const AWS = require('aws-sdk');
 const KEYS = require('../config/keys');
 
-let s3bucket = new AWS.S3({
+let s3Bucket = new AWS.S3({
   Bucket: 'lol-scrimsfinder-bucket',
   accessKeyId: KEYS.S3_ACCESS_KEY_ID,
   secretAccessKey: KEYS.S3_SECRET_ACCESS_KEY,
@@ -848,12 +848,10 @@ const removeImageFromScrim = async (req, res) => {
       postGameImage: null,
     };
 
-    s3bucket.deleteObject(params, function (err, data) {
-      if (err) return res.status(500).json({ error: err });
-      // an error occurred
-      else return data; // successful response
-    });
+    // delete image in S3
+    await s3Bucket.deleteObject(params).promise();
 
+    // delete it from the scrim object in the mongoose database
     await Scrim.findByIdAndUpdate(
       id,
       dataSending,
