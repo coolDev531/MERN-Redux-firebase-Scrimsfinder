@@ -10,13 +10,13 @@ import { makeStyles } from '@mui/styles';
 
 /* The total number of seconds in a day is 60 * 60 * 24 and if we want to get the milliseconds, 
   we need to multiply it by 1000 so the number 1000 * 60 * 60 * 24 is the total number of milliseconds in a day. */
-const SECONDS_IN_DAY_IN_MS = 60 * 60 * 24;
-//--
+const SECONDS_IN_DAY = 60 * 60 * 24; // not in MS
+
 // time variables in milliseconds for CountdownTimer calculations.
-const ONE_DAY_IN_MS = 1000 * SECONDS_IN_DAY_IN_MS;
-const ONE_HOUR_IN_MS = 1000 * 60 * 60;
-const ONE_MINUTE_IN_MS = 1000 * 60;
-const ONE_SECOND_IN_MS = 1000;
+const ONE_DAY_IN_MS = 1000 * SECONDS_IN_DAY; // one day in milliseconds
+const ONE_HOUR_IN_MS = 1000 * 60 * 60; // one hour in milliseconds
+const ONE_MINUTE_IN_MS = 1000 * 60; // one minute in milliseconds
+const ONE_SECOND_IN_MS = 1000; // one second in milliseconds
 
 export default function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
   const classes = useStyles(); // useStyles defined below component
