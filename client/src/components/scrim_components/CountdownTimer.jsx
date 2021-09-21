@@ -54,10 +54,9 @@ export default function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
       const days = Math.floor(difference / ONE_DAY_IN_MS);
 
       /* The first operation (%) is used to basically discard the part of the difference representing days 
-      (% returns the remainder of the division so the days portion of the difference is taken out. In the next step (division), 
-      ONE_HOUR_IN_MS is the total number of milliseconds in an hour. 
-      So dividing the remainder of the difference by this number will give us the number of hours.
-      */
+      (% returns the remainder of the division so the days portion of the difference is taken out. 
+      In the next step (division), ONE_HOUR_IN_MS is the total number of milliseconds in an hour. 
+      So dividing the remainder of the difference by this number will give us the number of hours. */
       const hours = Math.floor((difference % ONE_DAY_IN_MS) / ONE_HOUR_IN_MS);
 
       /* The first operation (%) takes out the hours portion from difference 
