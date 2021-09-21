@@ -39,15 +39,13 @@ function ScrimsProvider({ children }) {
   const FETCH_INTERVAL = 10000;
   useInterval(loadScrims, FETCH_INTERVAL);
 
-  const fetchScrims = () => toggleFetch();
-
   const value = {
     scrims,
     setScrims,
     fetch,
     toggleFetch,
     scrimsLoaded,
-    fetchScrims,
+    fetchScrims: toggleFetch,
   };
 
   return (
