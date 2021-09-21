@@ -1,5 +1,6 @@
 // hooks
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
+import useOnKeyDown from './../../../hooks/useOnKeyDown';
 import { useAuth } from '../../../context/currentUser';
 import { useHistory } from 'react-router-dom';
 import { useScrims } from '../../../context/scrimsContext';
@@ -42,6 +43,7 @@ const useStyles = makeStyles({
   drawerRoot: {
     background: 'rgba(18,25,35) !important',
   },
+
   drawerList: {
     width: 250,
   },
@@ -115,24 +117,16 @@ export default function NavbarDrawer({
     setScrimsDate(moment(e.target.value));
   };
 
-  useEffect(() => {
-    const handleKeyUp = ({ keycode }) => {
-      // close drawer if user is pressing escape
-      if (keycode === KEYCODES.ESCAPE) {
-        if (isDrawerOpen) {
-          setIsDrawerOpen(false);
-          return;
-        }
+  useOnKeyDown(
+    KEYCODES.ESCAPE,
+    () => {
+      if (isDrawerOpen) {
+        setIsDrawerOpen(false);
+        return;
       }
-    };
-    document.addEventListener('keyup', handleKeyUp);
-    return () => {
-      document.removeEventListener('keyup', handleKeyUp);
-    };
-
-    // it's asking to add a dep for the setter, disabling it with comment.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isDrawerOpen]);
+    },
+    [isDrawerOpen]
+  );
 
   return (
     <Drawer

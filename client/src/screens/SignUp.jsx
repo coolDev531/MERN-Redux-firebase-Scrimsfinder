@@ -179,7 +179,7 @@ export default function SignUp() {
   );
 
   useEffect(() => {
-    const handleKeyUp = (e) => {
+    const handleKeyDown = (e) => {
       switch (e.keyCode) {
         case KEYCODES.ENTER:
           // if is last step, submit.
@@ -193,9 +193,9 @@ export default function SignUp() {
           break;
       }
     };
-    document.addEventListener('keyup', handleKeyUp);
+    document.addEventListener('keydown', handleKeyDown);
     return () => {
-      document.removeEventListener('keyup', handleKeyUp);
+      document.removeEventListener('keydown', handleKeyDown);
     };
   }, [
     goNextStep,
