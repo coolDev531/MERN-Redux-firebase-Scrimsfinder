@@ -8,46 +8,18 @@ import Grid from '@mui/material/Grid';
 // utils
 import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles({
-  timer: {
-    background: 'white',
-    color: '#000',
-    fontSize: '22px',
-    display: 'flex',
-    textAlign: 'center',
-    borderRadius: '3px',
-    justifyContent: 'center',
-    padding: '20px',
-    '@supports (gap: 10px)': {
-      gap: '10px',
-    },
-  },
+/* The total number of seconds in a day is 60 * 60 * 24 and if we want to get the milliseconds, 
+  we need to multiply it by 1000 so the number 1000 * 60 * 60 * 24 is the total number of milliseconds in a day. */
+const SECONDS_IN_DAY_IN_MS = 60 * 60 * 24;
+//--
+// time variables in milliseconds for CountdownTimer calculations.
+const ONE_DAY_IN_MS = 1000 * SECONDS_IN_DAY_IN_MS;
+const ONE_HOUR_IN_MS = 1000 * 60 * 60;
+const ONE_MINUTE_IN_MS = 1000 * 60;
+const ONE_SECOND_IN_MS = 1000;
 
-  timerLoading: {
-    display: 'flex',
-    justifyContent: 'center',
-    width: '25%',
-    height: '20px',
-  },
-
-  timerText: {
-    fontWeight: 600,
-    color: 'green',
-    fontSize: '22px !important',
-  },
-});
-
-const Text = ({ children }) => {
-  const classes = useStyles();
-  return (
-    <Typography className={classes.timerText} variant="body2">
-      {children}
-    </Typography>
-  );
-};
-
-function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
-  const classes = useStyles();
+export default function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
+  const classes = useStyles(); // useStyles defined below component
 
   const [isTimerStarted, setIsTimerStarted] = useState(false);
   const [timerDays, setTimerDays] = useState('00');
@@ -61,27 +33,44 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
   );
 
   const gameStatusText = useMemo(() => {
-    if (!teamsFilled) return 'WAITING FOR PLAYERS.';
+    if (!teamsFilled) return 'WAITING FOR PLAYERS';
 
     if (scrim.teamWon) return `${scrim.teamWon} Won!`.toUpperCase();
-    return `GAME IN PROGRESS`;
+    return 'GAME IN PROGRESS';
   }, [scrim.teamWon, teamsFilled]);
 
   let interval = null;
 
   const startTimer = () => {
-    const countdownDate = new Date(scrim?.gameStartTime).getTime();
+    const countdownDate = new Date(scrim?.gameStartTime).getTime(); // milliseconds
 
     interval = setInterval(() => {
-      const now = new Date().getTime();
-      const difference = countdownDate - now;
       setIsTimerStarted(true);
-      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-      const hours = Math.floor(
-        (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+
+      const now = new Date().getTime(); // now in milliseconds.
+      const difference = countdownDate - now; // difference in milliseconds
+
+      // Dividing the difference (difference) by ONE_DAY_IN_MS and discarding the values after the decimal, we get the number of days.
+      const days = Math.floor(difference / ONE_DAY_IN_MS);
+
+      /* The first operation (%) is used to basically discard the part of the difference representing days 
+      (% returns the remainder of the division so the days portion of the difference is taken out. In the next step (division), 
+      ONE_HOUR_IN_MS is the total number of milliseconds in an hour. 
+      So dividing the remainder of the difference by this number will give us the number of hours.
+      */
+      const hours = Math.floor((difference % ONE_DAY_IN_MS) / ONE_HOUR_IN_MS);
+
+      /* The first operation (%) takes out the hours portion from difference 
+       and the division (ONE_MINUTE_IN_MS) returns the minutes (as ONE_MINUTE_IN_MS is the number of milliseconds in a minute) */
+      const minutes = Math.floor(
+        (difference % ONE_HOUR_IN_MS) / ONE_MINUTE_IN_MS
       );
-      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+      /* Here the first operation (%) takes out the minutes part
+       and the second operation (division) returns the number of seconds. */
+      const seconds = Math.floor(
+        (difference % ONE_MINUTE_IN_MS) / ONE_SECOND_IN_MS
+      );
 
       if (difference < 0) {
         // stop timer
@@ -144,7 +133,7 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
   if (gameStarted) {
     return (
       <div className={classes.timer}>
-        <Text>{gameStatusText}</Text>
+        <TimerText>{gameStatusText}</TimerText>
       </div>
     );
   }
@@ -155,45 +144,81 @@ function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
         {timerDays != '00' && (
           <>
             <section aria-label="timer-days">
-              <Text>{timerDays}</Text>
-              <Text>
+              <TimerText>{timerDays}</TimerText>
+              <TimerText>
                 <small>Days</small>
-              </Text>
+              </TimerText>
             </section>
-            <Text>:</Text>
+            <TimerText>:</TimerText>
           </>
         )}
         {timerHours != '00' && (
           <>
             <section aria-label="timer-hours">
-              <Text>{timerHours}</Text>
-              <Text>
+              <TimerText>{timerHours}</TimerText>
+              <TimerText>
                 <small>Hours</small>
-              </Text>
+              </TimerText>
             </section>
-            <Text>:</Text>
+            <TimerText>:</TimerText>
           </>
         )}
         {timerMinutes != '00' && (
           <>
             <section aria-label="timer-minutes">
-              <Text>{timerMinutes}</Text>
-              <Text>
+              <TimerText>{timerMinutes}</TimerText>
+              <TimerText>
                 <small>Minutes</small>
-              </Text>
+              </TimerText>
             </section>
-            <Text>:</Text>
+            <TimerText>:</TimerText>
           </>
         )}
         <section aria-label="timer-seconds">
-          <Text>{timerSeconds}</Text>
-          <Text>
+          <TimerText>{timerSeconds}</TimerText>
+          <TimerText>
             <small>Seconds</small>
-          </Text>
+          </TimerText>
         </section>
       </div>
     </Fragment>
   );
 }
 
-export default CountdownTimer;
+const useStyles = makeStyles({
+  timer: {
+    background: 'white',
+    color: '#000',
+    fontSize: '22px',
+    display: 'flex',
+    textAlign: 'center',
+    borderRadius: '3px',
+    justifyContent: 'center',
+    padding: '20px',
+    '@supports (gap: 10px)': {
+      gap: '10px',
+    },
+  },
+
+  timerLoading: {
+    display: 'flex',
+    justifyContent: 'center',
+    width: '25%',
+    height: '20px',
+  },
+
+  timerText: {
+    fontWeight: 600,
+    color: 'green',
+    fontSize: '22px !important',
+  },
+});
+
+const TimerText = ({ children }) => {
+  const classes = useStyles();
+  return (
+    <Typography className={classes.timerText} variant="body2">
+      {children}
+    </Typography>
+  );
+};
