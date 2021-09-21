@@ -45,7 +45,7 @@ function ScrimsProvider({ children }) {
     fetch,
     toggleFetch,
     scrimsLoaded,
-    fetchScrims: toggleFetch,
+    fetchScrims: toggleFetch, // rename toggleFetch to fetchScrims when imported from context
   };
 
   return (
