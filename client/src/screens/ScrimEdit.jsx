@@ -303,7 +303,7 @@ export default function ScrimEdit() {
                 direction="column"
                 alignItems="center"
                 spacing={4}
-                style={{ marginLeft: 'auto', marginRight: 'auto' }}>
+                style={{ marginLeft: 'auto', marginRight: 'auto', width: '100%' }}>
                 <Grid
                   container
                   justifyContent="center"
