@@ -22,17 +22,14 @@ import pluralize from 'pluralize';
 import { updateScrim } from '../../services/scrims';
 import { COLORS } from './../../appTheme';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
   infoBoxRoot: {
-    // background: ({ imageUploaded, gameStarted }) =>
-    //   `rgba(255, 255, 255,${
-    //     imageUploaded ? '0.8' : gameStarted ? '0.7' : '0.5'
-    //   })`,
     backgroundColor: COLORS.DK_BLUE_TRANSPARENT,
     padding: '10px',
     borderRadius: '4px',
+    backdropFilter: 'blur(8px)',
   },
-}));
+});
 
 //  this is the area that contains the countdown timer for the scrim section and the other details.
 export default function ScrimSectionMiddleAreaBox({

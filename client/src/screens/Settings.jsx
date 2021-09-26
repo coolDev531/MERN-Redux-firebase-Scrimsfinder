@@ -239,6 +239,7 @@ export default function Settings() {
                   <TextField
                     type="text"
                     name="name"
+                    style={{ width: 230 }}
                     variant="filled"
                     value={userData.name || ''}
                     onChange={handleChange}
@@ -253,6 +254,7 @@ export default function Settings() {
                     type="text"
                     variant="filled"
                     name="discord"
+                    style={{ width: 230 }}
                     value={userData.discord || ''}
                     onChange={handleChange}
                     label="Discord (name and #)"
@@ -274,6 +276,8 @@ export default function Settings() {
                   <FormControl className={classes.formControl} variant="filled">
                     <InputLabel>Region</InputLabel>
                     <Select
+                      fullWidth
+                      style={{ width: 230 }}
                       name="region"
                       value={userData.region}
                       onChange={handleChange}
@@ -295,8 +299,8 @@ export default function Settings() {
                   <TextField
                     variant="filled"
                     type="text"
-                    // fullWidth
                     name="adminKey"
+                    style={{ width: 230 }}
                     value={userData.adminKey || ''}
                     onChange={handleChange}
                     label="Admin key (not required)"
