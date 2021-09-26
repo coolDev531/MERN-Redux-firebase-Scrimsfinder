@@ -1,6 +1,5 @@
-import { useState, useEffect, Fragment, useMemo } from 'react';
-import useToggle from './../hooks/useToggle';
 import { useAuth } from './../context/currentUser';
+import { useState, useEffect, Fragment, useMemo } from 'react';
 import { useScrims } from './../context/scrimsContext';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import useTheme from '@mui/styles/useTheme';
@@ -66,9 +65,9 @@ export default function Scrims() {
   );
 
   // the hide/unhide toggle buttons on the drawer navbar.
-  const [hidePreviousScrims, setHidePreviousScrims] = useToggle(); // intitial value = false
-  const [hideCurrentScrims, setHideCurrentScrims] = useToggle();
-  const [hideUpcomingScrims, setHideUpcomingScrims] = useToggle();
+  const [hidePreviousScrims, setHidePreviousScrims] = useState(false);
+  const [hideCurrentScrims, setHideCurrentScrims] = useState(false);
+  const [hideUpcomingScrims, setHideUpcomingScrims] = useState(false);
 
   const theme = useTheme();
   const matchesLg = useMediaQuery(theme.breakpoints.down('lg'));
