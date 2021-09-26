@@ -14,8 +14,7 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
         : `url(${BgGIF})`,
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
-    backgroundSize: ({ imageUploaded, scrim }) =>
-      imageUploaded === scrim?._id ? '100% 100%' : 'cover',
+    backgroundSize: 'cover',
     border: '1px solid white',
   },
   scrimSectionHeader: {
