@@ -1,7 +1,5 @@
 import { makeStyles } from '@mui/styles';
-
-const BG_GIF =
-  'https://pa1.narvii.com/5779/8d76b2b8112e6aa9494a93f0ca6bbffe96e2f6c3_hq.gif';
+import BgGIF from '../assets/images/vi_background.gif';
 
 export const useScrimSectionStyles = makeStyles((theme) => ({
   scrimBox: {
@@ -12,8 +10,8 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
     marginLeft: 'auto',
     backgroundImage: ({ imageUploaded, scrim }) =>
       imageUploaded === scrim?._id
-        ? `url(${scrim?.postGameImage?.location}), url(${BG_GIF})` // fallback with ,
-        : `url(${BG_GIF})`,
+        ? `url(${scrim?.postGameImage?.location}), url(${BgGIF})` // fallback with ,
+        : `url(${BgGIF})`,
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
     backgroundSize: ({ imageUploaded, scrim }) =>
