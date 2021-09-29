@@ -13,6 +13,7 @@ import ScrimSection from '../components/scrim_components/ScrimSection';
 import Loading from '../components/shared/Loading';
 import Navbar from '../components/shared/Navbar/Navbar';
 import Tooltip from '../components/shared/Tooltip';
+import { Fade } from 'react-awesome-reveal'; // intersection observer fade on scrim box reveal.
 
 // utils
 import { showEarliestFirst, showLatestFirst } from '../utils/getSortedScrims';
@@ -186,7 +187,9 @@ export default function Scrims() {
 
                       {currentScrims.map((scrim) => (
                         <Fragment key={scrim._id}>
-                          <ScrimSection scrim={scrim} />
+                          <Fade triggerOnce>
+                            <ScrimSection scrim={scrim} />
+                          </Fade>
                           <div className="page-break" />
                         </Fragment>
                       ))}
@@ -216,7 +219,9 @@ export default function Scrims() {
 
                   {upcomingScrims.map((scrim) => (
                     <Fragment key={scrim._id}>
-                      <ScrimSection scrim={scrim} />
+                      <Fade triggerOnce>
+                        <ScrimSection scrim={scrim} />
+                      </Fade>
                       <div className="page-break" />
                     </Fragment>
                   ))}
@@ -243,7 +248,9 @@ export default function Scrims() {
                   ) : null}
                   {previousScrims.map((scrim) => (
                     <Fragment key={scrim._id}>
-                      <ScrimSection scrim={scrim} />
+                      <Fade triggerOnce>
+                        <ScrimSection scrim={scrim} />
+                      </Fade>
                       <div className="page-break" />
                     </Fragment>
                   ))}
