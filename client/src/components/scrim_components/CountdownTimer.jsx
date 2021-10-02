@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect, useMemo } from 'react';
+import React, { Fragment, useState, useEffect, useMemo, useRef } from 'react';
 
 // components
 import Typography from '@mui/material/Typography';
@@ -39,12 +39,13 @@ export default function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
     return 'GAME IN PROGRESS';
   }, [scrim.teamWon, teamsFilled]);
 
-  let interval = null;
+  // preserve the interval id between renders
+  let intervalRef = useRef(null);
 
   const startTimer = () => {
     const countdownDate = new Date(scrim?.gameStartTime).getTime(); // milliseconds
 
-    interval = setInterval(() => {
+    intervalRef.current = setInterval(() => {
       setIsTimerStarted(true);
 
       const now = new Date().getTime(); // now in milliseconds.
@@ -55,12 +56,12 @@ export default function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
 
       /* The first operation (%) is used to basically discard the part of the difference representing days 
       (% returns the remainder of the division so the days portion of the difference is taken out. 
-      In the next step (division), ONE_HOUR_IN_MS is the total number of milliseconds in an hour. 
-      So dividing the remainder of the difference by this number will give us the number of hours. */
+        In the next step (division), ONE_HOUR_IN_MS is the total number of milliseconds in an hour. 
+        So dividing the remainder of the difference by this number will give us the number of hours. */
       const hours = Math.floor((difference % ONE_DAY_IN_MS) / ONE_HOUR_IN_MS);
 
       /* The first operation (%) takes out the hours portion from difference 
-       and the division (ONE_MINUTE_IN_MS) returns the minutes (as ONE_MINUTE_IN_MS is the number of milliseconds in a minute) */
+        and the division (ONE_MINUTE_IN_MS) returns the minutes (as ONE_MINUTE_IN_MS is the number of milliseconds in a minute) */
       const minutes = Math.floor(
         (difference % ONE_HOUR_IN_MS) / ONE_MINUTE_IN_MS
       );
@@ -74,7 +75,7 @@ export default function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
       if (difference < 0) {
         // stop timer
 
-        clearInterval(interval);
+        clearInterval(intervalRef.current);
       } else {
         setTimerDays(days);
         setTimerHours(hours);
@@ -87,7 +88,7 @@ export default function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
   useEffect(() => {
     startTimer();
     return () => {
-      clearInterval(interval);
+      clearInterval(intervalRef.current);
     };
   });
 
@@ -102,7 +103,7 @@ export default function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
       timerSeconds == '00'
     ) {
       // when timer reaches 0 (game starts), run the following code.
-      clearInterval(interval);
+      clearInterval(intervalRef.current);
       setGameStarted(scrim._id);
       setIsTimerStarted(false);
       console.log(
