@@ -24,6 +24,7 @@ import 'moment-timezone';
 import { getDateAndTimeSeparated } from '../utils/getDateAndTimeSeparated';
 import devLog from '../utils/devLog';
 import { updateScrim, getScrimById } from '../services/scrims';
+import Loading from './../components/shared/Loading';
 
 /**
  * @method sample
@@ -284,6 +285,11 @@ export default function ScrimEdit() {
     return <Redirect to={`/scrims/${id}`} />;
   }
 
+  // if scrim isn't loaded, return loading component
+  if (!scrimData?.createdBy) {
+    return <Loading text="Loading..." />;
+  }
+
   return (
     <>
       <Navbar showLess />
@@ -303,7 +309,11 @@ export default function ScrimEdit() {
                 direction="column"
                 alignItems="center"
                 spacing={4}
-                style={{ marginLeft: 'auto', marginRight: 'auto', width: '100%' }}>
+                style={{
+                  marginLeft: 'auto',
+                  marginRight: 'auto',
+                  width: '100%',
+                }}>
                 <Grid
                   container
                   justifyContent="center"
