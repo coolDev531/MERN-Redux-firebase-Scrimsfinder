@@ -6,6 +6,7 @@ import { getAllScrims } from './../services/scrims';
 import devLog from '../utils/devLog';
 
 const ScrimsContext = createContext();
+ScrimsContext.displayName = 'ScrimsContext';
 
 export const useScrims = () => useContext(ScrimsContext);
 

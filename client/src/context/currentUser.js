@@ -15,6 +15,7 @@ import jwt_decode from 'jwt-decode';
 import devLog from './../utils/devLog';
 
 const CurrentUserContext = createContext([{}, () => {}]);
+CurrentUserContext.displayName = 'CurrentUserContext';
 
 export const useAuth = () => useContext(CurrentUserContext);
 

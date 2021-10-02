@@ -1,6 +1,8 @@
 import React, { useState, createContext, useContext } from 'react';
 
 const AlertsContext = createContext();
+AlertsContext.displayName = 'AlertsContext';
+
 const useAlerts = () => useContext(AlertsContext);
 
 function AlertsProvider({ children }) {
