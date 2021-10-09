@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useScrims } from './../context/scrimsContext';
-import { useAlerts } from './../context/alertsContext';
-import { useAuth } from './../context/currentUser';
+import { useScrimsActions } from './../hooks/useScrims';
+import useAlerts from './../hooks/useAlerts';
+import useAuth from './../hooks/useAuth';
 
 // components
 import Navbar from '../components/shared/Navbar/Navbar';
@@ -27,7 +27,7 @@ import 'moment-timezone';
 import devLog from './../utils/devLog';
 
 export default function ScrimCreate() {
-  const { fetchScrims } = useScrims();
+  const { fetchScrims } = useScrimsActions();
   const { currentUser, isCurrentUserAdmin } = useAuth();
   const { setCurrentAlert } = useAlerts();
 

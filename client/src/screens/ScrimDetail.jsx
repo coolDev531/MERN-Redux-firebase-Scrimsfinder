@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useScrims } from './../context/scrimsContext';
+import useScrims from './../hooks/useScrims';
 import { useParams, useHistory } from 'react-router-dom';
 import ScrimSection from '../components/scrim_components/ScrimSection';
 import Navbar from '../components/shared/Navbar/Navbar';
@@ -37,7 +37,7 @@ export default function ScrimDetail() {
       <Helmet>
         <meta charSet="utf-8" />
         <title>
-          LoL Scrims Finder |{' '}
+          Bootcamp LoL Scrim Gym |{' '}
           {scrim?.title ?? `${scrim.createdBy.name}'s Scrim`}
         </title>
         <meta

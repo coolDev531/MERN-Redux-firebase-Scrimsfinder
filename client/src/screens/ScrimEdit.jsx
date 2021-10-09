@@ -1,8 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useScrims } from './../context/scrimsContext';
+import { useScrimsActions } from './../hooks/useScrims';
 import { Redirect, useParams, useHistory } from 'react-router-dom';
-import { useAuth } from './../context/currentUser';
-import { useAlerts } from '../context/alertsContext';
+import useAlerts from '../hooks/useAlerts';
+import useAuth from './../hooks/useAuth';
 
 // components
 import Navbar from '../components/shared/Navbar/Navbar';
@@ -37,7 +37,7 @@ const RANDOM_HOST_CODE = '_$random'; // because input doesn't want value to be n
 
 export default function ScrimEdit() {
   const { currentUser, isCurrentUserAdmin } = useAuth();
-  const { fetchScrims } = useScrims();
+  const { fetchScrims } = useScrimsActions();
   const { setCurrentAlert } = useAlerts();
 
   const [scrimData, setScrimData] = useState({

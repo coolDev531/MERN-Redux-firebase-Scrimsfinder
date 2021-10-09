@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { useAlerts } from '../../context/alertsContext';
+import useAlerts from './../../hooks/useAlerts';
 import useTheme from '@mui/styles/useTheme';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { useScrimSectionStyles } from '../../styles/ScrimSection.styles';
 
 // components
 import Moment from 'react-moment';
@@ -19,7 +20,6 @@ import AdminArea from './../shared/AdminArea';
 // icons
 import ShareIcon from '@mui/icons-material/Share';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { useScrimSectionStyles } from '../../styles/ScrimSection.styles';
 
 const MAX_CASTER_AMOUNT = 2;
 
@@ -31,6 +31,7 @@ export default function ScrimSectionHeader({
   joinCast,
   leaveCast,
   handleDeleteScrim,
+  buttonsDisabled,
 }) {
   const { casters } = scrim;
   const { setCurrentAlert } = useAlerts();
@@ -159,7 +160,9 @@ export default function ScrimSectionHeader({
                     variant="contained"
                     color="primary"
                     disabled={
-                      casters.length === MAX_CASTER_AMOUNT || casterEntered
+                      casters.length === MAX_CASTER_AMOUNT ||
+                      casterEntered ||
+                      buttonsDisabled
                     }
                     onClick={joinCast}>
                     join cast
@@ -172,6 +175,7 @@ export default function ScrimSectionHeader({
                   <Button
                     color="secondary"
                     variant="contained"
+                    disabled={buttonsDisabled}
                     onClick={leaveCast}>
                     Leave cast
                   </Button>

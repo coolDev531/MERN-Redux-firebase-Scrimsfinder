@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useAuth } from '../context/currentUser';
-import { useAlerts } from '../context/alertsContext';
+import useAlerts from '../hooks/useAlerts';
+import useAuth, { useAuthActions } from './../hooks/useAuth';
 
 // components
 import Grid from '@mui/material/Grid';
@@ -44,7 +44,9 @@ const useStyles = makeStyles((theme) => ({
 
 // userEdit
 export default function Settings() {
-  const { currentUser, setCurrentUser } = useAuth();
+  const { currentUser } = useAuth();
+  const { setCurrentUser } = useAuthActions();
+
   const [allUsers, setAllUsers] = useState([]);
   const [userData, setUserData] = useState({
     name: currentUser?.name, // LoL summoner name

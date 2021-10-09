@@ -1,24 +1,14 @@
 // hooks
 import { useMemo } from 'react';
 import useOnKeyDown from './../../../hooks/useOnKeyDown';
-import { useAuth } from '../../../context/currentUser';
 import { useHistory } from 'react-router-dom';
-import { useScrims } from '../../../context/scrimsContext';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import useTheme from '@mui/styles/useTheme';
+import useAuth, { useAuthActions } from './../../../hooks/useAuth';
 
 // components
 import { InnerColumn } from '../PageComponents';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import InputLabel from '@mui/material/InputLabel';
-import Box from '@mui/material/Box';
-import FormHelperText from '@mui/material/FormHelperText';
-import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -27,6 +17,8 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Hidden from '@mui/material/Hidden';
 import AdminArea from '../AdminArea';
+import NavbarCheckboxes from './NavbarCheckboxes';
+import NavbarDropdowns from './NavbarDropdowns';
 
 // icons
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -34,7 +26,6 @@ import ExitIcon from '@mui/icons-material/ExitToApp';
 import CreateIcon from '@mui/icons-material/BorderColor';
 
 // utils
-import moment from 'moment';
 import clsx from 'clsx';
 import { KEYCODES } from '../../../utils/keycodes';
 import { makeStyles } from '@mui/styles';
@@ -62,21 +53,13 @@ export default function NavbarDrawer({
   showCheckboxes,
   showDropdowns,
   showLess,
-  hideProps,
-  scrimsRegion, // the region the scrims are going to be filtered by
-  setScrimsRegion,
-  scrimsDate, // the date the scrims are going to be filtered by
-  setScrimsDate,
 }) {
-  const { currentUser, logOutUser } = useAuth();
-  const { fetchScrims } = useScrims();
+  const { currentUser } = useAuth();
+  const { handleLogout } = useAuthActions();
 
   const classes = useStyles();
   const history = useHistory();
-
   const theme = useTheme();
-  const matchesSm = useMediaQuery(theme.breakpoints.down('sm'));
-  const matchesXs = useMediaQuery(theme.breakpoints.down('xs'));
   const matchesLg = useMediaQuery(theme.breakpoints.down('lg'));
 
   const drawerAnchor = useMemo(
@@ -84,37 +67,12 @@ export default function NavbarDrawer({
     [matchesLg]
   );
 
-  // this is terrible but I'm doing it this way because it will cause an error that it can't find props of undefined
-  let hidePreviousScrims = hideProps?.hidePreviousScrims,
-    hideCurrentScrims = hideProps?.hideCurrentScrims,
-    hideUpcomingScrims = hideProps?.hideUpcomingScrims,
-    setHidePreviousScrims = hideProps?.setHidePreviousScrims,
-    setHideCurrentScrims = hideProps?.setHideCurrentScrims,
-    setHideUpcomingScrims = hideProps?.setHideUpcomingScrims;
-
   const drawerNavPush = async (path) => {
     setIsDrawerOpen(false);
 
     // using sleep so the user sees the drawer close before the path gets redirected.
     await sleep(80);
     history.push(path);
-  };
-
-  let allRegions = ['NA', 'EUW', 'EUNE', 'LAN'];
-
-  let selectRegions = [
-    currentUser?.region,
-    ...allRegions.filter((r) => r !== currentUser?.region),
-  ];
-
-  const onSelectRegion = (e) => {
-    const region = e.target.value;
-    fetchScrims(); // not necessary, trying to ping the server.
-    setScrimsRegion(region); // set the navbar select value to selected region
-  };
-
-  const onSelectDate = (e) => {
-    setScrimsDate(moment(e.target.value));
   };
 
   useOnKeyDown(
@@ -165,7 +123,7 @@ export default function NavbarDrawer({
             {/* Log out button */}
             {currentUser?.uid && (
               <>
-                <ListItem button onClick={logOutUser}>
+                <ListItem button onClick={handleLogout}>
                   <ListItemIcon>
                     <ExitIcon />
                   </ListItemIcon>
@@ -187,131 +145,11 @@ export default function NavbarDrawer({
               direction="row"
               justifyContent="space-between"
               style={{ padding: '15px 10px 10px 10px' }}>
-              {showDropdowns && (
-                <Grid
-                  item
-                  container
-                  xs={6}
-                  md={4}
-                  alignItems={matchesSm ? 'flex-start' : 'center'}
-                  justifyContent="flex-start"
-                  direction={matchesSm ? 'column' : 'row'}
-                  id="nav__selects--container">
-                  {/* date and regions filters */}
-                  <Grid item>
-                    <TextField
-                      variant="standard"
-                      id="date"
-                      required
-                      label="Scrims Date"
-                      type="date"
-                      name="scrimsDate"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      value={
-                        moment(new Date(scrimsDate)).format('yyyy-MM-DD') ||
-                        moment().format('yyyy-MM-DD')
-                      }
-                      onChange={onSelectDate}
-                    />
-
-                    <FormHelperText className="text-white">
-                      Filter scrims by date
-                    </FormHelperText>
-                  </Grid>
-
-                  <Hidden xsDown>
-                    <Box marginRight={4} />
-                  </Hidden>
-
-                  <Grid item id="nav__region-filter--container">
-                    <InputLabel className="text-white">Region</InputLabel>
-
-                    <Select
-                      variant="standard"
-                      value={scrimsRegion}
-                      className="text-white"
-                      onChange={onSelectRegion}>
-                      {selectRegions.map((region, key) => (
-                        <MenuItem value={region} key={key}>
-                          {region}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    <FormHelperText className="text-white">
-                      Filter scrims by region
-                    </FormHelperText>
-                  </Grid>
-                </Grid>
-              )}
-
               {/* Show scrims (current, previous, upcoming) buttons */}
-              {showCheckboxes && (
-                <Grid
-                  item
-                  alignItems="center"
-                  container
-                  justifyContent="flex-end"
-                  direction={matchesXs ? 'column' : 'row'}
-                  spacing={2}
-                  xs={6}
-                  md={8}>
-                  <FormGroup
-                    row
-                    className="text-white"
-                    style={{
-                      justifyContent: 'flex-end',
-                    }}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          // the UI says "show X scrims", so in this case we are reversing the boolean for checked, lol.
-                          // doesn't matter functionally.
+              {showCheckboxes && <NavbarCheckboxes />}
 
-                          checked={!hideCurrentScrims}
-                          color="primary"
-                          onChange={() =>
-                            setHideCurrentScrims((prevState) => !prevState)
-                          }
-                          name="hideCurrentScrims"
-                        />
-                      }
-                      label="Show current scrims"
-                      labelPlacement="bottom"
-                    />
-
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={!hideUpcomingScrims}
-                          color="primary"
-                          onChange={() =>
-                            setHideUpcomingScrims((prevState) => !prevState)
-                          }
-                          name="hideUpcomingScrims"
-                        />
-                      }
-                      label="Show upcoming scrims"
-                      labelPlacement="bottom"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          color="primary"
-                          checked={!hidePreviousScrims}
-                          onChange={() =>
-                            setHidePreviousScrims((prevState) => !prevState)
-                          }
-                          name="hidePreviousScrims"
-                        />
-                      }
-                      label="Show previous scrims"
-                      labelPlacement="bottom"
-                    />
-                  </FormGroup>
-                </Grid>
-              )}
+              {/* region, date filters */}
+              {showDropdowns && <NavbarDropdowns />}
             </Grid>
           </Hidden>
         )}

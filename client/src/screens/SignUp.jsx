@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, Fragment, useMemo } from 'react';
-import { useAlerts } from '../context/alertsContext';
-import { useAuth } from '../context/currentUser';
+import useAlerts from '../hooks/useAlerts';
+import useAuth, { useAuthActions } from '../hooks/useAuth';
 
 // components
 import { Redirect } from 'react-router-dom';
@@ -36,7 +36,8 @@ function getSteps() {
 
 // the page where users sign up.
 export default function SignUp() {
-  const { currentUser, setCurrentUser } = useAuth();
+  const { currentUser } = useAuth();
+  const { setCurrentUser } = useAuthActions();
 
   const [userData, setUserData] = useState({
     name: '',

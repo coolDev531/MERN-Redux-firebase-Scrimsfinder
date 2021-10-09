@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
-import { useScrims } from './../../context/scrimsContext';
-import { useAuth } from './../../context/currentUser';
+import { useScrimsActions } from './../../hooks/useScrims';
+import useAuth from './../../hooks/useAuth';
+import useAlerts from '../../hooks/useAlerts';
 
 // components
 import AdminArea from '../shared/AdminArea';
@@ -9,10 +10,10 @@ import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import FormHelperText from '@mui/material/FormHelperText';
+
 // utils
 import S3FileUpload from 'react-s3';
 import { addImageToScrim, removeImageFromScrim } from '../../services/scrims';
-import { useAlerts } from '../../context/alertsContext';
 
 // icons
 import UploadIcon from '@mui/icons-material/CloudUpload';
@@ -43,7 +44,7 @@ const changeFileName = async (file, scrimId) => {
 export default function UploadPostGameImage({ scrim, isUploaded }) {
   const { currentUser } = useAuth();
   const fileInputRef = useRef();
-  const { fetchScrims } = useScrims();
+  const { fetchScrims } = useScrimsActions();
   const { setCurrentAlert } = useAlerts();
   const [buttonDisabled, setButtonDisabled] = useState(false); // disable when uploading / deleting img
 

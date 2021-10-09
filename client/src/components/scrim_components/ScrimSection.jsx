@@ -1,8 +1,9 @@
 import { useEffect, useState, useMemo } from 'react';
-import { useScrims } from './../../context/scrimsContext';
-import { useAuth } from './../../context/currentUser';
+import { useScrimsActions } from '../../hooks/useScrims';
+import useAuth from '../../hooks/useAuth';
+import useAlerts from './../../hooks/useAlerts';
 import { useScrimSectionStyles } from '../../styles/ScrimSection.styles';
-import { useAlerts } from '../../context/alertsContext';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 //  components
@@ -33,7 +34,7 @@ const compareDates = (scrim) => {
 const MAX_CASTER_AMOUNT = 2;
 
 export default function ScrimSection({ scrim, isInDetail }) {
-  const { setScrims, fetchScrims } = useScrims();
+  const { fetchScrims } = useScrimsActions();
   const { currentUser } = useAuth();
   const { setCurrentAlert } = useAlerts();
 
@@ -42,6 +43,8 @@ export default function ScrimSection({ scrim, isInDetail }) {
   const [gameStarted, setGameStarted] = useState(false);
   const [imageUploaded, setImageUploaded] = useState(false);
   const [buttonsDisabled, setButtonsDisabled] = useState(false); // for when players spam joining or leaving.
+
+  const dispatch = useDispatch();
 
   // if the scrim has a winning team, it means it has ended.
   const gameEnded = useMemo(() => scrim.teamWon, [scrim.teamWon]);
@@ -108,7 +111,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
     if (casterEntered) return;
     if (casters.length === MAX_CASTER_AMOUNT) return;
 
-    fetchScrims();
+    setButtonsDisabled(true);
 
     const updatedScrim = await insertCasterInScrim({
       scrimId: scrim._id,
@@ -121,12 +124,14 @@ export default function ScrimSection({ scrim, isInDetail }) {
         `%cadded ${currentUser?.name} as a caster for scrim: ${scrim._id}`,
         'color: #99ff99'
       );
-      fetchScrims();
+      setButtonsDisabled(false);
     }
+
+    fetchScrims();
   };
 
   const leaveCast = async () => {
-    fetchScrims();
+    setButtonsDisabled(true);
 
     const updatedScrim = await removeCasterFromScrim({
       scrimId: scrim._id,
@@ -139,8 +144,10 @@ export default function ScrimSection({ scrim, isInDetail }) {
         `%cremoved ${currentUser?.name} from the caster list for scrim: ${scrim._id}`,
         'color: #99ff99'
       );
-      fetchScrims();
+      setButtonsDisabled(false);
     }
+
+    fetchScrims();
   };
 
   const handleDeleteScrim = async () => {
@@ -151,7 +158,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
       let deletedScrim = await deleteScrim(scrim._id);
 
       if (deletedScrim) {
-        setScrims((prevState) => prevState.filter((s) => s._id !== scrim._id));
+        dispatch({ type: 'scrims/deleteScrim', payload: scrim });
 
         setCurrentAlert({
           type: 'Success',
@@ -180,6 +187,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
           handleDeleteScrim={handleDeleteScrim}
           gameEnded={gameEnded}
           casterEntered={casterEntered}
+          buttonsDisabled={buttonsDisabled}
         />
 
         <div className={classes.teamsContainer}>

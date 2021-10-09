@@ -26,17 +26,13 @@ const main = async () => {
   const teamOne = firstFivePlayers.map((user, idx) => ({
     role: roles[idx],
     team: { name: 'teamOne' },
-    _user: {
-      ...user,
-    },
+    _user: user._id,
   }));
 
   const teamTwo = secondFivePlayers.map((user, idx) => ({
     role: roles[idx],
     team: { name: 'teamTwo' },
-    _user: {
-      ...user,
-    },
+    _user: user._id,
   }));
 
   let today = new Date();
