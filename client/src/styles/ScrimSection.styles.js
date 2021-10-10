@@ -1,5 +1,6 @@
 import { makeStyles } from '@mui/styles';
-import BgGIF from '../assets/images/vi_background.gif';
+import BgGIF from '../assets/images/backgrounds/vi_background.gif';
+import HappyTeam from '../assets/images/backgrounds/happy_team.jpg';
 
 export const useScrimSectionStyles = makeStyles((theme) => ({
   scrimBox: {
@@ -8,10 +9,8 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
     maxWidth: '1100px',
     marginRight: 'auto',
     marginLeft: 'auto',
-    backgroundImage: ({ imageUploaded, scrim }) =>
-      imageUploaded === scrim?._id
-        ? `url(${scrim?.postGameImage?.location}), url(${BgGIF})` // fallback with ,
-        : `url(${BgGIF})`,
+    backgroundImage: ({ scrim }) =>
+      scrim?.teamWon ? `url(${HappyTeam})` : `url(${BgGIF})`,
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',

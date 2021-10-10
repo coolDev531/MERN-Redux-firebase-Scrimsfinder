@@ -1,7 +1,7 @@
 // utils
 import { makeStyles } from '@mui/styles';
 
-import BgImage from '../assets/images/summoners_rift.jpg';
+import BgImage from '../assets/images/backgrounds/summoners_rift.jpg';
 import { COLORS } from './../appTheme';
 
 export const useAppStyles = makeStyles({
