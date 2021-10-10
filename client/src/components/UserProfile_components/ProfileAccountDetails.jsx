@@ -34,10 +34,10 @@ const ProfileAccountDetails = ({ user, userParticipatedScrims }) => {
       }
 
       const playerTeamName = foundPlayer?.team?.name; // teamOne, teamTwo.
-      const playerTeamNumber = playerTeamName.includes('One') ? '1' : '2';
+      const playerTeamNumber = playerTeamName?.includes('One') ? '1' : '2';
 
       const winningTeam = scrim.teamWon;
-      const playerWon = winningTeam.includes(playerTeamNumber);
+      const playerWon = winningTeam?.includes(playerTeamNumber);
 
       if (playerWon) {
         exp += 3;
