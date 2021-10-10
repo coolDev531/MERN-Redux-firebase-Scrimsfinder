@@ -72,9 +72,10 @@ export default function ScrimTeamList({
 
   const toggleDisableButtons = async () => {
     setButtonsDisabled(true);
+
     setTimeout(async () => {
       setButtonsDisabled(false);
-    }, 400);
+    }, 1000);
   };
 
   const joinGame = async (teamJoiningName, role) => {
@@ -116,7 +117,7 @@ export default function ScrimTeamList({
   };
 
   const handleMovePlayer = async (teamName, role) => {
-    toggleDisableButtons();
+    toggleDisableButtons(true);
 
     const updatedScrim = await movePlayerInScrim({
       scrimId: scrim._id,
@@ -134,10 +135,9 @@ export default function ScrimTeamList({
         'color: #99ff99'
       );
 
+      fetchScrims();
       dispatch({ type: 'scrims/updateScrim', payload: updatedScrim });
     }
-
-    fetchScrims();
   };
 
   const leaveGame = async () => {
