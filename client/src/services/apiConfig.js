@@ -8,9 +8,9 @@ const apiUrls = {
 };
 
 if (window.location.hostname === 'localhost') {
-  apiUrl = apiUrls.production;
+  apiUrl = apiUrls.development;
 } else {
-  // apiUrl = apiUrls.development;
+  apiUrl = apiUrls.production;
 }
 
 const api = axios.create({
