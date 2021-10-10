@@ -21,6 +21,7 @@ import { makeStyles } from '@mui/styles';
 import pluralize from 'pluralize';
 import { updateScrim } from '../../services/scrims';
 import { COLORS } from './../../appTheme';
+import useAlerts from './../../hooks/useAlerts';
 
 const useStyles = makeStyles({
   infoBoxRoot: {
@@ -42,6 +43,7 @@ export default function ScrimSectionMiddleAreaBox({
   casterEntered,
 }) {
   const { currentUser, isCurrentUserAdmin } = useAuth();
+  const { setCurrentAlert } = useAlerts();
 
   const classes = useStyles({ gameStarted, imageUploaded });
 
@@ -145,7 +147,8 @@ export default function ScrimSectionMiddleAreaBox({
                                   };
                                   const updatedScrim = await updateScrim(
                                     scrim._id,
-                                    dataSending
+                                    dataSending,
+                                    setCurrentAlert
                                   );
                                   if (updatedScrim) {
                                     fetchScrims();

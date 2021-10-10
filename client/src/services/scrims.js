@@ -18,20 +18,30 @@ export const getScrimById = async (id) => {
   }
 };
 
-export const createScrim = async (scrim) => {
+export const createScrim = async (scrim, setCurrentAlert) => {
   try {
     const response = await api.post('/scrims', scrim);
     return response.data;
   } catch (error) {
+    if (setCurrentAlert) {
+      setCurrentAlert({ type: 'Error', message: 'error creating scrim' });
+    }
+
     throw error;
   }
 };
 
-export const updateScrim = async (id, scrim) => {
+export const updateScrim = async (id, scrim, setCurrentAlert) => {
   try {
     const response = await api.put(`/scrims/${id}`, scrim);
     return response.data;
   } catch (error) {
+    if (setCurrentAlert) {
+      setCurrentAlert({
+        type: 'Error',
+        message: 'Error updating Scrim',
+      });
+    }
     throw error;
   }
 };

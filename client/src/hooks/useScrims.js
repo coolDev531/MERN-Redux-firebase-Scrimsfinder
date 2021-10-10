@@ -99,7 +99,9 @@ export const useFilteredScrims = () => {
   useEffect(() => {
     dispatch({
       type: 'scrims/setFilteredScrims',
-      payload: filteredScrimsByDateAndRegion,
+      payload: filteredScrimsByDateAndRegion.filter(
+        (scrim) => !scrim.isPrivate // don't show private scrims
+      ),
     });
     // this runs everytime scrimsRegion and dateFilteredScrims changes.
 

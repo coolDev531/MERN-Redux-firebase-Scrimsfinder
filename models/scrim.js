@@ -70,6 +70,7 @@ const Scrim = new Schema(
     },
     teamWon: { type: 'String', default: null },
     postGameImage: { type: ImageSchema }, // image of the post-game lobby
+    isPrivate: false, // if it's private, only people with share link can see.
   },
   { timestamps: true, optimisticConcurrency: true, versionKey: 'version' }
 );

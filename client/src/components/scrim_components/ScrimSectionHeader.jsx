@@ -56,7 +56,11 @@ export default function ScrimSectionHeader({
         <Grid item sm={6}>
           <Link
             className="link"
-            style={{ textDecorationColor: '#000' }}
+            style={{
+              textDecorationColor: '#000',
+              display: 'flex',
+              alignItems: 'center',
+            }}
             to={`/scrims/${scrim._id}`}>
             <Typography variant="h1" style={{ fontSize: '1.6rem' }}>
               {/* if scrim has a title show title, else show createdby.name's scrim */}
@@ -64,6 +68,14 @@ export default function ScrimSectionHeader({
                 scrim.region
               })`}
             </Typography>
+
+            {scrim.isPrivate && (
+              <Typography
+                variant="h3"
+                style={{ fontSize: '1.6rem', color: '#999' }}>
+                &nbsp;private
+              </Typography>
+            )}
           </Link>
         </Grid>
         <Grid

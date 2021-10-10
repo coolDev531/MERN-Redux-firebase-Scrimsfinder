@@ -12,7 +12,10 @@ import MenuItem from '@mui/material/MenuItem';
 import FormHelperText from '@mui/material/FormHelperText';
 import Button from '@mui/material/Button';
 import Select from '@mui/material/Select';
-import { Redirect } from 'react-router';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import Tooltip from './../components/shared/Tooltip';
+import { Redirect } from 'react-router-dom';
 import {
   InnerColumn,
   PageContent,
@@ -37,7 +40,9 @@ export default function ScrimCreate() {
     region: currentUser?.region,
     createdBy: currentUser,
     title: '',
+    isPrivate: false,
   });
+
   const [dateData, setDateData] = useState({
     gameStartDate: new Date(),
     gameStartHours: [new Date().getHours().toString(), getMinutes(new Date())],
@@ -102,17 +107,25 @@ export default function ScrimCreate() {
         lobbyHost: scrimData.lobbyHost === 'random' ? null : currentUser,
       };
 
-      const createdScrim = await createScrim(scrimToCreate);
+      const createdScrim = await createScrim(scrimToCreate, setCurrentAlert);
 
       fetchScrims();
 
       devLog('created new scrim!', createdScrim);
       setCreated({ createdScrim });
 
-      setCurrentAlert({
-        type: 'Success',
-        message: 'scrim created successfully!',
-      });
+      if (createdScrim.isPrivate) {
+        setCurrentAlert({
+          type: 'Success',
+          message:
+            'Private scrim created, only users with the share link can access it',
+        });
+      } else {
+        setCurrentAlert({
+          type: 'Success',
+          message: 'scrim created successfully!',
+        });
+      }
     } catch (error) {
       setCurrentAlert({ type: 'Error', message: 'error creating scrim' });
       console.error(error);
@@ -124,7 +137,7 @@ export default function ScrimCreate() {
   }
 
   if (isCreated) {
-    return <Redirect to="/" />;
+    return <Redirect to={`/scrims/${isCreated?.createdScrim?._id}`} />;
   }
 
   return (
@@ -133,21 +146,27 @@ export default function ScrimCreate() {
       <PageContent>
         <PageSection>
           <InnerColumn>
-            <form
+            <Grid
               onSubmit={handleSubmit}
-              style={{ width: '80%', marginLeft: 'auto', marginRight: 'auto' }}>
+              style={{ width: '80%', marginLeft: 'auto', marginRight: 'auto' }}
+              container
+              direction="column"
+              alignItems="center"
+              justifyContent="center"
+              component="form"
+              spacing={4}>
               <Grid
+                item
                 container
-                direction="column"
-                alignItems="center"
+                sm={12}
                 justifyContent="center"
-                spacing={4}>
-                <Grid item sm={12}>
-                  <Grid item>
-                    <FormHelperText className="text-white">
-                      Scrim Title {`(example: ${currentUser?.name}'s Scrim)`}
-                    </FormHelperText>
-                  </Grid>
+                alignItems="center"
+                direction="row"
+                spacing={2}>
+                <Grid item>
+                  <FormHelperText className="text-white">
+                    Scrim Title {`(example: ${currentUser?.name}'s Scrim)`}
+                  </FormHelperText>
                   <TextField
                     variant="standard"
                     onChange={handleChange}
@@ -158,108 +177,140 @@ export default function ScrimCreate() {
                   />
                 </Grid>
 
-                <Grid
-                  item
-                  container
-                  direction="row"
-                  alignItems="center"
-                  justifyContent="center"
-                  spacing={2}>
-                  <Grid item>
-                    <FormHelperText className="text-white">
-                      Game Start Date
-                    </FormHelperText>
-                    <TextField
-                      variant="standard"
-                      onChange={handleChange}
-                      required
-                      type="date"
-                      name="gameStartDate"
-                      value={moment(
-                        new Date(dateData.gameStartDate).toISOString()
-                      ).format('yyyy-MM-DD')}
-                    />
-                  </Grid>
-                  <Box marginRight={2} />
-                  <Grid item>
-                    <FormHelperText className="text-white">
-                      Game Start Time
-                    </FormHelperText>
-
-                    <TextField
-                      variant="standard"
-                      onChange={handleChange}
-                      required
-                      type="time"
-                      name="gameStartHours"
-                      value={
-                        moment(scrimData?.gameStartTime).format('HH:mm') ||
-                        moment().format('HH:mm')
-                      }
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid
-                  item
-                  container
-                  direction="row"
-                  alignItems="center"
-                  justifyContent="center"
-                  spacing={2}>
-                  <Grid item xs={12} sm={2} md={2}>
-                    <Select
-                      variant="standard"
-                      label="region"
-                      name="region"
-                      value={scrimData.region}
-                      className="text-white"
-                      onChange={handleChange}
-                      fullWidth>
-                      {['NA', 'EUW', 'EUNE', 'LAN'].map((region, key) => (
-                        <MenuItem value={region} key={key}>
-                          {region}
-                        </MenuItem>
-                      ))}
-                    </Select>
-
-                    <FormHelperText className="text-white">
-                      Scrim region
-                    </FormHelperText>
-                  </Grid>
-
-                  <Grid item>
-                    <Select
-                      variant="standard"
-                      name="lobbyHost"
-                      onChange={(e) =>
-                        setScrimData((prevState) => ({
-                          ...prevState,
-                          lobbyHost: e.target.value,
-                        }))
-                      }
-                      value={scrimData.lobbyHost}>
-                      {[currentUser, 'random'].map((value, key) => (
-                        <MenuItem value={value} key={key}>
-                          {value === currentUser
-                            ? 'I will host the lobby'
-                            : 'Random host!'}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    <FormHelperText className="text-white">
-                      Lobby host
-                    </FormHelperText>
-                  </Grid>
-                </Grid>
                 <Grid item>
-                  <div className="page-break" />
-                  <Button variant="contained" color="primary" type="submit">
-                    Submit
-                  </Button>
+                  <FormControlLabel
+                    control={
+                      <Tooltip title="Is the scrim private?" placement="top">
+                        <Checkbox
+                          color="primary"
+                          checked={scrimData.isPrivate}
+                          onChange={() => {
+                            setScrimData((prevState) => ({
+                              ...prevState,
+                              isPrivate: !prevState.isPrivate,
+                            }));
+                          }}
+                          name="isPrivate"
+                        />
+                      </Tooltip>
+                    }
+                    label={
+                      <p
+                        style={{
+                          fontSize: '0.75rem',
+                          marginBottom: 0,
+                          marginTop: '19px',
+                        }}>
+                        Private
+                      </p>
+                    }
+                    labelPlacement="top"
+                  />
                 </Grid>
               </Grid>
-            </form>
+
+              <Grid
+                item
+                container
+                direction="row"
+                alignItems="center"
+                justifyContent="center"
+                spacing={2}>
+                <Grid item>
+                  <FormHelperText className="text-white">
+                    Game Start Date
+                  </FormHelperText>
+                  <TextField
+                    variant="standard"
+                    onChange={handleChange}
+                    required
+                    type="date"
+                    name="gameStartDate"
+                    value={moment(
+                      new Date(dateData.gameStartDate).toISOString()
+                    ).format('yyyy-MM-DD')}
+                  />
+                </Grid>
+                <Box marginRight={2} />
+                <Grid item>
+                  <FormHelperText className="text-white">
+                    Game Start Time
+                  </FormHelperText>
+
+                  <TextField
+                    variant="standard"
+                    onChange={handleChange}
+                    required
+                    type="time"
+                    name="gameStartHours"
+                    value={
+                      moment(scrimData?.gameStartTime).format('HH:mm') ||
+                      moment().format('HH:mm')
+                    }
+                  />
+                </Grid>
+              </Grid>
+
+              <Grid
+                item
+                container
+                direction="row"
+                alignItems="center"
+                justifyContent="center"
+                spacing={2}>
+                <Grid item xs={12} sm={2} md={2}>
+                  <Select
+                    variant="standard"
+                    label="region"
+                    name="region"
+                    value={scrimData.region}
+                    className="text-white"
+                    onChange={handleChange}
+                    fullWidth>
+                    {['NA', 'EUW', 'EUNE', 'LAN'].map((region, key) => (
+                      <MenuItem value={region} key={key}>
+                        {region}
+                      </MenuItem>
+                    ))}
+                  </Select>
+
+                  <FormHelperText className="text-white">
+                    Scrim region
+                  </FormHelperText>
+                </Grid>
+
+                <Grid item>
+                  <Select
+                    variant="standard"
+                    name="lobbyHost"
+                    onChange={(e) =>
+                      setScrimData((prevState) => ({
+                        ...prevState,
+                        lobbyHost: e.target.value,
+                      }))
+                    }
+                    value={scrimData.lobbyHost}>
+                    {[currentUser, 'random'].map((value, key) => (
+                      <MenuItem value={value} key={key}>
+                        {value === currentUser
+                          ? 'I will host the lobby'
+                          : 'Random host!'}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  <FormHelperText className="text-white">
+                    Lobby host
+                  </FormHelperText>
+                </Grid>
+              </Grid>
+
+              <Grid item>
+                <div className="page-break" />
+                <Button variant="contained" color="primary" type="submit">
+                  Submit
+                </Button>
+              </Grid>
+            </Grid>
           </InnerColumn>
         </PageSection>
       </PageContent>

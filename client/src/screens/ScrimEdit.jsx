@@ -17,6 +17,9 @@ import {
   PageSection,
   InnerColumn,
 } from '../components/shared/PageComponents';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import Tooltip from './../components/shared/Tooltip';
 
 // utils // services
 import moment from 'moment';
@@ -53,6 +56,7 @@ export default function ScrimEdit() {
     lobbyHost: null,
     createdBy: null,
     previousLobbyHost: null,
+    isPrivate: false,
     _lobbyHost: RANDOM_HOST_CODE, // _id
   });
 
@@ -101,6 +105,7 @@ export default function ScrimEdit() {
         previousLobbyHost: oneScrim?.lobbyHost ?? null,
         createdBy: oneScrim?.createdBy,
         casters: oneScrim?.casters,
+        isPrivate: oneScrim?.isPrivate ?? false,
         _lobbyHost: oneScrim?.lobbyHost?._id ?? RANDOM_HOST_CODE,
       });
     };
@@ -206,7 +211,7 @@ export default function ScrimEdit() {
         devLog('getting random user to host');
         return sample([...teamOne, ...teamTwo])._user;
       } else {
-        devLog("team size isn't 10, returning null");
+        devLog("team size isn't 10, returning null (lobbyHost)");
         // if lobby isn't full return null so it will generate a host on the backend.
         return null;
       }
@@ -230,7 +235,7 @@ export default function ScrimEdit() {
           scrimData?.teamWon === 'N/A' ? null : scrimData?.teamWon ?? null,
       };
 
-      const updatedScrim = await updateScrim(id, dataSending);
+      const updatedScrim = await updateScrim(id, dataSending, setCurrentAlert);
 
       if (updatedScrim) {
         fetchScrims();
@@ -472,23 +477,61 @@ export default function ScrimEdit() {
                   </Grid>
                 </Grid>
 
-                <Grid item>
-                  <FormHelperText className="text-white">
-                    Who Won?
-                  </FormHelperText>
-                  <Select
-                    variant="standard"
-                    name="teamWon"
-                    value={scrimData.teamWon || 'N/A'}
-                    onChange={handleChange}>
-                    {['Team 1 (Blue Side)', 'Team 2 (Red Side)', 'N/A'].map(
-                      (team, key) => (
-                        <MenuItem value={team} key={key}>
-                          {team}
-                        </MenuItem>
-                      )
-                    )}
-                  </Select>
+                <Grid
+                  item
+                  container
+                  alignItems="center"
+                  justifyContent="center"
+                  spacing={2}
+                  direction="row">
+                  <Grid item>
+                    <FormHelperText className="text-white">
+                      Who Won?
+                    </FormHelperText>
+                    <Select
+                      variant="standard"
+                      name="teamWon"
+                      value={scrimData.teamWon || 'N/A'}
+                      onChange={handleChange}>
+                      {['Team 1 (Blue Side)', 'Team 2 (Red Side)', 'N/A'].map(
+                        (team, key) => (
+                          <MenuItem value={team} key={key}>
+                            {team}
+                          </MenuItem>
+                        )
+                      )}
+                    </Select>
+                  </Grid>
+                  <Grid item>
+                    <FormControlLabel
+                      control={
+                        <Tooltip title="Is the scrim private?" placement="top">
+                          <Checkbox
+                            color="primary"
+                            checked={scrimData.isPrivate}
+                            onChange={() => {
+                              setScrimData((prevState) => ({
+                                ...prevState,
+                                isPrivate: !prevState.isPrivate,
+                              }));
+                            }}
+                            name="isPrivate"
+                          />
+                        </Tooltip>
+                      }
+                      label={
+                        <p
+                          style={{
+                            fontSize: '0.75rem',
+                            marginBottom: 0,
+                            marginTop: '19px',
+                          }}>
+                          Private
+                        </p>
+                      }
+                      labelPlacement="top"
+                    />
+                  </Grid>
                 </Grid>
 
                 <Grid item>
