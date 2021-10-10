@@ -4,6 +4,7 @@ import { useScrimsActions } from './../../hooks/useScrims';
 import useAuth from './../../hooks/useAuth';
 import { useScrimSectionStyles } from '../../styles/ScrimSection.styles';
 import useAlerts from './../../hooks/useAlerts';
+import { useDispatch } from 'react-redux';
 
 // MUI components
 import List from '@mui/material/List';
@@ -60,6 +61,7 @@ export default function ScrimTeamList({
   const { fetchScrims } = useScrimsActions();
   const { currentUser, isCurrentUserAdmin } = useAuth();
   const { setCurrentAlert } = useAlerts();
+  const dispatch = useDispatch();
 
   const classes = useScrimSectionStyles({ scrim });
   const isSmScreen = useMediaQuery('@media (max-width: 630px)');
@@ -131,6 +133,8 @@ export default function ScrimTeamList({
         `%cswapped ${currentUser?.name} in scrim: ${scrim._id} to: ${teamName} as ${role}`,
         'color: #99ff99'
       );
+
+      dispatch({ type: 'scrims/updateScrim', payload: updatedScrim });
     }
 
     fetchScrims();
