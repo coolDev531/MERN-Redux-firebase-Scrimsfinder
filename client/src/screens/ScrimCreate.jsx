@@ -21,6 +21,7 @@ import {
   PageContent,
   PageSection,
 } from './../components/shared/PageComponents';
+import Loading from '../components/shared/Loading';
 
 // utils and services
 import { createScrim } from './../services/scrims';
@@ -49,6 +50,7 @@ export default function ScrimCreate() {
   });
 
   const [isCreated, setCreated] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -101,6 +103,8 @@ export default function ScrimCreate() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+
     try {
       const scrimToCreate = {
         ...scrimData,
@@ -126,9 +130,11 @@ export default function ScrimCreate() {
           message: 'scrim created successfully!',
         });
       }
+      setIsSubmitting(false);
     } catch (error) {
       setCurrentAlert({ type: 'Error', message: 'error creating scrim' });
       console.error(error);
+      setIsSubmitting(false);
     }
   };
 
@@ -138,6 +144,10 @@ export default function ScrimCreate() {
 
   if (isCreated) {
     return <Redirect to={`/scrims/${isCreated?.createdScrim?._id}`} />;
+  }
+
+  if (isSubmitting) {
+    return <Loading text="Creating new scrim..." />;
   }
 
   return (

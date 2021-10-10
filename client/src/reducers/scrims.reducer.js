@@ -69,7 +69,12 @@ export default function scrimsReducer(state = initialState, action) {
     case 'scrims/deleteScrim': {
       return {
         ...state,
-        scrims: state.scrims.filter((scrim) => scrim._id !== payload._id),
+        scrims: state.scrims.filter(
+          (scrim) => String(scrim._id) !== String(payload._id)
+        ),
+        filteredScrims: state.filteredScrims.filter(
+          (scrim) => String(scrim._id) !== String(payload._id)
+        ),
       };
     }
 

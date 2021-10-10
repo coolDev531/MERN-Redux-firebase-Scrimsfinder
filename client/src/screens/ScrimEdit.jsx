@@ -20,6 +20,7 @@ import {
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Tooltip from './../components/shared/Tooltip';
+import Loading from './../components/shared/Loading';
 
 // utils // services
 import moment from 'moment';
@@ -27,7 +28,6 @@ import 'moment-timezone';
 import { getDateAndTimeSeparated } from '../utils/getDateAndTimeSeparated';
 import devLog from '../utils/devLog';
 import { updateScrim, getScrimById } from '../services/scrims';
-import Loading from './../components/shared/Loading';
 
 /**
  * @method sample
@@ -70,6 +70,8 @@ export default function ScrimEdit() {
 
   const { id } = useParams();
   const history = useHistory();
+
+  const [isUpdating, setIsUpdating] = useState(false);
   const [isUpdated, setUpdated] = useState(false);
 
   useEffect(() => {
@@ -222,6 +224,7 @@ export default function ScrimEdit() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsUpdating(true);
 
     try {
       let yes = window.confirm('are you sure you want to update this scrim?');
@@ -245,6 +248,7 @@ export default function ScrimEdit() {
           message: 'Scrim updated successfully!',
         });
         setUpdated(true);
+        setIsUpdating(false);
         return;
       }
     } catch (error) {
@@ -252,6 +256,8 @@ export default function ScrimEdit() {
         type: 'Error',
         message: 'Error updating Scrim',
       });
+      setIsUpdating(false);
+
       return;
     }
   };
@@ -291,8 +297,8 @@ export default function ScrimEdit() {
   }
 
   // if scrim isn't loaded, return loading component
-  if (!scrimData?.createdBy) {
-    return <Loading text="Loading..." />;
+  if (!scrimData?.createdBy || isUpdating) {
+    return <Loading text={isUpdating ? 'Updating scrim...' : 'Loading...'} />;
   }
 
   return (
