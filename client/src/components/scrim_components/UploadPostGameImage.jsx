@@ -70,7 +70,7 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
         message: 'image deleted successfully',
       });
 
-      fetchScrims();
+      await fetchScrims();
       setButtonDisabled(false);
     } catch (err) {
       setCurrentAlert({ type: 'Error', message: 'error removing image' });
@@ -142,8 +142,7 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
           message: 'image uploaded successfully',
         });
 
-        fetchScrims();
-
+        await fetchScrims();
         setButtonDisabled(false);
       }
     } catch (err) {

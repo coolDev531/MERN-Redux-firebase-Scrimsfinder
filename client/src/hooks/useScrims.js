@@ -34,6 +34,7 @@ export function useScrimsActions() {
 
   const fetchScrims = async () => {
     const scrimsData = await getAllScrims();
+    devLog('fetchedScrims on action');
     dispatch({ type: 'scrims/fetchScrims', payload: scrimsData });
   };
 

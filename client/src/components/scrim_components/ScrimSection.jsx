@@ -168,8 +168,8 @@ export default function ScrimSection({ scrim, isInDetail }) {
         });
 
         if (isInDetail) {
+          await fetchScrims();
           history.push('/');
-          fetchScrims();
         }
       }
     } catch (err) {

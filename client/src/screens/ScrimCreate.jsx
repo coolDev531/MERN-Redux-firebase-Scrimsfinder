@@ -109,7 +109,7 @@ export default function ScrimCreate() {
 
       const createdScrim = await createScrim(scrimToCreate, setCurrentAlert);
 
-      fetchScrims();
+      await fetchScrims();
 
       devLog('created new scrim!', createdScrim);
       setCreated({ createdScrim });

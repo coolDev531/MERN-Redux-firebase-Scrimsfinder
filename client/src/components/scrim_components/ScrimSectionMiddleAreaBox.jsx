@@ -151,7 +151,7 @@ export default function ScrimSectionMiddleAreaBox({
                                     setCurrentAlert
                                   );
                                   if (updatedScrim) {
-                                    fetchScrims();
+                                    await fetchScrims();
                                   }
                                 }}>
                                 {teamTitle}

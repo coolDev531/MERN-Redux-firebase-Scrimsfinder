@@ -238,7 +238,7 @@ export default function ScrimEdit() {
       const updatedScrim = await updateScrim(id, dataSending, setCurrentAlert);
 
       if (updatedScrim) {
-        fetchScrims();
+        await fetchScrims();
         console.log(`%c updated scrim: ${id}`, 'color: lightgreen');
         setCurrentAlert({
           type: 'Success',

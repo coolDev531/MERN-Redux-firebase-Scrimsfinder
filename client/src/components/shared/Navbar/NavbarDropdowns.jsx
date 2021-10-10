@@ -37,16 +37,16 @@ export default function NavbarDropdowns() {
     ...allRegions.filter((r) => r !== currentUser?.region),
   ];
 
-  const onSelectRegion = (e) => {
+  const onSelectRegion = async (e) => {
     const region = e.target.value;
     dispatch({ type: 'scrims/setScrimsRegion', payload: region });
-    fetchScrims(); // not necessary, trying to ping the server.
+    await fetchScrims(); // not necessary, trying to ping the server.
   };
 
-  const onSelectDate = (e) => {
+  const onSelectDate = async (e) => {
     const newDateValue = moment(e.target.value);
     dispatch({ type: 'scrims/setScrimsDate', payload: newDateValue });
-    fetchScrims();
+    await fetchScrims();
   };
 
   return (
