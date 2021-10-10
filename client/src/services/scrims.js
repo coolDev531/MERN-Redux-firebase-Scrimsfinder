@@ -107,6 +107,7 @@ export const movePlayerInScrim = async ({
       `/scrims/${scrimId}/move-player/${userId}`,
       { playerData }
     );
+
     return response.data;
   } catch (error) {
     const errorMsg = error.response.data.error;
