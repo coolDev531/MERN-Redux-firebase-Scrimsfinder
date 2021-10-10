@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography';
 import Loading from '../components/shared/Loading';
 import { InnerColumn } from '../components/shared/PageComponents';
 import Tooltip from '../components/shared/Tooltip';
+import ScrollToTopOnMount from './../components/shared/ScrollToTopOnMount';
 
 // sections
 import ProfileAccountDetails from '../components/UserProfile_components/ProfileAccountDetails';
@@ -69,6 +70,7 @@ export default function UserProfile() {
 
   return (
     <>
+      <ScrollToTopOnMount />
       <Navbar showLess onClickBack={() => history.push('/')} />
       <InnerColumn>
         <Typography variant="h1">
