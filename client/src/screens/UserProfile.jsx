@@ -9,6 +9,7 @@ import Loading from '../components/shared/Loading';
 import { InnerColumn } from '../components/shared/PageComponents';
 import Tooltip from '../components/shared/Tooltip';
 import ScrollToTopOnMount from './../components/shared/ScrollToTopOnMount';
+import { Helmet } from 'react-helmet';
 
 // sections
 import ProfileAccountDetails from '../components/UserProfile_components/ProfileAccountDetails';
@@ -70,6 +71,15 @@ export default function UserProfile() {
 
   return (
     <>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>{userData?.name}'s Profile</title>
+        <meta
+          name="description"
+          content={`Visit ${userData?.name}'s Profile at Bootcamp LoL Scrim Gym!`}
+        />
+      </Helmet>
+
       <ScrollToTopOnMount />
       <Navbar showLess onClickBack={() => history.push('/')} />
       <InnerColumn>
