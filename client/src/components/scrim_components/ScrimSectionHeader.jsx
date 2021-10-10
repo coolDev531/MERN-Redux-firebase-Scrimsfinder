@@ -146,7 +146,24 @@ export default function ScrimSectionHeader({
         <Grid container direction="column">
           {casters.length === 2 ? (
             <Typography variant="h2">
-              Casters: {casters.map((caster) => caster?.name).join(' & ')}
+              Casters:{' '}
+              {casters.map((caster, idx) => (
+                <>
+                  <Tooltip
+                    arrow
+                    placement="top"
+                    title={`visit ${caster?.name}'s profile`}>
+                    <Link
+                      className="link"
+                      to={`/users/${caster?._id}`}
+                      target="_blank"
+                      rel="noopener noreferrer">
+                      {caster?.name}
+                    </Link>
+                  </Tooltip>
+                  {idx === 0 ? ' & ' : ''}
+                </>
+              ))}
             </Typography>
           ) : (
             <Grid item container direction="column" alignItems="flex-start">
@@ -157,7 +174,18 @@ export default function ScrimSectionHeader({
                 <Typography variant="h2">
                   {/* if game didn't and say current casters, else say one caster: */}
                   {!gameEnded ? 'Current Casters:' : 'Caster:'}&nbsp;
-                  {casters[0].name}
+                  <Tooltip
+                    arrow
+                    placement="top"
+                    title={`visit ${casters[0]?.name}'s profile`}>
+                    <Link
+                      className="link"
+                      to={`/users/${casters[0]?._id}`}
+                      target="_blank"
+                      rel="noopener noreferrer">
+                      {casters[0].name}
+                    </Link>
+                  </Tooltip>
                 </Typography>
               )}
             </Grid>

@@ -20,7 +20,8 @@ import {
 
 // services & utils
 import { makeStyles } from '@mui/styles';
-import { updateUser, getAllUsers } from './../services/users';
+import { getAllUsers } from './../services/users';
+import { updateUser } from './../services/auth';
 import { setAuthToken } from './../services/auth';
 
 // remove spaces from # in discord name
@@ -189,7 +190,7 @@ export default function Settings() {
     let isDivisionWithNumber = divisionsWithNumbers.includes(rankDivision);
 
     let rankResult = isDivisionWithNumber
-      ? `${rankDivision} ${rankNumber ?? '4'}` // when user saved a rank without a number but then changes back to rank with number
+      ? `${rankDivision} ${rankNumber === '' ? '4' : rankNumber}` // when user saved a rank without a number but then changes back to rank with number
       : rankDivision;
 
     setUserData((prevState) => ({

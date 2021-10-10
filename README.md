@@ -68,6 +68,11 @@ If you have an admin key, you can host a scrim/lobby. Then players just have to 
 
 - Added back-end unit tests with Travis CI Pipeline
 
+### 10/10/2021
+
+- Added user profile page, users can now visit their own or other users profiles.
+- Added the option to make scrim private on creation or edit.
+
 ---
 
 <br />

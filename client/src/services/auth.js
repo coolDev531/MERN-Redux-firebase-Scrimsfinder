@@ -93,6 +93,15 @@ export const verifyUser = async ({ uid, email }) => {
   return null;
 };
 
+export const updateUser = async (id, userData) => {
+  try {
+    const response = await api.put(`/auth/update-user/${id}`, userData);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const removeToken = () => {
   devLog('removing token...');
   api.defaults.headers.common['Authorization'] = null;

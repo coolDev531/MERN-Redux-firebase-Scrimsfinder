@@ -1,6 +1,5 @@
 const User = require('../models/user');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const Scrim = require('../models/scrim');
 const KEYS = require('../config/keys');
 const mongoose = require('mongoose');
 
@@ -40,65 +39,10 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-const updateUser = async (req, res) => {
-  const { id } = req.params;
-
-  const foundUser = await User.findOne({ _id: id });
-
-  const isMatch = bcrypt.compare(req.body.uid, foundUser.uid); // compare req.body.uid to user uid in db.
-
-  if (isMatch) {
-    const payload = {
-      uid: foundUser.uid,
-      email: foundUser.email,
-      rank: req.body.rank,
-      _id: foundUser._id,
-      region: req.body.region,
-      discord: req.body.discord,
-      adminKey: req.body.adminKey,
-      name: req.body.name,
-    };
-
-    bcrypt.genSalt(10, (err, salt) => {
-      bcrypt.hash(req.body.uid, salt, async (err, hash) => {
-        if (err) throw err;
-
-        req.body.uid = hash;
-
-        const accessToken = jwt.sign(payload, KEYS.SECRET_OR_KEY, {
-          expiresIn: 31556926, // 1 year in seconds
-          // expiresIn: new Date(new Date()).setDate(new Date().getDate() + 30), // 30 days from now, does this work?
-        });
-
-        await User.findByIdAndUpdate(
-          id,
-          req.body,
-          { new: true },
-          (error, user) => {
-            if (error) {
-              return res.status(500).json({ error: error.message });
-            }
-
-            if (!user) {
-              return res.status(404).json(user);
-            }
-
-            return res.status(201).json({
-              success: true,
-              token: accessToken,
-              user,
-            });
-          }
-        );
-      });
-    });
-  }
-};
-
 const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
-    const adminKey = req?.query?.adminKey;
+    const adminKeyQuery = req?.query?.adminKey === KEYS.ADMIN_KEY ?? false;
 
     let isValid = mongoose.Types.ObjectId.isValid(id);
 
@@ -106,31 +50,103 @@ const getUserById = async (req, res) => {
       return res.status(500).json({ error: 'invalid id' });
     }
 
-    if (!adminKey) {
-      return res.status(500).json({ error: 'admin key not provided' });
-    }
-
-    if (adminKey !== KEYS.ADMIN_KEY) {
-      return res.status(500).json({ error: 'incorrect admin key' });
-    }
-
     let user = await User.findOne({ _id: id }).select([
       'discord',
       'name',
       'region',
-      'createdAt',
-      'updatedAt',
-      'email',
+      'rank',
       'adminKey',
+      adminKeyQuery && 'email', // for when admins want to see the details (not user profile page)
+      'createdAt',
+      adminKeyQuery && 'updatedAt', // only show updatedAt when req.query.admin key has been entered and is correct
     ]);
 
     if (!user) return res.status(404).json({ message: 'User not found!' });
 
-    // using populate to show more than _id when using Ref on the model.
-    return res.json({
+    let userWithNoAdminKey = {
       ...user._doc,
-      'isAdmin?': user.adminKey === KEYS.ADMIN_KEY,
+      isAdmin: user.adminKey === KEYS.ADMIN_KEY, // boolean,
+    };
+
+    let deletedAdminKey = delete userWithNoAdminKey.adminKey;
+
+    if (adminKeyQuery) {
+      // if we provided admin key in postman, show email and admin key.
+      return res.status(200).json(user);
+    }
+
+    if (deletedAdminKey) {
+      return res.status(200).json(userWithNoAdminKey);
+    }
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+const getUserCreatedScrims = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    let isValid = mongoose.Types.ObjectId.isValid(id);
+
+    if (!isValid) {
+      return res.status(500).json({ error: 'invalid id' });
+    }
+
+    let user = await User.findById(id);
+
+    let scrims = await Scrim.find();
+
+    if (!user) return res.status(404).json({ message: 'User not found!' });
+
+    const userCreatedScrims = scrims.filter(
+      (scrim) => String(scrim.createdBy) === String(user._id)
+    );
+    return res.json(userCreatedScrims);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+// get scrims where the user was a caster, or a player
+const getUserParticipatedScrims = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    let isValid = mongoose.Types.ObjectId.isValid(id);
+
+    if (!isValid) {
+      return res.status(500).json({ error: 'invalid id' });
+    }
+
+    let user = await User.findById(id);
+
+    let scrims = await Scrim.find();
+
+    if (!user) return res.status(404).json({ message: 'User not found!' });
+
+    const userParticipatedScrims = scrims.filter((scrim) => {
+      const scrimTeams = [...scrim.teamOne, ...scrim.teamTwo];
+
+      const scrimPlayers = scrimTeams.map(({ _user }) => String(_user));
+
+      const foundPlayer = scrimPlayers.find((id) => String(user._id) === id);
+      const foundCaster = scrim.casters.find(
+        (id) => String(id) === String(user._id)
+      );
+
+      if (foundPlayer) {
+        return true;
+      }
+
+      if (foundCaster) {
+        return true;
+      }
+
+      // else he didn't return false.
+      return false;
     });
+    return res.json(userParticipatedScrims);
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
@@ -139,5 +155,6 @@ const getUserById = async (req, res) => {
 module.exports = {
   getAllUsers,
   getUserById,
-  updateUser,
+  getUserCreatedScrims,
+  getUserParticipatedScrims,
 };

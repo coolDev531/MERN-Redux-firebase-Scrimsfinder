@@ -24,6 +24,7 @@ import NavbarDropdowns from './NavbarDropdowns';
 import SettingsIcon from '@mui/icons-material/Settings';
 import ExitIcon from '@mui/icons-material/ExitToApp';
 import CreateIcon from '@mui/icons-material/BorderColor';
+import MyProfileIcon from '@mui/icons-material/AccountCircle';
 
 // utils
 import clsx from 'clsx';
@@ -99,6 +100,18 @@ export default function NavbarDrawer({
               drawerAnchor === 'top' || drawerAnchor === 'bottom',
           })}>
           <List>
+            {/* My Profile */}
+            <ListItem
+              button
+              onClick={() => drawerNavPush(`/users/${currentUser._id}`)}>
+              <ListItemIcon>
+                <MyProfileIcon />
+              </ListItemIcon>
+              <ListItemText primary="My Profile" />
+            </ListItem>
+
+            <Divider />
+
             {/* Settings button */}
             <ListItem button onClick={() => drawerNavPush('/settings')}>
               <ListItemIcon>

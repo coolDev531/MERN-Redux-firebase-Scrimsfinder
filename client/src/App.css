@@ -20,6 +20,7 @@ picture img {
   flex-direction: row;
   justify-content: center;
   padding: 20px;
+  flex-grow: 1;
 }
 
 .link {

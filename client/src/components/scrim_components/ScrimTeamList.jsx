@@ -21,6 +21,7 @@ import ListSubheader from '@mui/material/ListSubheader';
 // components
 import Tooltip from '../shared/Tooltip';
 import AdminArea from '../shared/AdminArea';
+import { Link } from 'react-router-dom';
 
 // utils
 import { RANK_IMAGES, ROLE_IMAGES } from '../../utils/imageMaps';
@@ -227,19 +228,16 @@ export default function ScrimTeamList({
                   <ListItemText
                     primary={
                       <Grid container alignItems="center" wrap="wrap-reverse">
-                        <Tooltip title={`visit ${userInfo?.name}'s op.gg`}>
-                          <a
+                        <Tooltip title={`visit ${userInfo?.name}'s profile`}>
+                          <Link
                             className="link"
-                            href={`https://${userInfo?.region}.op.gg/summoner/userName=${userInfo?.name}`}
+                            to={`/users/${userInfo?._id}`}
                             target="_blank"
-                            style={{
-                              fontSize: isSmScreen ? 'inherit' : '0.9rem',
-                            }}
-                            rel="noreferrer">
+                            rel="noopener noreferrer">
                             {isSmScreen
                               ? userInfo?.name
                               : truncate(userInfo?.name, 16)}
-                          </a>
+                          </Link>
                         </Tooltip>
 
                         <>

@@ -63,8 +63,36 @@ const main = async () => {
         new Date(today.setHours(today.getHours() + 1))
       ), // 1 hour from seed time
       title: `${users[2].name}'s scrim`,
-      lobbyName: 'Scrim 1 Custom Game (NA)',
+      lobbyName: 'Scrim 2 Custom Game (NA)',
       lobbyHost: users[2],
+      teamWon: null,
+    },
+
+    {
+      createdBy: users[0],
+      teamOne,
+      teamTwo,
+      casters: [],
+      lobbyHost: users[2],
+      lobbyPassword: await generatePassword(),
+      gameStartTime: Date.now(),
+      title: `${users[3].name}'s scrim`,
+      lobbyName: 'Scrim 3 Custom Game (NA)',
+      lobbyHost: users[1],
+      teamWon: null,
+    },
+
+    {
+      createdBy: users[0],
+      teamOne: teamTwo,
+      teamTwo: teamOne,
+      casters: [],
+      lobbyHost: users[2],
+      lobbyPassword: await generatePassword(),
+      gameStartTime: Date.now(),
+      title: `${users[3].name}'s scrim`,
+      lobbyName: 'Scrim 4 Custom Game (NA)',
+      lobbyHost: users[1],
       teamWon: null,
     },
   ];
