@@ -22,6 +22,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ScrimsColumn from '../components/scrim_components/ScrimsColumn';
 
 export default function Scrims() {
+  const scrimsState = useScrims();
   const {
     scrimsLoaded,
     scrimsDate,
@@ -29,7 +30,7 @@ export default function Scrims() {
     showPreviousScrims,
     showCurrentScrims,
     showUpcomingScrims,
-  } = useScrims();
+  } = scrimsState;
 
   const { filteredScrims, currentScrims, previousScrims, upcomingScrims } =
     useFilteredScrims();

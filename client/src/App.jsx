@@ -29,9 +29,9 @@ function App() {
   const classes = useAppStyles();
 
   useAuthVerify(); // verify user is authenticated.
+  useSetScrimsRegion(); // set scrims region to users region on mount and when user changes it on settings
   useFetchScrims(); // fetch scrims on mount or path change
   useFetchScrimsInterval(); // fetch scrims on 10 sec interval
-  useSetScrimsRegion(); // set scrims region to users region on mount and when user changes it on settings
 
   if (isVerifyingUser) {
     return (

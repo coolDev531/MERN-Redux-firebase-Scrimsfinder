@@ -117,6 +117,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
       scrimId: scrim._id,
       userId: currentUser?._id,
       setAlert: setCurrentAlert,
+      setButtonsDisabled,
     });
 
     if (updatedScrim) {
@@ -124,10 +125,10 @@ export default function ScrimSection({ scrim, isInDetail }) {
         `%cadded ${currentUser?.name} as a caster for scrim: ${scrim._id}`,
         'color: #99ff99'
       );
-      setButtonsDisabled(false);
     }
 
-    fetchScrims();
+    await fetchScrims();
+    setButtonsDisabled(false);
   };
 
   const leaveCast = async () => {
@@ -137,6 +138,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
       scrimId: scrim._id,
       userId: casterEntered?._id,
       setAlert: setCurrentAlert,
+      setButtonsDisabled,
     });
 
     if (updatedScrim) {
@@ -144,10 +146,10 @@ export default function ScrimSection({ scrim, isInDetail }) {
         `%cremoved ${currentUser?.name} from the caster list for scrim: ${scrim._id}`,
         'color: #99ff99'
       );
-      setButtonsDisabled(false);
     }
 
-    fetchScrims();
+    await fetchScrims();
+    setButtonsDisabled(false);
   };
 
   const handleDeleteScrim = async () => {

@@ -51,6 +51,7 @@ export const insertPlayerInScrim = async ({
   userId,
   playerData,
   setAlert,
+  setButtonsDisabled,
 }) => {
   // sending the role joining and the team name inside playerData in the req.body.
   try {
@@ -74,12 +75,18 @@ export const insertPlayerInScrim = async ({
       return setAlert({ type: 'Error', message: errorMsg });
     }
 
+    setButtonsDisabled(false);
     // if dev forgot to add setAlert
     return alert(errorMsg);
   }
 };
 
-export const removePlayerFromScrim = async ({ scrimId, userId, setAlert }) => {
+export const removePlayerFromScrim = async ({
+  scrimId,
+  userId,
+  setAlert,
+  setButtonsDisabled,
+}) => {
   try {
     const response = await api.patch(
       `/scrims/${scrimId}/remove-player/${userId}`
@@ -92,6 +99,8 @@ export const removePlayerFromScrim = async ({ scrimId, userId, setAlert }) => {
       return setAlert({ type: 'Error', message: errorMsg });
     }
 
+    setButtonsDisabled(false);
+
     return alert(errorMsg);
   }
 };
@@ -101,6 +110,7 @@ export const movePlayerInScrim = async ({
   userId,
   playerData,
   setAlert,
+  setButtonsDisabled,
 }) => {
   try {
     const response = await api.patch(
@@ -116,11 +126,17 @@ export const movePlayerInScrim = async ({
       return setAlert({ type: 'Error', message: errorMsg });
     }
 
+    setButtonsDisabled(false);
     return alert(errorMsg);
   }
 };
 
-export const insertCasterInScrim = async ({ scrimId, userId, setAlert }) => {
+export const insertCasterInScrim = async ({
+  scrimId,
+  userId,
+  setAlert,
+  setButtonsDisabled,
+}) => {
   try {
     const response = await api.patch(
       `/scrims/${scrimId}/insert-caster/${userId}`
@@ -134,11 +150,18 @@ export const insertCasterInScrim = async ({ scrimId, userId, setAlert }) => {
       return setAlert({ type: 'Error', message: errorMsg });
     }
 
+    setButtonsDisabled(false);
+
     return alert(errorMsg);
   }
 };
 
-export const removeCasterFromScrim = async ({ scrimId, userId, setAlert }) => {
+export const removeCasterFromScrim = async ({
+  scrimId,
+  userId,
+  setAlert,
+  setButtonsDisabled,
+}) => {
   try {
     const response = await api.patch(
       `/scrims/${scrimId}/remove-caster/${userId}`
@@ -151,6 +174,8 @@ export const removeCasterFromScrim = async ({ scrimId, userId, setAlert }) => {
     if (typeof setAlert === 'function') {
       return setAlert({ type: 'Error', message: errorMsg });
     }
+
+    setButtonsDisabled(false);
 
     return alert(errorMsg);
   }

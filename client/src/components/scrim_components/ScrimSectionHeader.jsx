@@ -150,6 +150,7 @@ export default function ScrimSectionHeader({
               {casters.map((caster, idx) => (
                 <>
                   <Tooltip
+                    key={caster._id}
                     arrow
                     placement="top"
                     title={`visit ${caster?.name}'s profile`}>

@@ -29,12 +29,13 @@ export default function useScrims() {
 export function useScrimsActions() {
   const dispatch = useDispatch();
 
-  const fetchScrims = () => {
-    dispatch({ type: 'scrims/toggleFetch' });
-  };
-
   const setScrims = (newScrimsValue) =>
     dispatch({ type: 'scrims/setScrims', payload: newScrimsValue });
+
+  const fetchScrims = async () => {
+    const scrimsData = await getAllScrims();
+    dispatch({ type: 'scrims/fetchScrims', payload: scrimsData });
+  };
 
   return {
     setScrims,
@@ -76,37 +77,13 @@ export const useFilteredScrims = () => {
 
   const dispatch = useDispatch();
 
-  const dateFilteredScrims = useMemo(
-    () =>
-      scrims.filter(({ gameStartTime }) => {
-        //  if gameStartTime equals to the scrimsDate, show it.
-        return (
-          new Date(gameStartTime).toLocaleDateString() ===
-          new Date(scrimsDate).toLocaleDateString()
-        );
-      }),
-
-    // change date filtered scrims whenever scrims and scrimsDate changes.
-    [scrims, scrimsDate]
-  );
-
-  const filteredScrimsByDateAndRegion = useMemo(
-    () => dateFilteredScrims.filter((scrim) => scrim.region === scrimsRegion),
-    // change filteredScrimsByDateAndRegion whenever dateFilteredScrims and scrimsRegion changes
-    [dateFilteredScrims, scrimsRegion]
-  );
-
   useEffect(() => {
     dispatch({
       type: 'scrims/setFilteredScrims',
-      payload: filteredScrimsByDateAndRegion.filter(
-        (scrim) => !scrim.isPrivate // don't show private scrims
-      ),
     });
-    // this runs everytime scrimsRegion and dateFilteredScrims changes.
 
     // eslint-disable-next-line
-  }, [filteredScrimsByDateAndRegion]);
+  }, [scrimsDate, scrimsRegion, scrims]);
 
   let upcomingScrims = useMemo(
     () =>
@@ -150,11 +127,7 @@ export const useFilteredScrims = () => {
 
 // hook to fetch scrims
 export const useFetchScrims = () => {
-  const { fetch } = useSelector(({ scrims }) => scrims);
   const dispatch = useDispatch();
-
-  const initScrims = (newScrimsValue) =>
-    dispatch({ type: 'scrims/fetchScrims', payload: newScrimsValue });
 
   const { pathname } = useLocation();
 
@@ -162,13 +135,13 @@ export const useFetchScrims = () => {
     const fetchScrims = async () => {
       devLog('fetching scrims');
       const scrimsData = await getAllScrims();
-      initScrims(scrimsData);
+      dispatch({ type: 'scrims/fetchScrims', payload: scrimsData });
     };
 
     fetchScrims();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetch, pathname]);
+  }, [pathname]);
 
   return null;
 };

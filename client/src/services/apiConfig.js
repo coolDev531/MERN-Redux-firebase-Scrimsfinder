@@ -1,17 +1,14 @@
 import axios from 'axios';
 
-let apiUrl;
-
 const apiUrls = {
   production: process.env.REACT_APP_API_URL,
   development: 'http://localhost:3000/api',
 };
 
-if (window.location.hostname === 'localhost') {
-  apiUrl = apiUrls.development;
-} else {
-  apiUrl = apiUrls.production;
-}
+const apiUrl =
+  process.env.NODE_ENV === 'production'
+    ? apiUrls.production
+    : apiUrls.development;
 
 const api = axios.create({
   baseURL: apiUrl,

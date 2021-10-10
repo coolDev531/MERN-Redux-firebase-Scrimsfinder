@@ -68,17 +68,8 @@ export default function ScrimTeamList({
 
   const { teamRoles, teamName, teamTitleName, teamArray } = teamData;
 
-  const toggleDisableButtons = async () => {
-    setButtonsDisabled(true);
-
-    setTimeout(async () => {
-      setButtonsDisabled(false);
-    }, 1300);
-  };
-
   const joinGame = async (teamJoiningName, role) => {
-    toggleDisableButtons();
-    fetchScrims();
+    setButtonsDisabled(true);
 
     if (casterEntered) {
       setCurrentAlert({
@@ -90,6 +81,8 @@ export default function ScrimTeamList({
           </span>
         ),
       });
+
+      setButtonsDisabled(false);
       return;
     }
 
@@ -103,6 +96,7 @@ export default function ScrimTeamList({
         team: { name: teamJoiningName },
       },
       setAlert: setCurrentAlert,
+      setButtonsDisabled,
     });
 
     if (updatedScrim) {
@@ -110,12 +104,15 @@ export default function ScrimTeamList({
         `%c added ${currentUser?.name} to scrim: ${scrim._id} in team: ${teamJoiningName}`,
         'color: #99ff99'
       );
-      fetchScrims();
     }
+
+    await fetchScrims();
+    setButtonsDisabled(false);
   };
 
   const handleMovePlayer = async (teamName, role) => {
-    toggleDisableButtons();
+    // toggleDisableButtons();
+    setButtonsDisabled(true);
 
     const updatedScrim = await movePlayerInScrim({
       scrimId: scrim._id,
@@ -125,6 +122,7 @@ export default function ScrimTeamList({
         team: { name: teamName },
       },
       setAlert: setCurrentAlert,
+      setButtonsDisabled,
     });
 
     if (updatedScrim) {
@@ -133,16 +131,19 @@ export default function ScrimTeamList({
         'color: #99ff99'
       );
     }
-    fetchScrims();
+
+    await fetchScrims();
+    setButtonsDisabled(false);
   };
 
   const leaveGame = async () => {
-    toggleDisableButtons();
+    setButtonsDisabled(true);
 
     const updatedScrim = await removePlayerFromScrim({
       scrimId: scrim._id,
       userId: playerEntered?._user?._id,
       setAlert: setCurrentAlert,
+      setButtonsDisabled,
     });
 
     if (updatedScrim) {
@@ -150,19 +151,22 @@ export default function ScrimTeamList({
         `%cremoved ${currentUser?.name} from scrim: ${scrim._id}`,
         'color: #99ff99'
       );
-      fetchScrims();
     }
+
+    await fetchScrims();
+    setButtonsDisabled(false);
   };
 
   const kickPlayerFromGame = async (playerToKick) => {
     // if person kicking isn't an admin, return.
     if (!isCurrentUserAdmin) return;
-    toggleDisableButtons();
+    setButtonsDisabled(true);
 
     const updatedScrim = await removePlayerFromScrim({
       scrimId: scrim._id,
       userId: playerToKick?._user?._id,
       setAlert: setCurrentAlert,
+      setButtonsDisabled,
     });
 
     if (updatedScrim) {
@@ -170,8 +174,10 @@ export default function ScrimTeamList({
         `%ckicked ${playerToKick?._user?.name} from scrim: ${scrim._id}`,
         'color: #99ff99'
       );
-      fetchScrims();
     }
+
+    await fetchScrims();
+    setButtonsDisabled(false);
   };
 
   return (
@@ -387,7 +393,7 @@ export default function ScrimTeamList({
                           <IconButton
                             disabled={buttonsDisabled}
                             onMouseDown={(e) => e.preventDefault()}
-                            onClick={() =>
+                            onClick={async () =>
                               handleMovePlayer(teamName, teamRole)
                             }>
                             <SwapIcon />

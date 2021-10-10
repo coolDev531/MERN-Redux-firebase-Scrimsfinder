@@ -1,4 +1,6 @@
 import moment from 'moment';
+import { showEarliestFirst } from '../utils/getSortedScrims';
+import { showLatestFirst } from './../utils/getSortedScrims';
 
 const initialState = {
   scrims: [],
@@ -6,8 +8,10 @@ const initialState = {
   scrimsLoaded: false,
   fetch: false,
 
-  scrimsRegion: 'NA', // the region value to filter the scrims by
   scrimsDate: moment(), // the date value to filter the scrims by
+
+  dateScrims: [],
+  scrimsRegion: 'NA',
 
   // the show toggle buttons on the drawer navbar.
   showPreviousScrims: true,
@@ -42,9 +46,25 @@ export default function scrimsReducer(state = initialState, action) {
     }
 
     case 'scrims/setFilteredScrims': {
+      const dateFilteredScrims = state.scrims.filter(({ gameStartTime }) => {
+        //  if gameStartTime equals to the scrimsDate, show it.
+        return (
+          new Date(gameStartTime).toLocaleDateString() ===
+          new Date(state.scrimsDate).toLocaleDateString()
+        );
+      });
+
+      const filteredScrimsByDateAndRegion = dateFilteredScrims.filter(
+        (scrim) => scrim.region === state.scrimsRegion
+      );
+
+      const filteredScrims = filteredScrimsByDateAndRegion.filter(
+        (scrim) => !scrim.isPrivate
+      );
+
       return {
         ...state,
-        filteredScrims: payload, // date and region filtered scrims
+        filteredScrims: filteredScrims, // date and region filtered scrims
       };
     }
 
@@ -108,3 +128,59 @@ export default function scrimsReducer(state = initialState, action) {
       return state;
   }
 }
+
+const getDateFilteredScrims = (state) =>
+  state.scrims.filter(({ gameStartTime }) => {
+    //  if gameStartTime equals to the scrimsDate, show it.
+    return (
+      new Date(gameStartTime).toLocaleDateString() ===
+      new Date(state.scrimsDate).toLocaleDateString()
+    );
+  });
+
+const filteredScrimsByDateAndRegion = (state) =>
+  getDateFilteredScrims(state).filter(
+    (scrim) => scrim.region === state.scrimsRegion
+  );
+
+export const getFilteredScrims = (state) =>
+  filteredScrimsByDateAndRegion(state).filter((scrim) => !scrim.isPrivate);
+
+// compare scrim start time with now.
+const compareDates = (scrim) => {
+  let currentTime = new Date().getTime();
+  let gameStartTime = new Date(scrim.gameStartTime).getTime();
+
+  if (currentTime < gameStartTime) {
+    // if the currentTime is less than the game start time, that means the game didn't start (game is in future)
+    return -1;
+  } else if (currentTime > gameStartTime) {
+    // if the current time is greater than the game start time, that means the game started (game is in past)
+    return 1;
+  } else {
+    return 0;
+  }
+};
+
+export const getUpcomingScrims = (state) =>
+  // showEarliestFirst is a sorting method. (getSortedScrims.js)
+  showEarliestFirst(getFilteredScrims(state)).filter(
+    (scrim) => compareDates(scrim) < 0 // game didn't start
+  );
+
+export const getPreviousScrims = (state) =>
+  // showLatestFirst is a sorting method.
+  showLatestFirst(
+    getFilteredScrims(state).filter(
+      // if the scrim has a winning team then it ended
+      (scrim) => compareDates(scrim) > 0 && scrim.teamWon
+    )
+  );
+
+export const getCurrentScrims = (state) =>
+  showEarliestFirst(
+    getFilteredScrims(state).filter(
+      // scrims that have started but didn't end (don't have winning team)
+      (scrim) => compareDates(scrim) > 0 && !scrim.teamWon
+    )
+  );
