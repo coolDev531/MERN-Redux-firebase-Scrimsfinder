@@ -1,5 +1,4 @@
 import { useState, useMemo } from 'react';
-import useToggle from '../../hooks/useToggle';
 import { useProfileStyles } from '../../styles/UserProfile.styles';
 
 // components
@@ -9,13 +8,12 @@ import Typography from '@mui/material/Typography';
 import Tooltip from '../shared/Tooltip';
 import Moment from 'react-moment';
 import Divider from '@mui/material/Divider';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Box from '@mui/material/Box';
+import FormGroup from '@mui/material/FormGroup';
 
 // utils
 import {
@@ -24,8 +22,8 @@ import {
 } from '../../utils/getSortedScrims';
 
 export default function MyCreatedScrims({ isCurrentUser, scrims }) {
-  const [filterPrivate, togglePrivate] = useToggle(false);
   const [sortType, setSortType] = useState('date-descending');
+  const [filterType, setFilterType] = useState('none');
 
   const classes = useProfileStyles();
 
@@ -39,6 +37,22 @@ export default function MyCreatedScrims({ isCurrentUser, scrims }) {
         return scrims;
     }
   }, [scrims, sortType]);
+
+  const filteredCreatedScrims = useMemo(() => {
+    switch (filterType) {
+      case 'none':
+        return sortedCreatedScrims;
+
+      case 'private':
+        return sortedCreatedScrims.filter((scrim) => scrim.isPrivate);
+
+      case 'public':
+        return sortedCreatedScrims.filter((scrim) => !scrim.isPrivate);
+
+      default:
+        return sortedCreatedScrims;
+    }
+  }, [filterType, sortedCreatedScrims]);
 
   if (!isCurrentUser) return null;
   if (!scrims.length) return null;
@@ -61,10 +75,27 @@ export default function MyCreatedScrims({ isCurrentUser, scrims }) {
             </Typography>
           </Tooltip>
         </Grid>
-        <Grid item>
+
+        <FormGroup row>
           <Box sx={{ minWidth: 120 }}>
             <FormControl fullWidth>
-              <InputLabel>Sort Scrims</InputLabel>
+              <InputLabel>Filter By</InputLabel>
+              <Select
+                value={filterType.toString()}
+                label="Filter"
+                onChange={(e) => {
+                  setFilterType(e.target.value);
+                }}>
+                <MenuItem value="none">None</MenuItem>
+                <MenuItem value="public">Public</MenuItem>
+                <MenuItem value="private">Private</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+
+          <Box sx={{ minWidth: 120 }} className={classes.sortByBox}>
+            <FormControl fullWidth>
+              <InputLabel>Sort By</InputLabel>
               <Select
                 value={sortType.toString()}
                 label="Sort"
@@ -76,40 +107,23 @@ export default function MyCreatedScrims({ isCurrentUser, scrims }) {
               </Select>
             </FormControl>
           </Box>
-        </Grid>
-        <Grid item>
-          <FormControlLabel
-            control={
-              <Checkbox
-                color="primary"
-                checked={filterPrivate}
-                onChange={togglePrivate}
-                name="togglePrivate"
-              />
-            }
-            label="Only show private scrims"
-            labelPlacement="bottom"
-          />
-        </Grid>
+        </FormGroup>
       </Grid>
       <ul className={classes.myCreatedScrimsList}>
-        {sortedCreatedScrims
-          // if filterPrivate is false, just return scrim as is, else filter by scrims that are private
-          .filter((scrim) => (!filterPrivate ? scrim : scrim.isPrivate))
-          .map((scrim) => (
-            <li key={scrim._id}>
-              <Tooltip title="Open in new tab">
-                <Link className="link" to={`/scrims/${scrim._id}`}>
-                  {scrim.title} |&nbsp;
-                  <Moment format="MM/DD/yyyy hh:mm A">
-                    {scrim.gameStartTime}
-                  </Moment>
-                  &nbsp;| {scrim.region}&nbsp;
-                  {scrim?.isPrivate ? '(Private)' : ''}
-                </Link>
-              </Tooltip>
-            </li>
-          ))}
+        {filteredCreatedScrims.map((scrim) => (
+          <li key={scrim._id}>
+            <Tooltip title="Open in new tab">
+              <Link className="link" to={`/scrims/${scrim._id}`}>
+                {scrim.title} |&nbsp;
+                <Moment format="MM/DD/yyyy hh:mm A">
+                  {scrim.gameStartTime}
+                </Moment>
+                &nbsp;| {scrim.region}&nbsp;
+                {scrim?.isPrivate ? '| Private' : '| Public'}
+              </Link>
+            </Tooltip>
+          </li>
+        ))}
       </ul>
     </>
   );

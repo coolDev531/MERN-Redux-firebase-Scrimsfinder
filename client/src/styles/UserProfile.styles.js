@@ -12,4 +12,11 @@ export const useProfileStyles = makeStyles((theme) => ({
       marginBottom: '10px',
     },
   },
+
+  sortByBox: {
+    marginLeft: '20px',
+    [theme.breakpoints.down('md')]: {
+      marginLeft: 0,
+    },
+  },
 }));

@@ -92,21 +92,6 @@ export default function UserParticipatedScrims({ scrims, user }) {
         <FormGroup row>
           <Box sx={{ minWidth: 120 }}>
             <FormControl fullWidth>
-              <InputLabel>Sort Scrims</InputLabel>
-              <Select
-                value={sortType.toString()}
-                label="Sort"
-                onChange={(e) => {
-                  setSortType(e.target.value);
-                }}>
-                <MenuItem value="date-ascending">Date Ascending</MenuItem>
-                <MenuItem value="date-descending">Date Descending</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
-
-          <Box sx={{ minWidth: 120 }}>
-            <FormControl fullWidth>
               <InputLabel>Filter By</InputLabel>
               <Select
                 value={filterType.toString()}
@@ -117,6 +102,21 @@ export default function UserParticipatedScrims({ scrims, user }) {
                 <MenuItem value="none">None</MenuItem>
                 <MenuItem value="games-played">Games Played</MenuItem>
                 <MenuItem value="games-casted">Games Casted</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+
+          <Box sx={{ minWidth: 120 }} className={classes.sortByBox}>
+            <FormControl fullWidth>
+              <InputLabel>Sort By</InputLabel>
+              <Select
+                value={sortType.toString()}
+                label="Sort"
+                onChange={(e) => {
+                  setSortType(e.target.value);
+                }}>
+                <MenuItem value="date-ascending">Date Ascending</MenuItem>
+                <MenuItem value="date-descending">Date Descending</MenuItem>
               </Select>
             </FormControl>
           </Box>
