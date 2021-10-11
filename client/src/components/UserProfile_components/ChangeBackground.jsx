@@ -16,10 +16,13 @@ import devLog from './../../utils/devLog';
 export default function ChangeBackground({ userBg, setUserBg, userId }) {
   const { currentUser } = useSelector(({ auth }) => auth);
 
-  const onChange = async (e) => {
+  const handleChangeBackground = async (e) => {
     if (currentUser._id !== userId) return;
 
-    setUserBg(e.target.value);
+    setUserBg((prevState) => ({
+      ...prevState,
+      img: e.target.value,
+    }));
 
     setTimeout(async () => {
       let updatedUser = await updateUser(userId, {
@@ -35,7 +38,10 @@ export default function ChangeBackground({ userBg, setUserBg, userId }) {
     <Box sx={{ minWidth: 120 }}>
       <FormControl fullWidth>
         <InputLabel>Change Profile Background</InputLabel>
-        <Select value={userBg} label="background image" onChange={onChange}>
+        <Select
+          value={userBg.img}
+          label="background image"
+          onChange={handleChangeBackground}>
           <MenuItem value="Summoners Rift">Summoners Rift</MenuItem>
           <MenuItem value="Anniversary">Anniversary</MenuItem>
         </Select>

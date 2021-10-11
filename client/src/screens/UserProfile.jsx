@@ -35,7 +35,11 @@ export default function UserProfile() {
   const [userCreatedScrims, setUserCreatedScrims] = useState([]);
   const [userParticipatedScrims, setUserParticipatedScrims] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [userBg, setUserBg] = useState();
+  const [userBg, setUserBg] = useState({
+    img: null,
+    blur: '20px',
+  });
+
   const dispatch = useDispatch();
 
   const { id } = useParams();
@@ -56,7 +60,10 @@ export default function UserProfile() {
     const fetchUserData = async () => {
       const fetchedUserData = await getOneUser(id);
       setUserData(fetchedUserData);
-      setUserBg(fetchedUserData?.profileBackgroundImg ?? 'Summoners Rift');
+      setUserBg({
+        img: fetchedUserData?.profileBackgroundImg ?? 'Summoners Rift',
+        blur: fetchedUserData?.profileBackgroundBlur ?? '20',
+      });
 
       // don't fetch userCreatedScrims if user isn't an admin and isn't himself
       if (isCurrentUserAdmin && isCurrentUser) {
@@ -77,13 +84,28 @@ export default function UserProfile() {
     if (!isLoaded) return;
 
     setTimeout(() => {
-      dispatch({ type: 'general/setAppBackground', payload: userBg });
+      dispatch({
+        type: 'general/setAppBackground',
+        payload: userBg.img,
+      });
+    }, 50);
+
+    setTimeout(() => {
+      dispatch({
+        type: 'general/setAppBgBlur',
+        payload: userBg.blur,
+      });
     }, 50);
 
     return () => {
       dispatch({
         type: 'general/setAppBackground',
         payload: BG_IMAGES['Summoners Rift'],
+      });
+
+      dispatch({
+        type: 'general/setAppBgBlur',
+        payload: '20',
       });
     };
     // eslint-disable-next-line

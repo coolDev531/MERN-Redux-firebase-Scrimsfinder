@@ -40,10 +40,11 @@ function App() {
   useLayoutEffect(() => {
     // this will change the background back to summoners rift when user clicks back from UserProfile
     appWrapper.current?.style.setProperty('--bgImg', appBackground);
+    console.log({ appBgBlur });
     appWrapper.current?.style.setProperty('--bgBlur', appBgBlur);
 
     // eslint-disable-next-line
-  }, [appBackground, appWrapper.current]);
+  }, [appBackground, appWrapper.current, appBgBlur]);
 
   if (isVerifyingUser) {
     return (
