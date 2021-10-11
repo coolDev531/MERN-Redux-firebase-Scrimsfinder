@@ -25,6 +25,8 @@ import {
   getUserCreatedScrims,
   getUserParticipatedScrims,
 } from '../services/users';
+
+// icons
 import VerifiedAdminIcon from '@mui/icons-material/VerifiedUser';
 
 export default function UserProfile() {
