@@ -28,7 +28,8 @@ function App() {
   const { isVerifyingUser } = useAuth();
   const { currentAlert, closeAlert } = useAlerts();
   const classes = useAppStyles();
-  const appWrapperRef = useAppBackground();
+
+  const appWrapperRef = useAppBackground(); // change the background image and blur whenever appBackground or appBgBlur change in the redux store
 
   useAuthVerify(); // verify user is authenticated.
   useSetScrimsRegion(); // set scrims region to users region on mount and when user changes it on settings
