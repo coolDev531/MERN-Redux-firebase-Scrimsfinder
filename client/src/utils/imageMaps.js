@@ -43,6 +43,6 @@ export const RANK_IMAGES = {
 };
 
 export const BG_IMAGES = {
-  Anniversary: `url(${anniversaryImg})`,
-  'Summoners Rift': `url(${summonersRiftImg})`,
+  Anniversary: anniversaryImg,
+  'Summoners Rift': summonersRiftImg,
 };

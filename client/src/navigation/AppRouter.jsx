@@ -11,16 +11,13 @@ import ScrimEdit from '../screens/ScrimEdit';
 import Settings from '../screens/Settings';
 import UserProfile from '../screens/UserProfile';
 
-const AppRouter = ({ appWrapper }) => (
+const AppRouter = () => (
   <Switch>
     <PrivateRoute exact path="/scrims/new" component={ScrimCreate} />
     <PrivateRoute exact path="/scrims/:id/edit" component={ScrimEdit} />
     <PrivateRoute exact path="/scrims/:id" component={ScrimDetail} />
     <PrivateRoute exact path="/settings" component={Settings} />
-    <PrivateRoute exact path="/users/:id">
-      <UserProfile appWrapper={appWrapper} />
-    </PrivateRoute>
-
+    <PrivateRoute exact path="/users/:id" component={UserProfile} />
     <Route exact path="/signup" component={SignUp} />
     <PrivateRoute exact path={['/', '/scrims']} component={Scrims} />
     <Route component={NotFound} />

@@ -24,14 +24,14 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { Helmet } from 'react-helmet';
 
-import SummonersRiftImg from './assets/images/backgrounds/summoners_rift.jpg';
+import { useSelector } from 'react-redux';
 
 function App() {
   const { isVerifyingUser } = useAuth();
   const { currentAlert, closeAlert } = useAlerts();
-  const { pathname } = useLocation();
   const classes = useAppStyles();
   const appWrapper = useRef();
+  const { appBackground } = useSelector(({ general }) => general);
 
   useAuthVerify(); // verify user is authenticated.
   useSetScrimsRegion(); // set scrims region to users region on mount and when user changes it on settings
@@ -39,15 +39,11 @@ function App() {
   useFetchScrimsInterval(); // fetch scrims on 10 sec interval
 
   useLayoutEffect(() => {
-    console.log('appwrapper');
     // this will change the background back to summoners rift when user clicks back from UserProfile
-    appWrapper.current?.style.setProperty(
-      '--bgImg',
-      `url(${SummonersRiftImg})`
-    );
+    appWrapper.current?.style.setProperty('--bgImg', appBackground);
 
     // eslint-disable-next-line
-  }, [appWrapper.current, pathname]);
+  }, [appBackground, appWrapper.current]);
 
   if (isVerifyingUser) {
     return (
@@ -87,7 +83,7 @@ function App() {
             </Snackbar>
           )}
 
-          <AppRouter appWrapper={appWrapper} />
+          <AppRouter />
           <Footer />
         </ThemeProvider>
       </div>

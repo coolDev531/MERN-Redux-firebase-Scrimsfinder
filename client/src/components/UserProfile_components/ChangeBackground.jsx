@@ -30,6 +30,7 @@ export default function ChangeBackground({ userBg, setUserBg, userId }) {
       devLog('updated user background', updatedUser.profileBackgroundImg);
     }, 100);
   };
+
   return (
     <Box sx={{ minWidth: 120 }}>
       <FormControl fullWidth>

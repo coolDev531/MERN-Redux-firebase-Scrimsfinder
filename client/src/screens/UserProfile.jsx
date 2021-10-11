@@ -1,6 +1,7 @@
-import { useState, useEffect, useMemo, useLayoutEffect, useRef } from 'react';
+import { useState, useEffect, useMemo, useLayoutEffect } from 'react';
 import useAuth from './../hooks/useAuth';
 import { useParams, useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 // components
 import Navbar from '../components/shared/Navbar/Navbar';
@@ -25,16 +26,16 @@ import {
 import VerifiedAdminIcon from '@mui/icons-material/VerifiedUser';
 
 // utils
-import { BG_IMAGES } from './../utils/imageMaps';
 import ChangeBackground from './../components/UserProfile_components/ChangeBackground';
 
-export default function UserProfile({ appWrapper }) {
+export default function UserProfile() {
   const { currentUser, isCurrentUserAdmin } = useAuth();
   const [userData, setUserData] = useState(null);
   const [userCreatedScrims, setUserCreatedScrims] = useState([]);
   const [userParticipatedScrims, setUserParticipatedScrims] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [userBg, setUserBg] = useState();
+  const dispatch = useDispatch();
 
   const { id } = useParams();
   const history = useHistory();
@@ -72,14 +73,14 @@ export default function UserProfile({ appWrapper }) {
   }, [id, isCurrentUser, isCurrentUserAdmin]);
 
   useLayoutEffect(() => {
-    // if (isLoaded) return;
-
-    let wrapper = appWrapper?.current;
+    if (!isLoaded) return;
 
     setTimeout(() => {
-      wrapper?.style.setProperty('--bgImg', BG_IMAGES[userBg]);
-    }, 100);
-  }, [isLoaded, appWrapper, userBg]);
+      dispatch({ type: 'general/setAppBackground', payload: userBg });
+    }, 50);
+
+    // eslint-disable-next-line
+  }, [isLoaded, userBg]);
 
   if (!isLoaded) {
     return <Loading text="Loading..." />;
