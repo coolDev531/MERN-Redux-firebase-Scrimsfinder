@@ -145,7 +145,7 @@ const getUserParticipatedScrims = async (req, res) => {
         return true;
       }
 
-      // else he didn't return false.
+      // else if he wasn't a caster or a player return false.
       return false;
     });
     return res.json(userParticipatedScrims);

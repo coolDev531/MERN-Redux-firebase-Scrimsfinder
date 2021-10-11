@@ -17,6 +17,7 @@ import { Helmet } from 'react-helmet';
 import ChangeBackground from './../components/UserProfile_components/ChangeBackground';
 import ProfileAccountDetails from '../components/UserProfile_components/ProfileAccountDetails';
 import MyCreatedScrims from './../components/UserProfile_components/MyCreatedScrims';
+import UserParticipatedScrims from './../components/UserProfile_components/UserParticipatedScrims';
 
 // services
 import {
@@ -168,6 +169,13 @@ export default function UserProfile() {
         <MyCreatedScrims
           isCurrentUser={isCurrentUser}
           scrims={userCreatedScrims}
+        />
+
+        {/* user participated scrims */}
+        <UserParticipatedScrims
+          userName={userData?.name}
+          isCurrentUser={isCurrentUser}
+          scrims={userParticipatedScrims}
         />
       </InnerColumn>
     </>
