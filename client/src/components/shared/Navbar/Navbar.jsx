@@ -145,16 +145,18 @@ export default function Navbar({ showDropdowns, showLess, showCheckboxes }) {
                     ) : null}
 
                     {/* BURGER ICON */}
-                    <Grid item>
-                      <Tooltip title="More options" placement="top">
-                        <IconButton
-                          // prevent active class from staying on button after clicking (was noticeable when pressing escape)
-                          onMouseDown={(e) => e.preventDefault()}
-                          onClick={() => setIsDrawerOpen(true)}>
-                          <MenuIcon fontSize="large" />
-                        </IconButton>
-                      </Tooltip>
-                    </Grid>
+                    {currentUser?.uid && (
+                      <Grid item>
+                        <Tooltip title="More options" placement="top">
+                          <IconButton
+                            // prevent active class from staying on button after clicking (was noticeable when pressing escape)
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={() => setIsDrawerOpen(true)}>
+                            <MenuIcon fontSize="large" />
+                          </IconButton>
+                        </Tooltip>
+                      </Grid>
+                    )}
                   </Grid>
                 </Grid>
                 <br />
