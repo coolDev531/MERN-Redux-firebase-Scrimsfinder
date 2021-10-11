@@ -56,7 +56,9 @@ export default function MyCreatedScrims({ isCurrentUser, scrims }) {
         marginTop={2}>
         <Grid item>
           <Tooltip placement="top" title="Scrims that I have created">
-            <Typography variant="h1">My Created Scrims</Typography>
+            <Typography style={{ cursor: 'help' }} variant="h1">
+              My Created Scrims
+            </Typography>
           </Tooltip>
         </Grid>
         <Grid item>
