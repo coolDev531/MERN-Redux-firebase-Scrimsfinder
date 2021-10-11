@@ -234,7 +234,7 @@ export default function ScrimTeamList({
                   <ListItemText
                     primary={
                       <Grid container alignItems="center" wrap="wrap-reverse">
-                        <Tooltip title={`visit ${userInfo?.name}'s profile`}>
+                        <Tooltip title={`Visit ${userInfo?.name}'s profile`}>
                           <Link
                             className="link"
                             to={`/users/${userInfo?.name}?region=${userInfo?.region}`}>
