@@ -33,11 +33,11 @@ const ProfileAccountDetails = ({ user, userParticipatedScrims }) => {
         // skip other operations if the player is a caster, we don't need to loop through the teams
       }
 
-      const playerTeamName = foundPlayer?.team?.name; // teamOne, teamTwo.
-      const playerTeamNumber = playerTeamName?.includes('One') ? '1' : '2';
+      const playerTeamName = foundPlayer?.team?.name; // TeamOne, TeamTwo.
+      const playerTeamNumber = playerTeamName === 'teamOne' ? '1' : '2';
 
-      const winningTeam = scrim.teamWon;
-      const playerWon = winningTeam?.includes(playerTeamNumber);
+      const winnerTeam = scrim?.teamWon;
+      const playerWon = winnerTeam?.includes(playerTeamNumber);
 
       if (playerWon) {
         exp += 3;
