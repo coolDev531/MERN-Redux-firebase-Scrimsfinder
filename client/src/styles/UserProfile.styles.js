@@ -12,15 +12,4 @@ export const useProfileStyles = makeStyles((theme) => ({
       marginBottom: '10px',
     },
   },
-
-  saveBackgroundBtn: {
-    height: '50px',
-    alignSelf: 'center',
-    marginLeft: '10px',
-    marginTop: '20px',
-  },
-
-  changeBgBlur: {
-    marginLeft: '20px',
-  },
 }));
