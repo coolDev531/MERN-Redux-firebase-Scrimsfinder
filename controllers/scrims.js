@@ -62,7 +62,12 @@ const getLobbyHost = async (scrim) => {
 };
 
 const getLobbyName = (scrimTitle, region) => {
-  return `${scrimTitle} Custom Lobby (${region})`;
+  // remove emojis with this .replace
+  // https://stackoverflow.com/questions/10992921/how-to-remove-emoji-code-using-javascript
+  return `${scrimTitle} Custom Lobby (${region})`.replace(
+    /([\uE000-\uF8FF]|\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDDFF])/g,
+    ''
+  );
 };
 
 const populateTeam = (teamName) => {
