@@ -91,7 +91,7 @@ const registerUser = async (req, res) => {
 
     const userData = {
       uid,
-      name,
+      name: name.trim(),
       discord: noSpacesDiscord,
       rank,
       adminKey,
@@ -101,9 +101,14 @@ const registerUser = async (req, res) => {
 
     const userExists = await User.findOne({ email });
 
-    const summonerNameTaken = await User.findOne({ name, region });
+    const summonerNameTaken = await User.findOne({
+      name: { $regex: `^${userData.name}$`, $options: 'i' }, // case insensitive name matching
+      region,
+    });
 
-    const discordTaken = await User.findOne({ discord: noSpacesDiscord });
+    const discordTaken = await User.findOne({
+      discord: { $regex: `^${noSpacesDiscord}$`, $options: 'i' },
+    });
 
     if (discordTaken) {
       return res.status(500).json({

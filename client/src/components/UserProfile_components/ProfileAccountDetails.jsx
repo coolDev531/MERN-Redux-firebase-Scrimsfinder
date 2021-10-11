@@ -13,7 +13,7 @@ const ProfileAccountDetails = ({ user, userParticipatedScrims }) => {
   // calculates the EXP and winrate, also gives us games played count
   // this function also gets games played count and games casted count, so it's not all calculations
   const calcExpAndWinrate = useCallback(() => {
-    if (!userParticipatedScrims.length) return;
+    if (!userParticipatedScrims.length) return [0, 0, 0, 0];
 
     // the user exp
     let expResult = 0;

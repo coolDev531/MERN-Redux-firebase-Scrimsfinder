@@ -139,8 +139,10 @@ export default function Settings() {
 
     if (!yes) return;
     try {
-      // updating the user
-      const data = await updateUser(currentUser?._id, userData);
+      const data = await updateUser(currentUser?._id, {
+        ...userData,
+        name: userData.name.trim(),
+      });
 
       if (data?.token) {
         const { token } = data;
