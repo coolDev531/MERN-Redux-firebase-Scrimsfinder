@@ -222,12 +222,16 @@ const updateUser = async (req, res) => {
     const payload = {
       uid: foundUser.uid,
       email: foundUser.email,
-      rank: req.body.rank,
       _id: foundUser._id,
+      rank: req.body.rank,
       region: req.body.region,
       discord: req.body.discord,
       adminKey: req.body.adminKey,
       name: req.body.name,
+      profileBackgroundImg:
+        req.body.profileBackgroundImg ??
+        foundUser?.profileBackgroundImg ??
+        'Summoners Rift',
     };
 
     bcrypt.genSalt(10, (err, salt) => {

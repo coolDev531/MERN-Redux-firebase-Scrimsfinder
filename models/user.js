@@ -20,7 +20,7 @@ const User = new Schema(
     adminKey: { type: String, default: '' },
     uid: { type: String, required: true, unique: true }, // google id
     email: { type: String, required: true, unique: true }, // google email.
-    // refreshToken: { type: String, required: true }, // refreshtoken provided by gmail, prob don't need.
+    profileBackgroundImg: { type: String, default: 'Summoners Rift' },
   },
   { timestamps: true }
 );

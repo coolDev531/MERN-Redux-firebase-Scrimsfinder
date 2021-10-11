@@ -17,6 +17,10 @@ import masterImg from '../assets/images/ranks/master.png';
 import grandmasterImg from '../assets/images/ranks/grandmaster.png';
 import challengerImg from '../assets/images/ranks/challenger.png';
 
+// bg images
+import anniversaryImg from '../assets/images/backgrounds/happy_team.jpg';
+import summonersRiftImg from '../assets/images/backgrounds/summoners_rift.jpg';
+
 export const ROLE_IMAGES = {
   Top: topLaneImg,
   Jungle: jungleImg,
@@ -36,4 +40,9 @@ export const RANK_IMAGES = {
   Master: masterImg,
   Grandmaster: grandmasterImg,
   Challenger: challengerImg,
+};
+
+export const BG_IMAGES = {
+  Anniversary: `url(${anniversaryImg})`,
+  'Summoners Rift': `url(${summonersRiftImg})`,
 };

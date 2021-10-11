@@ -1,6 +1,6 @@
 import './App.css';
-
 // hooks
+import { useLayoutEffect, useRef } from 'react';
 import useAlerts from './hooks/useAlerts';
 import useAuth, { useAuthVerify } from './hooks/useAuth';
 import {
@@ -8,6 +8,7 @@ import {
   useFetchScrimsInterval,
   useSetScrimsRegion,
 } from './hooks/useScrims';
+import { useLocation } from 'react-router-dom';
 
 // styles
 import { appTheme } from './appTheme';
@@ -23,19 +24,34 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { Helmet } from 'react-helmet';
 
+import SummonersRiftImg from './assets/images/backgrounds/summoners_rift.jpg';
+
 function App() {
   const { isVerifyingUser } = useAuth();
   const { currentAlert, closeAlert } = useAlerts();
+  const { pathname } = useLocation();
   const classes = useAppStyles();
+  const appWrapper = useRef();
 
   useAuthVerify(); // verify user is authenticated.
   useSetScrimsRegion(); // set scrims region to users region on mount and when user changes it on settings
   useFetchScrims(); // fetch scrims on mount or path change
   useFetchScrimsInterval(); // fetch scrims on 10 sec interval
 
+  useLayoutEffect(() => {
+    console.log('appwrapper');
+    // this will change the background back to summoners rift when user clicks back from UserProfile
+    appWrapper.current?.style.setProperty(
+      '--bgImg',
+      `url(${SummonersRiftImg})`
+    );
+
+    // eslint-disable-next-line
+  }, [appWrapper.current, pathname]);
+
   if (isVerifyingUser) {
     return (
-      <div className={classes.root}>
+      <div ref={appWrapper} className={classes.root}>
         <Loading text="Verifying user..." />;
       </div>
     );
@@ -49,7 +65,7 @@ function App() {
         <meta name="description" content="Find LoL Custom Lobbies!" />
       </Helmet>
 
-      <div className={classes.root}>
+      <div className={classes.root} ref={appWrapper} id="app__wrapper">
         <ThemeProvider theme={appTheme}>
           <CssBaseline />
 
@@ -71,7 +87,7 @@ function App() {
             </Snackbar>
           )}
 
-          <AppRouter />
+          <AppRouter appWrapper={appWrapper} />
           <Footer />
         </ThemeProvider>
       </div>

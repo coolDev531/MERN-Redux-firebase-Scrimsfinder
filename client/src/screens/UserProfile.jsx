@@ -1,10 +1,11 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useLayoutEffect, useRef } from 'react';
 import useAuth from './../hooks/useAuth';
 import { useParams, useHistory } from 'react-router-dom';
 
 // components
 import Navbar from '../components/shared/Navbar/Navbar';
 import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
 import Loading from '../components/shared/Loading';
 import { InnerColumn } from '../components/shared/PageComponents';
 import Tooltip from '../components/shared/Tooltip';
@@ -21,15 +22,19 @@ import {
   getUserCreatedScrims,
   getUserParticipatedScrims,
 } from '../services/users';
-
 import VerifiedAdminIcon from '@mui/icons-material/VerifiedUser';
 
-export default function UserProfile() {
+// utils
+import { BG_IMAGES } from './../utils/imageMaps';
+import ChangeBackground from './../components/UserProfile_components/ChangeBackground';
+
+export default function UserProfile({ appWrapper }) {
   const { currentUser, isCurrentUserAdmin } = useAuth();
   const [userData, setUserData] = useState(null);
   const [userCreatedScrims, setUserCreatedScrims] = useState([]);
   const [userParticipatedScrims, setUserParticipatedScrims] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [userBg, setUserBg] = useState();
 
   const { id } = useParams();
   const history = useHistory();
@@ -49,6 +54,7 @@ export default function UserProfile() {
     const fetchUserData = async () => {
       const fetchedUserData = await getOneUser(id);
       setUserData(fetchedUserData);
+      setUserBg(fetchedUserData?.profileBackgroundImg ?? 'Summoners Rift');
 
       // don't fetch userCreatedScrims if user isn't an admin and isn't himself
       if (isCurrentUserAdmin && isCurrentUser) {
@@ -64,6 +70,16 @@ export default function UserProfile() {
 
     fetchUserData();
   }, [id, isCurrentUser, isCurrentUserAdmin]);
+
+  useLayoutEffect(() => {
+    // if (isLoaded) return;
+
+    let wrapper = appWrapper?.current;
+
+    setTimeout(() => {
+      wrapper?.style.setProperty('--bgImg', BG_IMAGES[userBg]);
+    }, 100);
+  }, [isLoaded, appWrapper, userBg]);
 
   if (!isLoaded) {
     return <Loading text="Loading..." />;
@@ -83,26 +99,40 @@ export default function UserProfile() {
       <ScrollToTopOnMount />
       <Navbar showLess onClickBack={() => history.push('/')} />
       <InnerColumn>
-        <Typography variant="h1">
-          <Tooltip title={`visit ${userData?.name}'s op.gg`}>
-            <a
-              className="link"
-              href={`https://${userData?.region}.op.gg/summoner/userName=${userData?.name}`}
-              target="_blank"
-              rel="noopener noreferrer">
-              {titleText}
-            </a>
-          </Tooltip>
-          {userData?.isAdmin && (
-            <Tooltip
-              placement="top"
-              title={`${userData?.name} is a verified admin`}>
-              <span style={{ cursor: 'help', marginLeft: '8px' }}>
-                <VerifiedAdminIcon />
-              </span>
+        <Grid
+          container
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between">
+          <Typography variant="h1">
+            <Tooltip title={`visit ${userData?.name}'s op.gg`}>
+              <a
+                className="link"
+                href={`https://${userData?.region}.op.gg/summoner/userName=${userData?.name}`}
+                target="_blank"
+                rel="noopener noreferrer">
+                {titleText}
+              </a>
             </Tooltip>
+            {userData?.isAdmin && (
+              <Tooltip
+                placement="top"
+                title={`${userData?.name} is a verified admin`}>
+                <span style={{ cursor: 'help', marginLeft: '8px' }}>
+                  <VerifiedAdminIcon />
+                </span>
+              </Tooltip>
+            )}
+          </Typography>
+
+          {isCurrentUser && (
+            <ChangeBackground
+              userBg={userBg}
+              userId={userData?._id}
+              setUserBg={setUserBg}
+            />
           )}
-        </Typography>
+        </Grid>
 
         {/* User Details: name, discord, rank, exp, etc. */}
         <ProfileAccountDetails

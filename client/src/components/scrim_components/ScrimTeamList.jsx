@@ -235,11 +235,7 @@ export default function ScrimTeamList({
                     primary={
                       <Grid container alignItems="center" wrap="wrap-reverse">
                         <Tooltip title={`visit ${userInfo?.name}'s profile`}>
-                          <Link
-                            className="link"
-                            to={`/users/${userInfo?._id}`}
-                            target="_blank"
-                            rel="noopener noreferrer">
+                          <Link className="link" to={`/users/${userInfo?._id}`}>
                             {isSmScreen
                               ? userInfo?.name
                               : truncate(userInfo?.name, 16)}
