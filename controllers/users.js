@@ -56,10 +56,11 @@ const getUserById = async (req, res) => {
       'region',
       'rank',
       'adminKey',
-      'profileBackgroundImg',
       adminKeyQuery && 'email', // for when admins want to see the details (not user profile page)
       'createdAt',
       adminKeyQuery && 'updatedAt', // only show updatedAt when req.query.admin key has been entered and is correct
+      'profileBackgroundImg',
+      'profileBackgroundBlur',
     ]);
 
     if (!user) return res.status(404).json({ message: 'User not found!' });

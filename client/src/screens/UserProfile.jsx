@@ -82,6 +82,7 @@ export default function UserProfile() {
 
   useLayoutEffect(() => {
     if (!isLoaded) return;
+    console.log({ userBg });
 
     setTimeout(() => {
       dispatch({
@@ -108,6 +109,7 @@ export default function UserProfile() {
         payload: '20',
       });
     };
+
     // eslint-disable-next-line
   }, [isLoaded, userBg]);
 

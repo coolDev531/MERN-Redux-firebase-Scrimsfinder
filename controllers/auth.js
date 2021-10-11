@@ -228,6 +228,7 @@ const updateUser = async (req, res) => {
       discord: req.body.discord,
       adminKey: req.body.adminKey,
       name: req.body.name,
+
       profileBackgroundImg:
         req.body.profileBackgroundImg ??
         foundUser?.profileBackgroundImg ??
@@ -236,7 +237,7 @@ const updateUser = async (req, res) => {
       profileBackgroundBlur:
         req.body.profileBackgroundBlur ??
         foundUser?.profileBackgroundBlur ??
-        'blur(20px)',
+        '20',
     };
 
     bcrypt.genSalt(10, (err, salt) => {

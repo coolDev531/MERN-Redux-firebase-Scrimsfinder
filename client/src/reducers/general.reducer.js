@@ -19,7 +19,7 @@ export default function generalReducer(state = initialState, action) {
     case 'general/setAppBgBlur': {
       return {
         ...state,
-        bgBlur: `blur(${payload})px`,
+        appBgBlur: `blur(${payload}px)`,
       };
     }
 
