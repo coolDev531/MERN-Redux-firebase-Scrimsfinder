@@ -17,10 +17,15 @@ import devLog from './../../utils/devLog';
 
 // icons
 import SaveIcon from '@mui/icons-material/Create';
+import useTheme from '@mui/styles/useTheme';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 export default function ChangeBackground({ userBg, setUserBg, userId }) {
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const { currentUser } = useSelector(({ auth }) => auth);
+
+  const theme = useTheme();
+  const matchesSm = useMediaQuery(theme.breakpoints.up('sm'));
 
   const handleChangeImage = async (e) => {
     if (currentUser._id !== userId) return;
@@ -74,7 +79,7 @@ export default function ChangeBackground({ userBg, setUserBg, userId }) {
         </Select>
       </FormControl>
 
-      <FormControl style={{ marginLeft: '20px' }}>
+      <FormControl style={{ marginLeft: !matchesSm ? '0' : '20px' }}>
         <InputLabel>Change Background Blur</InputLabel>
         <Select
           disabled={buttonsDisabled}
@@ -93,7 +98,7 @@ export default function ChangeBackground({ userBg, setUserBg, userId }) {
         style={{
           height: '50px',
           alignSelf: 'center',
-          marginLeft: '10px',
+          marginLeft: !matchesSm ? '0' : '20px',
           marginTop: '20px',
         }}
         startIcon={<SaveIcon />}
