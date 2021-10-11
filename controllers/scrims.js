@@ -85,7 +85,7 @@ const populateTeam = (teamName) => {
   };
 };
 
-const populateUser = ['name', 'discord'];
+const populateUser = ['name', 'discord', 'region'];
 
 const getAllScrims = async (req, res) => {
   const region = req.query?.region;

@@ -153,7 +153,9 @@ export default function ScrimSectionHeader({
                     arrow
                     placement="top"
                     title={`visit ${caster?.name}'s profile`}>
-                    <Link className="link" to={`/users/${caster?._id}`}>
+                    <Link
+                      className="link"
+                      to={`/users/${caster?.name}?region=${caster?.region}`}>
                       {caster?.name}
                     </Link>
                   </Tooltip>
@@ -174,7 +176,9 @@ export default function ScrimSectionHeader({
                     arrow
                     placement="top"
                     title={`visit ${casters[0]?.name}'s profile`}>
-                    <Link className="link" to={`/users/${casters[0]?._id}`}>
+                    <Link
+                      className="link"
+                      to={`/users/${casters[0]?.name}?region=${casters[0]?.region}`}>
                       {casters[0].name}
                     </Link>
                   </Tooltip>

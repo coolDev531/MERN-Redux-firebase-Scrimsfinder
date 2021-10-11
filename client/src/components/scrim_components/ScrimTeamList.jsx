@@ -235,7 +235,9 @@ export default function ScrimTeamList({
                     primary={
                       <Grid container alignItems="center" wrap="wrap-reverse">
                         <Tooltip title={`visit ${userInfo?.name}'s profile`}>
-                          <Link className="link" to={`/users/${userInfo?._id}`}>
+                          <Link
+                            className="link"
+                            to={`/users/${userInfo?.name}?region=${userInfo?.region}`}>
                             {isSmScreen
                               ? userInfo?.name
                               : truncate(userInfo?.name, 16)}

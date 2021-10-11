@@ -9,9 +9,9 @@ export const getAllUsers = async () => {
   }
 };
 
-export const getOneUser = async (id) => {
+export const getOneUser = async (name, region) => {
   try {
-    const response = await api.get(`/users/${id}`);
+    const response = await api.get(`/users/${name}/${region}`);
     return response.data;
   } catch (error) {
     throw error;

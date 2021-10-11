@@ -1,7 +1,8 @@
 import { useState, useEffect, useMemo, useLayoutEffect } from 'react';
 import useAuth from './../hooks/useAuth';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import useQuery from '../hooks/useQuery';
 
 // components
 import Navbar from '../components/shared/Navbar/Navbar';
@@ -41,8 +42,11 @@ export default function UserProfile() {
   });
 
   const dispatch = useDispatch();
+  const history = useHistory();
 
-  const { id } = useParams();
+  const { name } = useParams();
+
+  const region = useQuery().get('region');
 
   const isCurrentUser = useMemo(
     () => userData?._id === currentUser?._id,
@@ -57,29 +61,37 @@ export default function UserProfile() {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      setIsLoaded(false);
+      try {
+        setIsLoaded(false);
 
-      const fetchedUserData = await getOneUser(id);
-      setUserData(fetchedUserData);
-      setUserBg({
-        img: fetchedUserData?.profileBackgroundImg ?? 'Summoners Rift',
-        blur: fetchedUserData?.profileBackgroundBlur ?? '20',
-      });
+        const fetchedUserData = await getOneUser(name, region);
+        let userId = fetchedUserData._id;
 
-      // don't fetch userCreatedScrims if user isn't himself
-      if (isCurrentUser) {
-        const userCreatedScrims = await getUserCreatedScrims(id);
-        setUserCreatedScrims(userCreatedScrims);
+        setUserData(fetchedUserData);
+
+        setUserBg({
+          img: fetchedUserData?.profileBackgroundImg ?? 'Summoners Rift',
+          blur: fetchedUserData?.profileBackgroundBlur ?? '20',
+        });
+
+        // don't fetch userCreatedScrims if user isn't himself
+        if (isCurrentUser) {
+          const userCreatedScrims = await getUserCreatedScrims(userId);
+
+          setUserCreatedScrims(userCreatedScrims);
+        }
+
+        const userScrims = await getUserParticipatedScrims(userId);
+        setUserParticipatedScrims(userScrims);
+
+        setIsLoaded(true);
+      } catch (error) {
+        history.push('/');
       }
-
-      const userScrims = await getUserParticipatedScrims(id);
-      setUserParticipatedScrims(userScrims);
-
-      setIsLoaded(true);
     };
 
     fetchUserData();
-  }, [id, isCurrentUser, isCurrentUserAdmin]);
+  }, [name, region, isCurrentUser, isCurrentUserAdmin, history]);
 
   useLayoutEffect(() => {
     if (!isLoaded) return;

@@ -105,7 +105,11 @@ export default function NavbarDrawer({
               <>
                 <ListItem
                   button
-                  onClick={() => drawerNavPush(`/users/${currentUser._id}`)}>
+                  onClick={() =>
+                    drawerNavPush(
+                      `/users/${currentUser?.name}?region=${currentUser?.region}`
+                    )
+                  }>
                   <ListItemIcon>
                     <MyProfileIcon />
                   </ListItemIcon>

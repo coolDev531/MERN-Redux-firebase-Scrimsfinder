@@ -39,18 +39,13 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-const getUserById = async (req, res) => {
+const getOneUser = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { name, region } = req.params;
+
     const adminKeyQuery = req?.query?.adminKey === KEYS.ADMIN_KEY ?? false;
 
-    let isValid = mongoose.Types.ObjectId.isValid(id);
-
-    if (!isValid) {
-      return res.status(500).json({ error: 'invalid id' });
-    }
-
-    let user = await User.findOne({ _id: id }).select([
+    let user = await User.findOne({ name, region }).select([
       'discord',
       'name',
       'region',
@@ -156,7 +151,7 @@ const getUserParticipatedScrims = async (req, res) => {
 
 module.exports = {
   getAllUsers,
-  getUserById,
+  getOneUser,
   getUserCreatedScrims,
   getUserParticipatedScrims,
 };
