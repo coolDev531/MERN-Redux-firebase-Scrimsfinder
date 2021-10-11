@@ -92,16 +92,20 @@ export default function UserProfile() {
       payload: userBg.blur,
     });
 
+    // eslint-disable-next-line
+  }, [isLoaded, userBg]);
+
+  useEffect(() => {
     // when user leaves the page, reset the background and blur to the initial state
     return () => {
       dispatch({
         type: 'general/resetAppBackground',
         payload: 'Summoners Rift',
       });
+      setIsLoaded(false);
     };
-
     // eslint-disable-next-line
-  }, [isLoaded, userBg]);
+  }, []);
 
   if (!isLoaded) {
     return <Loading text="Loading..." />;

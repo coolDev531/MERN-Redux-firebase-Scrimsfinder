@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, Fragment } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import useAlerts from './../../hooks/useAlerts';
 import useTheme from '@mui/styles/useTheme';
@@ -148,9 +148,8 @@ export default function ScrimSectionHeader({
             <Typography variant="h2">
               Casters:{' '}
               {casters.map((caster, idx) => (
-                <>
+                <Fragment key={caster._id}>
                   <Tooltip
-                    key={caster._id}
                     arrow
                     placement="top"
                     title={`visit ${caster?.name}'s profile`}>
@@ -163,7 +162,7 @@ export default function ScrimSectionHeader({
                     </Link>
                   </Tooltip>
                   {idx === 0 ? ' & ' : ''}
-                </>
+                </Fragment>
               ))}
             </Typography>
           ) : (
