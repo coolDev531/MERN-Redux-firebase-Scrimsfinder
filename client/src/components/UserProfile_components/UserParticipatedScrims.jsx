@@ -51,7 +51,7 @@ export default function UserParticipatedScrims({ scrims, userName }) {
         marginTop={2}>
         <Grid item>
           <Tooltip
-            title={`scrims that ${userName} has been a part of (caster or player)`}>
+            title={`Scrims that ${userName} has been a part of (caster or player)`}>
             <Typography style={{ cursor: 'help' }} variant="h1">
               Scrims Participated In
             </Typography>
