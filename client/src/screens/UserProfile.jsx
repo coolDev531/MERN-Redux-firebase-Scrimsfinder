@@ -63,8 +63,8 @@ export default function UserProfile() {
         blur: fetchedUserData?.profileBackgroundBlur ?? '20',
       });
 
-      // don't fetch userCreatedScrims if user isn't an admin and isn't himself
-      if (isCurrentUserAdmin && isCurrentUser) {
+      // don't fetch userCreatedScrims if user isn't himself
+      if (isCurrentUser) {
         const userCreatedScrims = await getUserCreatedScrims(id);
         setUserCreatedScrims(userCreatedScrims);
       }
