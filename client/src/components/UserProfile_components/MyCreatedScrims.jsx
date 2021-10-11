@@ -5,7 +5,6 @@ import { useProfileStyles } from '../../styles/UserProfile.styles';
 import { Link } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import Tooltip from '../shared/Tooltip';
 import Moment from 'react-moment';
 import Divider from '@mui/material/Divider';
 import InputLabel from '@mui/material/InputLabel';
@@ -14,6 +13,8 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Box from '@mui/material/Box';
 import FormGroup from '@mui/material/FormGroup';
+import CustomTooltip from '../shared/Tooltip';
+import Tooltip from '@mui/material/Tooltip';
 
 // utils
 import {
@@ -70,11 +71,11 @@ export default function MyCreatedScrims({ isCurrentUser, scrims }) {
         direction="row"
         marginTop={2}>
         <Grid item>
-          <Tooltip placement="top" title="Scrims that you have created">
+          <CustomTooltip placement="top" title="Scrims that you have created">
             <Typography style={{ cursor: 'help' }} variant="h1">
               My Created Scrims
             </Typography>
-          </Tooltip>
+          </CustomTooltip>
         </Grid>
 
         <FormGroup row>
@@ -114,7 +115,7 @@ export default function MyCreatedScrims({ isCurrentUser, scrims }) {
         {filteredCreatedScrims.length > 0 ? (
           filteredCreatedScrims.map((scrim) => (
             <li key={scrim._id}>
-              <Tooltip title="Open in new tab">
+              <Tooltip arrow placement="top" title="Redirect to game page">
                 <Link className="link" to={`/scrims/${scrim._id}`}>
                   {scrim.title} |&nbsp;
                   <Moment format="MM/DD/yyyy hh:mm A">
