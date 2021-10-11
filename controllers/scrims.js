@@ -62,7 +62,7 @@ const getLobbyHost = async (scrim) => {
 };
 
 const getLobbyName = (scrimTitle, region) => {
-  return `${scrimTitle} (${region})`;
+  return `${scrimTitle} Custom Game (${region})`;
 };
 
 const populateTeam = (teamName) => {
