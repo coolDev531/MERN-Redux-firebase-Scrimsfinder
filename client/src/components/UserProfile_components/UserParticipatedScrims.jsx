@@ -65,7 +65,9 @@ export default function UserParticipatedScrims({ scrims, user }) {
       default:
         return sortedUserScrims;
     }
-  }, [filterType, sortedUserScrims, user._id]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sortType, filterType, sortedUserScrims, user._id]);
 
   if (!scrims.length) return null;
 

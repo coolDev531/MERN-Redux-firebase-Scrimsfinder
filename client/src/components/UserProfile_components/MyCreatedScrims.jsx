@@ -52,7 +52,8 @@ export default function MyCreatedScrims({ isCurrentUser, scrims }) {
       default:
         return sortedCreatedScrims;
     }
-  }, [filterType, sortedCreatedScrims]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sortType, filterType, sortedCreatedScrims]);
 
   if (!isCurrentUser) return null;
   if (!scrims.length) return null;
