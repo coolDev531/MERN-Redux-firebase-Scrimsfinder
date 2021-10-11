@@ -57,6 +57,8 @@ export default function UserProfile() {
 
   useEffect(() => {
     const fetchUserData = async () => {
+      setIsLoaded(false);
+
       const fetchedUserData = await getOneUser(id);
       setUserData(fetchedUserData);
       setUserBg({
@@ -102,7 +104,6 @@ export default function UserProfile() {
         type: 'general/resetAppBackground',
         payload: 'Summoners Rift',
       });
-      setIsLoaded(false);
     };
     // eslint-disable-next-line
   }, []);

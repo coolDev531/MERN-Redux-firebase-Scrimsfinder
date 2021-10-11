@@ -8,14 +8,21 @@ const ProfileAccountDetails = ({ user, userParticipatedScrims }) => {
   const [userExp, setUserExp] = useState(0);
   const [userWinrate, setUserWinrate] = useState(0);
   const [userGamesPlayedCount, setUserGamesPlayedCount] = useState(0);
+  const [userGamesCastedCount, setUserGamesCastedCount] = useState(0);
 
   // calculates the EXP and winrate, also gives us games played count
+  // this function also gets games played count and games casted count, so it's not all calculations
   const calcExpAndWinrate = useCallback(() => {
     if (!userParticipatedScrims.length) return;
 
+    // the user exp
     let expResult = 0;
 
+    // gamesPlayedCount will be used to display how many games user played, but isn't used here for calculations
     let gamesPlayedCount = 0;
+
+    // these vars will be used to calculate winrate
+    let gamesCastedCount = 0;
     let playerWinsCount = 0;
     let playerLossCount = 0;
 
@@ -31,14 +38,17 @@ const ProfileAccountDetails = ({ user, userParticipatedScrims }) => {
         (player) => player._user === user._id
       );
 
+      // without using populate the array of casters is just an array of ids
       const foundCaster = scrim.casters.find(
-        (player) => player._id === user._id
+        (casterId) => casterId === user._id
       );
 
       if (foundCaster) {
-        expResult += 1;
-        continue;
-        // skip other operations if the player is a caster, we don't need to loop through the teams
+        expResult += 1; // one point for casting
+
+        gamesCastedCount += 1;
+
+        continue; // skip other operations if the player is a caster, we don't need to loop through the teams
       }
 
       if (foundPlayer) {
@@ -52,11 +62,11 @@ const ProfileAccountDetails = ({ user, userParticipatedScrims }) => {
       const playerWon = winnerTeam?.includes(playerTeamNumber);
 
       if (playerWon) {
-        expResult += 3;
-        playerWinsCount += 1;
+        expResult += 3; // 3 points for winning
+        playerWinsCount += 1; // var for calculating winrate
       } else {
-        expResult += 0.5;
-        playerLossCount += 1;
+        expResult += 0.5; // half points for losing
+        playerLossCount += 1; // var for calculating winrate
       }
     }
 
@@ -65,7 +75,7 @@ const ProfileAccountDetails = ({ user, userParticipatedScrims }) => {
       (playerWinsCount / (playerWinsCount + playerLossCount)) * 100
     );
 
-    return [expResult, winRateResult, gamesPlayedCount];
+    return [expResult, winRateResult, gamesPlayedCount, gamesCastedCount];
   }, [userParticipatedScrims, user._id]);
 
   const userLevel = useMemo(() => {
@@ -80,15 +90,19 @@ const ProfileAccountDetails = ({ user, userParticipatedScrims }) => {
   }, [userExp]);
 
   useEffect(() => {
-    const [expResult, winRateResult, gamesPlayedCount] = calcExpAndWinrate();
+    const [expResult, winRateResult, gamesPlayedCount, gamesCastedCount] =
+      calcExpAndWinrate();
+
     setUserExp(expResult);
     setUserWinrate(winRateResult);
     setUserGamesPlayedCount(gamesPlayedCount);
+    setUserGamesCastedCount(gamesCastedCount);
 
     return () => {
       setUserExp(0);
-      setUserGamesPlayedCount(0);
       setUserWinrate(0);
+      setUserGamesPlayedCount(0);
+      setUserGamesCastedCount(0);
     };
   }, [user._id, calcExpAndWinrate]);
 
@@ -116,10 +130,17 @@ const ProfileAccountDetails = ({ user, userParticipatedScrims }) => {
         <Grid item>
           <strong>Games Played:</strong>&nbsp;{userGamesPlayedCount}
         </Grid>
+
         <Grid item>
-          | <strong>Winrate:</strong>&nbsp;{userWinrate}%
+          | <strong>Win Ratio:</strong>&nbsp;{userWinrate}%
         </Grid>
       </Grid>
+
+      {userGamesCastedCount > 0 ? (
+        <Grid item container component="li" alignItems="center">
+          <strong>Games Casted:</strong>&nbsp;{userGamesCastedCount}
+        </Grid>
+      ) : null}
 
       <Grid item container component="li" alignItems="center">
         <strong>Discord:</strong>&nbsp;{user.discord}
