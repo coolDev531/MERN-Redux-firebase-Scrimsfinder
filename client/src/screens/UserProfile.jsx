@@ -14,6 +14,7 @@ import ScrollToTopOnMount from './../components/shared/ScrollToTopOnMount';
 import { Helmet } from 'react-helmet';
 
 // sections
+import ChangeBackground from './../components/UserProfile_components/ChangeBackground';
 import ProfileAccountDetails from '../components/UserProfile_components/ProfileAccountDetails';
 import MyCreatedScrims from './../components/UserProfile_components/MyCreatedScrims';
 
@@ -24,10 +25,6 @@ import {
   getUserParticipatedScrims,
 } from '../services/users';
 import VerifiedAdminIcon from '@mui/icons-material/VerifiedUser';
-
-// utils
-import ChangeBackground from './../components/UserProfile_components/ChangeBackground';
-import { BG_IMAGES } from './../utils/imageMaps';
 
 export default function UserProfile() {
   const { currentUser, isCurrentUserAdmin } = useAuth();
@@ -82,26 +79,21 @@ export default function UserProfile() {
 
   useLayoutEffect(() => {
     if (!isLoaded) return;
-    console.log({ userBg });
 
-    setTimeout(() => {
-      dispatch({
-        type: 'general/setAppBackground',
-        payload: userBg.img,
-      });
-    }, 50);
+    dispatch({
+      type: 'general/setAppBackground',
+      payload: userBg.img,
+    });
 
-    setTimeout(() => {
-      dispatch({
-        type: 'general/setAppBgBlur',
-        payload: userBg.blur,
-      });
-    }, 50);
+    dispatch({
+      type: 'general/setAppBgBlur',
+      payload: userBg.blur,
+    });
 
     return () => {
       dispatch({
         type: 'general/setAppBackground',
-        payload: BG_IMAGES['Summoners Rift'],
+        payload: 'Summoners Rift',
       });
 
       dispatch({

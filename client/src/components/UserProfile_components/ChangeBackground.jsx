@@ -1,11 +1,11 @@
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
-
 // components
-import Box from '@mui/material/Box';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/FormControl';
+import FormGroup from '@mui/material/FormGroup';
 
 // services
 import { updateUser } from './../../services/auth';
@@ -14,63 +14,78 @@ import { updateUser } from './../../services/auth';
 import devLog from './../../utils/devLog';
 
 export default function ChangeBackground({ userBg, setUserBg, userId }) {
+  const [disabled, setDisabled] = useState(false);
   const { currentUser } = useSelector(({ auth }) => auth);
-
   const handleChangeImage = async (e) => {
     if (currentUser._id !== userId) return;
+    const bgImg = e.target.value;
+    setDisabled(true);
 
     setUserBg((prevState) => ({
       ...prevState,
-      img: e.target.value,
+      img: bgImg,
     }));
 
     setTimeout(async () => {
-      let updatedUser = await updateUser(userId, {
+      const updatedUser = await updateUser(userId, {
         ...currentUser,
-        profileBackgroundImg: e.target.value,
+        profileBackgroundImg: bgImg,
       });
 
       devLog('updated user background', updatedUser.user.profileBackgroundImg);
-    }, 100);
+
+      setTimeout(() => {
+        setDisabled(false);
+      }, 1000);
+    }, 200);
   };
 
   const handleChangeBlur = async (e) => {
     if (currentUser._id !== userId) return;
+    setDisabled(true);
+    let blurValue = e.target.value;
 
     setUserBg((prevState) => ({
       ...prevState,
-      blur: e.target.value,
+      blur: blurValue,
     }));
 
     setTimeout(async () => {
       let updatedUser = await updateUser(userId, {
         ...currentUser,
-        profileBackgroundBlur: e.target.value,
+        profileBackgroundBlur: blurValue,
       });
 
       devLog(
         'updated user background blur',
         updatedUser.user.profileBackgroundBlur
       );
-    }, 100);
+
+      setTimeout(() => {
+        setDisabled(false);
+      }, 1000);
+    }, 200);
   };
 
   return (
-    <Box sx={{ minWidth: 120 }}>
-      <FormControl fullWidth>
+    <FormGroup row>
+      <FormControl>
         <InputLabel>Change Profile Background</InputLabel>
         <Select
           value={userBg.img}
+          disabled={disabled}
           label="background image"
           onChange={handleChangeImage}>
           <MenuItem value="Summoners Rift">Summoners Rift</MenuItem>
           <MenuItem value="Anniversary">Anniversary</MenuItem>
+          <MenuItem value="GitCat">GitCat</MenuItem>
         </Select>
       </FormControl>
 
-      <FormControl fullWidth>
+      <FormControl style={{ marginLeft: '20px' }}>
         <InputLabel>Change Background Blur</InputLabel>
         <Select
+          disabled={disabled}
           value={userBg.blur}
           label="background image"
           onChange={handleChangeBlur}>
@@ -81,6 +96,6 @@ export default function ChangeBackground({ userBg, setUserBg, userId }) {
           <MenuItem value="20">Max</MenuItem>
         </Select>
       </FormControl>
-    </Box>
+    </FormGroup>
   );
 }
