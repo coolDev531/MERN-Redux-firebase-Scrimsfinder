@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
+import useAlerts from './../../hooks/useAlerts';
 
 // components
 import Select from '@mui/material/Select';
@@ -23,6 +24,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 export default function ChangeBackground({ userBg, setUserBg, userId }) {
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const { currentUser } = useSelector(({ auth }) => auth);
+  const { setCurrentAlert } = useAlerts();
 
   const theme = useTheme();
   const matchesSm = useMediaQuery(theme.breakpoints.up('sm'));
@@ -53,15 +55,30 @@ export default function ChangeBackground({ userBg, setUserBg, userId }) {
 
     setButtonsDisabled(true);
 
-    const updatedUser = await updateUser(userId, {
-      ...currentUser,
-      profileBackgroundImg: bgImgValue,
-      profileBackgroundBlur: blurValue,
-    });
+    try {
+      const updatedUser = await updateUser(userId, {
+        ...currentUser,
+        profileBackgroundImg: bgImgValue,
+        profileBackgroundBlur: blurValue,
+      });
 
-    devLog('updated user background details', updatedUser.user);
+      if (updatedUser) {
+        devLog('updated user background details', updatedUser.user);
+        setCurrentAlert({
+          type: 'Success',
+          message: 'Profile background updated!',
+        });
+      }
+      setButtonsDisabled(false);
+    } catch (error) {
+      setCurrentAlert({
+        type: 'Error',
+        message: 'Error updating background',
+      });
 
-    setButtonsDisabled(false);
+      setButtonsDisabled(false);
+      throw error;
+    }
   };
 
   return (
