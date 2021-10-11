@@ -46,7 +46,7 @@ export default function ScrimDetail() {
         />
       </Helmet>
 
-      <Navbar showLess onClickBack={() => history.push('/scrims')} />
+      <Navbar showLess />
       <PageContent>
         <div className={`scrim__container ${scrim?._id}`}>
           <ScrimSection scrim={scrim} isInDetail />

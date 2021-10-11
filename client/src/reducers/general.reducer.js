@@ -23,6 +23,14 @@ export default function generalReducer(state = initialState, action) {
       };
     }
 
+    case 'general/resetAppBackground': {
+      return {
+        ...state,
+        appBackground: `url(${BG_IMAGES['Summoners Rift']})`,
+        appBgBlur: 'blur(20px)',
+      };
+    }
+
     default:
       return state;
   }

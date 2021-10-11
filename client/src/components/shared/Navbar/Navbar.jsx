@@ -40,12 +40,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Navbar({
-  showDropdowns,
-  showLess,
-  showCheckboxes,
-  onClickBack,
-}) {
+export default function Navbar({ showDropdowns, showLess, showCheckboxes }) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const classes = useStyles();
@@ -142,11 +137,7 @@ export default function Navbar({
                           variant="contained"
                           color="primary"
                           onClick={() => {
-                            if (onClickBack) {
-                              onClickBack();
-                            } else {
-                              history.goBack();
-                            }
+                            history.goBack();
                           }}>
                           Go Back
                         </Button>

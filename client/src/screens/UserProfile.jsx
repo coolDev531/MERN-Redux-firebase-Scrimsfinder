@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useLayoutEffect } from 'react';
 import useAuth from './../hooks/useAuth';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 // components
@@ -43,7 +43,6 @@ export default function UserProfile() {
   const dispatch = useDispatch();
 
   const { id } = useParams();
-  const history = useHistory();
 
   const isCurrentUser = useMemo(
     () => userData?._id === currentUser?._id,
@@ -93,15 +92,11 @@ export default function UserProfile() {
       payload: userBg.blur,
     });
 
+    // when user leaves the page, reset the background and blur to the initial state
     return () => {
       dispatch({
-        type: 'general/setAppBackground',
+        type: 'general/resetAppBackground',
         payload: 'Summoners Rift',
-      });
-
-      dispatch({
-        type: 'general/setAppBgBlur',
-        payload: '20',
       });
     };
 
@@ -124,7 +119,7 @@ export default function UserProfile() {
       </Helmet>
 
       <ScrollToTopOnMount />
-      <Navbar showLess onClickBack={() => history.push('/')} />
+      <Navbar showLess />
       <InnerColumn>
         <Grid
           container

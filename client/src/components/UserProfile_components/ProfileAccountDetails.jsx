@@ -5,7 +5,7 @@ import Grid from '@mui/material/Grid';
 import Moment from 'react-moment';
 
 const ProfileAccountDetails = ({ user, userParticipatedScrims }) => {
-  const [userExp, setUserExp] = useState();
+  const [userExp, setUserExp] = useState(0);
 
   const calcExp = useCallback(() => {
     if (!userParticipatedScrims.length) return;
@@ -63,6 +63,10 @@ const ProfileAccountDetails = ({ user, userParticipatedScrims }) => {
   useEffect(() => {
     const expResult = calcExp();
     setUserExp(expResult);
+
+    return () => {
+      setUserExp(0);
+    };
   }, [user._id, calcExp]);
 
   return user?._id ? (
