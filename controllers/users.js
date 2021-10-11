@@ -41,11 +41,37 @@ const getAllUsers = async (req, res) => {
 
 const getOneUser = async (req, res) => {
   try {
-    const { name, region } = req.params;
+    let { name } = req.params;
+    let region = req.query.region;
+
+    // if user wasn't provided in the query, set it to the first user you can find that matches the name
+    if (!region) {
+      let allUsers = await User.find();
+      let foundUser = allUsers.find(
+        (user) => user.name.toLowerCase() === name.toLowerCase()
+      );
+      region = foundUser.region;
+    }
+
+    region = region.toUpperCase();
+
+    const regions = ['NA', 'EUW', 'EUNE', 'LAN'];
+
+    if (!regions.includes(region)) {
+      return res.status(404).json({
+        message:
+          'Invalid region, please select one of the following: NA, EUW, EUNE, LAN.',
+      });
+    }
 
     const adminKeyQuery = req?.query?.adminKey === KEYS.ADMIN_KEY ?? false;
 
-    let user = await User.findOne({ name, region }).select([
+    const nameRegex = `^${name}$`;
+
+    let user = await User.findOne({
+      name: { $regex: nameRegex, $options: 'i' }, // case insensitive name matching
+      region,
+    }).select([
       'discord',
       'name',
       'region',
@@ -58,7 +84,10 @@ const getOneUser = async (req, res) => {
       'profileBackgroundBlur',
     ]);
 
-    if (!user) return res.status(404).json({ message: 'User not found!' });
+    if (!user)
+      return res
+        .status(404)
+        .json({ message: `User not found in region: ${region}` });
 
     let userWithNoAdminKey = {
       ...user._doc,

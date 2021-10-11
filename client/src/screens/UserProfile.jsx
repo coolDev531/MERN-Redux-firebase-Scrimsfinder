@@ -1,8 +1,10 @@
+// hooks
 import { useState, useEffect, useMemo, useLayoutEffect } from 'react';
 import useAuth from './../hooks/useAuth';
 import { useParams, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import useQuery from '../hooks/useQuery';
+import useAlerts from './../hooks/useAlerts';
 
 // components
 import Navbar from '../components/shared/Navbar/Navbar';
@@ -32,6 +34,8 @@ import VerifiedAdminIcon from '@mui/icons-material/VerifiedUser';
 
 export default function UserProfile() {
   const { currentUser, isCurrentUserAdmin } = useAuth();
+  const { setCurrentAlert } = useAlerts();
+
   const [userData, setUserData] = useState(null);
   const [userCreatedScrims, setUserCreatedScrims] = useState([]);
   const [userParticipatedScrims, setUserParticipatedScrims] = useState([]);
@@ -46,7 +50,7 @@ export default function UserProfile() {
 
   const { name } = useParams();
 
-  const region = useQuery().get('region');
+  const region = useQuery().get('region'); // example: ?region="NA"
 
   const isCurrentUser = useMemo(
     () => userData?._id === currentUser?._id,
@@ -86,11 +90,21 @@ export default function UserProfile() {
 
         setIsLoaded(true);
       } catch (error) {
+        setCurrentAlert({
+          type: 'Error',
+          message: (
+            <>
+              User {name} was not found {region ? `in ${region}` : ''}
+            </>
+          ),
+        });
         history.push('/');
       }
     };
 
     fetchUserData();
+
+    // eslint-disable-next-line
   }, [name, region, isCurrentUser, isCurrentUserAdmin, history]);
 
   useLayoutEffect(() => {

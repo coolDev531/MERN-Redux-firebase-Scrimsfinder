@@ -9,9 +9,12 @@ export const getAllUsers = async () => {
   }
 };
 
-export const getOneUser = async (name, region) => {
+export const getOneUser = async (name, region = null) => {
   try {
-    const response = await api.get(`/users/${name}/${region}`);
+    // if user enters name of user without region, don't include it in query
+    const response = await api.get(
+      `/users/${name}${region ? `?region=${region}` : ''}`
+    );
     return response.data;
   } catch (error) {
     throw error;
