@@ -61,16 +61,8 @@ const getLobbyHost = async (scrim) => {
   }
 };
 
-const getLobbyName = async (region, createdScrimStartTime) => {
-  const scrims = await Scrim.find();
-  const scrimsInRegion = scrims.filter((scrim) => scrim.region === region);
-
-  // get scrims that are made in THAT specific day.
-  const scrimsThatDay = scrimsInRegion.filter((scrim) =>
-    checkIfScrimIsInACertainDate(scrim, createdScrimStartTime)
-  );
-
-  return `Scrim ${scrimsThatDay.length + 1} Custom Game (${region})`;
+const getLobbyName = (scrimTitle, region) => {
+  return `${scrimTitle} (${region})`;
 };
 
 const populateTeam = (teamName) => {
@@ -180,9 +172,9 @@ const createScrim = async (req, res) => {
 
     let requestBody = {
       ...req.body,
-      lobbyName: await getLobbyName(
-        req.body?.region ?? 'NA',
-        req.body?.gameStartTime
+      lobbyName: getLobbyName(
+        req.body.title ?? `${createdByUser?.name}'s Scrim`,
+        req.body?.region ?? 'NA'
       ),
       lobbyPassword: await generatePassword(),
       createdBy: createdByUser,
