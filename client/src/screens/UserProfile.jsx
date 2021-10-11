@@ -27,6 +27,7 @@ import VerifiedAdminIcon from '@mui/icons-material/VerifiedUser';
 
 // utils
 import ChangeBackground from './../components/UserProfile_components/ChangeBackground';
+import { BG_IMAGES } from './../utils/imageMaps';
 
 export default function UserProfile() {
   const { currentUser, isCurrentUserAdmin } = useAuth();
@@ -79,6 +80,12 @@ export default function UserProfile() {
       dispatch({ type: 'general/setAppBackground', payload: userBg });
     }, 50);
 
+    return () => {
+      dispatch({
+        type: 'general/setAppBackground',
+        payload: BG_IMAGES['Summoners Rift'],
+      });
+    };
     // eslint-disable-next-line
   }, [isLoaded, userBg]);
 

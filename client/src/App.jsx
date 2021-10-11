@@ -8,7 +8,6 @@ import {
   useFetchScrimsInterval,
   useSetScrimsRegion,
 } from './hooks/useScrims';
-import { useLocation } from 'react-router-dom';
 
 // styles
 import { appTheme } from './appTheme';
@@ -31,7 +30,7 @@ function App() {
   const { currentAlert, closeAlert } = useAlerts();
   const classes = useAppStyles();
   const appWrapper = useRef();
-  const { appBackground } = useSelector(({ general }) => general);
+  const { appBackground, appBgBlur } = useSelector(({ general }) => general);
 
   useAuthVerify(); // verify user is authenticated.
   useSetScrimsRegion(); // set scrims region to users region on mount and when user changes it on settings
@@ -41,6 +40,7 @@ function App() {
   useLayoutEffect(() => {
     // this will change the background back to summoners rift when user clicks back from UserProfile
     appWrapper.current?.style.setProperty('--bgImg', appBackground);
+    appWrapper.current?.style.setProperty('--bgBlur', appBgBlur);
 
     // eslint-disable-next-line
   }, [appBackground, appWrapper.current]);

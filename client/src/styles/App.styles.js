@@ -21,7 +21,7 @@ export const useAppStyles = makeStyles({
       right: 0,
       bottom: 0,
       left: 0,
-      filter: 'blur(20px)', // blurred
+      filter: 'var(--bgBlur)', // blurred
       zIndex: -1, // behind page-content z-index
     },
   },

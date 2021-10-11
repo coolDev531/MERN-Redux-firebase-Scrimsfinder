@@ -2,6 +2,7 @@ import { BG_IMAGES } from './../utils/imageMaps';
 
 const initialState = {
   appBackground: `url(${BG_IMAGES['Summoners Rift']})`,
+  appBgBlur: 'blur(20px)',
 };
 
 export default function generalReducer(state = initialState, action) {
@@ -12,6 +13,13 @@ export default function generalReducer(state = initialState, action) {
       return {
         ...state,
         appBackground: `url(${BG_IMAGES[payload]})`,
+      };
+    }
+
+    case 'general/setAppBgBlur': {
+      return {
+        ...state,
+        bgBlur: `blur(${payload})px`,
       };
     }
 

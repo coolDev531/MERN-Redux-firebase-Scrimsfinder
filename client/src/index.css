@@ -24,3 +24,7 @@ code {
   filter: invert(81%) sepia(15%) saturate(613%) hue-rotate(339deg)
     brightness(106%) contrast(101%);
 }
+
+:root {
+  --bgBlur: blur(20px);
+}

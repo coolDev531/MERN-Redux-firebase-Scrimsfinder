@@ -21,6 +21,7 @@ const User = new Schema(
     uid: { type: String, required: true, unique: true }, // google id
     email: { type: String, required: true, unique: true }, // google email.
     profileBackgroundImg: { type: String, default: 'Summoners Rift' },
+    profileBackgroundBlur: { type: String, default: 'blur(20px)' },
   },
   { timestamps: true }
 );

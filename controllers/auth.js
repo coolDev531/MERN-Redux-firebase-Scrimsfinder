@@ -232,6 +232,11 @@ const updateUser = async (req, res) => {
         req.body.profileBackgroundImg ??
         foundUser?.profileBackgroundImg ??
         'Summoners Rift',
+
+      profileBackgroundBlur:
+        req.body.profileBackgroundBlur ??
+        foundUser?.profileBackgroundBlur ??
+        'blur(20px)',
     };
 
     bcrypt.genSalt(10, (err, salt) => {
