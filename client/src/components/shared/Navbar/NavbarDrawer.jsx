@@ -101,16 +101,19 @@ export default function NavbarDrawer({
           })}>
           <List>
             {/* My Profile */}
-            <ListItem
-              button
-              onClick={() => drawerNavPush(`/users/${currentUser._id}`)}>
-              <ListItemIcon>
-                <MyProfileIcon />
-              </ListItemIcon>
-              <ListItemText primary="My Profile" />
-            </ListItem>
-
-            <Divider />
+            {currentUser?.uid && (
+              <>
+                <ListItem
+                  button
+                  onClick={() => drawerNavPush(`/users/${currentUser._id}`)}>
+                  <ListItemIcon>
+                    <MyProfileIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="My Profile" />
+                </ListItem>
+                <Divider />
+              </>
+            )}
 
             {/* Settings button */}
             <ListItem button onClick={() => drawerNavPush('/settings')}>

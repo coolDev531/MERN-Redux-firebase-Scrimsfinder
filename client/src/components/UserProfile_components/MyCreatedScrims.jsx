@@ -110,20 +110,24 @@ export default function MyCreatedScrims({ isCurrentUser, scrims }) {
         </FormGroup>
       </Grid>
       <ul className={classes.myCreatedScrimsList}>
-        {filteredCreatedScrims.map((scrim) => (
-          <li key={scrim._id}>
-            <Tooltip title="Open in new tab">
-              <Link className="link" to={`/scrims/${scrim._id}`}>
-                {scrim.title} |&nbsp;
-                <Moment format="MM/DD/yyyy hh:mm A">
-                  {scrim.gameStartTime}
-                </Moment>
-                &nbsp;| {scrim.region}&nbsp;
-                {scrim?.isPrivate ? '| Private' : '| Public'}
-              </Link>
-            </Tooltip>
-          </li>
-        ))}
+        {filteredCreatedScrims.length > 0 ? (
+          filteredCreatedScrims.map((scrim) => (
+            <li key={scrim._id}>
+              <Tooltip title="Open in new tab">
+                <Link className="link" to={`/scrims/${scrim._id}`}>
+                  {scrim.title} |&nbsp;
+                  <Moment format="MM/DD/yyyy hh:mm A">
+                    {scrim.gameStartTime}
+                  </Moment>
+                  &nbsp;| {scrim.region}&nbsp;
+                  {scrim?.isPrivate ? '| Private' : '| Public'}
+                </Link>
+              </Tooltip>
+            </li>
+          ))
+        ) : (
+          <Typography variant="h3">No created scrims found</Typography>
+        )}
       </ul>
     </>
   );

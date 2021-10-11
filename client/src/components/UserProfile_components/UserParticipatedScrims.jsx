@@ -124,20 +124,26 @@ export default function UserParticipatedScrims({ scrims, user }) {
       </Grid>
 
       <ul className={classes.myCreatedScrimsList}>
-        {filteredUserScrims.map((scrim) => (
-          <li key={scrim._id}>
-            <Tooltip title="Open in new tab">
-              <Link className="link" to={`/scrims/${scrim._id}`}>
-                {scrim.title} |&nbsp;
-                <Moment format="MM/DD/yyyy hh:mm A">
-                  {scrim.gameStartTime}
-                </Moment>
-                &nbsp;| {scrim.region}&nbsp;
-                {scrim?.isPrivate ? '(Private)' : ''}
-              </Link>
-            </Tooltip>
-          </li>
-        ))}
+        {filteredUserScrims.length > 0 ? (
+          filteredUserScrims.map((scrim) => (
+            <li key={scrim._id}>
+              <Tooltip title="Open in new tab">
+                <Link className="link" to={`/scrims/${scrim._id}`}>
+                  {scrim.title} |&nbsp;
+                  <Moment format="MM/DD/yyyy hh:mm A">
+                    {scrim.gameStartTime}
+                  </Moment>
+                  &nbsp;| {scrim.region}&nbsp;
+                  {scrim?.isPrivate ? '(Private)' : ''}
+                </Link>
+              </Tooltip>
+            </li>
+          ))
+        ) : (
+          <Typography variant="h3">
+            No user participated scrims found
+          </Typography>
+        )}
       </ul>
     </>
   );
