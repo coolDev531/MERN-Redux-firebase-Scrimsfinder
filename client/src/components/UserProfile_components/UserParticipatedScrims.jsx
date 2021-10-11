@@ -19,9 +19,11 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Box from '@mui/material/Box';
+import FormGroup from '@mui/material/FormGroup';
 
-export default function UserParticipatedScrims({ scrims, userName }) {
+export default function UserParticipatedScrims({ scrims, user }) {
   const [sortType, setSortType] = useState('date-descending');
+  const [filterType, setFilterType] = useState('none');
 
   const classes = useProfileStyles();
 
@@ -35,6 +37,35 @@ export default function UserParticipatedScrims({ scrims, userName }) {
         return scrims;
     }
   }, [scrims, sortType]);
+
+  const filteredUserScrims = useMemo(() => {
+    switch (filterType) {
+      case 'none':
+        return sortedUserScrims;
+      case 'games-played':
+        return sortedUserScrims.filter((scrim) => {
+          const scrimTeams = [...scrim.teamOne, ...scrim.teamTwo];
+
+          const foundPlayer = scrimTeams.find(
+            (player) => player._user === user._id
+          );
+
+          return foundPlayer;
+        });
+
+      case 'games-casted':
+        return sortedUserScrims.filter((scrim) => {
+          const foundCaster = scrim.casters.find(
+            (casterId) => casterId === user._id
+          );
+
+          return foundCaster;
+        });
+
+      default:
+        return sortedUserScrims;
+    }
+  }, [filterType, sortedUserScrims, user._id]);
 
   if (!scrims.length) return null;
 
@@ -51,13 +82,14 @@ export default function UserParticipatedScrims({ scrims, userName }) {
         marginTop={2}>
         <Grid item>
           <Tooltip
-            title={`Scrims that ${userName} has been a part of (caster or player)`}>
+            title={`Scrims that ${user?.name} has been a part of (caster or player)`}>
             <Typography style={{ cursor: 'help' }} variant="h1">
               Scrims Participated In
             </Typography>
           </Tooltip>
         </Grid>
-        <Grid item>
+
+        <FormGroup row>
           <Box sx={{ minWidth: 120 }}>
             <FormControl fullWidth>
               <InputLabel>Sort Scrims</InputLabel>
@@ -72,10 +104,27 @@ export default function UserParticipatedScrims({ scrims, userName }) {
               </Select>
             </FormControl>
           </Box>
-        </Grid>
+
+          <Box sx={{ minWidth: 120 }}>
+            <FormControl fullWidth>
+              <InputLabel>Filter By</InputLabel>
+              <Select
+                value={filterType.toString()}
+                label="Filter"
+                onChange={(e) => {
+                  setFilterType(e.target.value);
+                }}>
+                <MenuItem value="none">None</MenuItem>
+                <MenuItem value="games-played">Games Played</MenuItem>
+                <MenuItem value="games-casted">Games Casted</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+        </FormGroup>
       </Grid>
+
       <ul className={classes.myCreatedScrimsList}>
-        {sortedUserScrims.map((scrim) => (
+        {filteredUserScrims.map((scrim) => (
           <li key={scrim._id}>
             <Tooltip title="Open in new tab">
               <Link className="link" to={`/scrims/${scrim._id}`}>

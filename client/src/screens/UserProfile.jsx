@@ -175,7 +175,7 @@ export default function UserProfile() {
 
         {/* user participated scrims */}
         <UserParticipatedScrims
-          userName={userData?.name}
+          user={userData}
           isCurrentUser={isCurrentUser}
           scrims={userParticipatedScrims}
         />
