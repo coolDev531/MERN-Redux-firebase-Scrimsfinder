@@ -152,11 +152,14 @@ const getUserParticipatedScrims = async (req, res) => {
     if (!user) return res.status(404).json({ message: 'User not found!' });
 
     const userParticipatedScrims = scrims.filter((scrim) => {
+      if (!scrim.teamWon) return false; // if no team won, that means the game didn't end yet.
+
       const scrimTeams = [...scrim.teamOne, ...scrim.teamTwo];
 
       const scrimPlayers = scrimTeams.map(({ _user }) => String(_user));
 
       const foundPlayer = scrimPlayers.find((id) => String(user._id) === id);
+
       const foundCaster = scrim.casters.find(
         (id) => String(id) === String(user._id)
       );
