@@ -7,7 +7,7 @@ export default function useAppBackground() {
   const appWrapperRef = useRef(null); // this ref will have to be attached to the wrapper div in app
 
   useLayoutEffect(() => {
-    // this will change the background back to summoners rift when user clicks back from UserProfile
+    // this changes the background whenever appBackground or appBgBlur change in the redux store
     appWrapperRef.current?.style.setProperty('--bgImg', appBackground);
     appWrapperRef.current?.style.setProperty('--bgBlur', appBgBlur);
 
