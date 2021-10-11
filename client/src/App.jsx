@@ -1,6 +1,7 @@
 import './App.css';
+
 // hooks
-import { useLayoutEffect, useRef } from 'react';
+import useAppBackground from './hooks/useAppBackground';
 import useAlerts from './hooks/useAlerts';
 import useAuth, { useAuthVerify } from './hooks/useAuth';
 import {
@@ -23,31 +24,20 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { Helmet } from 'react-helmet';
 
-import { useSelector } from 'react-redux';
-
 function App() {
   const { isVerifyingUser } = useAuth();
   const { currentAlert, closeAlert } = useAlerts();
   const classes = useAppStyles();
-  const appWrapper = useRef();
-  const { appBackground, appBgBlur } = useSelector(({ general }) => general);
+  const appWrapperRef = useAppBackground();
 
   useAuthVerify(); // verify user is authenticated.
   useSetScrimsRegion(); // set scrims region to users region on mount and when user changes it on settings
   useFetchScrims(); // fetch scrims on mount or path change
   useFetchScrimsInterval(); // fetch scrims on 10 sec interval
 
-  useLayoutEffect(() => {
-    // this will change the background back to summoners rift when user clicks back from UserProfile
-    appWrapper.current?.style.setProperty('--bgImg', appBackground);
-    appWrapper.current?.style.setProperty('--bgBlur', appBgBlur);
-
-    // eslint-disable-next-line
-  }, [appWrapper.current, appBackground, appBgBlur]);
-
   if (isVerifyingUser) {
     return (
-      <div ref={appWrapper} className={classes.root}>
+      <div ref={appWrapperRef} className={classes.root}>
         <Loading text="Verifying user..." />;
       </div>
     );
@@ -61,7 +51,7 @@ function App() {
         <meta name="description" content="Find LoL Custom Lobbies!" />
       </Helmet>
 
-      <div className={classes.root} ref={appWrapper} id="app__wrapper">
+      <div className={classes.root} ref={appWrapperRef}>
         <ThemeProvider theme={appTheme}>
           <CssBaseline />
 
