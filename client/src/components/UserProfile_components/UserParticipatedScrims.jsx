@@ -6,6 +6,7 @@ import {
   showEarliestFirst,
   showLatestFirst,
 } from './../../utils/getSortedScrims';
+import { filterPlayerWon, filterPlayerLost } from './../../utils/filterScrims';
 
 // components
 import { Link } from 'react-router-dom';
@@ -22,6 +23,7 @@ import FormGroup from '@mui/material/FormGroup';
 import CustomTooltip from '../shared/Tooltip';
 import Tooltip from '@mui/material/Tooltip';
 
+// scrims passed in props from UserProfile.jsx (userParticipatedScrims)
 export default function UserParticipatedScrims({ scrims, user }) {
   const [sortType, setSortType] = useState('date-descending');
   const [filterType, setFilterType] = useState('none');
@@ -43,7 +45,7 @@ export default function UserParticipatedScrims({ scrims, user }) {
     switch (filterType) {
       case 'none':
         return sortedUserScrims;
-      case 'games-played':
+      case 'games played':
         return sortedUserScrims.filter((scrim) => {
           const scrimTeams = [...scrim.teamOne, ...scrim.teamTwo];
 
@@ -54,7 +56,7 @@ export default function UserParticipatedScrims({ scrims, user }) {
           return foundPlayer;
         });
 
-      case 'games-casted':
+      case 'games casted':
         return sortedUserScrims.filter((scrim) => {
           const foundCaster = scrim.casters.find(
             (casterId) => casterId === user._id
@@ -63,6 +65,11 @@ export default function UserParticipatedScrims({ scrims, user }) {
           return foundCaster;
         });
 
+      case 'matches won':
+        return filterPlayerWon(user, sortedUserScrims);
+
+      case 'matches lost':
+        return filterPlayerLost(user, sortedUserScrims);
       default:
         return sortedUserScrims;
     }
@@ -103,8 +110,10 @@ export default function UserParticipatedScrims({ scrims, user }) {
                   setFilterType(e.target.value);
                 }}>
                 <MenuItem value="none">None</MenuItem>
-                <MenuItem value="games-played">Games Played</MenuItem>
-                <MenuItem value="games-casted">Games Casted</MenuItem>
+                <MenuItem value="games played">Games Played</MenuItem>
+                <MenuItem value="games casted">Games Casted</MenuItem>
+                <MenuItem value="matches won">Matches Won</MenuItem>
+                <MenuItem value="matches lost">Matches Lost</MenuItem>
               </Select>
             </FormControl>
           </Box>
@@ -144,7 +153,9 @@ export default function UserParticipatedScrims({ scrims, user }) {
           ))
         ) : (
           <Typography variant="h3">
-            No user participated scrims found
+            {filterType === 'none'
+              ? 'No user participated scrims found'
+              : `No ${filterType} found`}
           </Typography>
         )}
       </ul>
