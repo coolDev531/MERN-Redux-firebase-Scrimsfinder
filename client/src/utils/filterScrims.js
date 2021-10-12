@@ -33,3 +33,13 @@ export const filterPlayerLost = (user, scrims) => {
     return !playerWon;
   });
 };
+
+export const filterLobbyCaptain = (user, scrims) => {
+  return scrims.filter((scrim) => {
+    let lobbyCaptainId = scrim?.lobbyHost ?? null;
+
+    const foundCaptain = lobbyCaptainId === user?._id;
+
+    return foundCaptain;
+  });
+};

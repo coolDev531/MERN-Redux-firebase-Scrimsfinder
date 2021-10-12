@@ -6,7 +6,11 @@ import {
   showEarliestFirst,
   showLatestFirst,
 } from './../../utils/getSortedScrims';
-import { filterPlayerWon, filterPlayerLost } from './../../utils/filterScrims';
+import {
+  filterPlayerWon,
+  filterPlayerLost,
+  filterLobbyCaptain,
+} from './../../utils/filterScrims';
 
 // components
 import { Link } from 'react-router-dom';
@@ -65,6 +69,9 @@ export default function UserParticipatedScrims({ scrims, user }) {
           return foundCaster;
         });
 
+      case 'lobby captain games':
+        return filterLobbyCaptain(user, sortedUserScrims);
+
       case 'matches won':
         return filterPlayerWon(user, sortedUserScrims);
 
@@ -112,6 +119,7 @@ export default function UserParticipatedScrims({ scrims, user }) {
                 <MenuItem value="none">None</MenuItem>
                 <MenuItem value="games played">Games Played</MenuItem>
                 <MenuItem value="games casted">Games Casted</MenuItem>
+                <MenuItem value="lobby captain games">Lobby Captain</MenuItem>
                 <MenuItem value="matches won">Matches Won</MenuItem>
                 <MenuItem value="matches lost">Matches Lost</MenuItem>
               </Select>
