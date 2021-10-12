@@ -62,6 +62,7 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
     backgroundColor: 'rgba(18,25,35, .85) !important',
     backdropFilter: 'blur(8px)',
   },
+
   teamList: {
     width: '100%',
     maxWidth: '36ch',
