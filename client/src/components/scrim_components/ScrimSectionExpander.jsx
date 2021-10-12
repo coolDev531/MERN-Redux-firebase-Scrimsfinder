@@ -1,11 +1,16 @@
+// hooks
 import { useState, useCallback } from 'react';
 
+// components
+import Tooltip from '../shared/Tooltip';
+
+// utils
+import { COLORS } from './../../appTheme';
+import styled from '@emotion/styled'; // decided to use styled components because this is too much css
+
+// icons
 import ShowLessIcon from '@mui/icons-material/ExpandLess';
 import ShowMoreIcon from '@mui/icons-material/ExpandMore';
-
-import styled from 'styled-components'; // decided to use styled components because this is too much css
-import Tooltip from '../shared/Tooltip';
-import { COLORS } from './../../appTheme';
 
 export default function ScrimSectionExpander({
   isBoxExpanded,
@@ -80,13 +85,14 @@ const StyledDivider = styled.div`
   position: relative;
   width: 98%;
   max-width: 1100px;
-  border-bottom: 2px solid #404040;
   display: flex;
   justify-content: center;
   box-shadow: none;
   margin: auto;
   box-sizing: inherit;
   &.collapsed {
+    border-bottom: 2px solid #404040;
+
     height: 6em;
     margin-top: -6em;
     background-image: -webkit-gradient(
