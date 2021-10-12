@@ -1,4 +1,4 @@
-import { useMemo, Fragment } from 'react';
+import { useMemo, Fragment, memo } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import useAlerts from './../../hooks/useAlerts';
 import useTheme from '@mui/styles/useTheme';
@@ -20,6 +20,8 @@ import AdminArea from './../shared/AdminArea';
 // icons
 import ShareIcon from '@mui/icons-material/Share';
 import SettingsIcon from '@mui/icons-material/Settings';
+import { ROLE_IMAGES } from './../../utils/imageMaps';
+import { truncate } from './../../utils/truncate';
 
 const MAX_CASTER_AMOUNT = 2;
 
@@ -140,91 +142,192 @@ export default function ScrimSectionHeader({
         </Grid>
       </Grid>
 
-      <Grid container>
-        <Typography variant="h2">
-          Game Start:&nbsp;
-          <Moment format="MM/DD/yyyy | hh:mm A">{scrim.gameStartTime}</Moment>
-        </Typography>
+      <Grid container direction="row" justifyContent="space-between">
+        <Grid itme xs={6}>
+          <Typography variant="h2">
+            Game Start:&nbsp;
+            <Moment format="MM/DD/yyyy | hh:mm A">{scrim.gameStartTime}</Moment>
+          </Typography>
+        </Grid>
 
-        {/*  casters text and buttons*/}
-        <Grid container direction="column">
-          {casters.length === 2 ? (
-            <Typography variant="h2">
-              Casters:{' '}
-              {casters.map((caster, idx) => (
-                <Fragment key={caster._id}>
-                  <Tooltip
-                    arrow
-                    placement="top"
-                    title={`visit ${caster?.name}'s profile`}>
-                    <Link
-                      className="link"
-                      to={`/users/${caster?.name}?region=${caster?.region}`}>
-                      {caster?.name}
-                    </Link>
-                  </Tooltip>
-                  {idx === 0 ? ' & ' : ''}
-                </Fragment>
-              ))}
+        {!expanded && (
+          <Grid item xs={4}>
+            <Typography variant="h2" textAlign="center">
+              Players:
             </Typography>
-          ) : (
-            <Grid item container direction="column" alignItems="flex-start">
-              {casters.length === 0 ? (
-                <Typography variant="h2">No Casters</Typography>
-              ) : null}
-              {casters[0] && (
-                <Typography variant="h2">
-                  {/* if game didn't and say current casters, else say one caster: */}
-                  {!gameEnded ? 'Current Casters:' : 'Caster:'}&nbsp;
-                  <Tooltip
-                    arrow
-                    placement="top"
-                    title={`visit ${casters[0]?.name}'s profile`}>
-                    <Link
-                      className="link"
-                      to={`/users/${casters[0]?.name}?region=${casters[0]?.region}`}>
-                      {casters[0].name}
-                    </Link>
-                  </Tooltip>
-                </Typography>
-              )}
-            </Grid>
-          )}
+          </Grid>
+        )}
+      </Grid>
 
-          {/* don't show cast buttons if game ended or we have max casters or currentUser has joined cast*/}
-          {!gameEnded && (
-            <Grid container alignItems="center" direction="row" spacing={2}>
-              {casters.length !== MAX_CASTER_AMOUNT && !casterEntered && (
-                <Grid item>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    disabled={
-                      casters.length === MAX_CASTER_AMOUNT ||
-                      casterEntered ||
-                      buttonsDisabled
-                    }
-                    onClick={joinCast}>
-                    join cast
-                  </Button>
-                </Grid>
-              )}
+      <Grid container direction="column">
+        <Grid container direction="row" justifyContent="space-between">
+          {/*  casters text and buttons*/}
+          <CastersSection
+            casters={casters}
+            gameEnded={gameEnded}
+            data={{
+              casterEntered,
+              casters,
+              buttonsDisabled,
+              joinCast,
+              leaveCast,
+              expanded,
+            }}
+          />
 
-              {casterEntered && (
-                <Grid item>
-                  <Button
-                    color="secondary"
-                    variant="contained"
-                    disabled={buttonsDisabled}
-                    onClick={leaveCast}>
-                    Leave cast
-                  </Button>
-                </Grid>
-              )}
-            </Grid>
+          {!expanded && (
+            <>
+              <Grid
+                item
+                container
+                xs={6}
+                direction="row"
+                justifyContent="flex-end"
+                style={{ marginBottom: '10px' }}>
+                <OneTeam
+                  teamArr={scrim.teamOne}
+                  teamRoles={['Top', 'Jungle', 'Mid', 'ADC', 'Support']}
+                />
+
+                <OneTeam
+                  teamArr={scrim.teamTwo}
+                  teamRoles={['Top', 'Jungle', 'Mid', 'ADC', 'Support']}
+                />
+              </Grid>
+            </>
           )}
         </Grid>
       </Grid>
     </Grid>
   );
 }
+
+const CastersSection = memo(({ casters, gameEnded, data }) => (
+  <Grid container direction="column" xs={6}>
+    {casters.length === 2 ? (
+      <Typography variant="h2">
+        Casters:{' '}
+        {casters.map((caster, idx) => (
+          <Fragment key={caster._id}>
+            <Tooltip
+              arrow
+              placement="top"
+              title={`visit ${caster?.name}'s profile`}>
+              <Link
+                className="link"
+                to={`/users/${caster?.name}?region=${caster?.region}`}>
+                {caster?.name}
+              </Link>
+            </Tooltip>
+            {idx === 0 ? ' & ' : ''}
+          </Fragment>
+        ))}
+      </Typography>
+    ) : (
+      <Grid item container direction="column" alignItems="flex-start">
+        {casters.length === 0 ? (
+          <Typography variant="h2">No Casters</Typography>
+        ) : null}
+        {casters[0] && (
+          <Typography variant="h2">
+            {/* if game didn't and say current casters, else say one caster: */}
+            {!gameEnded ? 'Current Casters:' : 'Caster:'}&nbsp;
+            <Tooltip
+              arrow
+              placement="top"
+              title={`visit ${casters[0]?.name}'s profile`}>
+              <Link
+                className="link"
+                to={`/users/${casters[0]?.name}?region=${casters[0]?.region}`}>
+                {casters[0].name}
+              </Link>
+            </Tooltip>
+          </Typography>
+        )}
+      </Grid>
+    )}
+
+    <JoinCastButtons data={data} gameEnded={gameEnded} />
+  </Grid>
+));
+
+const JoinCastButtons = memo(({ data, gameEnded }) => {
+  const {
+    casterEntered,
+    casters,
+    buttonsDisabled,
+    joinCast,
+    leaveCast,
+    expanded,
+  } = data;
+
+  if (!expanded) return null;
+
+  // // don't show cast buttons if game ended or we have max casters or currentUser has joined cast
+  if (gameEnded) return null;
+
+  return (
+    <Grid container alignItems="center" direction="row" spacing={2}>
+      {casters.length !== MAX_CASTER_AMOUNT && !casterEntered && (
+        <Grid item>
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={
+              casters.length === MAX_CASTER_AMOUNT ||
+              casterEntered ||
+              buttonsDisabled
+            }
+            onClick={joinCast}>
+            join cast
+          </Button>
+        </Grid>
+      )}
+
+      {casterEntered && (
+        <Grid item>
+          <Button
+            color="secondary"
+            variant="contained"
+            disabled={buttonsDisabled}
+            onClick={leaveCast}>
+            Leave cast
+          </Button>
+        </Grid>
+      )}
+    </Grid>
+  );
+});
+
+const OneTeam = memo(({ teamArr, teamRoles }) => {
+  return (
+    <Grid item container direction="column" xs={4}>
+      {teamRoles.map((teamRole) => {
+        const playerAssigned = teamArr.find(
+          (player) => player?.role === teamRole
+        );
+        const userInfo = playerAssigned?._user;
+
+        return (
+          <Grid item key={userInfo._id} container alignItems="center">
+            <Tooltip
+              arrow
+              placement="top"
+              title={`Visit ${userInfo?.name}'s profile`}>
+              <Link
+                className="link"
+                to={`/users/${userInfo?.name}?region=${userInfo?.region}`}>
+                <img
+                  alt={playerAssigned.role}
+                  src={ROLE_IMAGES[teamRole]}
+                  width="20px"
+                />
+                {truncate(userInfo.name, 12)}
+              </Link>
+            </Tooltip>
+          </Grid>
+        );
+      })}
+    </Grid>
+  );
+});

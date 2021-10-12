@@ -16,7 +16,7 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
     border: '1px solid white',
-    maxHeight: ({ expanded }) => (expanded ? 'inherit' : '200px'),
+    maxHeight: ({ expanded }) => (expanded ? 'inherit' : '289px'),
     overflowY: ({ expanded }) => (expanded ? 'inherit' : 'hidden'),
     transition: 'max-height 0.15s ease-out',
   },
