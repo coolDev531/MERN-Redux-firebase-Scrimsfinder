@@ -5,6 +5,7 @@ import ShowMoreIcon from '@mui/icons-material/ExpandMore';
 
 import styled from 'styled-components'; // decided to use styled components because this is too much css
 import Tooltip from '../shared/Tooltip';
+import { COLORS } from './../../appTheme';
 
 export default function ScrimSectionExpander({
   expanded,
@@ -98,24 +99,19 @@ const StyledDivider = styled.div`
     max-width: 42px;
     max-height: 42px;
     border-width: 2px;
-    background-color: rgba(42, 42, 42, 0.6);
+    background-color: ${COLORS.DK_BLUE_TRANSPARENT};
+    backdrop-filter: blur(8px);
     border-color: rgba(255, 255, 255, 0.5);
     padding-left: 0.8rem;
     padding-right: 0.8rem;
     border: 1px solid rgba(255, 255, 255, 0.7);
     color: white;
     bottom: 0;
-    -webkit-transform: translateY(50%);
-    -moz-transform: translateY(50%);
-    -ms-transform: translateY(50%);
-    -o-transform: translateY(50%);
     transform: translateY(50%);
-    -webkit-box-align: center;
     align-items: center;
     appearance: none;
     cursor: pointer;
     display: flex;
-    -webkit-box-pack: center;
     justify-content: center;
     opacity: 1;
     padding: 0.8rem;
@@ -129,7 +125,7 @@ const StyledDivider = styled.div`
       outline: none;
     }
     &:hover {
-      filter: contrast(0.5);
+      filter: contrast(0.6);
     }
     .modal__expandIcon {
       color: #fff;
