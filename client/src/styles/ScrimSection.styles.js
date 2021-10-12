@@ -18,7 +18,6 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
     border: '1px solid white',
     maxHeight: ({ expanded }) => (expanded ? 'inherit' : '289px'),
     overflowY: ({ expanded }) => (expanded ? 'inherit' : 'hidden'),
-    transition: 'max-height 0.15s ease-out',
   },
 
   scrimSectionHeader: {
