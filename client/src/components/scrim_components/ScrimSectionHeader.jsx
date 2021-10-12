@@ -1,4 +1,4 @@
-import { useMemo, Fragment, memo } from 'react';
+import { useMemo, Fragment, memo, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import useAlerts from './../../hooks/useAlerts';
 import useTheme from '@mui/styles/useTheme';
@@ -35,6 +35,7 @@ export default function ScrimSectionHeader({
   handleDeleteScrim,
   buttonsDisabled,
   expanded,
+  isInDetail,
 }) {
   const { casters } = scrim;
   const { setCurrentAlert } = useAlerts();
@@ -42,14 +43,18 @@ export default function ScrimSectionHeader({
   const history = useHistory();
   const theme = useTheme();
   const matchesMd = useMediaQuery(theme.breakpoints.down('md'));
-
+  const [isHover, setIsHover] = useState(false);
   const gameUrl = useMemo(
     () => `${window.location.origin}/scrims/${scrim._id}`,
     [scrim._id]
   );
 
   return (
-    <Grid container direction="column" className={classes.scrimSectionHeader}>
+    <Grid
+      container
+      direction="column"
+      flexWrap="nowrap"
+      className={classes.scrimSectionHeader}>
       <Grid
         item
         container
@@ -57,8 +62,14 @@ export default function ScrimSectionHeader({
         alignItems="center"
         justifyContent="space-between">
         <Grid item sm={6}>
-          <Tooltip arrow placement="top" title="Redirect to scrim page">
+          <Tooltip
+            arrow
+            placement="top"
+            title="Redirect to scrim page"
+            open={!isInDetail && isHover}>
             <Link
+              onMouseEnter={() => setIsHover(true)}
+              onMouseLeave={() => setIsHover(false)}
               className="link"
               style={{
                 textDecorationColor: '#000',
@@ -152,7 +163,10 @@ export default function ScrimSectionHeader({
 
         {!expanded && (
           <Grid item xs={4}>
-            <Typography variant="h2" textAlign="center">
+            <Typography
+              style={{ marginRight: '10px' }}
+              variant="h2"
+              textAlign="center">
               {[...scrim.teamOne, ...scrim.teamTwo].length
                 ? 'Players:'
                 : 'No players'}
@@ -183,16 +197,19 @@ export default function ScrimSectionHeader({
                 item
                 container
                 xs={6}
+                spacing={2}
                 direction="row"
                 justifyContent="flex-end"
                 style={{ marginBottom: '10px' }}>
                 <OneTeam
                   teamArr={scrim.teamOne}
                   teamRoles={['Top', 'Jungle', 'Mid', 'ADC', 'Support']}
+                  alignContent="flex-end"
                 />
 
                 <OneTeam
                   teamArr={scrim.teamTwo}
+                  alignContent="flex-start"
                   teamRoles={['Top', 'Jungle', 'Mid', 'ADC', 'Support']}
                 />
               </Grid>
@@ -205,7 +222,7 @@ export default function ScrimSectionHeader({
 }
 
 const CastersSection = memo(({ casters, gameEnded, data }) => (
-  <Grid container direction="column" xs={6}>
+  <Grid container direction="column" item xs={6}>
     {casters.length === 2 ? (
       <Typography variant="h2">
         Casters:{' '}
@@ -254,16 +271,7 @@ const CastersSection = memo(({ casters, gameEnded, data }) => (
 ));
 
 const JoinCastButtons = memo(({ data, gameEnded }) => {
-  const {
-    casterEntered,
-    casters,
-    buttonsDisabled,
-    joinCast,
-    leaveCast,
-    expanded,
-  } = data;
-
-  if (!expanded) return null;
+  const { casterEntered, casters, buttonsDisabled, joinCast, leaveCast } = data;
 
   // // don't show cast buttons if game ended or we have max casters or currentUser has joined cast
   if (gameEnded) return null;
@@ -301,9 +309,9 @@ const JoinCastButtons = memo(({ data, gameEnded }) => {
   );
 });
 
-const OneTeam = memo(({ teamArr, teamRoles }) => {
+const OneTeam = memo(({ teamArr, teamRoles, alignContent }) => {
   return (
-    <Grid item container direction="column" xs={4}>
+    <Grid item container direction="column" style={{ alignContent }} xs={4}>
       {teamRoles.map((teamRole) => {
         const playerAssigned = teamArr.find(
           (player) => player?.role === teamRole
@@ -314,7 +322,7 @@ const OneTeam = memo(({ teamArr, teamRoles }) => {
         if (!playerAssigned) return null;
 
         return (
-          <Grid item key={userInfo?._id} container alignItems="center">
+          <Grid item key={userInfo?._id}>
             <Tooltip
               arrow
               placement="top"
@@ -325,7 +333,12 @@ const OneTeam = memo(({ teamArr, teamRoles }) => {
                 <img
                   alt={playerAssigned?.role}
                   src={ROLE_IMAGES[teamRole]}
-                  width="20px"
+                  style={{
+                    position: 'relative',
+                    top: '5px',
+                    width: '20px',
+                    marginRight: '2px',
+                  }}
                 />
                 {truncate(userInfo.name, 12)}
               </Link>

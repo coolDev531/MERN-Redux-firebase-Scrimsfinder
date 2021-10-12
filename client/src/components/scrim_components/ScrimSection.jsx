@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 import { useScrimsActions } from '../../hooks/useScrims';
 import useAuth from '../../hooks/useAuth';
 import useAlerts from './../../hooks/useAlerts';
@@ -11,7 +11,8 @@ import ScrimTeamList from './ScrimTeamList';
 import ScrimSectionMiddleAreaBox from './ScrimSectionMiddleAreaBox';
 import ScrimSectionHeader from './ScrimSectionHeader';
 import { PageSection } from '../shared/PageComponents';
-import ScrimSectionExpand from './ScrimSectionExpand';
+import ScrimSectionExpander from './ScrimSectionExpander';
+
 // utils / services
 import { deleteScrim, removeCasterFromScrim } from '../../services/scrims';
 import { insertCasterInScrim } from '../../services/scrims';
@@ -48,6 +49,8 @@ export default function ScrimSection({ scrim, isInDetail }) {
   const [gameStarted, setGameStarted] = useState(false);
   const [imageUploaded, setImageUploaded] = useState(false);
   const [buttonsDisabled, setButtonsDisabled] = useState(false); // for when players spam joining or leaving.
+
+  const scrimBoxRef = useRef(null); // element container
 
   const dispatch = useDispatch();
 
@@ -187,7 +190,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
   // the "Scrim Box"
   return (
     <PageSection aria-label="scrim section">
-      <div className={classes.scrimBox}>
+      <div className={classes.scrimBox} ref={scrimBoxRef}>
         <ScrimSectionHeader
           scrim={scrim}
           joinCast={joinCast}
@@ -197,6 +200,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
           casterEntered={casterEntered}
           buttonsDisabled={buttonsDisabled}
           expanded={expanded}
+          isInDetail={isInDetail}
         />
 
         <div className={classes.teamsContainer}>
@@ -245,7 +249,11 @@ export default function ScrimSection({ scrim, isInDetail }) {
         </div>
       </div>
       {!isInDetail && (
-        <ScrimSectionExpand expanded={expanded} setExpanded={setExpanded} />
+        <ScrimSectionExpander
+          scrimBoxRef={scrimBoxRef}
+          expanded={expanded}
+          setExpanded={setExpanded}
+        />
       )}
     </PageSection>
   );

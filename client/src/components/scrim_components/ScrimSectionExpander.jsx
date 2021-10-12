@@ -4,9 +4,13 @@ import ShowLessIcon from '@mui/icons-material/ExpandLess';
 import ShowMoreIcon from '@mui/icons-material/ExpandMore';
 
 import styled from 'styled-components'; // decided to use styled components because this is too much css
-import Tooltip from './../shared/Tooltip';
+import Tooltip from '../shared/Tooltip';
 
-export default function Divider({ expanded, setExpanded }) {
+export default function ScrimSectionExpander({
+  expanded,
+  setExpanded,
+  scrimBoxRef,
+}) {
   const [isHover, setIsHover] = useState(false);
 
   return (
@@ -22,6 +26,10 @@ export default function Divider({ expanded, setExpanded }) {
             onClick={() => {
               setExpanded((prevState) => !prevState);
               setIsHover(false);
+              window.scrollTo({
+                behavior: 'smooth',
+                top: scrimBoxRef.current?.offsetTop,
+              });
             }}>
             <ShowLessIcon className="modal__expandIcon" />
           </button>
@@ -35,6 +43,10 @@ export default function Divider({ expanded, setExpanded }) {
             onClick={() => {
               setExpanded((prevState) => !prevState);
               setIsHover(false);
+              window.scrollTo({
+                behavior: 'smooth',
+                top: scrimBoxRef.current?.offsetTop,
+              });
             }}>
             <ShowMoreIcon className="modal__expandIcon" />
           </button>
