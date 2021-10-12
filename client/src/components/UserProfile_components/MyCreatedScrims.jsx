@@ -128,7 +128,12 @@ export default function MyCreatedScrims({ isCurrentUser, scrims }) {
             </li>
           ))
         ) : (
-          <Typography variant="h3">No created scrims found</Typography>
+          <Typography variant="h3">
+            {/* if user didn't set a filter, just say no scrims found */}
+            {filterType === 'none'
+              ? 'No created scrims found'
+              : `No ${filterType} created scrims found`}
+          </Typography>
         )}
       </ul>
     </>
