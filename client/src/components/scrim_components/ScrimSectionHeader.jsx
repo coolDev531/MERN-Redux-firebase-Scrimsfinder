@@ -32,10 +32,11 @@ export default function ScrimSectionHeader({
   leaveCast,
   handleDeleteScrim,
   buttonsDisabled,
+  expanded,
 }) {
   const { casters } = scrim;
   const { setCurrentAlert } = useAlerts();
-  const classes = useScrimSectionStyles();
+  const classes = useScrimSectionStyles({ expanded });
   const history = useHistory();
   const theme = useTheme();
   const matchesMd = useMediaQuery(theme.breakpoints.down('md'));
@@ -54,29 +55,32 @@ export default function ScrimSectionHeader({
         alignItems="center"
         justifyContent="space-between">
         <Grid item sm={6}>
-          <Link
-            className="link"
-            style={{
-              textDecorationColor: '#000',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-            to={`/scrims/${scrim._id}`}>
-            <Typography variant="h1" style={{ fontSize: '1.6rem' }}>
-              {/* if scrim has a title show title, else show createdby.name's scrim */}
-              {`${scrim.title ?? `${scrim.createdBy.name}'s Scrim`} (${
-                scrim.region
-              })`}
-            </Typography>
-
-            {scrim.isPrivate && (
-              <Typography
-                variant="h3"
-                style={{ fontSize: '1.6rem', color: '#999' }}>
-                &nbsp;private
+          <Tooltip arrow placement="top" title="Redirect to scrim page">
+            <Link
+              className="link"
+              style={{
+                textDecorationColor: '#000',
+                display: 'flex',
+                alignItems: 'center',
+                width: 'fit-content',
+              }}
+              to={`/scrims/${scrim._id}`}>
+              <Typography variant="h1" style={{ fontSize: '1.6rem' }}>
+                {/* if scrim has a title show title, else show createdby.name's scrim */}
+                {`${scrim.title ?? `${scrim.createdBy.name}'s Scrim`} (${
+                  scrim.region
+                })`}
               </Typography>
-            )}
-          </Link>
+
+              {scrim.isPrivate && (
+                <Typography
+                  variant="h3"
+                  style={{ fontSize: '1.6rem', color: '#999' }}>
+                  &nbsp;private
+                </Typography>
+              )}
+            </Link>
+          </Tooltip>
         </Grid>
         <Grid
           item

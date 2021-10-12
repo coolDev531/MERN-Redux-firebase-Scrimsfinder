@@ -11,7 +11,7 @@ import ScrimTeamList from './ScrimTeamList';
 import ScrimSectionMiddleAreaBox from './ScrimSectionMiddleAreaBox';
 import ScrimSectionHeader from './ScrimSectionHeader';
 import { PageSection } from '../shared/PageComponents';
-
+import ScrimSectionExpand from './ScrimSectionExpand';
 // utils / services
 import { deleteScrim, removeCasterFromScrim } from '../../services/scrims';
 import { insertCasterInScrim } from '../../services/scrims';
@@ -38,6 +38,11 @@ export default function ScrimSection({ scrim, isInDetail }) {
   const { currentUser } = useAuth();
   const { setCurrentAlert } = useAlerts();
 
+  // the expand controls at bottom (dont show if we have the isInDetail prop, aka only one scrim page)
+  const [expanded, setExpanded] = useState(() => {
+    return isInDetail ? true : false;
+  });
+
   const [playerEntered, setPlayerEntered] = useState(false);
   const [casterEntered, setCasterEntered] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
@@ -49,7 +54,8 @@ export default function ScrimSection({ scrim, isInDetail }) {
   // if the scrim has a winning team, it means it has ended.
   const gameEnded = useMemo(() => scrim.teamWon, [scrim.teamWon]);
 
-  const classes = useScrimSectionStyles({ scrim });
+  const classes = useScrimSectionStyles({ scrim, expanded });
+
   const history = useHistory();
 
   const { teamOne, teamTwo, casters } = scrim;
@@ -190,6 +196,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
           gameEnded={gameEnded}
           casterEntered={casterEntered}
           buttonsDisabled={buttonsDisabled}
+          expanded={expanded}
         />
 
         <div className={classes.teamsContainer}>
@@ -237,6 +244,9 @@ export default function ScrimSection({ scrim, isInDetail }) {
           />
         </div>
       </div>
+      {!isInDetail && (
+        <ScrimSectionExpand expanded={expanded} setExpanded={setExpanded} />
+      )}
     </PageSection>
   );
 }
