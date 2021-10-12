@@ -28,6 +28,13 @@ export default function ScrimSectionExpander({
     );
   }, [scrimBoxRef]);
 
+  const scrollToScrimBox = useCallback(() => {
+    window.scrollTo({
+      behavior: 'smooth',
+      top: scrimBoxRef.current?.offsetTop,
+    });
+  }, [scrimBoxRef]);
+
   return (
     <StyledDivider
       className={`scrim__expand--container ${
@@ -43,10 +50,7 @@ export default function ScrimSectionExpander({
             onClick={() => {
               setIsBoxExpanded((prevState) => !prevState);
               setIsHover(false);
-              window.scrollTo({
-                behavior: 'smooth',
-                top: scrimBoxRef.current?.offsetTop,
-              });
+              scrollToScrimBox();
               blinkScrimBox();
             }}>
             <ShowLessIcon className="modal__expandIcon" />
@@ -61,10 +65,7 @@ export default function ScrimSectionExpander({
             onClick={() => {
               setIsBoxExpanded((prevState) => !prevState);
               setIsHover(false);
-              window.scrollTo({
-                behavior: 'smooth',
-                top: scrimBoxRef.current?.offsetTop,
-              });
+              scrollToScrimBox();
               blinkScrimBox();
             }}>
             <ShowMoreIcon className="modal__expandIcon" />
