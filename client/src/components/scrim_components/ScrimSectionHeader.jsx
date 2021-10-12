@@ -42,8 +42,12 @@ export default function ScrimSectionHeader({
   const classes = useScrimSectionStyles({ expanded });
   const history = useHistory();
   const theme = useTheme();
+
   const matchesMd = useMediaQuery(theme.breakpoints.down('md'));
+  const showPlayers = useMediaQuery('(min-width:1000px)');
+
   const [isHover, setIsHover] = useState(false);
+
   const gameUrl = useMemo(
     () => `${window.location.origin}/scrims/${scrim._id}`,
     [scrim._id]
@@ -51,12 +55,14 @@ export default function ScrimSectionHeader({
 
   return (
     <Grid
+      id="parent"
       container
       direction="column"
       flexWrap="nowrap"
       className={classes.scrimSectionHeader}>
       <Grid
         item
+        id="c"
         container
         direction="row"
         alignItems="center"
@@ -161,7 +167,7 @@ export default function ScrimSectionHeader({
           </Typography>
         </Grid>
 
-        {!expanded && (
+        {!expanded && showPlayers && (
           <Grid item xs={4}>
             <Typography
               style={{ marginRight: '10px' }}
@@ -191,29 +197,28 @@ export default function ScrimSectionHeader({
             }}
           />
 
-          {!expanded && (
-            <>
-              <Grid
-                item
-                container
-                xs={6}
-                spacing={2}
-                direction="row"
-                justifyContent="flex-end"
-                style={{ marginBottom: '10px' }}>
-                <OneTeam
-                  teamArr={scrim.teamOne}
-                  teamRoles={['Top', 'Jungle', 'Mid', 'ADC', 'Support']}
-                  alignContent="flex-end"
-                />
+          {/* dont show players in header if expanded or smaller screen */}
+          {!expanded && showPlayers && (
+            <Grid
+              item
+              container
+              xs={6}
+              spacing={2}
+              direction="row"
+              justifyContent="flex-end"
+              style={{ marginBottom: '10px' }}>
+              <OneTeam
+                teamArr={scrim.teamOne}
+                teamRoles={['Top', 'Jungle', 'Mid', 'ADC', 'Support']}
+                alignContent="flex-end"
+              />
 
-                <OneTeam
-                  teamArr={scrim.teamTwo}
-                  alignContent="flex-start"
-                  teamRoles={['Top', 'Jungle', 'Mid', 'ADC', 'Support']}
-                />
-              </Grid>
-            </>
+              <OneTeam
+                teamArr={scrim.teamTwo}
+                alignContent="flex-start"
+                teamRoles={['Top', 'Jungle', 'Mid', 'ADC', 'Support']}
+              />
+            </Grid>
           )}
         </Grid>
       </Grid>

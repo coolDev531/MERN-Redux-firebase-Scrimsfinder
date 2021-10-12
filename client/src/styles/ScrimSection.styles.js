@@ -36,6 +36,7 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
     top: '30%',
     right: '4px',
   },
+
   infoIcon: {
     color: theme.primary,
     cursor: 'pointer',
@@ -43,6 +44,7 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
     top: '10%',
     right: '13px',
   },
+
   teamsContainer: {
     display: 'grid',
     gridTemplateColumns: '1fr 2fr 1fr',
@@ -54,6 +56,7 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
       gridTemplateRows: '1fr 1fr 1fr',
     },
   },
+
   teamListHeader: {
     color: '#fff !important',
     background: '#101820 !important', // fallback
