@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
 import ShowLessIcon from '@mui/icons-material/ExpandLess';
 import ShowMoreIcon from '@mui/icons-material/ExpandMore';
@@ -13,6 +13,20 @@ export default function ScrimSectionExpander({
   scrimBoxRef,
 }) {
   const [isHover, setIsHover] = useState(false);
+
+  const blinkScrimBox = useCallback(() => {
+    // when user clicks the expand more or less button, have an opacity transition to indicate where it is.
+
+    // web animations api
+    scrimBoxRef.current.animate(
+      [{ opacity: 0, easing: 'ease-in' }, { opacity: 1 }],
+      {
+        direction: 'alternate',
+        duration: 400,
+        iterations: 1,
+      }
+    );
+  }, [scrimBoxRef]);
 
   return (
     <StyledDivider
@@ -33,6 +47,7 @@ export default function ScrimSectionExpander({
                 behavior: 'smooth',
                 top: scrimBoxRef.current?.offsetTop,
               });
+              blinkScrimBox();
             }}>
             <ShowLessIcon className="modal__expandIcon" />
           </button>
@@ -50,6 +65,7 @@ export default function ScrimSectionExpander({
                 behavior: 'smooth',
                 top: scrimBoxRef.current?.offsetTop,
               });
+              blinkScrimBox();
             }}>
             <ShowMoreIcon className="modal__expandIcon" />
           </button>

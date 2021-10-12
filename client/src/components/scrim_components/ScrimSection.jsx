@@ -13,30 +13,17 @@ import ScrimSectionHeader from './ScrimSectionHeader';
 import { PageSection } from '../shared/PageComponents';
 import ScrimSectionExpander from './ScrimSectionExpander';
 
-// utils / services
+// services
 import {
   deleteScrim,
   getScrimById,
   removeCasterFromScrim,
 } from '../../services/scrims';
-import devLog from './../../utils/devLog';
-
 import { insertCasterInScrim } from '../../services/scrims';
 
-const compareDates = (scrim) => {
-  let currentTime = new Date().getTime();
-  let gameStartTime = new Date(scrim.gameStartTime).getTime();
-
-  if (currentTime < gameStartTime) {
-    // if the currentTime is less than the game start time, that means the game didn't start
-    return -1;
-  } else if (currentTime > gameStartTime) {
-    // if the current time is greater than the game start time, that means the game started
-    return 1;
-  } else {
-    return 0;
-  }
-};
+// utils
+import { compareDates } from '../../utils/compareDates';
+import devLog from './../../utils/devLog';
 
 const MAX_CASTER_AMOUNT = 2;
 
