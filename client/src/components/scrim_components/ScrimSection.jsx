@@ -233,54 +233,60 @@ export default function ScrimSection({ scrimData, isInDetail }) {
           isInDetail={isInDetail}
         />
 
-        <div className={classes.teamsContainer}>
-          {/* teamOne */}
-          <ScrimTeamList
-            teamData={{
-              teamRoles: ['Top', 'Jungle', 'Mid', 'ADC', 'Support'],
-              teamName: 'teamOne',
-              teamTitleName: 'Team 1 (Blue Side)',
-              teamArray: teamOne,
-            }}
-            setScrim={setScrim}
-            scrim={scrim}
-            playerEntered={playerEntered}
-            casterEntered={casterEntered}
-            gameStarted={gameStarted === scrim._id}
-            buttonsDisabled={buttonsDisabled}
-            setButtonsDisabled={setButtonsDisabled}
-          />
+        {isBoxExpanded && (
+          /* don't render teams and countdown timer if not expanded,
+           that avoids unnecessary rerenders from the CountDownTimer and Teams List */
+          // this will default to true if in ScrimDetail page, which is the expected behaviour.
+          <div className={classes.teamsContainer}>
+            {/* teamOne */}
+            <ScrimTeamList
+              teamData={{
+                teamRoles: ['Top', 'Jungle', 'Mid', 'ADC', 'Support'],
+                teamName: 'teamOne',
+                teamTitleName: 'Team 1 (Blue Side)',
+                teamArray: teamOne,
+              }}
+              setScrim={setScrim}
+              scrim={scrim}
+              playerEntered={playerEntered}
+              casterEntered={casterEntered}
+              gameStarted={gameStarted === scrim._id}
+              buttonsDisabled={buttonsDisabled}
+              setButtonsDisabled={setButtonsDisabled}
+            />
 
-          {/* the middle box that contains the countdown timer and other details. */}
-          <ScrimSectionMiddleAreaBox
-            imageUploaded={imageUploaded === scrim._id}
-            scrim={scrim}
-            setScrim={setScrim}
-            gameStarted={gameStarted === scrim._id}
-            setGameStarted={setGameStarted}
-            gameEnded={gameEnded}
-            playerEntered={playerEntered}
-            casterEntered={casterEntered}
-          />
+            {/* the middle box that contains the countdown timer and other details. */}
+            <ScrimSectionMiddleAreaBox
+              imageUploaded={imageUploaded === scrim._id}
+              scrim={scrim}
+              setScrim={setScrim}
+              gameStarted={gameStarted === scrim._id}
+              setGameStarted={setGameStarted}
+              gameEnded={gameEnded}
+              playerEntered={playerEntered}
+              casterEntered={casterEntered}
+            />
 
-          {/* teamTwo */}
-          <ScrimTeamList
-            teamData={{
-              teamRoles: ['Top', 'Jungle', 'Mid', 'ADC', 'Support'],
-              teamName: 'teamTwo',
-              teamTitleName: 'Team 2 (Red Side)',
-              teamArray: teamTwo,
-            }}
-            scrim={scrim}
-            setScrim={setScrim}
-            playerEntered={playerEntered}
-            casterEntered={casterEntered}
-            gameStarted={gameStarted === scrim._id}
-            buttonsDisabled={buttonsDisabled}
-            setButtonsDisabled={setButtonsDisabled}
-          />
-        </div>
+            {/* teamTwo */}
+            <ScrimTeamList
+              teamData={{
+                teamRoles: ['Top', 'Jungle', 'Mid', 'ADC', 'Support'],
+                teamName: 'teamTwo',
+                teamTitleName: 'Team 2 (Red Side)',
+                teamArray: teamTwo,
+              }}
+              scrim={scrim}
+              setScrim={setScrim}
+              playerEntered={playerEntered}
+              casterEntered={casterEntered}
+              gameStarted={gameStarted === scrim._id}
+              buttonsDisabled={buttonsDisabled}
+              setButtonsDisabled={setButtonsDisabled}
+            />
+          </div>
+        )}
       </div>
+
       {!isInDetail && (
         <ScrimSectionExpander
           scrimBoxRef={scrimBoxRef}
