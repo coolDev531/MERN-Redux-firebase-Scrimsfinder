@@ -16,16 +16,17 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
     border: '1px solid white',
-    maxHeight: ({ expanded }) => (expanded ? 'inherit' : '289px'),
-    overflowY: ({ expanded }) => (expanded ? 'inherit' : 'hidden'),
+    maxHeight: ({ isBoxExpanded }) => (isBoxExpanded ? 'inherit' : '289px'),
+    overflowY: ({ isBoxExpanded }) => (isBoxExpanded ? 'inherit' : 'hidden'),
   },
 
   scrimSectionHeader: {
     background: '#101820 !important', // fallback
     backgroundColor: 'rgba(18,25,35,.85) !important',
     padding: '10px',
-    backdropFilter: ({ expanded }) => (expanded ? 'blur(8px)' : 'blur(2.5px)'),
-    height: ({ expanded }) => (expanded ? 'inherit' : '300px'),
+    backdropFilter: ({ isBoxExpanded }) =>
+      isBoxExpanded ? 'blur(8px)' : 'blur(2.5px)',
+    height: ({ isBoxExpanded }) => (isBoxExpanded ? 'inherit' : '300px'),
   },
 
   iconButton: {

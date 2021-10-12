@@ -8,24 +8,26 @@ import Tooltip from '../shared/Tooltip';
 import { COLORS } from './../../appTheme';
 
 export default function ScrimSectionExpander({
-  expanded,
-  setExpanded,
+  isBoxExpanded,
+  setIsBoxExpanded,
   scrimBoxRef,
 }) {
   const [isHover, setIsHover] = useState(false);
 
   return (
     <StyledDivider
-      className={`scrim__expand--container ${expanded ? 'collapsed' : ''}`}>
+      className={`scrim__expand--container ${
+        isBoxExpanded ? 'collapsed' : ''
+      }`}>
       {/*  I need to do it like this (ternary) to reset the tooltip */}
-      {expanded ? (
-        <Tooltip title={'Show less'} open={expanded && isHover}>
+      {isBoxExpanded ? (
+        <Tooltip title={'Show less'} open={isBoxExpanded && isHover}>
           <button
             onMouseOver={() => setIsHover(true)}
             onMouseLeave={() => setIsHover(false)}
             className="scrim__expand--expandButton"
             onClick={() => {
-              setExpanded((prevState) => !prevState);
+              setIsBoxExpanded((prevState) => !prevState);
               setIsHover(false);
               window.scrollTo({
                 behavior: 'smooth',
@@ -36,13 +38,13 @@ export default function ScrimSectionExpander({
           </button>
         </Tooltip>
       ) : (
-        <Tooltip title={'Show More'} open={!expanded && isHover}>
+        <Tooltip title={'Show More'} open={!isBoxExpanded && isHover}>
           <button
             onMouseOver={() => setIsHover(true)}
             onMouseLeave={() => setIsHover(false)}
             className="scrim__expand--expandButton"
             onClick={() => {
-              setExpanded((prevState) => !prevState);
+              setIsBoxExpanded((prevState) => !prevState);
               setIsHover(false);
               window.scrollTo({
                 behavior: 'smooth',
@@ -60,21 +62,10 @@ export default function ScrimSectionExpander({
 const StyledDivider = styled.div`
   position: relative;
   width: 98%;
-
   max-width: 1100px;
   border-bottom: 2px solid #404040;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -moz-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -moz-box-pack: center;
-  -ms-flex-pack: center;
   justify-content: center;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
   box-shadow: none;
   margin: auto;
   box-sizing: inherit;
@@ -94,6 +85,7 @@ const StyledDivider = styled.div`
 
   .scrim__expand--expandButton {
     position: absolute;
+    bottom: 0;
     min-width: 32px;
     min-height: 32px;
     max-width: 42px;
@@ -101,12 +93,9 @@ const StyledDivider = styled.div`
     border-width: 2px;
     background-color: ${COLORS.DK_BLUE_TRANSPARENT};
     backdrop-filter: blur(8px);
-    border-color: rgba(255, 255, 255, 0.5);
     padding-left: 0.8rem;
     padding-right: 0.8rem;
     border: 1px solid rgba(255, 255, 255, 0.7);
-    color: white;
-    bottom: 0;
     transform: translateY(50%);
     align-items: center;
     appearance: none;
@@ -116,17 +105,17 @@ const StyledDivider = styled.div`
     opacity: 1;
     padding: 0.8rem;
     user-select: none;
-    will-change: background-color, color;
-    word-break: break-word;
-    white-space: nowrap;
     border-radius: 50%;
     transition: all 250ms ease-in-out;
+
     &:focus {
       outline: none;
     }
+
     &:hover {
       filter: contrast(0.6);
     }
+
     .modal__expandIcon {
       color: #fff;
     }

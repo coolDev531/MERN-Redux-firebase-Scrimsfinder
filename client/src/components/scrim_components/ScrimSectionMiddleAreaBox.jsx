@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import useAuth from './../../hooks/useAuth';
-import { useScrimsActions } from './../../hooks/useScrims';
 
 // components
 import CountdownTimer from './CountdownTimer';
@@ -41,13 +40,12 @@ export default function ScrimSectionMiddleAreaBox({
   gameEnded,
   playerEntered,
   casterEntered,
+  setScrim,
 }) {
   const { currentUser, isCurrentUserAdmin } = useAuth();
   const { setCurrentAlert } = useAlerts();
 
   const classes = useStyles({ gameStarted, imageUploaded });
-
-  const { fetchScrims } = useScrimsActions();
 
   const { teamOne, teamTwo } = scrim;
 
@@ -150,8 +148,8 @@ export default function ScrimSectionMiddleAreaBox({
                                     dataSending,
                                     setCurrentAlert
                                   );
-                                  if (updatedScrim) {
-                                    await fetchScrims();
+                                  if (updatedScrim?.createdBy) {
+                                    setScrim(updatedScrim);
                                   }
                                 }}>
                                 {teamTitle}
@@ -177,6 +175,7 @@ export default function ScrimSectionMiddleAreaBox({
                   <UploadPostGameImage
                     isUploaded={imageUploaded}
                     scrim={scrim}
+                    setScrim={setScrim}
                   />
                 </>
               )}

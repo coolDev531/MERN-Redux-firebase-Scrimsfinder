@@ -52,6 +52,7 @@ export const insertPlayerInScrim = async ({
   playerData,
   setAlert,
   setButtonsDisabled,
+  setScrim,
 }) => {
   // sending the role joining and the team name inside playerData in the req.body.
   try {
@@ -63,6 +64,7 @@ export const insertPlayerInScrim = async ({
   } catch (error) {
     const errorMsg =
       error?.response?.data?.error ?? error?.message ?? JSON.stringify(error);
+    const scrim = error.response.data.scrim ?? null;
 
     if (
       errorMsg ===
@@ -71,13 +73,15 @@ export const insertPlayerInScrim = async ({
       return;
     }
 
-    if (typeof setAlert === 'function') {
-      return setAlert({ type: 'Error', message: errorMsg });
+    setAlert({ type: 'Error', message: errorMsg });
+
+    if (scrim) {
+      setScrim(scrim);
     }
 
     setButtonsDisabled(false);
-    // if dev forgot to add setAlert
-    return alert(errorMsg);
+
+    return;
   }
 };
 
@@ -95,13 +99,11 @@ export const removePlayerFromScrim = async ({
   } catch (error) {
     const errorMsg = error.response.data?.error ?? error;
 
-    if (typeof setAlert === 'function') {
-      return setAlert({ type: 'Error', message: errorMsg });
-    }
-
     setButtonsDisabled(false);
 
-    return alert(errorMsg);
+    setAlert({ type: 'Error', message: errorMsg });
+
+    return;
   }
 };
 
@@ -111,6 +113,7 @@ export const movePlayerInScrim = async ({
   playerData,
   setAlert,
   setButtonsDisabled,
+  setScrim,
 }) => {
   try {
     const response = await api.patch(
@@ -121,13 +124,17 @@ export const movePlayerInScrim = async ({
     return response.data;
   } catch (error) {
     const errorMsg = error.response.data.error;
+    const scrim = error.response.data.scrim ?? null;
 
-    if (typeof setAlert === 'function') {
-      return setAlert({ type: 'Error', message: errorMsg });
+    setAlert({ type: 'Error', message: errorMsg });
+
+    if (scrim) {
+      setScrim(scrim);
     }
 
     setButtonsDisabled(false);
-    return alert(errorMsg);
+
+    return;
   }
 };
 
@@ -136,6 +143,7 @@ export const insertCasterInScrim = async ({
   userId,
   setAlert,
   setButtonsDisabled,
+  setScrim,
 }) => {
   try {
     const response = await api.patch(
@@ -146,13 +154,16 @@ export const insertCasterInScrim = async ({
     const errorMsg =
       error.response.data?.error ?? error?.message ?? JSON.stringify(error);
 
-    if (typeof setAlert === 'function') {
-      return setAlert({ type: 'Error', message: errorMsg });
+    const scrim = error.response.data?.scrim ?? null;
+
+    setAlert({ type: 'Error', message: errorMsg });
+
+    if (scrim) {
+      setScrim(scrim);
     }
 
     setButtonsDisabled(false);
-
-    return alert(errorMsg);
+    return;
   }
 };
 

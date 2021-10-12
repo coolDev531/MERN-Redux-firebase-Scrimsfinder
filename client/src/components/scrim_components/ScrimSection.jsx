@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo, useRef } from 'react';
-import { useScrimsActions } from '../../hooks/useScrims';
+import { useFetchScrimInterval } from '../../hooks/useScrims';
 import useAuth from '../../hooks/useAuth';
 import useAlerts from './../../hooks/useAlerts';
 import { useScrimSectionStyles } from '../../styles/ScrimSection.styles';
@@ -14,7 +14,13 @@ import { PageSection } from '../shared/PageComponents';
 import ScrimSectionExpander from './ScrimSectionExpander';
 
 // utils / services
-import { deleteScrim, removeCasterFromScrim } from '../../services/scrims';
+import {
+  deleteScrim,
+  getScrimById,
+  removeCasterFromScrim,
+} from '../../services/scrims';
+import devLog from './../../utils/devLog';
+
 import { insertCasterInScrim } from '../../services/scrims';
 
 const compareDates = (scrim) => {
@@ -34,13 +40,11 @@ const compareDates = (scrim) => {
 
 const MAX_CASTER_AMOUNT = 2;
 
-export default function ScrimSection({ scrim, isInDetail }) {
-  const { fetchScrims } = useScrimsActions();
+export default function ScrimSection({ scrimData, isInDetail }) {
   const { currentUser } = useAuth();
   const { setCurrentAlert } = useAlerts();
-
   // the expand controls at bottom (dont show if we have the isInDetail prop, aka only one scrim page)
-  const [expanded, setExpanded] = useState(() => {
+  const [isBoxExpanded, setIsBoxExpanded] = useState(() => {
     return isInDetail ? true : false;
   });
 
@@ -50,6 +54,15 @@ export default function ScrimSection({ scrim, isInDetail }) {
   const [imageUploaded, setImageUploaded] = useState(false);
   const [buttonsDisabled, setButtonsDisabled] = useState(false); // for when players spam joining or leaving.
 
+  // useFetchScrimInterval: fetch one scrim on 5 sec interval, will run when isBoxExpanded or when in detail page.
+  // the setScrim is only going to update the scrim in this component, not in the redux store.
+  // this is so we don't have to loop through every scrim ever to rerender the component when players make changes
+  const [scrim, setScrim] = useFetchScrimInterval(
+    isInDetail,
+    isBoxExpanded,
+    scrimData
+  ); // in ScrimDetail we don't have expander, so it will just fetch on interval
+
   const scrimBoxRef = useRef(null); // element container
 
   const dispatch = useDispatch();
@@ -57,11 +70,25 @@ export default function ScrimSection({ scrim, isInDetail }) {
   // if the scrim has a winning team, it means it has ended.
   const gameEnded = useMemo(() => scrim.teamWon, [scrim.teamWon]);
 
-  const classes = useScrimSectionStyles({ scrim, expanded });
+  const classes = useScrimSectionStyles({ scrim, isBoxExpanded });
 
   const history = useHistory();
 
   const { teamOne, teamTwo, casters } = scrim;
+
+  // when the user first expands this scrim and this isn't on detail page, refetch data.
+  useEffect(() => {
+    const fetchOneScrim = async () => {
+      if (isBoxExpanded && !isInDetail) {
+        devLog(`scrim box expanded ${isBoxExpanded}, fetching data`);
+        setScrim(await getScrimById(scrimData._id));
+      }
+    };
+
+    fetchOneScrim();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isBoxExpanded, isInDetail, scrimData._id]);
 
   useEffect(() => {
     let gameHasStarted = compareDates(scrim) > 0;
@@ -127,16 +154,19 @@ export default function ScrimSection({ scrim, isInDetail }) {
       userId: currentUser?._id,
       setAlert: setCurrentAlert,
       setButtonsDisabled,
+      setScrim,
     });
 
-    if (updatedScrim) {
+    // using .createdBy because on error it wont return populated scrim, so we don't set the scrim
+    if (updatedScrim?.createdBy) {
       console.log(
         `%cadded ${currentUser?.name} as a caster for scrim: ${scrim._id}`,
         'color: #99ff99'
       );
+
+      setScrim(updatedScrim);
     }
 
-    await fetchScrims();
     setButtonsDisabled(false);
   };
 
@@ -150,14 +180,15 @@ export default function ScrimSection({ scrim, isInDetail }) {
       setButtonsDisabled,
     });
 
-    if (updatedScrim) {
+    if (updatedScrim?.createdBy) {
       console.log(
         `%cremoved ${currentUser?.name} from the caster list for scrim: ${scrim._id}`,
         'color: #99ff99'
       );
+
+      setScrim(updatedScrim);
     }
 
-    await fetchScrims();
     setButtonsDisabled(false);
   };
 
@@ -169,14 +200,13 @@ export default function ScrimSection({ scrim, isInDetail }) {
       let deletedScrim = await deleteScrim(scrim._id);
 
       if (deletedScrim) {
-        await dispatch({ type: 'scrims/deleteScrim', payload: scrim });
+        dispatch({ type: 'scrims/deleteScrim', payload: scrim });
 
         if (isInDetail) {
-          await fetchScrims();
           history.push('/');
         }
 
-        await setCurrentAlert({
+        setCurrentAlert({
           type: 'Success',
           message: 'Scrim removed successfully',
         });
@@ -199,7 +229,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
           gameEnded={gameEnded}
           casterEntered={casterEntered}
           buttonsDisabled={buttonsDisabled}
-          expanded={expanded}
+          isBoxExpanded={isBoxExpanded}
           isInDetail={isInDetail}
         />
 
@@ -212,6 +242,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
               teamTitleName: 'Team 1 (Blue Side)',
               teamArray: teamOne,
             }}
+            setScrim={setScrim}
             scrim={scrim}
             playerEntered={playerEntered}
             casterEntered={casterEntered}
@@ -224,6 +255,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
           <ScrimSectionMiddleAreaBox
             imageUploaded={imageUploaded === scrim._id}
             scrim={scrim}
+            setScrim={setScrim}
             gameStarted={gameStarted === scrim._id}
             setGameStarted={setGameStarted}
             gameEnded={gameEnded}
@@ -240,6 +272,7 @@ export default function ScrimSection({ scrim, isInDetail }) {
               teamArray: teamTwo,
             }}
             scrim={scrim}
+            setScrim={setScrim}
             playerEntered={playerEntered}
             casterEntered={casterEntered}
             gameStarted={gameStarted === scrim._id}
@@ -251,8 +284,8 @@ export default function ScrimSection({ scrim, isInDetail }) {
       {!isInDetail && (
         <ScrimSectionExpander
           scrimBoxRef={scrimBoxRef}
-          expanded={expanded}
-          setExpanded={setExpanded}
+          isBoxExpanded={isBoxExpanded}
+          setIsBoxExpanded={setIsBoxExpanded}
         />
       )}
     </PageSection>

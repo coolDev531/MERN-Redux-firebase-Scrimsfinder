@@ -12,6 +12,7 @@ import { InnerColumn, PageContent } from '../components/shared/PageComponents';
 import Loading from '../components/shared/Loading';
 import Navbar from '../components/shared/Navbar/Navbar';
 import Tooltip from '../components/shared/Tooltip';
+import ScrimsColumn from '../components/scrim_components/ScrimsColumn';
 
 // utils
 import { compareDateWithCurrentTime } from './../utils/compareDateWithCurrentTime';
@@ -19,7 +20,6 @@ import { compareDateWithCurrentTime } from './../utils/compareDateWithCurrentTim
 // icons
 import HelpIcon from '@mui/icons-material/Help';
 import MenuIcon from '@mui/icons-material/Menu';
-import ScrimsColumn from '../components/scrim_components/ScrimsColumn';
 
 export default function Scrims() {
   const scrimsState = useScrims();

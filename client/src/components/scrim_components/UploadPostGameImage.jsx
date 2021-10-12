@@ -1,5 +1,4 @@
 import { useRef, useState } from 'react';
-import { useScrimsActions } from './../../hooks/useScrims';
 import useAuth from './../../hooks/useAuth';
 import useAlerts from '../../hooks/useAlerts';
 
@@ -41,10 +40,9 @@ const changeFileName = async (file, scrimId) => {
 };
 
 // can also delete image here... maybe needs renaming
-export default function UploadPostGameImage({ scrim, isUploaded }) {
+export default function UploadPostGameImage({ scrim, setScrim, isUploaded }) {
   const { currentUser } = useAuth();
   const fileInputRef = useRef();
-  const { fetchScrims } = useScrimsActions();
   const { setCurrentAlert } = useAlerts();
   const [buttonDisabled, setButtonDisabled] = useState(false); // disable when uploading / deleting img
 
@@ -63,14 +61,17 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
       if (!yes) return;
 
       setButtonDisabled(true);
-      await removeImageFromScrim(scrim._id);
+      let updatedScrim = await removeImageFromScrim(scrim._id);
 
-      setCurrentAlert({
-        type: 'Success',
-        message: 'image deleted successfully',
-      });
+      if (updatedScrim?.createdBy) {
+        setCurrentAlert({
+          type: 'Success',
+          message: 'image deleted successfully',
+        });
 
-      await fetchScrims();
+        setScrim(updatedScrim);
+      }
+
       setButtonDisabled(false);
     } catch (err) {
       setCurrentAlert({ type: 'Error', message: 'error removing image' });
@@ -126,12 +127,13 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
         uploadedBy: { ...currentUser },
       };
 
-      const addedImg = await addImageToScrim(
+      const updatedScrim = await addImageToScrim(
         scrim._id,
         newImage,
         setCurrentAlert
       );
-      if (addedImg) {
+
+      if (updatedScrim?.createdBy) {
         console.log(
           '%csuccessfully uploaded an image for scrim: ' + scrim._id,
           'color: lightgreen'
@@ -142,7 +144,7 @@ export default function UploadPostGameImage({ scrim, isUploaded }) {
           message: 'image uploaded successfully',
         });
 
-        await fetchScrims();
+        setScrim(updatedScrim);
         setButtonDisabled(false);
       }
     } catch (err) {

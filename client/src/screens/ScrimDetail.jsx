@@ -49,7 +49,7 @@ export default function ScrimDetail() {
       <Navbar showLess />
       <PageContent>
         <div className={`scrim__container ${scrim?._id}`}>
-          <ScrimSection scrim={scrim} isInDetail />
+          <ScrimSection scrimData={scrim} isInDetail />
         </div>
       </PageContent>
     </div>

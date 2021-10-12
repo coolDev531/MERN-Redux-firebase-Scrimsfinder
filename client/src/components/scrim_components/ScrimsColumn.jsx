@@ -23,7 +23,7 @@ export default function ScrimsColumn({ show, scrims, headerText, altText }) {
         {scrims.map((scrim) => (
           <Fragment key={scrim._id}>
             <Fade triggerOnce>
-              <ScrimSection scrim={scrim} />
+              <ScrimSection scrimData={scrim} />
             </Fade>
             <div className="page-break" />
           </Fragment>

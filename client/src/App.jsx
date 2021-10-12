@@ -4,11 +4,7 @@ import './App.css';
 import useAppBackground from './hooks/useAppBackground';
 import useAlerts from './hooks/useAlerts';
 import useAuth, { useAuthVerify } from './hooks/useAuth';
-import {
-  useFetchScrims,
-  useFetchScrimsInterval,
-  useSetScrimsRegion,
-} from './hooks/useScrims';
+import { useFetchScrims, useSetScrimsRegion } from './hooks/useScrims';
 
 // styles
 import { appTheme } from './appTheme';
@@ -34,7 +30,6 @@ function App() {
   useAuthVerify(); // verify user is authenticated.
   useSetScrimsRegion(); // set scrims region to users region on mount and when user changes it on settings
   useFetchScrims(); // fetch scrims on mount or path change
-  useFetchScrimsInterval(); // fetch scrims on 10 sec interval
 
   if (isVerifyingUser) {
     return (

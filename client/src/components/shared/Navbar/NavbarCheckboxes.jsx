@@ -7,7 +7,8 @@ import Grid from '@mui/material/Grid';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import Hidden from '@mui/material/Hidden';
+import Tooltip from '../Tooltip';
+import RefreshScrimsButton from '../../scrim_components/RefreshScrimsButton';
 
 /* Show scrims (current, previous, upcoming) buttons */
 
@@ -39,57 +40,65 @@ export default function NavbarCheckboxes() {
       <FormGroup
         row={!matchesSm}
         className="text-white"
-        style={{ justifyContent: !matchesMd ? 'flex-start' : 'center' }}>
-        <FormControlLabel
-          control={
-            <Checkbox
-              color="primary"
-              checked={showPreviousScrims}
-              onChange={toggleShowScrims}
-              name="showPreviousScrims"
-            />
-          }
-          label={
-            <>
-              <Hidden mdDown>Show</Hidden> previous scrims
-            </>
-          }
-          labelPlacement="bottom"
-        />
+        style={{
+          justifyContent: !matchesMd ? 'flex-start' : 'center',
+          alignItems: 'flex-end',
+        }}>
+        <RefreshScrimsButton />
 
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={showUpcomingScrims}
-              color="primary"
-              onChange={toggleShowScrims}
-              name="showUpcomingScrims"
-            />
-          }
-          label={
-            <>
-              <Hidden mdDown>Show</Hidden> upcoming scrims
-            </>
-          }
-          labelPlacement="bottom"
-        />
+        <Tooltip
+          title={
+            showPreviousScrims ? 'Hide previous scrims' : 'Show previous scrims'
+          }>
+          <FormControlLabel
+            control={
+              <Checkbox
+                color="primary"
+                checked={showPreviousScrims}
+                onChange={toggleShowScrims}
+                name="showPreviousScrims"
+              />
+            }
+            label="Previous scrims"
+            labelPlacement="bottom"
+          />
+        </Tooltip>
 
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={showCurrentScrims}
-              color="primary"
-              onChange={toggleShowScrims}
-              name="showCurrentScrims"
-            />
-          }
-          label={
-            <>
-              <Hidden mdDown>Show</Hidden> current scrims
-            </>
-          }
-          labelPlacement="bottom"
-        />
+        <Tooltip
+          title={
+            showUpcomingScrims ? 'Hide upcoming scrims' : 'Show upcoming scrims'
+          }>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={showUpcomingScrims}
+                color="primary"
+                onChange={toggleShowScrims}
+                name="showUpcomingScrims"
+              />
+            }
+            label="Upcoming scrims"
+            labelPlacement="bottom"
+          />
+        </Tooltip>
+
+        <Tooltip
+          title={
+            showCurrentScrims ? 'Hide current scrims' : 'Show current scrims'
+          }>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={showCurrentScrims}
+                color="primary"
+                onChange={toggleShowScrims}
+                name="showCurrentScrims"
+              />
+            }
+            label="Current scrims"
+            labelPlacement="bottom"
+          />
+        </Tooltip>
       </FormGroup>
     </Grid>
   );

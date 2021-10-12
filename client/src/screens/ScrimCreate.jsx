@@ -143,7 +143,7 @@ export default function ScrimCreate() {
   }
 
   if (isCreated) {
-    return <Redirect to={`/scrims/${isCreated?.createdScrim?._id}`} />;
+    return <Redirect to="/scrims" />;
   }
 
   if (isSubmitting) {
