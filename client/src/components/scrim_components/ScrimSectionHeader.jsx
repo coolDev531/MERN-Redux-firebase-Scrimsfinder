@@ -143,7 +143,7 @@ export default function ScrimSectionHeader({
       </Grid>
 
       <Grid container direction="row" justifyContent="space-between">
-        <Grid itme xs={6}>
+        <Grid item xs={6}>
           <Typography variant="h2">
             Game Start:&nbsp;
             <Moment format="MM/DD/yyyy | hh:mm A">{scrim.gameStartTime}</Moment>
@@ -153,7 +153,9 @@ export default function ScrimSectionHeader({
         {!expanded && (
           <Grid item xs={4}>
             <Typography variant="h2" textAlign="center">
-              Players:
+              {[...scrim.teamOne, ...scrim.teamTwo].length
+                ? 'Players:'
+                : 'No players'}
             </Typography>
           </Grid>
         )}
@@ -306,10 +308,13 @@ const OneTeam = memo(({ teamArr, teamRoles }) => {
         const playerAssigned = teamArr.find(
           (player) => player?.role === teamRole
         );
+
         const userInfo = playerAssigned?._user;
 
+        if (!playerAssigned) return null;
+
         return (
-          <Grid item key={userInfo._id} container alignItems="center">
+          <Grid item key={userInfo?._id} container alignItems="center">
             <Tooltip
               arrow
               placement="top"
@@ -318,7 +323,7 @@ const OneTeam = memo(({ teamArr, teamRoles }) => {
                 className="link"
                 to={`/users/${userInfo?.name}?region=${userInfo?.region}`}>
                 <img
-                  alt={playerAssigned.role}
+                  alt={playerAssigned?.role}
                   src={ROLE_IMAGES[teamRole]}
                   width="20px"
                 />

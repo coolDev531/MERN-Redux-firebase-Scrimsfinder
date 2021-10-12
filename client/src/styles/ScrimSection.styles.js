@@ -26,6 +26,7 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
     backgroundColor: 'rgba(18,25,35,.85) !important',
     padding: '10px',
     backdropFilter: ({ expanded }) => (expanded ? 'blur(8px)' : 'blur(2.5px)'),
+    height: ({ expanded }) => (expanded ? 'inherit' : '300px'),
   },
 
   iconButton: {

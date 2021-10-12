@@ -226,7 +226,7 @@ export default function ScrimTeamList({
                   }}>
                   <ListItemAvatar>
                     <Avatar
-                      alt={playerAssigned.role}
+                      alt={playerAssigned?.role}
                       src={ROLE_IMAGES[teamRole]}
                     />
                   </ListItemAvatar>
