@@ -77,7 +77,8 @@ const populateTeam = (teamName) => {
     populate: {
       path: '_user',
       model: 'User',
-      select: '-adminKey -email -uid -createdAt -updatedAt -__v', // exclude adminKey,uid and email from showing
+      select:
+        '-adminKey -email -uid -createdAt -updatedAt -profileBackgroundImg -profileBackgroundBlur -__v', // exclude adminKey,uid and email from showing
     },
   };
 };
