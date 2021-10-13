@@ -12,6 +12,9 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
     paddingBottom: '20px',
     backgroundImage: ({ scrim }) =>
       scrim?.teamWon ? `url(${HappyTeam})` : `url(${BgGIF})`,
+
+    transition: 'background-image 250ms ease-in-out',
+
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',

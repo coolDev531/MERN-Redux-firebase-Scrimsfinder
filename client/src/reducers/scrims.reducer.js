@@ -82,7 +82,11 @@ export default function scrimsReducer(state = initialState, action) {
       return {
         ...state,
         scrims: state.scrims.map((scrim) =>
-          scrim._id === payload._id ? payload : scrim
+          String(scrim._id) === String(payload._id) ? payload : scrim
+        ),
+
+        filteredScrims: state.filteredScrims.map((scrim) =>
+          String(scrim._id) === String(payload._id) ? payload : scrim
         ),
       };
     }
