@@ -247,7 +247,13 @@ const updateScrim = async (req, res) => {
     }
 
     return res.status(200).json(scrim);
-  });
+  })
+    .populate('createdBy', populateUser)
+    .populate('casters', populateUser)
+    .populate('lobbyHost', populateUser)
+    .populate(populateTeam('teamOne'))
+    .populate(populateTeam('teamTwo'))
+    .exec();
 };
 
 const deleteScrim = async (req, res) => {

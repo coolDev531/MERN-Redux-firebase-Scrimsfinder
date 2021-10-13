@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import useAuth from './../../hooks/useAuth';
+import useAlerts from './../../hooks/useAlerts';
 
 // components
 import CountdownTimer from './CountdownTimer';
@@ -18,9 +19,10 @@ import InfoIcon from '@mui/icons-material/Info';
 // utils
 import { makeStyles } from '@mui/styles';
 import pluralize from 'pluralize';
-import { updateScrim } from '../../services/scrims';
 import { COLORS } from './../../appTheme';
-import useAlerts from './../../hooks/useAlerts';
+
+// services
+import { updateScrim } from '../../services/scrims';
 
 const useStyles = makeStyles({
   infoBoxRoot: {
