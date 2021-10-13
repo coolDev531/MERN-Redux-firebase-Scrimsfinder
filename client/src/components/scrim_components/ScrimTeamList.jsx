@@ -208,13 +208,13 @@ export default function ScrimTeamList({
 
           // doing this so old data is still working on the front-end after the major database update at 9/3/2021
           // for old database status, if player didnt have nested ._user, just return as is, else return ._user
-          const userInfo = playerAssigned?._user;
+          const userInfo = playerAssigned?._user ?? null;
 
           const isCurrentUser = userInfo?._id === currentUser?._id;
 
           const isLobbyHost = scrim.lobbyHost?._id === userInfo?._id;
 
-          if (playerAssigned) {
+          if (userInfo) {
             return (
               <Fragment key={idx}>
                 {/* top divider */}

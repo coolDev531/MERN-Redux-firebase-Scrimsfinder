@@ -63,7 +63,6 @@ export default function ScrimSectionHeader({
       className={classes.scrimSectionHeader}>
       <Grid
         item
-        id="c"
         container
         direction="row"
         alignItems="center"
@@ -348,7 +347,9 @@ const OneTeam = memo(
 
           if (!playerAssigned) return null;
 
-          const userInfo = playerAssigned?._user;
+          const userInfo = playerAssigned?._user ?? null;
+
+          if (!userInfo) return null;
 
           return (
             <Grid item key={userInfo?._id} xs={10}>
