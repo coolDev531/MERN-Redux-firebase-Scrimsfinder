@@ -198,7 +198,7 @@ export default function ScrimTeamList({
             <ListSubheader component="div" className={classes.teamListHeader}>
               {teamTitleName}
             </ListSubheader>
-            <Divider style={{ backgroundColor: background.normal }} />
+            <Divider />
           </>
         }>
         {teamRoles.map((teamRole, idx) => {
@@ -218,12 +218,7 @@ export default function ScrimTeamList({
             return (
               <Fragment key={idx}>
                 {/* top divider */}
-                {idx !== 0 ? (
-                  <Divider
-                    style={{ backgroundColor: background.normal }}
-                    component="div"
-                  />
-                ) : null}
+                {idx !== 0 ? <Divider component="div" /> : null}
                 <ListItem
                   alignItems="center"
                   className={classes.teamListItem}
@@ -372,10 +367,7 @@ export default function ScrimTeamList({
                 </ListItem>
                 {/* bottom divider */}
                 {idx !== teamRoles.length - 1 ? (
-                  <Divider
-                    component="li"
-                    style={{ backgroundColor: background.normal }}
-                  />
+                  <Divider component="li" />
                 ) : null}
               </Fragment>
             );
