@@ -72,7 +72,8 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
     backdropFilter: 'blur(20px)',
 
     transition: 'all 250ms ease-in-out',
-    paddingBottom: 0,
+    paddingBottom: '0 !important', // defaults to 8px
+
     '&:hover': {
       backgroundColor: 'rgba(18,25,35) !important',
     },

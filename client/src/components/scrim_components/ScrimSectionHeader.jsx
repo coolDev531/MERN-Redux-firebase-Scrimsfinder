@@ -22,6 +22,7 @@ import ShareIcon from '@mui/icons-material/Share';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { ROLE_IMAGES } from './../../utils/imageMaps';
 import { truncate } from './../../utils/truncate';
+import { getTeamBackgroundColor } from '../../utils/scrimMisc';
 
 const MAX_CASTER_AMOUNT = 2;
 
@@ -209,12 +210,16 @@ export default function ScrimSectionHeader({
               justifyContent="flex-end"
               style={{ marginBottom: '10px' }}>
               <OneTeam
+                teamName="teamOne"
+                winnerTeam={scrim?.teamWon || null}
                 teamArr={scrim.teamOne}
                 teamRoles={['Top', 'Jungle', 'Mid', 'ADC', 'Support']}
                 alignContent="flex-end"
               />
 
               <OneTeam
+                teamName="teamTwo"
+                winnerTeam={scrim?.teamWon || null}
                 teamArr={scrim.teamTwo}
                 alignContent="flex-start"
                 teamRoles={['Top', 'Jungle', 'Mid', 'ADC', 'Support']}
@@ -318,43 +323,60 @@ const JoinCastButtons = memo(({ data, gameEnded }) => {
   );
 });
 
-const OneTeam = memo(({ teamArr, teamRoles, alignContent }) => {
-  return (
-    <Grid item container direction="column" style={{ alignContent }} xs={4}>
-      {teamRoles.map((teamRole) => {
-        const playerAssigned = teamArr.find(
-          (player) => player?.role === teamRole
-        );
+const OneTeam = memo(
+  ({ teamArr, teamRoles, alignContent, teamName, winnerTeam }) => {
+    const background = getTeamBackgroundColor(teamName, winnerTeam);
 
-        const userInfo = playerAssigned?._user;
+    return (
+      <Grid
+        item
+        container
+        direction="column"
+        style={{
+          alignContent,
+          backgroundColor: background.normal,
+          backgroundImage: background.gradient,
+          paddingTop: '10px',
+          paddingBottom: '10px',
+        }}
+        flexWrap="nowrap"
+        alignItems="flex-start"
+        xs={4}>
+        {teamRoles.map((teamRole) => {
+          const playerAssigned = teamArr.find(
+            (player) => player?.role === teamRole
+          );
 
-        if (!playerAssigned) return null;
+          if (!playerAssigned) return null;
 
-        return (
-          <Grid item key={userInfo?._id}>
-            <Tooltip
-              arrow
-              placement="top"
-              title={`Visit ${userInfo?.name}'s profile`}>
-              <Link
-                className="link"
-                to={`/users/${userInfo?.name}?region=${userInfo?.region}`}>
-                <img
-                  alt={playerAssigned?.role}
-                  src={ROLE_IMAGES[teamRole]}
-                  style={{
-                    position: 'relative',
-                    top: '5px',
-                    width: '20px',
-                    marginRight: '2px',
-                  }}
-                />
-                {truncate(userInfo.name, 12)}
-              </Link>
-            </Tooltip>
-          </Grid>
-        );
-      })}
-    </Grid>
-  );
-});
+          const userInfo = playerAssigned?._user;
+
+          return (
+            <Grid item key={userInfo?._id} xs={10}>
+              <Tooltip
+                arrow
+                placement="top"
+                title={`Visit ${userInfo?.name}'s profile`}>
+                <Link
+                  className={'link'}
+                  to={`/users/${userInfo?.name}?region=${userInfo?.region}`}>
+                  <img
+                    alt={playerAssigned?.role}
+                    src={ROLE_IMAGES[teamRole]}
+                    style={{
+                      position: 'relative',
+                      top: '5px',
+                      width: '20px',
+                      marginRight: '2px',
+                    }}
+                  />
+                  {truncate(userInfo.name, 12)}
+                </Link>
+              </Tooltip>
+            </Grid>
+          );
+        })}
+      </Grid>
+    );
+  }
+);

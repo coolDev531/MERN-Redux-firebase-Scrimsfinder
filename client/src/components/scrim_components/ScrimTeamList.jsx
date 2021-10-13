@@ -40,6 +40,7 @@ import JoinIcon from '@mui/icons-material/MeetingRoom';
 import ExitIcon from '@mui/icons-material/NoMeetingRoom';
 import KickIcon from '@mui/icons-material/HighlightOff';
 import InfoIcon from '@mui/icons-material/Info';
+import { getTeamBackgroundColor } from '../../utils/scrimMisc';
 
 const getRankImage = (user) => {
   // replace number with empty string: Diamond 1 => Diamond
@@ -184,6 +185,9 @@ export default function ScrimTeamList({
 
     setButtonsDisabled(false);
   };
+  const winnerTeam = scrim?.teamWon ?? null;
+
+  const background = getTeamBackgroundColor(teamName, winnerTeam);
 
   return (
     <div className={`team-container team-container--${teamName}`}>
@@ -194,7 +198,7 @@ export default function ScrimTeamList({
             <ListSubheader component="div" className={classes.teamListHeader}>
               {teamTitleName}
             </ListSubheader>
-            <Divider />
+            <Divider style={{ backgroundColor: background.normal }} />
           </>
         }>
         {teamRoles.map((teamRole, idx) => {
@@ -213,21 +217,28 @@ export default function ScrimTeamList({
           if (playerAssigned) {
             return (
               <Fragment key={idx}>
-                {idx !== 0 ? <Divider component="div" /> : null}
+                {/* top divider */}
+                {idx !== 0 ? (
+                  <Divider
+                    style={{ backgroundColor: background.normal }}
+                    component="div"
+                  />
+                ) : null}
                 <ListItem
                   alignItems="center"
                   className={classes.teamListItem}
                   style={{
                     // fallback for non-supporting browsers
-                    background: isLobbyHost && gameStarted && '#63d471',
+                    backgroundColor: isLobbyHost
+                      ? gameStarted && '#7f53ac'
+                      : background.normal,
 
                     // if game has started, but the game didn't end, and the player is the lobby host, make his background green.
                     // we don't care if the guy is the lobby host if game ended.
-                    // eslint-disable-next-line
-                    background:
-                      isLobbyHost &&
-                      gameStarted &&
-                      'linear-gradient(315deg, #63d471 0%, #233329 74%)',
+                    backgroundImage: isLobbyHost
+                      ? gameStarted &&
+                        'linear-gradient(315deg, #7f53ac 0%, #647dee 74%)'
+                      : background.gradient,
                   }}>
                   <ListItemAvatar>
                     <Avatar
@@ -359,8 +370,12 @@ export default function ScrimTeamList({
                         </AdminArea>
                       )}
                 </ListItem>
+                {/* bottom divider */}
                 {idx !== teamRoles.length - 1 ? (
-                  <Divider component="li" />
+                  <Divider
+                    component="li"
+                    style={{ backgroundColor: background.normal }}
+                  />
                 ) : null}
               </Fragment>
             );
