@@ -33,9 +33,9 @@ export const getTeamBackgroundColor = (teamName, winnerTeamNameUnformatted) => {
     normal: '#63d471',
     gradient: 'linear-gradient(315deg, #63d471 0%, #233329 74%)',
   };
-
+  
   const redResult = {
-    gradient: 'linear-gradient(45deg, #44000b 0%, #e0455f  74%)',
+    gradient: 'linear-gradient(315deg, rgb(224, 69, 95) 0%, rgb(68, 0, 11) 74%)',
     normal: '#e0455f',
   };
 
