@@ -9,7 +9,7 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
     maxWidth: '1100px',
     marginRight: 'auto',
     marginLeft: 'auto',
-    paddingBottom: '20px',
+
     backgroundImage: ({ scrim }) =>
       scrim?.teamWon ? `url(${HappyTeam})` : `url(${BgGIF})`,
 
@@ -19,17 +19,17 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
     border: '1px solid white',
-    maxHeight: ({ isBoxExpanded }) => (isBoxExpanded ? 'inherit' : '289px'),
-    overflowY: ({ isBoxExpanded }) => (isBoxExpanded ? 'inherit' : 'hidden'),
+
+    paddingBottom: ({ isBoxExpanded }) => (isBoxExpanded ? '20px' : 'inherit'),
   },
 
   scrimSectionHeader: {
     background: '#101820 !important', // fallback
     backgroundColor: 'rgba(18,25,35,.85) !important',
     padding: '10px',
+
     backdropFilter: ({ isBoxExpanded }) =>
       isBoxExpanded ? 'blur(8px)' : 'blur(2.5px)',
-    height: ({ isBoxExpanded }) => (isBoxExpanded ? 'inherit' : '300px'),
   },
 
   iconButton: {

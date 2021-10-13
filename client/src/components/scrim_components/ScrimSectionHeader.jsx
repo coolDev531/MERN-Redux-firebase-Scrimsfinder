@@ -207,8 +207,7 @@ export default function ScrimSectionHeader({
               xs={6}
               spacing={2}
               direction="row"
-              justifyContent="flex-end"
-              style={{ marginBottom: '10px' }}>
+              justifyContent="flex-end">
               <OneTeam
                 teamName="teamOne"
                 winnerTeam={scrim?.teamWon || null}
