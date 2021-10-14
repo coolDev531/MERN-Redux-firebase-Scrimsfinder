@@ -81,7 +81,7 @@ export default function UserSearchBar({ isSearchOpen }) {
               {filteredUsers.slice(0, 8).map((user) => (
                 <Link
                   onClick={handleClickOption}
-                  to={`users/${user.name}?region=${user.region}`}
+                  to={`/users/${user.name}?region=${user.region}`}
                   className="nav__autocomplete-option"
                   key={user._id}>
                   <span className="truncate">

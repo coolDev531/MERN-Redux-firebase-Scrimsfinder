@@ -129,7 +129,7 @@ export default function Navbar({ showDropdowns, showLess, showCheckboxes }) {
                             variant={matchesSm ? 'h3' : 'h1'}
                             style={{
                               fontSize: 'clamp(1rem, 4vw, 1.3rem)',
-                              transition: 'all 450ms ease-in-out',
+                              transition: 'all 200ms ease-in-out',
                               opacity: isSearchOpen ? '0' : '1',
                               width: isSearchOpen ? '0' : 'auto',
                               whiteSpace: 'nowrap',
@@ -161,7 +161,10 @@ export default function Navbar({ showDropdowns, showLess, showCheckboxes }) {
                               maxWidth: 300,
                             }}>
                             {usersLoaded && currentUser?.uid && (
-                              <UserSearchBar isSearchOpen={isSearchOpen} />
+                              <UserSearchBar
+                                setIsSearchOpen={setIsSearchOpen}
+                                isSearchOpen={isSearchOpen}
+                              />
                             )}
                           </Box>
                         </ClickAwayListener>
