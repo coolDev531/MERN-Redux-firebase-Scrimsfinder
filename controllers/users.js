@@ -181,9 +181,137 @@ const getUserParticipatedScrims = async (req, res) => {
   }
 };
 
+const getUserById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const adminKeyQuery = req?.query?.adminKey === KEYS.ADMIN_KEY ?? false;
+
+    const user = await User.findById(id).select([
+      'discord',
+      'name',
+      'region',
+      'rank',
+      'notifications',
+      'adminKey',
+      adminKeyQuery && 'email', // for when admins want to see the details (not user profile page)
+      'createdAt',
+      adminKeyQuery && 'updatedAt', // only show updatedAt when req.query.admin key has been entered and is correct
+      'profileBackgroundImg',
+      'profileBackgroundBlur',
+    ]);
+
+    if (!user)
+      return res
+        .status(404)
+        .json({ message: `User not found in region: ${region}` });
+
+    let userWithNoAdminKey = {
+      ...user._doc,
+      isAdmin: user.adminKey === KEYS.ADMIN_KEY, // boolean,
+    };
+
+    let deletedAdminKey = delete userWithNoAdminKey.adminKey;
+
+    if (adminKeyQuery) {
+      // if we provided admin key in postman, show email and admin key.
+      return res.status(200).json(user);
+    }
+
+    if (deletedAdminKey) {
+      return res.status(200).json(userWithNoAdminKey);
+    }
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+const pushUserNotification = async (req, res) => {
+  const { id } = req.params;
+  const relatedUserId = req?.body?.relatedUserId ?? null;
+
+  const user = await User.findById(id);
+
+  const foundRelatedUser = relatedUserId
+    ? await User.findById(relatedUserId)
+    : null;
+
+  const newNotification = {
+    message: 'user sent u friend request!',
+    relatedUser: foundRelatedUser,
+  };
+
+  const reqBody = {
+    notifications: [...user.notifications, newNotification],
+  };
+
+  await User.findByIdAndUpdate(
+    id,
+    reqBody,
+    { new: true },
+    async (error, user) => {
+      if (error) {
+        return res.status(500).json({ error: error.message });
+      }
+
+      if (!user) {
+        return res.status(500).send('Scrim not found');
+      }
+
+      user.save();
+      return res.status(200).json({ notifications: user.notifications });
+    }
+  );
+};
+
+const removeUserNotification = async (req, res) => {
+  try {
+    const { userId, notificationId } = req.params;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(500).send('user not found');
+    }
+
+    const reqBody = {
+      notifications: user.notifications.filter(
+        (notification) => String(notification._id) !== String(notificationId)
+      ),
+    };
+
+    await User.findByIdAndUpdate(
+      userId,
+      reqBody,
+      { new: true },
+      async (error, user) => {
+        if (error) {
+          return res.status(500).json({ error: error.message });
+        }
+
+        if (!user) {
+          return res.status(500).send('Scrim not found');
+        }
+
+        user.save();
+
+        return res.status(200).json({
+          deletedNotificationId: notificationId,
+          notifications: user.notifications,
+        });
+      }
+    );
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   getAllUsers,
   getOneUser,
   getUserCreatedScrims,
   getUserParticipatedScrims,
+  getUserById,
+  pushUserNotification,
+  removeUserNotification,
 };
