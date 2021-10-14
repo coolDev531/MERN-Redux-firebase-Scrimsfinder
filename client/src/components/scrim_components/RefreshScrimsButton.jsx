@@ -21,12 +21,12 @@ export default function RefreshScrimsButton() {
   const handleRefresh = useCallback(async () => {
     setRefreshCounter((prevState) => (prevState += 1));
 
+    // fetch all existing scrims on the back-end.
+    fetchScrims();
+
+    // if there are visible scrims on the page, make sure to re-set the state.
     if (filteredScrims.length) {
-      // if there are visible scrims on the page, just change toggle fetch to refetch each scrim separately (useFetchScrimInterval)
       dispatch({ type: 'scrims/toggleFetch' });
-    } else {
-      // else if there aren't any visible scrims on the page, fetch all existing scrims on the back-end.
-      fetchScrims();
     }
 
     // if refresh counter num is even, disable the button
@@ -37,7 +37,7 @@ export default function RefreshScrimsButton() {
     }
 
     setDisabled(true);
-  }, [dispatch, refreshCounter, filteredScrims.length, fetchScrims]);
+  }, [refreshCounter, fetchScrims, filteredScrims.length, dispatch]);
 
   useTimeout(
     () => {
