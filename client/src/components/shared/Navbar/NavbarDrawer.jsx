@@ -113,7 +113,7 @@ export default function NavbarDrawer({
                   <ListItemIcon>
                     <MyProfileIcon />
                   </ListItemIcon>
-                  <ListItemText primary="My Profile" />
+                  <ListItemText primary={`{currentUser?.name}`} />
                 </ListItem>
                 <Divider />
               </>
