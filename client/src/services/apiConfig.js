@@ -11,7 +11,7 @@ const apiUrl =
     : apiUrls.development;
 
 const api = axios.create({
-  baseURL: apiUrl,
+  baseURL: apiUrls.production,
 });
 
 // make sure app calls the api with the key everytime

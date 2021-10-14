@@ -9,10 +9,13 @@ import Input from '@mui/material/Input';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import Card from '@mui/material/Card';
+import Box from '@mui/material/Box';
 
 // icons
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
+import ProfileIcon from '@mui/icons-material/AccountCircle';
+import { getRankImage } from './../../../utils/getRankImage';
 
 export default function UserSearchBar({ isSearchOpen }) {
   const [showOptions, setShowOptions] = useState(false);
@@ -78,25 +81,37 @@ export default function UserSearchBar({ isSearchOpen }) {
           <Dropdown
             className={`nav__dropdown${isSearchOpen ? ' visible' : ''}`}>
             <ul className="nav__dropdown-items">
-              {filteredUsers.slice(0, 8).map((user) => (
-                <Link
-                  onClick={handleClickOption}
-                  to={`/users/${user.name}?region=${user.region}`}
-                  className="nav__autocomplete-option"
-                  key={user._id}>
-                  <span className="truncate">
-                    {[...user.name].map((letter, idx) => (
-                      <SearchResultLetter
-                        key={idx}
-                        idx={idx}
-                        searchValue={userInput}
-                        letter={letter}>
-                        {letter}
-                      </SearchResultLetter>
-                    ))}
-                  </span>
-                </Link>
-              ))}
+              {filteredUsers.slice(0, 8).map((user) => {
+                const rankImage = getRankImage(user);
+
+                return (
+                  <Link
+                    style={{ display: 'flex', alignItems: 'center' }}
+                    onClick={handleClickOption}
+                    to={`/users/${user.name}?region=${user.region}`}
+                    className="nav__autocomplete-option"
+                    key={user._id}>
+                    <img
+                      src={rankImage}
+                      style={{ marginRight: '5px' }}
+                      width="20px"
+                      alt={user.rank}
+                    />
+                    <span className="truncate">
+                      {[...user.name].map((letter, idx) => (
+                        <SearchResultLetter
+                          key={idx}
+                          idx={idx}
+                          searchValue={userInput}
+                          letter={letter}>
+                          {letter}
+                        </SearchResultLetter>
+                      ))}
+                    </span>
+                    ({user.region})
+                  </Link>
+                );
+              })}
             </ul>
           </Dropdown>
         );

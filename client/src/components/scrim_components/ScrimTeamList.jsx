@@ -23,7 +23,7 @@ import AdminArea from '../shared/AdminArea';
 import { Link } from 'react-router-dom';
 
 // utils
-import { RANK_IMAGES, ROLE_IMAGES } from '../../utils/imageMaps';
+import { ROLE_IMAGES } from '../../utils/imageMaps';
 import { truncate } from '../../utils/truncate';
 import { copyTextToClipboard } from '../../utils/copyToClipboard';
 
@@ -34,19 +34,16 @@ import {
   movePlayerInScrim,
 } from '../../services/scrims';
 
+// utils
+import { getTeamBackgroundColor } from '../../utils/scrimMisc';
+import { getRankImage } from './../../utils/getRankImage';
+
 // icons
 import SwapIcon from '@mui/icons-material/SwapHoriz';
 import JoinIcon from '@mui/icons-material/MeetingRoom';
 import ExitIcon from '@mui/icons-material/NoMeetingRoom';
 import KickIcon from '@mui/icons-material/HighlightOff';
 import InfoIcon from '@mui/icons-material/Info';
-import { getTeamBackgroundColor } from '../../utils/scrimMisc';
-
-const getRankImage = (user) => {
-  // replace number with empty string: Diamond 1 => Diamond
-  // get rank image from images map by player.rank
-  return RANK_IMAGES[user?.rank?.replace(/[^a-z$]/gi, '')];
-};
 
 export default function ScrimTeamList({
   playerEntered,
