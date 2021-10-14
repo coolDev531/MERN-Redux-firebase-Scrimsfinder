@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Navbar({ showDropdowns, showLess, showCheckboxes }) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const classes = useStyles();
   const { pathname } = useLocation();
@@ -118,22 +118,29 @@ export default function Navbar({ showDropdowns, showLess, showCheckboxes }) {
                         </Link>
                       </Grid>
 
-                      <Grid item container alignItems="center">
-                        {!searchOpen && (
-                          <Typography
-                            component="h1"
-                            variant={matchesSm ? 'h3' : 'h1'}
-                            style={{
-                              fontSize: 'clamp(1rem, 4vw, 1.3rem)',
-                            }}
-                            className="text-white">
-                            Bootcamp LoL Scrim Gym
-                          </Typography>
-                        )}
+                      <Grid
+                        item
+                        container
+                        alignItems="center"
+                        flexWrap="nowrap">
+                        <Typography
+                          component="h1"
+                          variant={matchesSm ? 'h3' : 'h1'}
+                          style={{
+                            fontSize: 'clamp(1rem, 4vw, 1.3rem)',
+                            transition: 'all 450ms ease-in-out',
+                            opacity: isSearchOpen ? '0' : '1',
+                            width: isSearchOpen ? '0' : 'auto',
+                            whiteSpace: 'nowrap',
+                          }}
+                          className="text-white">
+                          Bootcamp LoL Scrim Gym
+                        </Typography>
+
                         <ClickAwayListener
                           onClickAway={() => {
-                            if (searchOpen) {
-                              setSearchOpen(false);
+                            if (isSearchOpen) {
+                              setIsSearchOpen(false);
                             }
 
                             if (usersSearchValue) {
@@ -144,14 +151,15 @@ export default function Navbar({ showDropdowns, showLess, showCheckboxes }) {
                             }
                           }}>
                           <Box
-                            onClick={() => setSearchOpen(true)}
+                            onClick={() => setIsSearchOpen(true)}
                             marginLeft={2}
+                            style={{ transition: 'all 250ms ease-in-out' }}
                             sx={{
-                              minWidth: searchOpen ? 120 : 100,
-                              maxWidth: searchOpen ? 300 : 100,
+                              minWidth: 120,
+                              maxWidth: 300,
                             }}>
                             {usersLoaded && currentUser?.uid && (
-                              <UserSearchBar />
+                              <UserSearchBar isSearchOpen={isSearchOpen} />
                             )}
                           </Box>
                         </ClickAwayListener>

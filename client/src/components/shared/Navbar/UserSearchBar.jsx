@@ -1,21 +1,25 @@
-import { useState, useMemo, memo, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import Input from '@mui/material/Input';
-import InputAdornment from '@mui/material/InputAdornment';
-import Card from '@mui/material/Card';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
 import useUsers from './../../../hooks/useUsers';
-import { useHistory, Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import styled from '@emotion/styled';
 
-// css for this is in index.css
-function AutoComplete() {
+// components
+import Input from '@mui/material/Input';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import Card from '@mui/material/Card';
+
+// icons
+import SearchIcon from '@mui/icons-material/Search';
+import CloseIcon from '@mui/icons-material/Close';
+
+export default function UserSearchBar({ isSearchOpen }) {
   const [showOptions, setShowOptions] = useState(false);
   const { allUsers, usersSearchValue } = useUsers();
   const [userInput, setUserInput] = useState(() => usersSearchValue);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const { pathname } = useLocation();
 
   const filteredUsers = useMemo(() => {
     return allUsers.filter(({ name }) => {
@@ -57,14 +61,22 @@ function AutoComplete() {
     }
   }, [usersSearchValue]);
 
+  useEffect(() => {
+    dispatch({ type: 'users/setSearch', payload: '' });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
+
   //  renders dropdown or no options text
   const autoCompleteJSX = useMemo(() => {
+    if (!isSearchOpen) return null;
     // if the user typed
     if (userInput && showOptions) {
       // if the user typed and we have filtered options, that means we should show the options
       if (filteredUsers.length) {
         return (
-          <Dropdown className="nav__dropdown">
+          <Dropdown
+            className={`nav__dropdown${isSearchOpen ? ' visible' : ''}`}>
             <ul className="nav__dropdown-items">
               {filteredUsers.slice(0, 8).map((user) => (
                 <Link
@@ -111,13 +123,15 @@ function AutoComplete() {
           value={userInput || ''}
           placeholder="Search users"
           endAdornment={
-            userInput ? (
-              <InputAdornment position="end">
+            <InputAdornment position="end">
+              {userInput ? (
                 <IconButton onClick={handleReset}>
-                  <CloseIcon fontSize="small" />
+                  <CloseIcon fontSize="medium" />
                 </IconButton>
-              </InputAdornment>
-            ) : null
+              ) : (
+                <SearchIcon fontSize="medium" />
+              )}
+            </InputAdornment>
           }
         />
         {autoCompleteJSX}
@@ -133,6 +147,11 @@ const Dropdown = styled(Card)`
   z-index: 5;
   background: #fff;
   box-shadow: -3px 5px 17px 1px #000;
+  display: none;
+
+  &.visible {
+    display: block;
+  }
 
   .truncate {
     display: block;
@@ -192,5 +211,3 @@ const SearchResultLetter = styled.span`
       ? 400
       : 700};
 `;
-
-export default memo(AutoComplete); // optimize rerender when props change with memo
