@@ -57,12 +57,6 @@ export default function UserProfile() {
     [currentUser?._id, userData?._id]
   );
 
-  const titleText = useMemo(() => {
-    // if the user in the page is the current user, say "My Profile"
-    if (isCurrentUser) return 'My Profile';
-    return `${userData?.name}'s Profile`; // else say "Bob's  Profile" or whatever
-  }, [isCurrentUser, userData?.name]);
-
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -164,7 +158,7 @@ export default function UserProfile() {
                 href={`https://${userData?.region}.op.gg/summoner/userName=${userData?.name}`}
                 target="_blank"
                 rel="noopener noreferrer">
-                {titleText}
+                {`${userData?.name}'s Profile`}
               </a>
             </Tooltip>
             {userData?.isAdmin && (
