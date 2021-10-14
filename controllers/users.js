@@ -238,7 +238,7 @@ const pushUserNotification = async (req, res) => {
 
   const newNotification = {
     message: 'user sent u friend request!',
-    relatedUser: foundRelatedUser,
+    _relatedUser: foundRelatedUser,
   };
 
   const reqBody = {
@@ -304,6 +304,10 @@ const removeUserNotification = async (req, res) => {
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
+};
+
+const sendFriendRequest = async (req, res) => {
+  const { userId } = req.params;
 };
 
 module.exports = {

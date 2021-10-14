@@ -8,7 +8,7 @@ const Notification = new Schema(
       required: true,
     },
 
-    relatedUser: {
+    _relatedUser: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: false,
