@@ -12,7 +12,7 @@ export const useAppStyles = makeStyles({
     backgroundColor: COLORS.DARK_TRANSPARENT, // dark filter to darken bg image
 
     '&::before': {
-      background: `var(--bgImg)`, // background image
+      background: 'var(--bgImg)', // background image
       transition: 'background 250ms ease-in-out',
       backgroundSize: 'cover',
       content: '""',
