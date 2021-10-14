@@ -4,8 +4,8 @@ import useUsers from './../../../hooks/useUsers';
 import { Link, useLocation } from 'react-router-dom';
 
 // utils
-import Levenshtein from 'levenshtein';
 import styled from '@emotion/styled';
+import { levenshteinDistance } from '../../../utils/levenshteinDistance';
 
 // components
 import Input from '@mui/material/Input';
@@ -32,9 +32,11 @@ export default function UserSearchBar({ isSearchOpen }) {
         return name.toLowerCase().includes(userInput.toLowerCase());
       })
       .sort((a, b) => {
-        let leva = new Levenshtein(a.name, userInput).distance; // the user that is closest to the users search input will appear in top.
-        let levb = new Levenshtein(b.name, userInput).distance;
-        return leva - levb;
+        // sort by levenshteinDistance
+        const levA = levenshteinDistance(a.name, userInput);
+        const levB = levenshteinDistance(b.name, userInput);
+
+        return levA - levB;
       });
   }, [allUsers, userInput]);
 
