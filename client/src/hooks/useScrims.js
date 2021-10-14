@@ -132,9 +132,10 @@ export const useFetchScrims = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
-  useEffect(() => {
-    if (pathname === '/' || pathname.includes('/scrims'))
+  useEffectExceptOnMount(() => {
+    if (pathname === '/' || pathname.includes('/scrims')) {
       dispatch({ type: 'scrims/toggleFetch' });
+    }
     // re-set scrims on pathname change
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

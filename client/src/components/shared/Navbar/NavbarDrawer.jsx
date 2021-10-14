@@ -25,6 +25,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import ExitIcon from '@mui/icons-material/ExitToApp';
 import CreateIcon from '@mui/icons-material/BorderColor';
 import MyProfileIcon from '@mui/icons-material/AccountCircle';
+import GamesIcon from '@mui/icons-material/Games';
 
 // utils
 import clsx from 'clsx';
@@ -117,6 +118,16 @@ export default function NavbarDrawer({
                 </ListItem>
                 <Divider />
               </>
+            )}
+
+            {/* Scrims button */}
+            {currentUser?.uid && (
+              <ListItem button onClick={() => drawerNavPush('/scrims')}>
+                <ListItemIcon>
+                  <GamesIcon />
+                </ListItemIcon>
+                <ListItemText primary="Scrims" />
+              </ListItem>
             )}
 
             {/* Settings button */}

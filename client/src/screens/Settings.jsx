@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import useAlerts from '../hooks/useAlerts';
 import useAuth, { useAuthActions } from './../hooks/useAuth';
+import useUsers from './../hooks/useUsers';
 
 // components
 import Grid from '@mui/material/Grid';
@@ -20,7 +21,6 @@ import {
 
 // services & utils
 import { makeStyles } from '@mui/styles';
-import { getAllUsers } from './../services/users';
 import { updateUser } from './../services/auth';
 import { setAuthToken } from './../services/auth';
 
@@ -47,8 +47,8 @@ const useStyles = makeStyles((theme) => ({
 export default function Settings() {
   const { currentUser } = useAuth();
   const { setCurrentUser } = useAuthActions();
+  const { allUsers } = useUsers();
 
-  const [allUsers, setAllUsers] = useState([]);
   const [userData, setUserData] = useState({
     name: currentUser?.name, // LoL summoner name
     discord: currentUser?.discord,
@@ -173,19 +173,6 @@ export default function Settings() {
       [name]: value,
     }));
   };
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      // for checking if summoner name or discord are taken.
-      const allUsersData = await getAllUsers();
-
-      setAllUsers(allUsersData);
-    };
-    fetchUsers();
-    return () => {
-      fetchUsers();
-    };
-  }, []);
 
   useEffect(() => {
     const { rankNumber, rankDivision } = rankData;
