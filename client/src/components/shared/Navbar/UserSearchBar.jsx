@@ -2,6 +2,9 @@ import { useState, useMemo, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import useUsers from './../../../hooks/useUsers';
 import { Link, useLocation } from 'react-router-dom';
+
+// utils
+import Levenshtein from 'levenshtein';
 import styled from '@emotion/styled';
 
 // components
@@ -23,11 +26,16 @@ export default function UserSearchBar({ isSearchOpen }) {
   const { pathname } = useLocation();
 
   const filteredUsers = useMemo(() => {
-    return allUsers.filter(({ name }) => {
-      if (!userInput) return false;
-      if (name[0].toLowerCase() !== userInput[0].toLowerCase()) return false;
-      return name.toLowerCase().includes(userInput.toLowerCase());
-    });
+    return allUsers
+      .filter(({ name }) => {
+        if (!userInput) return false;
+        return name.toLowerCase().includes(userInput.toLowerCase());
+      })
+      .sort((a, b) => {
+        let leva = new Levenshtein(a.name, userInput).distance; // the user that is closest to the users search input will appear in top.
+        let levb = new Levenshtein(b.name, userInput).distance;
+        return leva - levb;
+      });
   }, [allUsers, userInput]);
 
   const handleChange = (e) => {
