@@ -313,6 +313,45 @@ const removeUserNotification = async (req, res) => {
   }
 };
 
+const removeAllUserNotifications = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(500).send('user not found');
+    }
+
+    const reqBody = {
+      notifications: [],
+    };
+
+    await User.findByIdAndUpdate(
+      id,
+      reqBody,
+      { new: true },
+      async (error, user) => {
+        if (error) {
+          return res.status(500).json({ error: error.message });
+        }
+
+        if (!user) {
+          return res.status(500).send('User not found');
+        }
+
+        user.save();
+
+        return res.status(200).json({
+          notifications: user.notifications,
+        });
+      }
+    );
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
 const sendFriendRequest = async (req, res) => {
   try {
     const { userSendingId, userReceivingId } = req.params;
@@ -413,6 +452,7 @@ module.exports = {
   getUserById,
   pushUserNotification,
   removeUserNotification,
+  removeAllUserNotifications,
   sendFriendRequest,
   removeFriendRequest,
 };

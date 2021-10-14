@@ -18,6 +18,11 @@ router.post(
 ); // POST
 
 router.post(
+  '/users/remove-all-notifications/:id',
+  controllers.removeAllUserNotifications
+); // POST
+
+router.post(
   '/users/send-friend-request/:userReceivingId/:userSendingId',
   controllers.sendFriendRequest
 ); // POST
