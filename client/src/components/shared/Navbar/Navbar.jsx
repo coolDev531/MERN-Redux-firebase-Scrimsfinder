@@ -1,19 +1,22 @@
 // hooks
 import { useState } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
+import useAuth, { useAuthActions } from './../../../hooks/useAuth';
 import { makeStyles, useTheme } from '@mui/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import useAuth, { useAuthActions } from './../../../hooks/useAuth';
+import useUsers from './../../../hooks/useUsers';
+import { useDispatch } from 'react-redux';
 
 // Mui components
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
 import Hidden from '@mui/material/Hidden';
+import Typography from '@mui/material/Typography';
+import ClickAwayListener from '@mui/material/ClickAwayListener';
 
 // components
 import { Link } from 'react-router-dom';
@@ -23,7 +26,7 @@ import { InnerColumn } from '../PageComponents';
 import Tooltip from '../Tooltip';
 import NavbarCheckboxes from './NavbarCheckboxes';
 import NavbarDropdowns from './NavbarDropdowns';
-import SelectSearch from 'react-select-search';
+import UserSearchBar from './UserSearchBar';
 
 // icons
 import Logo from '../../../assets/images/bootcamp_llc_media_kit/coin_logo_new2021.png';
@@ -43,15 +46,19 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Navbar({ showDropdowns, showLess, showCheckboxes }) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   const classes = useStyles();
   const { pathname } = useLocation();
   const history = useHistory();
+
   const theme = useTheme();
   const matchesSm = useMediaQuery(theme.breakpoints.down('sm'));
 
+  const { usersLoaded, usersSearchValue } = useUsers();
   const { currentUser } = useAuth();
   const { handleLogin } = useAuthActions();
+  const dispatch = useDispatch();
 
   const noBackButtonPaths = [/^\/signup/, /^\/scrims$/, /^\/scrims\/$/, /^\/$/];
 
@@ -88,28 +95,67 @@ export default function Navbar({ showDropdowns, showLess, showCheckboxes }) {
                     alignItems="center"
                     xs={6}
                     sm={6}>
-                    <Grid item container alignItems="center">
-                      <Link
-                        to="/"
-                        className="link-2"
-                        style={{ display: 'flex', alignItems: 'center' }}>
-                        <img src={Logo} width="80px" alt="Logo" />
-                        <Box marginLeft={2}>
-                          {/* <Typography
+                    <Grid
+                      item
+                      container
+                      alignItems="center"
+                      flexWrap="nowrap"
+                      spacing={1}>
+                      <Grid item>
+                        <Link
+                          to="/"
+                          className="link-2"
+                          style={{ display: 'flex', alignItems: 'center' }}>
+                          <img
+                            src={Logo}
+                            style={{
+                              width: '100%',
+                              maxWidth: '80px',
+                              minWidth: '40px',
+                            }}
+                            alt="Logo"
+                          />
+                        </Link>
+                      </Grid>
+
+                      <Grid item container alignItems="center">
+                        {!searchOpen && (
+                          <Typography
                             component="h1"
                             variant={matchesSm ? 'h3' : 'h1'}
+                            style={{
+                              fontSize: 'clamp(1rem, 4vw, 1.3rem)',
+                            }}
                             className="text-white">
                             Bootcamp LoL Scrim Gym
-                          </Typography> */}
+                          </Typography>
+                        )}
+                        <ClickAwayListener
+                          onClickAway={() => {
+                            if (searchOpen) {
+                              setSearchOpen(false);
+                            }
 
-                          {/* <SelectSearch
-                            options={users}
-                            value={userSearch}
-                            name="user"
-                            placeholder="Choose your user"
-                          /> */}
-                        </Box>
-                      </Link>
+                            if (usersSearchValue) {
+                              dispatch({
+                                type: 'users/setSearch',
+                                payload: '',
+                              });
+                            }
+                          }}>
+                          <Box
+                            onClick={() => setSearchOpen(true)}
+                            marginLeft={2}
+                            sx={{
+                              minWidth: searchOpen ? 120 : 100,
+                              maxWidth: searchOpen ? 300 : 100,
+                            }}>
+                            {usersLoaded && currentUser?.uid && (
+                              <UserSearchBar />
+                            )}
+                          </Box>
+                        </ClickAwayListener>
+                      </Grid>
                     </Grid>
                   </Grid>
 
