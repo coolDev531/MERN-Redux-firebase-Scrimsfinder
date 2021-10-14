@@ -91,7 +91,7 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('md')]: {
       minHeight: '130px',
       maxHeight: '130px',
-      overflowY: 'scroll',
+      overflowY: 'auto',
       '&::-webkit-scrollbar': {
         display: 'none',
       },

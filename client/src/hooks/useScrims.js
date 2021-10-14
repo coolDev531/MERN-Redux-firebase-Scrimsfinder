@@ -150,16 +150,12 @@ const ONE_SCRIM_FETCH_INTERVAL = 5000;
 export const useFetchScrimInterval = (isInDetail, isBoxExpanded, scrim) => {
   const [oneScrim, setOneScrim] = useState(scrim);
 
-  const { toggleFetch } = useScrims();
-
-  const scrimRef = useRef();
   const isBoxExpandedRef = useRef();
   const isInDetailRef = useRef();
 
   useEffect(() => {
     isBoxExpandedRef.current = isBoxExpanded;
     isInDetailRef.current = isInDetail;
-    scrimRef.current = scrim;
   });
 
   const fetchScrimData = async () => {
@@ -172,35 +168,21 @@ export const useFetchScrimInterval = (isInDetail, isBoxExpanded, scrim) => {
     // don't fetch on interval if game has ended, there is nothing that is going to change except maybe the image
     if (gameEnded) return;
 
-    devLog(`fetching one scrim on interval (${scrimRef.current._id})`);
+    devLog(`fetching one scrim on interval (${scrim?._id})`);
 
-    const scrimData = await getScrimById(scrimRef.current._id);
+    const scrimData = await getScrimById(scrim?._id);
 
     if (scrimData?.createdBy) {
       setOneScrim(scrimData);
     }
   };
 
-  // if user clicks reload, re-fetch the scrim data
-  // this only re-fetches the scrims that are visible in the page
-  // don't run on mount
-  useEffectExceptOnMount(() => {
-    const fetchOnReloadClick = async () => {
-      devLog(`fetching one scrim on toggleFetch (${scrimRef.current._id})`);
-
-      const scrimData = await getScrimById(scrimRef.current._id);
-
-      if (scrimData?.createdBy) {
-        setOneScrim(scrimData);
-      }
-    };
-    fetchOnReloadClick();
-
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [toggleFetch]);
-
   // and the main gaol of the hook, fetch on interval.
   useInterval(fetchScrimData, ONE_SCRIM_FETCH_INTERVAL);
+
+  useEffect(() => {
+    setOneScrim(scrim);
+  }, [scrim]);
 
   return [oneScrim, setOneScrim];
 };
