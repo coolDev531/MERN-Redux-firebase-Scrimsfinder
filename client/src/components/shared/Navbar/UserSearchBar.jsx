@@ -9,12 +9,10 @@ import Input from '@mui/material/Input';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import Card from '@mui/material/Card';
-import Box from '@mui/material/Box';
 
 // icons
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
-import ProfileIcon from '@mui/icons-material/AccountCircle';
 import { getRankImage } from './../../../utils/getRankImage';
 
 export default function UserSearchBar({ isSearchOpen }) {
