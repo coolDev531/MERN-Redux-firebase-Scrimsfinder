@@ -28,6 +28,16 @@ const FriendRequest = new Schema(
   { timestamps: true }
 );
 
+const Friend = new Schema(
+  {
+    _user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+  },
+  { timestamps: true }
+);
+
 const User = new Schema(
   {
     name: {
@@ -49,6 +59,7 @@ const User = new Schema(
     email: { type: String, required: true, unique: true }, // google email.
     notifications: { type: [Notification] },
     friendRequests: { type: [FriendRequest] },
+    friends: { type: [Friend] },
     profileBackgroundImg: { type: String, default: 'Summoners Rift' },
     profileBackgroundBlur: { type: String, default: '20' },
   },

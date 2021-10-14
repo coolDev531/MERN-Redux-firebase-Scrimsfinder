@@ -17,4 +17,14 @@ router.post(
   controllers.removeUserNotification
 ); // POST
 
+router.post(
+  '/users/send-friend-request/:userReceivingId/:userSendingId',
+  controllers.sendFriendRequest
+); // POST
+
+router.post(
+  '/users/:userId/remove-friend-request/:requestId/',
+  controllers.removeFriendRequest
+); // POST
+
 module.exports = router;

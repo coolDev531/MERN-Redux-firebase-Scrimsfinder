@@ -67,6 +67,8 @@ const loginUser = async (req, res) => {
         discord: foundUser.discord,
         adminKey: foundUser.adminKey,
         name: foundUser.name,
+        notifications: foundUser.notifications,
+        friendRequests: foundUser.friendRequests,
       };
 
       const accessToken = jwt.sign(payload, KEYS.SECRET_OR_KEY, {
@@ -144,6 +146,8 @@ const registerUser = async (req, res) => {
           discord: newUser.discord,
           adminKey: newUser.adminKey,
           name: newUser.name,
+          notifications: [],
+          friendRequests: [],
         };
 
         const accessToken = jwt.sign(payload, KEYS.SECRET_OR_KEY, {
@@ -188,6 +192,8 @@ const verifyUser = async (req, res) => {
           discord: foundUser.discord,
           adminKey: foundUser.adminKey,
           name: foundUser.name,
+          notifications: foundUser.notifications,
+          friendRequests: foundUser.friendRequests,
         };
 
         const accessToken = jwt.sign(payload, KEYS.SECRET_OR_KEY, {
@@ -243,6 +249,9 @@ const updateUser = async (req, res) => {
         req.body.profileBackgroundBlur ??
         foundUser?.profileBackgroundBlur ??
         '20',
+
+      notifications: foundUser.notifications,
+      friendRequests: foundUser.friendRequests,
     };
 
     bcrypt.genSalt(10, (err, salt) => {

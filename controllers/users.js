@@ -82,6 +82,7 @@ const getOneUser = async (req, res) => {
       adminKeyQuery && 'updatedAt', // only show updatedAt when req.query.admin key has been entered and is correct
       'profileBackgroundImg',
       'profileBackgroundBlur',
+      'friends',
     ]);
 
     if (!user)
@@ -199,6 +200,8 @@ const getUserById = async (req, res) => {
       adminKeyQuery && 'updatedAt', // only show updatedAt when req.query.admin key has been entered and is correct
       'profileBackgroundImg',
       'profileBackgroundBlur',
+      'friendRequests',
+      'friends',
     ]);
 
     if (!user)
@@ -236,8 +239,12 @@ const pushUserNotification = async (req, res) => {
     ? await User.findById(relatedUserId)
     : null;
 
+  if (!req.body.message) {
+    return res.status(500).json({ error: 'no message provided!' });
+  }
+
   const newNotification = {
-    message: 'user sent u friend request!',
+    message: req.body.message,
     _relatedUser: foundRelatedUser,
   };
 
@@ -255,7 +262,7 @@ const pushUserNotification = async (req, res) => {
       }
 
       if (!user) {
-        return res.status(500).send('Scrim not found');
+        return res.status(500).send('User not found');
       }
 
       user.save();
@@ -290,7 +297,7 @@ const removeUserNotification = async (req, res) => {
         }
 
         if (!user) {
-          return res.status(500).send('Scrim not found');
+          return res.status(500).send('User not found');
         }
 
         user.save();
@@ -307,7 +314,95 @@ const removeUserNotification = async (req, res) => {
 };
 
 const sendFriendRequest = async (req, res) => {
-  const { userId } = req.params;
+  try {
+    const { userSendingId, userReceivingId } = req.params;
+    const userSending = await User.findById(userSendingId);
+    const userReceiving = await User.findById(userReceivingId);
+
+    const newFriendRequest = {
+      _user: {
+        _id: userSending._id,
+        name: userSending.rank,
+        region: userSending.region,
+        discord: userSending.discord,
+      },
+    };
+
+    let newNotification = {
+      relatedUserId: userSendingId,
+      message: `${userSending.name} sent you a friend request!`,
+    };
+
+    const reqBody = {
+      friendRequests: [...userReceiving.friendRequests, newFriendRequest],
+      notifications: [...userReceiving.notifications, newNotification],
+    };
+
+    await User.findByIdAndUpdate(
+      userReceivingId,
+      reqBody,
+      { new: true },
+      async (error, user) => {
+        if (error) {
+          return res.status(500).json({ error: error.message });
+        }
+
+        if (!user) {
+          return res.status(500).send('User not found');
+        }
+
+        user.save();
+
+        return res.status(200).json({
+          newFriendRequest,
+          newNotification,
+        });
+      }
+    );
+
+    return;
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+const removeFriendRequest = async (req, res) => {
+  try {
+    const { requestId, userId } = req.params;
+    const user = await User.findById(userId);
+
+    const reqBody = {
+      friendRequests: user.friendRequests.filter(
+        ({ _id }) => String(_id) !== requestId
+      ),
+    };
+
+    await User.findByIdAndUpdate(
+      userId,
+      reqBody,
+      { new: true },
+      async (error, user) => {
+        if (error) {
+          return res.status(500).json({ error: error.message });
+        }
+
+        if (!user) {
+          return res.status(500).send('User not found');
+        }
+
+        user.save();
+
+        return res.status(200).json({
+          removedFriendRequestId: requestId,
+          friendRequests: user.friendRequests,
+        });
+      }
+    );
+
+    return;
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
 };
 
 module.exports = {
@@ -318,4 +413,6 @@ module.exports = {
   getUserById,
   pushUserNotification,
   removeUserNotification,
+  sendFriendRequest,
+  removeFriendRequest,
 };
