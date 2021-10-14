@@ -6,6 +6,7 @@ import { Link, useLocation } from 'react-router-dom';
 // utils
 import styled from '@emotion/styled';
 import { levenshteinDistance } from '../../../utils/levenshteinDistance';
+import { getRankImage } from './../../../utils/getRankImage';
 
 // components
 import Input from '@mui/material/Input';
@@ -16,7 +17,6 @@ import Card from '@mui/material/Card';
 // icons
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
-import { getRankImage } from './../../../utils/getRankImage';
 
 export default function UserSearchBar({ isSearchOpen }) {
   const [showOptions, setShowOptions] = useState(false);
