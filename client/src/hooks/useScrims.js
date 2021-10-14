@@ -3,7 +3,6 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import useInterval from '../hooks/useInterval';
-import useEffectExceptOnMount from './useEffectExceptOnMount';
 
 // utils and services
 import { getAllScrims, getScrimById } from './../services/scrims';
@@ -128,15 +127,6 @@ export const useFetchScrims = () => {
     };
 
     fetchScrims();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname]);
-
-  useEffectExceptOnMount(() => {
-    if (pathname === '/' || pathname.includes('/scrims')) {
-      dispatch({ type: 'scrims/toggleFetch' });
-    }
-    // re-set scrims on pathname change
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
