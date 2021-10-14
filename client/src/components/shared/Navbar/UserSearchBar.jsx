@@ -36,16 +36,17 @@ function AutoComplete() {
     setShowOptions(false);
   };
 
-  const handleClickOption = (pathname) => {
+  const handleClickOption = () => {
     setUserInput('');
     setShowOptions(false);
-
-    history.push(pathname);
   };
 
   useEffect(() => {
     dispatch({ type: 'users/setSearch', payload: userInput });
 
+    return () => {
+      dispatch({ type: 'users/setSearch', payload: '' });
+    };
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userInput]);
 
@@ -67,6 +68,7 @@ function AutoComplete() {
             <ul className="nav__dropdown-items">
               {filteredUsers.slice(0, 8).map((user) => (
                 <Link
+                  onClick={handleClickOption}
                   to={`users/${user.name}?region=${user.region}`}
                   className="nav__autocomplete-option"
                   key={user._id}>
