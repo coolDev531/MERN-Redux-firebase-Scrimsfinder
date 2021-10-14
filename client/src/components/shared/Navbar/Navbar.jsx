@@ -94,12 +94,12 @@ export default function Navbar({ showDropdowns, showLess, showCheckboxes }) {
                         style={{ display: 'flex', alignItems: 'center' }}>
                         <img src={Logo} width="80px" alt="Logo" />
                         <Box marginLeft={2}>
-                          <Typography
+                          {/* <Typography
                             component="h1"
                             variant={matchesSm ? 'h3' : 'h1'}
                             className="text-white">
                             Bootcamp LoL Scrim Gym
-                          </Typography>
+                          </Typography> */}
                         </Box>
                       </Link>
                     </Grid>

@@ -228,7 +228,10 @@ export default function ScrimEdit() {
 
     try {
       let yes = window.confirm('are you sure you want to update this scrim?');
-      if (!yes) return;
+      if (!yes) {
+        setIsUpdating(false);
+        return;
+      }
 
       const dataSending = {
         ...scrimData,
