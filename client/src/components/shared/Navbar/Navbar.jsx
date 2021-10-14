@@ -123,19 +123,21 @@ export default function Navbar({ showDropdowns, showLess, showCheckboxes }) {
                         container
                         alignItems="center"
                         flexWrap="nowrap">
-                        <Typography
-                          component="h1"
-                          variant={matchesSm ? 'h3' : 'h1'}
-                          style={{
-                            fontSize: 'clamp(1rem, 4vw, 1.3rem)',
-                            transition: 'all 450ms ease-in-out',
-                            opacity: isSearchOpen ? '0' : '1',
-                            width: isSearchOpen ? '0' : 'auto',
-                            whiteSpace: 'nowrap',
-                          }}
-                          className="text-white">
-                          Bootcamp LoL Scrim Gym
-                        </Typography>
+                        <Hidden mdDown>
+                          <Typography
+                            component="h1"
+                            variant={matchesSm ? 'h3' : 'h1'}
+                            style={{
+                              fontSize: 'clamp(1rem, 4vw, 1.3rem)',
+                              transition: 'all 450ms ease-in-out',
+                              opacity: isSearchOpen ? '0' : '1',
+                              width: isSearchOpen ? '0' : 'auto',
+                              whiteSpace: 'nowrap',
+                            }}
+                            className="text-white">
+                            Bootcamp LoL Scrim Gym
+                          </Typography>
+                        </Hidden>
 
                         <ClickAwayListener
                           onClickAway={() => {
@@ -155,7 +157,7 @@ export default function Navbar({ showDropdowns, showLess, showCheckboxes }) {
                             marginLeft={2}
                             style={{ transition: 'all 250ms ease-in-out' }}
                             sx={{
-                              minWidth: 120,
+                              minWidth: 140,
                               maxWidth: 300,
                             }}>
                             {usersLoaded && currentUser?.uid && (
