@@ -181,6 +181,7 @@ export const useFetchScrimInterval = (isInDetail, isBoxExpanded, scrim) => {
   useInterval(fetchScrimData, ONE_SCRIM_FETCH_INTERVAL);
 
   useEffect(() => {
+    // everytime the scrim changes, set it to whatever it is
     setOneScrim(scrim);
   }, [scrim]);
 
