@@ -10,7 +10,7 @@ export default function usersReducer(state = initialState, action) {
     case 'users/fetchUsers': {
       return {
         ...state,
-        users: payload,
+        allUsers: payload,
         usersLoaded: true,
       };
     }

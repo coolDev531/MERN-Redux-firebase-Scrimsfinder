@@ -23,6 +23,7 @@ import { InnerColumn } from '../PageComponents';
 import Tooltip from '../Tooltip';
 import NavbarCheckboxes from './NavbarCheckboxes';
 import NavbarDropdowns from './NavbarDropdowns';
+import SelectSearch from 'react-select-search';
 
 // icons
 import Logo from '../../../assets/images/bootcamp_llc_media_kit/coin_logo_new2021.png';
@@ -100,6 +101,13 @@ export default function Navbar({ showDropdowns, showLess, showCheckboxes }) {
                             className="text-white">
                             Bootcamp LoL Scrim Gym
                           </Typography> */}
+
+                          {/* <SelectSearch
+                            options={users}
+                            value={userSearch}
+                            name="user"
+                            placeholder="Choose your user"
+                          /> */}
                         </Box>
                       </Link>
                     </Grid>

@@ -5,6 +5,11 @@ import { getAllUsers } from './../services/users';
 import devLog from './../utils/devLog';
 import { useLocation } from 'react-router-dom';
 import useEffectExceptOnMount from './useEffectExceptOnMount';
+import { useSelector } from 'react-redux';
+
+export default function useUsers() {
+  return useSelector(({ users }) => users);
+}
 
 export const useFetchUsers = () => {
   const dispatch = useDispatch();

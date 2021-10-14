@@ -134,8 +134,6 @@ export const useFetchScrims = () => {
 
   useEffectExceptOnMount(() => {
     if (pathname === '/' || pathname.includes('/scrims')) {
-      console.log('FETCH HOME');
-
       dispatch({ type: 'scrims/toggleFetch' });
     }
     // re-set scrims on pathname change
