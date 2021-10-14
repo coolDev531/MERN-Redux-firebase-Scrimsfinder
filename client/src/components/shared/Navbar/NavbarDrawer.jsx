@@ -122,12 +122,16 @@ export default function NavbarDrawer({
 
             {/* Scrims button */}
             {currentUser?.uid && (
-              <ListItem button onClick={() => drawerNavPush('/scrims')}>
-                <ListItemIcon>
-                  <GamesIcon />
-                </ListItemIcon>
-                <ListItemText primary="Scrims" />
-              </ListItem>
+              <>
+                <ListItem button onClick={() => drawerNavPush('/scrims')}>
+                  <ListItemIcon>
+                    <GamesIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Scrims" />
+                </ListItem>
+
+                <Divider />
+              </>
             )}
 
             {/* Settings button */}
