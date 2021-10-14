@@ -91,6 +91,8 @@ export default function UserSearchBar({ isSearchOpen }) {
             <ul className="nav__dropdown-items">
               {filteredUsers.slice(0, 8).map((user) => {
                 const rankImage = getRankImage(user);
+                const regex = new RegExp('(' + userInput + ')', 'i');
+                const userName = user.name.replace(regex, '<b>$1</b>'); // if it matches the search input, it will be bolded, else just as it is.
 
                 return (
                   <Link
@@ -105,17 +107,10 @@ export default function UserSearchBar({ isSearchOpen }) {
                       width="20px"
                       alt={user.rank}
                     />
-                    <span className="truncate">
-                      {[...user.name].map((letter, idx) => (
-                        <SearchResultLetter
-                          key={idx}
-                          idx={idx}
-                          searchValue={userInput}
-                          letter={letter}>
-                          {letter}
-                        </SearchResultLetter>
-                      ))}
-                    </span>
+                    <span
+                      className="truncate"
+                      dangerouslySetInnerHTML={{ __html: userName }}
+                    />
                     ({user.region})
                   </Link>
                 );
@@ -225,12 +220,4 @@ const Search = styled.div`
     position: absolute;
     top: 38px;
   }
-`;
-
-const SearchResultLetter = styled.span`
-  /* if searchValue at the current index of word matches the letter, make it font-weight 400, else 700 (like facebook) */
-  font-weight: ${({ searchValue, letter, idx }) =>
-    searchValue.charAt(idx).toLowerCase().includes(letter.toLowerCase())
-      ? 400
-      : 700};
 `;
