@@ -168,7 +168,7 @@ export const useFetchScrimInterval = (isInDetail, isBoxExpanded, scrim) => {
     const scrimData = await getScrimById(scrimRef.current._id);
 
     if (scrimData?.createdBy) {
-      setOneScrim(oneScrim);
+      setOneScrim(scrimData);
     }
   };
 
