@@ -59,3 +59,13 @@ export const deleteOneUserNotification = async (userId, notificationId) => {
     throw error;
   }
 };
+
+export const deleteAllUserNotifications = async (userId) => {
+  try {
+    const response = await api.post(`
+/users/remove-all-notifications/${userId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

@@ -13,7 +13,10 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 // services
-import { deleteOneUserNotification } from '../../../services/users';
+import {
+  deleteOneUserNotification,
+  deleteAllUserNotifications,
+} from '../../../services/users';
 
 export default function Notifications() {
   const [{ notificationsOpen }, { currentUser }] = useSelector(
@@ -32,12 +35,28 @@ export default function Notifications() {
     dispatch({ type: 'general/closeNotifications' });
   }, [dispatch]);
 
-  // if (!notifications.length) return null;
-
   return (
     <>
-      <Grid item>
+      <Grid item style={{ position: 'relative' }}>
         <IconButton onClick={openNotifications}>
+          {notifications.length > 0 ? (
+            <div
+              style={{
+                backgroundColor: 'red',
+                borderRadius: '50%',
+                width: '24px',
+                height: '24px',
+                position: 'absolute',
+                top: '0px',
+                right: '-5px',
+                fontSize: '1rem',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              {notifications.length}
+            </div>
+          ) : null}
           <NotificationsIcon fontSize="large" />
         </IconButton>
       </Grid>
@@ -45,7 +64,23 @@ export default function Notifications() {
       <NotificationsModal
         title="Notifications"
         open={notificationsOpen}
-        onClose={closeNotifications}>
+        onClose={closeNotifications}
+        actionButtonStyle={{
+          display: !notifications.length ? 'none' : 'inline-flex',
+        }}
+        actionButtonProps={{
+          title: 'Mark all as read',
+          onClick: async () => {
+            const newNotificationsState = await deleteAllUserNotifications(
+              currentUser?._id
+            );
+
+            dispatch({
+              type: 'auth/updateCurrentUser',
+              payload: { notifications: newNotificationsState },
+            });
+          },
+        }}>
         <ul style={{ padding: 0, margin: 0 }}>
           {notifications.length > 0 ? (
             notifications.map((notification) => (

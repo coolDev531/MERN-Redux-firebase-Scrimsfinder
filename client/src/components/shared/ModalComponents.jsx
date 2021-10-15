@@ -80,27 +80,47 @@ export const DraggableModal = ({ children, ...rest }) => {
   );
 };
 
-export const Modal = React.memo(({ children, onClose, title, open }) => {
-  return (
-    <DraggableModal open={open} onClose={onClose}>
-      <DialogTitle onClose={onClose}>{title}</DialogTitle>
+export const Modal = React.memo(
+  ({
+    children,
+    onClose,
+    title,
+    open,
+    actionButtonProps,
+    actionButtonStyle,
+  }) => {
+    return (
+      <DraggableModal open={open} onClose={onClose}>
+        <DialogTitle onClose={onClose}>{title}</DialogTitle>
 
-      <DialogContent
-        dividers
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          minWidth: '300px',
-          overflowWrap: 'break-word',
-        }}>
-        {children}
-      </DialogContent>
+        <DialogContent
+          dividers
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            minWidth: '300px',
+            overflowWrap: 'break-word',
+          }}>
+          {children}
+        </DialogContent>
 
-      <DialogActions>
-        <Button type="primary" onClick={onClose} variant="contained">
-          Close
-        </Button>
-      </DialogActions>
-    </DraggableModal>
-  );
-});
+        <DialogActions>
+          {actionButtonProps && (
+            <Button
+              type="primary"
+              style={actionButtonStyle ? actionButtonStyle : null}
+              onClick={() => actionButtonProps.onClick()}
+              variant="contained"
+              {...actionButtonProps.appearance}>
+              {actionButtonProps.title}
+            </Button>
+          )}
+
+          <Button color="secondary" onClick={onClose} variant="contained">
+            Close
+          </Button>
+        </DialogActions>
+      </DraggableModal>
+    );
+  }
+);
