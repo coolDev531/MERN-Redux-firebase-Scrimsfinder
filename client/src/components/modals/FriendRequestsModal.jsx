@@ -14,7 +14,11 @@ import { Link } from 'react-router-dom';
 import { getRankImage } from './../../utils/getRankImage';
 
 // services
-import { addUserFriend, removeFriendRequest } from '../../services/users';
+import {
+  addUserFriend,
+  pushUserNotification,
+  removeFriendRequest,
+} from '../../services/users';
 
 // icons
 import CheckIcon from '@mui/icons-material/CheckCircle';
@@ -45,11 +49,26 @@ export default function FriendRequestsModal() {
           requestId
         );
 
+        // send notification to user who requested the friend request
+        await pushUserNotification(requestUser._id, {
+          message: `You and ${currentUser?.name} are now friends!`,
+          _relatedUser: currentUser,
+          createdDate: Date.now(),
+        });
+
+        // send notification to user that they're friends
+        const { notifications } = await pushUserNotification(currentUser._id, {
+          message: `You and ${requestUser?.name} are now friends!`,
+          _relatedUser: requestUser,
+          createdDate: Date.now(),
+        });
+
         dispatch({
           type: 'auth/updateCurrentUser',
           payload: {
             friends: updatedUserFriends,
             friendRequests,
+            notifications,
           },
         });
 
@@ -79,7 +98,7 @@ export default function FriendRequestsModal() {
       }
     },
 
-    [currentUser?._id, dispatch, setCurrentAlert]
+    [currentUser, dispatch, setCurrentAlert]
   );
 
   const onRejectClick = useCallback(

@@ -57,20 +57,28 @@ export default function NotificationsModal() {
       }}>
       <ul style={{ padding: 0, margin: 0 }}>
         {notifications.length > 0 ? (
-          notifications.map((notification, idx, arr) => (
-            <Fragment key={notification._id}>
-              <OneNotification
-                currentUserId={currentUser._id}
-                closeModal={closeNotifications}
-                notification={notification}
-              />
-              {idx !== arr.length - 1 ? (
-                <Box my={2}>
-                  <Divider />
-                </Box>
-              ) : null}
-            </Fragment>
-          ))
+          notifications
+            .sort((a, b) => {
+              let aValue = a?.createdDate ?? a?.createdAt;
+              let bValue = b?.createdDate ?? b.createdAt;
+
+              // latest first
+              return new Date(bValue).getTime() - new Date(aValue).getTime();
+            })
+            .map((notification, idx, arr) => (
+              <Fragment key={notification._id}>
+                <OneNotification
+                  currentUserId={currentUser._id}
+                  closeModal={closeNotifications}
+                  notification={notification}
+                />
+                {idx !== arr.length - 1 ? (
+                  <Box my={2}>
+                    <Divider />
+                  </Box>
+                ) : null}
+              </Fragment>
+            ))
         ) : (
           <Typography
             textAlign="center"
@@ -142,7 +150,7 @@ const OneNotification = ({ notification, closeModal, currentUserId }) => {
           }}>
           <span style={{ fontSize: '0.8rem', color: '#ccc' }}>
             <Moment format="MM/DD/yyyy hh:mm A">
-              {notification.createdAt}
+              {notification?.createdDate ?? notification?.createdAt}
             </Moment>
           </span>
           <span style={{ fontSize: '1rem' }}>{notification.message}</span>

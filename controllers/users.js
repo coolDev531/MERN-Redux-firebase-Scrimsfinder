@@ -249,10 +249,15 @@ const pushUserNotification = async (req, res) => {
     return res.status(500).json({ error: 'no message provided!' });
   }
 
+  if (!req.body.createdDate) {
+    return res.status(500).json({ error: 'no createdDate provided!' });
+  }
+
   const newNotification = {
     message: req.body.message,
     _relatedUser: foundRelatedUser,
     _relatedScrim: foundRelatedScrim,
+    createdDate: new Date(req.body.createdDate),
   };
 
   const reqBody = {
@@ -381,6 +386,7 @@ const sendFriendRequest = async (req, res) => {
       _relatedUser: userSendingId,
       message: `${userSending.name} sent you a friend request!`,
       isFriendRequest: true,
+      createdDate: Date.now(),
     };
 
     const reqBody = {
@@ -493,15 +499,6 @@ const addUserFriend = async (req, res) => {
     user.friends = [friendUser];
   }
 
-  const newUserNotification = {
-    message: `You and ${friendUser.name} are now friends!`,
-    _relatedUser: friendUser,
-    _relatedScrim: null,
-    isFriendRequest: false, // it's not a friend request, it's a notification that they became friends
-  };
-
-  user.notifications = [...friendUser.notifications, newUserNotification];
-
   await user.save();
 
   if (friendUser.friends) {
@@ -510,26 +507,11 @@ const addUserFriend = async (req, res) => {
     friendUser.friends = [user];
   }
 
-  // send new notification to user who sent request so he will know
-  const newFriendNotification = {
-    message: `You and ${user.name} are now friends!`,
-    _relatedUser: user,
-    _relatedScrim: null,
-    isFriendRequest: false, // it's not a friend request, it's a notification that they became friends
-  };
-
-  friendUser.notifications = [
-    ...friendUser.notifications,
-    newFriendNotification,
-  ];
-
   await friendUser.save();
 
   return res.status(200).json({
     updatedUserFriends: user.friends,
     updatedFriendFriends: friendUser.friends,
-    newFriendNotification,
-    newUserNotification,
   });
 };
 

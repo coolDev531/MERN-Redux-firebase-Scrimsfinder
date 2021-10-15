@@ -123,3 +123,16 @@ export const removeFriendRequest = async (userId, requestId) => {
     throw error;
   }
 };
+
+export const pushUserNotification = async (userId, newNotification) => {
+  try {
+    const response = await api.post(
+      `/users/${userId}/push-notification/`,
+      newNotification
+    );
+
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
