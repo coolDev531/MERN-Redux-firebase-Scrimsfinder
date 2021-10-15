@@ -69,3 +69,27 @@ export const deleteAllUserNotifications = async (userId) => {
     throw error;
   }
 };
+
+export const addUserFriend = async (userId, newFriendId) => {
+  try {
+    const response = await api.post(`/users/add-new-friend/${userId}/`, {
+      newFriendUserId: newFriendId,
+    });
+
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const removeFriendRequest = async (userId, requestId) => {
+  try {
+    const response = await api.post(
+      `/users/${userId}/remove-friend-request/${requestId}`
+    );
+
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

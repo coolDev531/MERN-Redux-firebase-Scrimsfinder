@@ -436,8 +436,6 @@ const removeFriendRequest = async (req, res) => {
       removedFriendRequestId: requestId,
       friendRequests: user.friendRequests,
     });
-
-    return;
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }

@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import useTheme from '@mui/styles/useTheme';
 import useAuth, { useAuthActions } from './../../../hooks/useAuth';
+import { useDispatch } from 'react-redux';
 
 // components
 import { InnerColumn } from '../PageComponents';
@@ -26,6 +27,7 @@ import ExitIcon from '@mui/icons-material/ExitToApp';
 import CreateIcon from '@mui/icons-material/BorderColor';
 import MyProfileIcon from '@mui/icons-material/AccountCircle';
 import GamesIcon from '@mui/icons-material/Games';
+import FriendsIcon from '@mui/icons-material/SupervisorAccount';
 
 // utils
 import clsx from 'clsx';
@@ -58,6 +60,7 @@ export default function NavbarDrawer({
 }) {
   const { currentUser } = useAuth();
   const { handleLogout } = useAuthActions();
+  const dispatch = useDispatch();
 
   const classes = useStyles();
   const history = useHistory();
@@ -128,6 +131,24 @@ export default function NavbarDrawer({
                     <GamesIcon />
                   </ListItemIcon>
                   <ListItemText primary="Scrims" />
+                </ListItem>
+
+                <Divider />
+              </>
+            )}
+
+            {currentUser?.uid && (
+              <>
+                <ListItem
+                  button
+                  onClick={() => {
+                    dispatch({ type: 'general/openFriendRequests' });
+                    setIsDrawerOpen(false);
+                  }}>
+                  <ListItemIcon>
+                    <FriendsIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Friends" />
                 </ListItem>
 
                 <Divider />
