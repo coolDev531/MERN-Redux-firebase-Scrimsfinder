@@ -143,7 +143,16 @@ export default function ScrimCreate() {
   }
 
   if (isCreated) {
-    return <Redirect to="/scrims" />;
+    return (
+      <Redirect
+        to={
+          // if private push to scrim detail, else push to home
+          isCreated?.createdScrim?.isPrivate
+            ? `/scrims/${isCreated?.createdScrim?._id}`
+            : '/scrims'
+        }
+      />
+    );
   }
 
   if (isSubmitting) {
