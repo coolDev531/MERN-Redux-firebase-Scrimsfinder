@@ -1,6 +1,6 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 import makeStyles from '@mui/styles/makeStyles';
 
@@ -18,6 +18,8 @@ import CreateIcon from '@mui/icons-material/BorderColor';
 
 export default function MoreOptionsModal() {
   const { currentUser } = useAuth();
+  const { pathname } = useLocation();
+
   const { moreOptionsModalOpen } = useSelector(({ general }) => general);
   const history = useHistory();
   const dispatch = useDispatch();
@@ -43,6 +45,12 @@ export default function MoreOptionsModal() {
       type: 'general/closeOtherOptionsModal',
     });
   }, [dispatch]);
+
+  useEffect(() => {
+    onClose(); // close on path change
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   return (
     <Modal title="Other" onClose={onClose} open={moreOptionsModalOpen}>
