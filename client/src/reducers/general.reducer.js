@@ -48,6 +48,20 @@ export default function generalReducer(state = initialState, action) {
       };
     }
 
+    case 'general/openFriendRequests': {
+      return {
+        ...state,
+        friendRequestsOpen: true,
+      };
+    }
+
+    case 'general/closeFriendRequests': {
+      return {
+        ...state,
+        friendRequestsOpen: false,
+      };
+    }
+
     default:
       return state;
   }

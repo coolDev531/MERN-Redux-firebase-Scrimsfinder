@@ -1,6 +1,5 @@
 // hooks
 import { useState } from 'react';
-import { useLocation, useHistory } from 'react-router-dom';
 import useAuth, { useAuthActions } from './../../../hooks/useAuth';
 import { makeStyles, useTheme } from '@mui/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -27,7 +26,7 @@ import Tooltip from '../Tooltip';
 import NavbarCheckboxes from './NavbarCheckboxes';
 import NavbarDropdowns from './NavbarDropdowns';
 import UserSearchBar from './UserSearchBar';
-import Notifications from './Notifications';
+import NotificationsButton from './NotificationsButton';
 
 // icons
 import Logo from '../../../assets/images/bootcamp_llc_media_kit/coin_logo_new2021.png';
@@ -180,7 +179,7 @@ export default function Navbar({ showDropdowns, showLess, showCheckboxes }) {
                       </Grid>
                     )}
 
-                    <Notifications />
+                    <NotificationsButton />
 
                     {/* BURGER ICON */}
                     {currentUser?.uid && (

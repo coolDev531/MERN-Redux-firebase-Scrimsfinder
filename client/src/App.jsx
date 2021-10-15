@@ -19,12 +19,14 @@ import Loading from './components/shared/Loading';
 import Footer from './components/shared/Footer';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import AppModals from './components/modals/AppModals';
 import { Helmet } from 'react-helmet';
 
 function App() {
+  const classes = useAppStyles();
+
   const { isVerifyingUser } = useAuth();
   const { currentAlert, closeAlert } = useAlerts();
-  const classes = useAppStyles();
 
   const appWrapperRef = useAppBackground(); // change the background image and blur whenever appBackground or appBgBlur change in the redux store
 
@@ -73,6 +75,8 @@ function App() {
 
           <AppRouter />
           <Footer />
+
+          <AppModals />
         </ThemeProvider>
       </div>
     </>

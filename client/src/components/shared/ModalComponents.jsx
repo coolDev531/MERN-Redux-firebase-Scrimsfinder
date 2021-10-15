@@ -1,12 +1,10 @@
 import React from 'react';
-import Grid from '@mui/material/Grid';
 import MuiDialogTitle from '@mui/material/DialogTitle';
 import MuiDialog from '@mui/material/Dialog';
 import MuiDialogContent from '@mui/material/DialogContent';
 import MuiPaper from '@mui/material/Paper';
 import MuiDialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
 import Draggable from 'react-draggable';
 import Button from '@mui/material/Button';
 import { withStyles } from '@mui/styles';
@@ -99,6 +97,7 @@ export const Modal = React.memo(
             display: 'flex',
             flexDirection: 'column',
             minWidth: '300px',
+            maxHeight: '400px',
             overflowWrap: 'break-word',
           }}>
           {children}
