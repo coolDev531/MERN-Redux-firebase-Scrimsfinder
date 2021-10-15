@@ -104,8 +104,8 @@ export const Modal = React.memo(
           style={{
             display: 'flex',
             flexDirection: 'column',
-            minWidth: '300px',
-            maxHeight: '400px',
+            minWidth: '350px',
+            maxHeight: '300px',
             overflowWrap: 'break-word',
           }}>
           {children}
