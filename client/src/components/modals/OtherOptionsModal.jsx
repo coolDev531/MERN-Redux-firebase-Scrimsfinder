@@ -66,13 +66,15 @@ export default function MoreOptionsModal() {
           onClick={openFriendsModal}
         />
 
-        <IconGroup
-          tooltipTitle="Open friend requests received"
-          title="Friend Requests"
-          counter={currentUser.friendRequests.length}
-          Icon={FriendRequestsIcon}
-          onClick={openFriendRequestsModal}
-        />
+        {currentUser?.friendRequests?.length > 0 ? (
+          <IconGroup
+            tooltipTitle="Open friend requests received"
+            title="Friend Requests"
+            counter={currentUser?.friendRequests?.length}
+            Icon={FriendRequestsIcon}
+            onClick={openFriendRequestsModal}
+          />
+        ) : null}
 
         <AdminArea>
           <IconGroup
@@ -123,12 +125,12 @@ const useStyles = makeStyles({
   countCircle: {
     backgroundColor: 'red',
     borderRadius: '50%',
-    width: '24px',
-    height: '24px',
+    width: '22px',
+    height: '22px',
     position: 'absolute',
-    top: '0px',
-    right: '-5px',
-    fontSize: '1rem',
+    top: '1px',
+    right: '-1px',
+    fontSize: '0.9rem',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
