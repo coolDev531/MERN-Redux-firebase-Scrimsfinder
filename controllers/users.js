@@ -493,6 +493,15 @@ const addUserFriend = async (req, res) => {
     user.friends = [friendUser];
   }
 
+  const newUserNotification = {
+    message: `You and ${friendUser.name} are now friends!`,
+    _relatedUser: friendUser,
+    _relatedScrim: null,
+    isFriendRequest: false, // it's not a friend request, it's a notification that they became friends
+  };
+
+  user.notifications = [...friendUser.notifications, newUserNotification];
+
   await user.save();
 
   if (friendUser.friends) {
@@ -501,11 +510,26 @@ const addUserFriend = async (req, res) => {
     friendUser.friends = [user];
   }
 
+  // send new notification to user who sent request so he will know
+  const newFriendNotification = {
+    message: `You and ${user.name} are now friends!`,
+    _relatedUser: user,
+    _relatedScrim: null,
+    isFriendRequest: false, // it's not a friend request, it's a notification that they became friends
+  };
+
+  friendUser.notifications = [
+    ...friendUser.notifications,
+    newFriendNotification,
+  ];
+
   await friendUser.save();
 
   return res.status(200).json({
     updatedUserFriends: user.friends,
     updatedFriendFriends: friendUser.friends,
+    newFriendNotification,
+    newUserNotification,
   });
 };
 

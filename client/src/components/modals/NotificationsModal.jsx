@@ -136,11 +136,9 @@ const OneNotification = ({ notification, closeModal, currentUserId }) => {
 
             if (notification.isFriendRequest) {
               dispatch({ type: 'general/openFriendRequests' });
-            } else {
+            } else if (notification.isScrimAlert) {
               history.push(`/scrims/${notification?._relatedScrim}`);
             }
-
-            // onDeleteNotification();
           }}>
           <span style={{ fontSize: '0.8rem', color: '#ccc' }}>
             <Moment format="MM/DD/yyyy hh:mm A">

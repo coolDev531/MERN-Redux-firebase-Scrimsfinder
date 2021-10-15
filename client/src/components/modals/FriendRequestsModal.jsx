@@ -58,6 +58,20 @@ export default function FriendRequestsModal() {
           message: `${requestUser.name} added as a friend!`,
         });
       } catch (error) {
+        if (error?.response?.data?.error === 'Friend already added!') {
+          const { friendRequests } = await removeFriendRequest(
+            currentUser?._id,
+            requestId
+          );
+
+          dispatch({
+            type: 'auth/updateCurrentUser',
+            payload: {
+              friendRequests,
+            },
+          });
+        }
+
         setCurrentAlert({
           type: 'Error',
           message: error?.response?.data?.error ?? error.message,
