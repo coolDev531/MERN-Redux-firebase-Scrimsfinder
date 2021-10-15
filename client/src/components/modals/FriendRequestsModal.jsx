@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react';
+import { Fragment, memo, useCallback } from 'react';
 import useAlerts from './../../hooks/useAlerts';
 import { useSelector, useDispatch } from 'react-redux';
 import { Modal } from '../shared/ModalComponents';
@@ -6,6 +6,9 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from './../shared/Tooltip';
+import Divider from '@mui/material/Divider';
+import Box from '@mui/material/Box';
+import { Link } from 'react-router-dom';
 
 // utils
 import { getRankImage } from './../../utils/getRankImage';
@@ -21,6 +24,7 @@ export default function FriendRequestsModal() {
   const [{ friendRequestsOpen }, { currentUser }, { allUsers }] = useSelector(
     ({ general, auth, users }) => [general, auth, users]
   );
+
   const dispatch = useDispatch();
   const { setCurrentAlert } = useAlerts();
 
@@ -32,12 +36,12 @@ export default function FriendRequestsModal() {
     async (requestUser, requestId) => {
       try {
         const { updatedUserFriends } = await addUserFriend(
-          currentUser._id,
+          currentUser?._id,
           requestUser._id
         );
 
         const { friendRequests } = await removeFriendRequest(
-          currentUser._id,
+          currentUser?._id,
           requestId
         );
 
@@ -61,14 +65,14 @@ export default function FriendRequestsModal() {
       }
     },
 
-    [currentUser._id, dispatch, setCurrentAlert]
+    [currentUser?._id, dispatch, setCurrentAlert]
   );
 
   const onRejectClick = useCallback(
     async (requestUser, requestId) => {
       try {
         const { friendRequests } = await removeFriendRequest(
-          currentUser._id,
+          currentUser?._id,
           requestId
         );
 
@@ -91,22 +95,30 @@ export default function FriendRequestsModal() {
       }
     },
 
-    [currentUser._id, dispatch, setCurrentAlert]
+    [currentUser?._id, dispatch, setCurrentAlert]
   );
 
   return (
     <Modal title="Friend Requests" open={friendRequestsOpen} onClose={onClose}>
       {friendRequests.length > 0 ? (
-        friendRequests.map((friendRequest) => (
-          <OneFriendRequest
-            onRejectClick={onRejectClick}
-            onAcceptClick={onAcceptClick}
-            key={friendRequest._id}
-            friendRequest={friendRequest}
-            requestUser={allUsers.find(
-              ({ _id }) => _id === friendRequest._user
-            )}
-          />
+        friendRequests.map((friendRequest, idx, arr) => (
+          <Fragment key={friendRequest._id}>
+            <OneFriendRequest
+              onRejectClick={onRejectClick}
+              onAcceptClick={onAcceptClick}
+              onClose={onClose}
+              friendRequest={friendRequest}
+              requestUser={allUsers.find(
+                ({ _id }) => _id === friendRequest._user
+              )}
+            />
+
+            {idx !== arr.length - 1 ? (
+              <Box my={2}>
+                <Divider />
+              </Box>
+            ) : null}
+          </Fragment>
         ))
       ) : (
         <Typography
@@ -121,18 +133,27 @@ export default function FriendRequestsModal() {
 }
 
 const OneFriendRequest = memo(
-  ({ friendRequest, requestUser, onAcceptClick, onRejectClick }) => {
+  ({ friendRequest, requestUser, onAcceptClick, onRejectClick, onClose }) => {
     return (
       <Grid container alignItems="center" justifyContent="space-between">
-        <Grid item container alignItems="center" xs={6}>
-          <img
-            src={getRankImage(requestUser)}
-            alt={requestUser.rank}
-            width="20"
-          />
-          &nbsp;
-          <span>{requestUser.name}</span>
-          <span>({requestUser.region})</span>
+        <Grid item container alignItems="center" xs={8}>
+          <Tooltip title={`Visit ${requestUser.name}'s profile`}>
+            <Link
+              // close modal because we are redirecting to a path
+              onClick={onClose}
+              style={{ display: 'flex', alignItems: 'center' }}
+              className="link"
+              to={`/users/${requestUser.name}?region=${requestUser.region}`}>
+              <img
+                src={getRankImage(requestUser)}
+                alt={requestUser.rank}
+                width="20"
+              />
+              &nbsp;
+              <span>{requestUser.name}</span>&nbsp;
+              <span>({requestUser.region})</span>
+            </Link>
+          </Tooltip>
         </Grid>
 
         <Grid item>

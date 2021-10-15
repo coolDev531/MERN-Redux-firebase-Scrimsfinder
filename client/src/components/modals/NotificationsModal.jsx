@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { Fragment, useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
@@ -8,6 +8,8 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from './../shared/Tooltip';
 import { Modal } from './../shared/ModalComponents';
 import Moment from 'react-moment';
+import Divider from '@mui/material/Divider';
+import Box from '@mui/material/Box';
 
 // utils
 import {
@@ -55,13 +57,19 @@ export default function NotificationsModal() {
       }}>
       <ul style={{ padding: 0, margin: 0 }}>
         {notifications.length > 0 ? (
-          notifications.map((notification) => (
-            <OneNotification
-              currentUserId={currentUser._id}
-              closeModal={closeNotifications}
-              key={notification._id}
-              notification={notification}
-            />
+          notifications.map((notification, idx, arr) => (
+            <Fragment key={notification._id}>
+              <OneNotification
+                currentUserId={currentUser._id}
+                closeModal={closeNotifications}
+                notification={notification}
+              />
+              {idx !== arr.length - 1 ? (
+                <Box my={2}>
+                  <Divider />
+                </Box>
+              ) : null}
+            </Fragment>
           ))
         ) : (
           <Typography
@@ -81,6 +89,7 @@ const OneNotification = ({ notification, closeModal, currentUserId }) => {
   const history = useHistory();
   const dispatch = useDispatch();
   const [isHover, setIsHover] = useState(false);
+
   const onDeleteNotification = useCallback(async () => {
     const resp = await deleteOneUserNotification(
       currentUserId,
@@ -116,7 +125,10 @@ const OneNotification = ({ notification, closeModal, currentUserId }) => {
           onMouseOver={() => setIsHover(true)}
           onMouseLeave={() => setIsHover(false)}
           style={{
+            display: 'flex',
+            flexDirection: 'column',
             cursor: relatedItem ? 'pointer' : 'inherit',
+            alignItems: 'flex-start',
           }}
           onClick={() => {
             if (!relatedItem) return;
@@ -130,12 +142,12 @@ const OneNotification = ({ notification, closeModal, currentUserId }) => {
 
             // onDeleteNotification();
           }}>
-          <span>
-            {notification.message}&nbsp;|{' '}
+          <span style={{ fontSize: '0.8rem', color: '#ccc' }}>
             <Moment format="MM/DD/yyyy hh:mm A">
               {notification.createdAt}
             </Moment>
           </span>
+          <span style={{ fontSize: '1rem' }}>{notification.message}</span>
         </div>
       </Tooltip>
 
@@ -152,9 +164,10 @@ const OneNotification = ({ notification, closeModal, currentUserId }) => {
 
 const useStyles = makeStyles({
   oneNotification: {
-    padding: '5px',
+    padding: '10px 5px',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
+    gap: '20px',
   },
 });

@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react';
+import { Fragment, memo, useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Modal } from '../shared/ModalComponents';
 import Tooltip from '../shared/Tooltip';
@@ -6,6 +6,8 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import { Link } from 'react-router-dom';
+import Box from '@mui/material/Box';
+import Divider from '@mui/material/Divider';
 
 // utils
 import { getRankImage } from './../../utils/getRankImage';
@@ -19,7 +21,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 export default function UserFriendsModal() {
   const [
     {
-      friendsModalOpen: { friends, user },
+      friendsModalOpen: { friends, user, bool },
     },
     { allUsers },
     { currentUser },
@@ -57,21 +59,51 @@ export default function UserFriendsModal() {
     [dispatch, currentUser]
   );
 
+  const isCurrentUser = useMemo(
+    () => user?._id === currentUser?._id,
+    [user?._id, currentUser?._id]
+  );
+
   if (!user) return null;
   if (!friends) return null;
 
   return (
-    <Modal title={`${user?.name}'s Friends`} open={friends} onClose={onClose}>
+    <Modal
+      title={`${user?.name}'s Friends`}
+      open={bool}
+      onClose={onClose}
+      actionButtonStyle={{
+        display: isCurrentUser ? 'inline-flex' : 'none',
+      }}
+      actionButtonProps={{
+        // primary button to view friend requests modal.
+        // will only show when it's the current user
+        title: 'View friend requests',
+        onClick: async () => {
+          onClose();
+
+          dispatch({
+            type: 'general/openFriendRequests',
+          });
+        },
+      }}>
       {friends?.length > 0 ? (
-        friends?.map((friend) => (
-          <OneFriend
-            key={friend?._id}
-            user={user}
-            currentUser={currentUser}
-            onClose={onClose}
-            onDeleteFriend={onDeleteFriend}
-            friend={allUsers.find(({ _id }) => _id === friend?._id)}
-          />
+        friends?.map((friend, idx, arr) => (
+          <Fragment key={friend?._id}>
+            <OneFriend
+              key={friend?._id}
+              user={user}
+              currentUser={currentUser}
+              onClose={onClose}
+              onDeleteFriend={onDeleteFriend}
+              friend={allUsers.find(({ _id }) => _id === friend?._id)}
+            />
+            {idx !== arr.length - 1 ? (
+              <Box my={2}>
+                <Divider />
+              </Box>
+            ) : null}
+          </Fragment>
         ))
       ) : (
         <Typography
@@ -90,15 +122,18 @@ const OneFriend = memo(
     return (
       <Grid container alignItems="center" justifyContent="space-between">
         <Grid item container alignItems="center" xs={10}>
-          <Link
-            onClick={onClose}
-            className="link"
-            to={`/users/${friend.name}?region=${friend.region}`}>
-            <img src={getRankImage(friend)} alt={friend.rank} width="20" />
-            &nbsp;
-            <span>{friend.name}</span>
-            <span>({friend.region})</span>
-          </Link>
+          <Tooltip title={`Visit ${friend.name}'s profile`}>
+            <Link
+              style={{ display: 'flex', alignItems: 'center' }}
+              onClick={onClose}
+              className="link"
+              to={`/users/${friend.name}?region=${friend.region}`}>
+              <img src={getRankImage(friend)} alt={friend.rank} width="20" />
+              &nbsp;
+              <span>{friend.name}</span>
+              <span>({friend.region})</span>
+            </Link>
+          </Tooltip>
         </Grid>
 
         {user?._id === currentUser?._id && (

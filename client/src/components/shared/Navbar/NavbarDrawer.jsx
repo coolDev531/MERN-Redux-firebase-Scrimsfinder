@@ -142,7 +142,13 @@ export default function NavbarDrawer({
                 <ListItem
                   button
                   onClick={() => {
-                    dispatch({ type: 'general/openFriendRequests' });
+                    dispatch({
+                      type: 'general/openFriendsModal',
+                      payload: {
+                        user: currentUser,
+                        friends: currentUser.friends,
+                      },
+                    });
                     setIsDrawerOpen(false);
                   }}>
                   <ListItemIcon>

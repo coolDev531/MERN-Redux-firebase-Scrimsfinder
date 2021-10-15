@@ -66,7 +66,11 @@ export default function generalReducer(state = initialState, action) {
     case 'general/openFriendsModal': {
       return {
         ...state,
-        friendsModalOpen: { friends: payload.friends, user: payload.user },
+        friendsModalOpen: {
+          friends: payload.friends,
+          user: payload.user,
+          bool: true,
+        },
       };
     }
 

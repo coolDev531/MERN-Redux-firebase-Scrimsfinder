@@ -179,7 +179,7 @@ export default function Navbar({ showDropdowns, showLess, showCheckboxes }) {
                       </Grid>
                     )}
 
-                    <NotificationsButton />
+                    {currentUser?.uid && <NotificationsButton />}
 
                     {/* BURGER ICON */}
                     {currentUser?.uid && (

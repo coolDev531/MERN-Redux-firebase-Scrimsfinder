@@ -136,7 +136,7 @@ const ProfileAccountDetails = ({ user, userParticipatedScrims }) => {
           {user.friends.length > 0 ? (
             <>
               |&nbsp;
-              <Tooltip title={`view ${user?.name}'s friends`}>
+              <Tooltip title={`View ${user?.name}'s friends`}>
                 <span
                   style={{ cursor: 'pointer' }}
                   onClick={() =>
@@ -145,7 +145,7 @@ const ProfileAccountDetails = ({ user, userParticipatedScrims }) => {
                       payload: { friends: user?.friends, user },
                     })
                   }>
-                  <b>View all</b>
+                  <b>View more</b>
                 </span>
               </Tooltip>
             </>
