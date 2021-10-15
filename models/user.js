@@ -19,6 +19,16 @@ const Notification = new Schema(
       ref: 'Scrim',
       required: false,
     },
+
+    isFriendRequest: {
+      type: Boolean,
+      required: false,
+    },
+
+    isScrimAlert: {
+      type: Boolean,
+      required: false,
+    },
   },
   { timestamps: true }
 );

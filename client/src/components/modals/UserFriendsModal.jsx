@@ -1,6 +1,7 @@
 import { memo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Modal } from '../shared/ModalComponents';
+import Tooltip from '../shared/Tooltip';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
@@ -102,9 +103,11 @@ const OneFriend = memo(
 
         {user?._id === currentUser?._id && (
           <Grid item container alignItems="center" xs={2}>
-            <IconButton onClick={() => onDeleteFriend(friend._id)}>
-              <CancelIcon fontSize="medium" />
-            </IconButton>
+            <Tooltip title={`Unfriend ${friend.name}`}>
+              <IconButton onClick={() => onDeleteFriend(friend._id)}>
+                <CancelIcon fontSize="medium" />
+              </IconButton>
+            </Tooltip>
           </Grid>
         )}
       </Grid>

@@ -93,6 +93,23 @@ export const removeUserFriend = async (userId, friendUserId) => {
     throw error;
   }
 };
+/**
+ * @method sendFriendRequest
+ * @param {String} userReceivingId
+ * @param {String} userSendingId
+ * @returns {<{newFriendRequest: object, sentToUser: string, sentToUserId, string}>}}
+ */
+export const sendFriendRequest = async (userReceivingId, userSendingId) => {
+  try {
+    const response = await api.post(
+      `/users/send-friend-request/${userReceivingId}/${userSendingId}`
+    );
+
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
 
 export const removeFriendRequest = async (userId, requestId) => {
   try {

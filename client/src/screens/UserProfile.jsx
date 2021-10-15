@@ -180,7 +180,7 @@ export default function UserProfile() {
               setUserBg={setUserBg}
             />
           ) : (
-            <SendFriendRequest user={userData} />
+            <SendFriendRequest setUser={setUserData} user={userData} />
           )}
         </Grid>
 

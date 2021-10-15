@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import useAlerts from './../../hooks/useAlerts';
 import useTheme from '@mui/styles/useTheme';
@@ -9,16 +9,15 @@ import FormGroup from '@mui/material/FormGroup';
 import Button from '@mui/material/Button';
 
 // services
-// import { sendFriendRequest } from './../../services/users';
+import { sendFriendRequest } from './../../services/users';
 
 // utils
 import devLog from './../../utils/devLog';
 
 // icons
-import SaveIcon from '@mui/icons-material/Create';
 import AddFriendIcon from '@mui/icons-material/AddReaction';
 
-export default function SendFriendRequest({ user }) {
+export default function SendFriendRequest({ user, setUser }) {
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const { currentUser } = useSelector(({ auth }) => auth);
   const { setCurrentAlert } = useAlerts();
@@ -30,7 +29,17 @@ export default function SendFriendRequest({ user }) {
     setButtonsDisabled(true);
 
     try {
-      // devLog('updated user friend requests', updatedUser.friendRequests);
+      const { newFriendRequest } = await sendFriendRequest(
+        user._id,
+        currentUser._id
+      ); // current user sending to that user in the profile page.
+
+      setUser((prevState) => ({
+        ...prevState,
+        friendRequests: [...prevState.friendRequests, newFriendRequest],
+      }));
+
+      devLog('sent friend request', newFriendRequest);
 
       setCurrentAlert({
         type: 'Success',
@@ -49,21 +58,37 @@ export default function SendFriendRequest({ user }) {
     }
   };
 
+  const requestSent = useMemo(() => {
+    return user.friendRequests.find(
+      (request) => request?._user === currentUser?._id
+    )
+      ? true
+      : false;
+  }, [currentUser?._id, user?.friendRequests]);
+
+  const isFriend = useMemo(() => {
+    return user.friends.find((friend) => friend._id === currentUser._id)
+      ? true
+      : false;
+  }, [user.friends, currentUser._id]);
+
   return (
     <FormGroup row>
-      <Button
-        style={{
-          height: '50px',
-          alignSelf: 'center',
-          marginLeft: !matchesSm ? '0' : '20px',
-          marginTop: '20px',
-        }}
-        startIcon={<AddFriendIcon />}
-        variant="contained"
-        disabled={buttonsDisabled}
-        onClick={onSubmitFriendRequest}>
-        Send Friend Request
-      </Button>
+      {!isFriend ? (
+        <Button
+          style={{
+            height: '50px',
+            alignSelf: 'center',
+            marginLeft: !matchesSm ? '0' : '20px',
+            marginTop: '20px',
+          }}
+          startIcon={<AddFriendIcon />}
+          variant="contained"
+          disabled={buttonsDisabled || requestSent}
+          onClick={onSubmitFriendRequest}>
+          {requestSent ? 'Friend Request Sent' : 'Send Friend Request'}
+        </Button>
+      ) : null}
     </FormGroup>
   );
 }

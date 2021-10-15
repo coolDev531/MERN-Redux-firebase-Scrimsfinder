@@ -83,6 +83,7 @@ const getOneUser = async (req, res) => {
       'profileBackgroundImg',
       'profileBackgroundBlur',
       'friends',
+      'friendRequests',
     ]);
 
     if (!user)
@@ -379,6 +380,7 @@ const sendFriendRequest = async (req, res) => {
     let newNotification = {
       _relatedUser: userSendingId,
       message: `${userSending.name} sent you a friend request!`,
+      isFriendRequest: true,
     };
 
     const reqBody = {
@@ -402,9 +404,14 @@ const sendFriendRequest = async (req, res) => {
         await user.save();
 
         return res.status(200).json({
-          newFriendRequest,
+          newFriendRequest: {
+            ...newFriendRequest,
+            _user: userSending._id,
+          },
+
           newNotification,
           sentToUser: `${userReceiving.name} (${userReceiving.region})`,
+          sentToUserId: userReceiving._id,
         });
       }
     );
