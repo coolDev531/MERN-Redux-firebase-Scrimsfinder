@@ -21,6 +21,7 @@ import ChangeBackground from './../components/UserProfile_components/ChangeBackg
 import ProfileAccountDetails from '../components/UserProfile_components/ProfileAccountDetails';
 import MyCreatedScrims from './../components/UserProfile_components/MyCreatedScrims';
 import UserParticipatedScrims from './../components/UserProfile_components/UserParticipatedScrims';
+import SendFriendRequest from './../components/UserProfile_components/SendFriendRequest';
 
 // services
 import {
@@ -172,12 +173,14 @@ export default function UserProfile() {
             )}
           </Typography>
 
-          {isCurrentUser && (
+          {isCurrentUser ? (
             <ChangeBackground
               userBg={userBg}
               userId={userData?._id}
               setUserBg={setUserBg}
             />
+          ) : (
+            <SendFriendRequest user={userData} />
           )}
         </Grid>
 

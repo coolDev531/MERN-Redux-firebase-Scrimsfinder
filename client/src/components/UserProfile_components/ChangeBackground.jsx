@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import useAlerts from './../../hooks/useAlerts';
+import useTheme from '@mui/styles/useTheme';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 // components
 import Select from '@mui/material/Select';
@@ -18,8 +20,6 @@ import devLog from './../../utils/devLog';
 
 // icons
 import SaveIcon from '@mui/icons-material/Create';
-import useTheme from '@mui/styles/useTheme';
-import useMediaQuery from '@mui/material/useMediaQuery';
 
 export default function ChangeBackground({ userBg, setUserBg, userId }) {
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
