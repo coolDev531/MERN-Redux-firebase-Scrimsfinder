@@ -25,6 +25,16 @@ export default function authReducer(state = initialState, action) {
       };
     }
 
+    case 'auth/updateCurrentUser': {
+      return {
+        ...state,
+        currentUser: {
+          ...state.currentUser,
+          ...payload,
+        },
+      };
+    }
+
     default:
       return state;
   }

@@ -3,6 +3,9 @@ import { BG_IMAGES } from './../utils/imageMaps';
 const initialState = {
   appBackground: `url(${BG_IMAGES['Summoners Rift']})`,
   appBgBlur: 'blur(20px)',
+
+  notificationsOpen: false,
+  friendRequestsOpen: false,
 };
 
 export default function generalReducer(state = initialState, action) {
@@ -28,6 +31,20 @@ export default function generalReducer(state = initialState, action) {
         ...state,
         appBackground: `url(${BG_IMAGES['Summoners Rift']})`,
         appBgBlur: 'blur(20px)',
+      };
+    }
+
+    case 'general/openNotifications': {
+      return {
+        ...state,
+        notificationsOpen: true,
+      };
+    }
+
+    case 'general/closeNotifications': {
+      return {
+        ...state,
+        notificationsOpen: false,
       };
     }
 

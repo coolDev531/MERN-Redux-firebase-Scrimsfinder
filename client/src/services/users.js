@@ -49,3 +49,13 @@ export const getUsersInRegion = async (region) => {
     throw error;
   }
 };
+
+export const deleteOneUserNotification = async (userId, notificationId) => {
+  try {
+    const response = await api.post(`
+/users/${userId}/remove-notification/${notificationId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

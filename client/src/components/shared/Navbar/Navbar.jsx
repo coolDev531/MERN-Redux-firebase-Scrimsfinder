@@ -27,12 +27,12 @@ import Tooltip from '../Tooltip';
 import NavbarCheckboxes from './NavbarCheckboxes';
 import NavbarDropdowns from './NavbarDropdowns';
 import UserSearchBar from './UserSearchBar';
+import Notifications from './Notifications';
 
 // icons
 import Logo from '../../../assets/images/bootcamp_llc_media_kit/coin_logo_new2021.png';
 import KeyIcon from '@mui/icons-material/VpnKey';
 import MenuIcon from '@mui/icons-material/Menu'; // burger icon
-import GoBackIcon from '@mui/icons-material/ArrowBack';
 
 const useStyles = makeStyles((theme) => ({
   offset: theme.mixins.offset,
@@ -49,8 +49,6 @@ export default function Navbar({ showDropdowns, showLess, showCheckboxes }) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const classes = useStyles();
-  const { pathname } = useLocation();
-  const history = useHistory();
 
   const theme = useTheme();
   const matchesSm = useMediaQuery(theme.breakpoints.down('sm'));
@@ -59,17 +57,6 @@ export default function Navbar({ showDropdowns, showLess, showCheckboxes }) {
   const { currentUser } = useAuth();
   const { handleLogin } = useAuthActions();
   const dispatch = useDispatch();
-
-  const noBackButtonPaths = [/^\/signup/, /^\/scrims$/, /^\/scrims\/$/, /^\/$/];
-
-  const renderBackButton = () => {
-    for (let url of noBackButtonPaths) {
-      if (url.test(pathname)) {
-        return false;
-      }
-    }
-    return true;
-  };
 
   return (
     <>
@@ -192,24 +179,8 @@ export default function Navbar({ showDropdowns, showLess, showCheckboxes }) {
                         </Button>
                       </Grid>
                     )}
-                    {/* don't show go back button at home or /scirms
-                     ? means an optional extra slash after /scrims.
-                     | means or.
-                    */}
-                    {renderBackButton() ? (
-                      <Grid item>
-                        <Button
-                          startIcon={<GoBackIcon />}
-                          className="mr-3"
-                          variant="contained"
-                          color="primary"
-                          onClick={() => {
-                            history.goBack();
-                          }}>
-                          Go Back
-                        </Button>
-                      </Grid>
-                    ) : null}
+
+                    <Notifications />
 
                     {/* BURGER ICON */}
                     {currentUser?.uid && (
