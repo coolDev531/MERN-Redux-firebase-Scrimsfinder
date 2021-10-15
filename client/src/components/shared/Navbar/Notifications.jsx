@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { makeStyles } from '@mui/styles';
 
 // components
 import Grid from '@mui/material/Grid';
@@ -35,25 +36,14 @@ export default function Notifications() {
     dispatch({ type: 'general/closeNotifications' });
   }, [dispatch]);
 
+  const classes = useStyles();
+
   return (
     <>
       <Grid item style={{ position: 'relative' }}>
         <IconButton onClick={openNotifications}>
           {notifications.length > 0 ? (
-            <div
-              style={{
-                backgroundColor: 'red',
-                borderRadius: '50%',
-                width: '24px',
-                height: '24px',
-                position: 'absolute',
-                top: '0px',
-                right: '-5px',
-                fontSize: '1rem',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
+            <div className={classes.notificationsCount}>
               {notifications.length}
             </div>
           ) : null}
@@ -150,3 +140,19 @@ const OneNotification = ({ notification, closeModal, currentUserId }) => {
     </li>
   );
 };
+
+const useStyles = makeStyles({
+  notificationsCount: {
+    backgroundColor: 'red',
+    borderRadius: '50%',
+    width: '24px',
+    height: '24px',
+    position: 'absolute',
+    top: '0px',
+    right: '-5px',
+    fontSize: '1rem',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});

@@ -368,7 +368,7 @@ const sendFriendRequest = async (req, res) => {
     };
 
     let newNotification = {
-      relatedUserId: userSendingId,
+      _relatedUser: userSendingId,
       message: `${userSending.name} sent you a friend request!`,
     };
 
@@ -395,6 +395,7 @@ const sendFriendRequest = async (req, res) => {
         return res.status(200).json({
           newFriendRequest,
           newNotification,
+          sentToUser: `${userReceiving.name} (${userReceiving.region})`,
         });
       }
     );
