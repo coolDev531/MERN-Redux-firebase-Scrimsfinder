@@ -10,6 +10,9 @@ import Button from '@mui/material/Button';
 import { withStyles } from '@mui/styles';
 import CloseIcon from '@mui/icons-material/Close';
 
+// utils
+import { isMobile } from './../../utils/navigator';
+
 export const styles = (theme) => ({
   title: {
     margin: 0,
@@ -62,7 +65,7 @@ export const DialogActions = withStyles((theme) => ({
   },
 }))(MuiDialogActions);
 
-const PaperComponent = (props) => {
+const DraggablePaper = (props) => {
   return (
     <Draggable>
       <MuiPaper {...props} />
@@ -71,10 +74,15 @@ const PaperComponent = (props) => {
 };
 
 export const DraggableModal = ({ children, ...rest }) => {
-  return (
-    <MuiDialog {...rest} PaperComponent={PaperComponent}>
+  const isMobileDevice = isMobile();
+
+  return !isMobileDevice ? (
+    <MuiDialog {...rest} PaperComponent={DraggablePaper}>
       {children}
     </MuiDialog>
+  ) : (
+    // if device is mobile, don't make dialog draggable
+    <MuiDialog {...rest}>{children}</MuiDialog>
   );
 };
 

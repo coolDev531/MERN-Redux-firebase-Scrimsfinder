@@ -132,7 +132,6 @@ const OneNotification = ({ notification, closeModal, currentUserId }) => {
         <div
           onMouseOver={() => setIsHover(true)}
           onMouseLeave={() => setIsHover(false)}
-          // TODO: put this on makeStyles
           style={{
             display: 'flex',
             flexDirection: 'column',
