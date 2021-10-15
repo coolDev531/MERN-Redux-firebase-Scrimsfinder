@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
+import makeStyles from '@mui/styles/makeStyles';
 
 // components
 import { Modal } from '../shared/ModalComponents';
@@ -60,6 +61,7 @@ export default function MoreOptionsModal() {
         <IconGroup
           tooltipTitle="Open friend requests received"
           title="Friend Requests"
+          counter={currentUser.friendRequests.length}
           Icon={FriendRequestsIcon}
           onClick={openFriendRequestsModal}
         />
@@ -80,29 +82,55 @@ export default function MoreOptionsModal() {
   );
 }
 
-const IconGroup = ({ title, Icon, onClick, tooltipTitle }) => {
+const IconGroup = ({ title, Icon, onClick, tooltipTitle, counter }) => {
+  const classes = useStyles();
+
   return (
-    <Grid item xs={4} container direction="column" alignItems="center">
+    <Grid
+      item
+      xs={4}
+      container
+      direction="column"
+      alignItems="center"
+      style={{ position: 'relative' }}>
       <Tooltip title={tooltipTitle}>
         <Grid item>
           <IconButton onClick={onClick}>
+            {counter > 0 ? (
+              <div className={classes.countCircle}>{counter}</div>
+            ) : null}
             <Icon fontSize="large" />
           </IconButton>
         </Grid>
       </Tooltip>
 
       <Grid item>
-        <span
-          style={{
-            display: 'block',
-            cursor: 'default',
-            fontSize: '0.6rem',
-            color: '#FAFAFA',
-            textAlign: 'center',
-          }}>
-          {title}
-        </span>
+        <span className={classes.spanText}>{title}</span>
       </Grid>
     </Grid>
   );
 };
+
+const useStyles = makeStyles({
+  countCircle: {
+    backgroundColor: 'red',
+    borderRadius: '50%',
+    width: '24px',
+    height: '24px',
+    position: 'absolute',
+    top: '0px',
+    right: '-5px',
+    fontSize: '1rem',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  spanText: {
+    display: 'block',
+    cursor: 'default',
+    fontSize: '0.6rem',
+    color: '#FAFAFA',
+    textAlign: 'center',
+  },
+});
