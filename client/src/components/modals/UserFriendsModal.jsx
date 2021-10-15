@@ -1,5 +1,8 @@
 import { Fragment, memo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import useAlerts from './../../hooks/useAlerts';
+
+// components
 import { Modal } from '../shared/ModalComponents';
 import Tooltip from '../shared/Tooltip';
 import Typography from '@mui/material/Typography';
@@ -29,34 +32,48 @@ export default function UserFriendsModal() {
 
   const dispatch = useDispatch();
 
+  const { setCurrentAlert } = useAlerts();
+
   const onClose = useCallback(() => {
     dispatch({ type: 'general/closeFriendsModal' });
   }, [dispatch]);
 
   const onDeleteFriend = useCallback(
-    async (friendId) => {
-      const { userFriends } = await removeUserFriend(
-        currentUser?._id,
-        friendId
-      );
+    async (friendToDelete) => {
+      try {
+        const { userFriends } = await removeUserFriend(
+          currentUser?._id,
+          friendToDelete._id
+        );
 
-      dispatch({
-        type: 'auth/updateCurrentUser',
-        payload: {
-          friends: userFriends,
-        },
-      });
+        // update the state in the modal as well
+        dispatch({
+          type: 'auth/updateCurrentUser',
+          payload: {
+            friends: userFriends,
+          },
+        });
 
-      // update the state in the modal as well
-      dispatch({
-        type: 'general/openFriendsModal',
-        payload: {
-          user: currentUser,
-          friends: userFriends,
-        },
-      });
+        dispatch({
+          type: 'general/openFriendsModal',
+          payload: {
+            user: currentUser,
+            friends: userFriends,
+          },
+        });
+
+        setCurrentAlert({
+          type: 'Success',
+          message: `Unfriended ${friendToDelete.name}`,
+        });
+      } catch (error) {
+        setCurrentAlert({
+          type: 'Error',
+          message: `error Unfriending ${friendToDelete.name}`,
+        });
+      }
     },
-    [dispatch, currentUser]
+    [dispatch, currentUser, setCurrentAlert]
   );
 
   if (!user) return null;
@@ -116,7 +133,7 @@ const OneFriend = memo(
         {user?._id === currentUser?._id && (
           <Grid item container alignItems="center" xs={2}>
             <Tooltip title={`Unfriend ${friend.name}`}>
-              <IconButton onClick={() => onDeleteFriend(friend._id)}>
+              <IconButton onClick={() => onDeleteFriend(friend)}>
                 <CancelIcon fontSize="medium" />
               </IconButton>
             </Tooltip>
