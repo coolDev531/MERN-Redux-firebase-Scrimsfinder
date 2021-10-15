@@ -414,7 +414,7 @@ const insertPlayerInScrim = async (req, res) => {
         const lobbyHost = await getLobbyHost(scrim);
         scrim.lobbyHost = lobbyHost;
 
-        scrim.save();
+        await scrim.save();
         return res.status(200).json(scrim);
       }
     )
@@ -669,7 +669,7 @@ const movePlayerInScrim = async (req, res) => {
         const lobbyHost = await getLobbyHost(scrim);
         scrim.lobbyHost = lobbyHost;
 
-        scrim.save();
+        await scrim.save();
         return res.status(200).json(scrim);
       }
     )

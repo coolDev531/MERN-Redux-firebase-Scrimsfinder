@@ -32,4 +32,6 @@ router.post(
   controllers.removeFriendRequest
 ); // POST
 
+router.post('/users/add-new-friend/:id/', controllers.addUserFriend); // POST
+
 module.exports = router;

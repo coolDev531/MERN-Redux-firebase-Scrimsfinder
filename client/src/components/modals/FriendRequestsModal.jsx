@@ -2,10 +2,19 @@ import { memo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Modal } from '../shared/ModalComponents';
 import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from './../shared/Tooltip';
+
+// utils
+import { getRankImage } from './../../utils/getRankImage';
+
+import CheckIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 export default function FriendRequestsModal() {
-  const [{ friendRequestsOpen }, { currentUser }] = useSelector(
-    ({ general, auth }) => [general, auth]
+  const [{ friendRequestsOpen }, { currentUser }, { allUsers }] = useSelector(
+    ({ general, auth, users }) => [general, auth, users]
   );
   const dispatch = useDispatch();
 
@@ -20,6 +29,9 @@ export default function FriendRequestsModal() {
           <OneFriendRequest
             key={friendRequest._id}
             friendRequest={friendRequest}
+            requestUser={allUsers.find(
+              ({ _id }) => _id === friendRequest._user
+            )}
           />
         ))
       ) : (
@@ -34,10 +46,33 @@ export default function FriendRequestsModal() {
   );
 }
 
-const OneFriendRequest = memo(({ friendRequest }) => {
+const OneFriendRequest = memo(({ friendRequest, requestUser }) => {
   return (
-    <div>
-      <pre>{JSON.stringify(friendRequest, null, 2)}</pre>
-    </div>
+    <Grid container alignItems="center" justifyContent="space-between">
+      <Grid item container alignItems="center" xs={6}>
+        <img
+          src={getRankImage(requestUser)}
+          alt={requestUser.rank}
+          width="20"
+        />
+        &nbsp;
+        <span>{requestUser.name}</span>
+        <span>({requestUser.region})</span>
+      </Grid>
+
+      <Grid item>
+        <Tooltip title="Reject">
+          <IconButton>
+            <CancelIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+
+        <Tooltip title="Accept">
+          <IconButton>
+            <CheckIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      </Grid>
+    </Grid>
   );
 });
