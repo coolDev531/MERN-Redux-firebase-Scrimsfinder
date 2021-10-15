@@ -33,7 +33,7 @@
     "react-scripts": "4.0.3",
     "redux": "^4.1.1",
     "web-vitals": "^1.0.1",
-    "react-draggable": "^4.4.4",
+    "react-draggable": "^4.4.4"
   },
   "scripts": {
     "start": "react-scripts start",
