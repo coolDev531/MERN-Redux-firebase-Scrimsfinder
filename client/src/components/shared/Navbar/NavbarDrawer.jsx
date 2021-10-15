@@ -17,17 +17,15 @@ import Divider from '@mui/material/Divider';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Hidden from '@mui/material/Hidden';
-import AdminArea from '../AdminArea';
 import NavbarCheckboxes from './NavbarCheckboxes';
 import NavbarDropdowns from './NavbarDropdowns';
 
 // icons
 import SettingsIcon from '@mui/icons-material/Settings';
 import ExitIcon from '@mui/icons-material/ExitToApp';
-import CreateIcon from '@mui/icons-material/BorderColor';
 import MyProfileIcon from '@mui/icons-material/AccountCircle';
 import GamesIcon from '@mui/icons-material/Games';
-import FriendsIcon from '@mui/icons-material/SupervisorAccount';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 // utils
 import clsx from 'clsx';
@@ -143,34 +141,19 @@ export default function NavbarDrawer({
                   button
                   onClick={() => {
                     dispatch({
-                      type: 'general/openFriendsModal',
-                      payload: {
-                        user: currentUser,
-                        friends: currentUser.friends,
-                      },
+                      type: 'general/openOtherOptionsModal',
                     });
                     setIsDrawerOpen(false);
                   }}>
                   <ListItemIcon>
-                    <FriendsIcon />
+                    <MoreHorizIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Friends" />
+                  <ListItemText primary="Other" />
                 </ListItem>
 
                 <Divider />
               </>
             )}
-
-            {/* Create scrim button (admins only) */}
-            <AdminArea>
-              <ListItem button onClick={() => drawerNavPush('/scrims/new')}>
-                <ListItemIcon>
-                  <CreateIcon />
-                </ListItemIcon>
-                <ListItemText primary="Create Scrim" />
-              </ListItem>
-              <Divider />
-            </AdminArea>
 
             {/* Settings button */}
             <ListItem button onClick={() => drawerNavPush('/settings')}>

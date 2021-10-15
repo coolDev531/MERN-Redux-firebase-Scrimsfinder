@@ -1,4 +1,4 @@
-import { Fragment, memo, useMemo, useCallback } from 'react';
+import { Fragment, memo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Modal } from '../shared/ModalComponents';
 import Tooltip from '../shared/Tooltip';
@@ -59,34 +59,11 @@ export default function UserFriendsModal() {
     [dispatch, currentUser]
   );
 
-  const isCurrentUser = useMemo(
-    () => user?._id === currentUser?._id,
-    [user?._id, currentUser?._id]
-  );
-
   if (!user) return null;
   if (!friends) return null;
 
   return (
-    <Modal
-      title={`${user?.name}'s Friends`}
-      open={bool}
-      onClose={onClose}
-      actionButtonStyle={{
-        display: isCurrentUser ? 'inline-flex' : 'none',
-      }}
-      actionButtonProps={{
-        // primary button to view friend requests modal.
-        // will only show when it's the current user
-        title: 'View friend requests',
-        onClick: async () => {
-          onClose();
-
-          dispatch({
-            type: 'general/openFriendRequests',
-          });
-        },
-      }}>
+    <Modal title={`${user?.name}'s Friends`} open={bool} onClose={onClose}>
       {friends?.length > 0 ? (
         friends?.map((friend, idx, arr) => (
           <Fragment key={friend?._id}>

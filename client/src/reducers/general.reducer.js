@@ -7,6 +7,8 @@ const initialState = {
   notificationsOpen: false,
   friendRequestsOpen: false,
   friendsModalOpen: false,
+
+  moreOptionsModalOpen: false,
 };
 
 export default function generalReducer(state = initialState, action) {
@@ -78,6 +80,20 @@ export default function generalReducer(state = initialState, action) {
       return {
         ...state,
         friendsModalOpen: false,
+      };
+    }
+
+    case 'general/openOtherOptionsModal': {
+      return {
+        ...state,
+        moreOptionsModalOpen: true,
+      };
+    }
+
+    case 'general/closeOtherOptionsModal': {
+      return {
+        ...state,
+        moreOptionsModalOpen: false,
       };
     }
 

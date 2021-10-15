@@ -6,6 +6,7 @@ import useAuth from '../../../hooks/useAuth';
 // components
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
+import Tooltip from './../Tooltip';
 
 // icons
 import NotificationsIcon from '@mui/icons-material/Notifications';
@@ -24,8 +25,8 @@ export default function NotificationsButton() {
   const classes = useStyles();
 
   return (
-    <>
-      <Grid item style={{ position: 'relative' }}>
+    <Grid item style={{ position: 'relative' }}>
+      <Tooltip title="Notifications">
         <IconButton onClick={openNotifications}>
           {notifications.length > 0 ? (
             <div className={classes.notificationsCount}>
@@ -34,8 +35,8 @@ export default function NotificationsButton() {
           ) : null}
           <NotificationsIcon fontSize="large" />
         </IconButton>
-      </Grid>
-    </>
+      </Tooltip>
+    </Grid>
   );
 }
 
