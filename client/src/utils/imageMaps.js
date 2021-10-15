@@ -45,8 +45,8 @@ export const RANK_IMAGES = {
 };
 
 export const BG_IMAGES = {
-  Anniversary: anniversaryImg,
   'Summoners Rift': summonersRiftImg,
-  GitCat: epicCatImg,
+  Anniversary: anniversaryImg,
   'Teemo Sunset': teemoSunsetImg,
+  GitCat: epicCatImg,
 };

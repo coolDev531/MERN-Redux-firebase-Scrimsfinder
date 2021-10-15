@@ -40,6 +40,12 @@ export default function UserFriendsModal() {
 
   const onDeleteFriend = useCallback(
     async (friendToDelete) => {
+      let yes = window.confirm(
+        `Are you sure you want to unfriend ${friendToDelete.name}?`
+      );
+
+      if (!yes) return;
+
       try {
         const { userFriends } = await removeUserFriend(
           currentUser?._id,
