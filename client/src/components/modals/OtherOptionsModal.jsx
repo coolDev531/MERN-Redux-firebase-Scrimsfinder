@@ -66,15 +66,13 @@ export default function MoreOptionsModal() {
           onClick={openFriendsModal}
         />
 
-        {currentUser?.friendRequests?.length > 0 ? (
-          <IconGroup
-            tooltipTitle="Open friend requests received"
-            title="Friend Requests"
-            counter={currentUser?.friendRequests?.length}
-            Icon={FriendRequestsIcon}
-            onClick={openFriendRequestsModal}
-          />
-        ) : null}
+        <IconGroup
+          tooltipTitle="Open friend requests received"
+          title="Friend Requests"
+          counter={currentUser?.friendRequests?.length}
+          Icon={FriendRequestsIcon}
+          onClick={openFriendRequestsModal}
+        />
 
         <AdminArea>
           <IconGroup
