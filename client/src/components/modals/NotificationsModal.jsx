@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from './../shared/Tooltip';
 import { Modal } from './../shared/ModalComponents';
+import Moment from 'react-moment';
 
 // utils
 import {
@@ -79,7 +80,7 @@ const OneNotification = ({ notification, closeModal, currentUserId }) => {
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useDispatch();
-
+  const [isHover, setIsHover] = useState(false);
   const onDeleteNotification = useCallback(async () => {
     const resp = await deleteOneUserNotification(
       currentUserId,
@@ -104,26 +105,42 @@ const OneNotification = ({ notification, closeModal, currentUserId }) => {
 
   return (
     <li className={classes.oneNotification}>
-      <div
-        style={{
-          border: '1px solid red',
-          cursor: relatedItem ? 'pointer' : 'inherit',
-        }}
-        onClick={() => {
-          if (!relatedItem) return;
-          closeModal();
-          if (relatedItem === 'user') {
-            dispatch({ type: 'general/openFriendRequests' });
-          } else {
-            history.push(`/scrims/${notification?._relatedScrim}`);
-          }
-          onDeleteNotification();
-        }}>
-        {notification.message}
-      </div>
+      <Tooltip
+        title={
+          notification.isFriendRequest
+            ? 'Go to friend requests'
+            : 'Go to scrim page'
+        }
+        open={isHover && relatedItem !== null}>
+        <div
+          onMouseOver={() => setIsHover(true)}
+          onMouseLeave={() => setIsHover(false)}
+          style={{
+            cursor: relatedItem ? 'pointer' : 'inherit',
+          }}
+          onClick={() => {
+            if (!relatedItem) return;
+            closeModal();
+
+            if (notification.isFriendRequest) {
+              dispatch({ type: 'general/openFriendRequests' });
+            } else {
+              history.push(`/scrims/${notification?._relatedScrim}`);
+            }
+
+            // onDeleteNotification();
+          }}>
+          <span>
+            {notification.message}&nbsp;|{' '}
+            <Moment format="MM/DD/yyyy hh:mm A">
+              {notification.createdAt}
+            </Moment>
+          </span>
+        </div>
+      </Tooltip>
 
       <div>
-        <Tooltip title="Delete notification">
+        <Tooltip title="Mark as read">
           <IconButton onClick={onDeleteNotification}>
             <DeleteIcon fontSize="medium" />
           </IconButton>

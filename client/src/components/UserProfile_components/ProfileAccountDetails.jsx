@@ -145,7 +145,7 @@ const ProfileAccountDetails = ({ user, userParticipatedScrims }) => {
                       payload: { friends: user?.friends, user },
                     })
                   }>
-                  View all
+                  <b>View all</b>
                 </span>
               </Tooltip>
             </>
