@@ -4,9 +4,12 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const apiKey = require('./utils/apiKey');
+
 const scrimRoutes = require('./routes/scrims');
 const userRoutes = require('./routes/users');
 const authRoutes = require('./routes/auth');
+const conversationRoutes = require('./routes/conversations');
+const messageRoutes = require('./routes/messages');
 
 function createServer() {
   const app = express();
@@ -30,6 +33,8 @@ function createServer() {
 
   app.use('/api', userRoutes);
   app.use('/api', authRoutes);
+  app.use('/api', conversationRoutes);
+  app.use('/api', messageRoutes);
 
   // another way to require api key for a specific route only.
   // router.get('/scrims', apiKey, controllers.getAllScrims);
