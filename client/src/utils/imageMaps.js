@@ -21,6 +21,7 @@ import challengerImg from '../assets/images/ranks/challenger.png';
 import anniversaryImg from '../assets/images/backgrounds/happy_team.jpg';
 import summonersRiftImg from '../assets/images/backgrounds/summoners_rift.jpg';
 import epicCatImg from '../assets/images/backgrounds/epic_cat.jpg';
+import teemoSunsetImg from '../assets/images/backgrounds/teemo_sunset.png';
 
 export const ROLE_IMAGES = {
   Top: topLaneImg,
@@ -47,4 +48,5 @@ export const BG_IMAGES = {
   Anniversary: anniversaryImg,
   'Summoners Rift': summonersRiftImg,
   GitCat: epicCatImg,
+  'Teemo Sunset': teemoSunsetImg,
 };

@@ -20,6 +20,7 @@ import devLog from './../../utils/devLog';
 
 // icons
 import SaveIcon from '@mui/icons-material/Create';
+import { BG_IMAGES } from '../../utils/imageMaps';
 
 export default function ChangeBackground({ userBg, setUserBg, userId }) {
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
@@ -91,9 +92,11 @@ export default function ChangeBackground({ userBg, setUserBg, userId }) {
           disabled={buttonsDisabled}
           label="background image"
           onChange={handleChangeImage}>
-          <MenuItem value="Summoners Rift">Summoners Rift</MenuItem>
-          <MenuItem value="Anniversary">Anniversary</MenuItem>
-          <MenuItem value="GitCat">GitCat</MenuItem>
+          {[...Object.keys(BG_IMAGES)].map((imgKey) => (
+            <MenuItem value={imgKey} key={imgKey}>
+              {imgKey}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
 
