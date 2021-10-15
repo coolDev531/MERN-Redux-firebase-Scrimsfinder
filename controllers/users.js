@@ -453,6 +453,14 @@ const addUserFriend = async (req, res) => {
 
   const { newFriendUserId } = req.body;
 
+  const sendingToSelf = String(newFriendUserId) === String(id);
+
+  if (sendingToSelf) {
+    return res.status(500).json({
+      error: 'Friend request cannot be sent to yourself',
+    });
+  }
+
   // user receiving the  friend request
   let user = await User.findById(id);
 
@@ -488,7 +496,7 @@ const addUserFriend = async (req, res) => {
   await user.save();
 
   if (friendUser.friends) {
-    friendUser.friends.push(friendUser);
+    friendUser.friends.push(user);
   } else {
     friendUser.friends = [user];
   }

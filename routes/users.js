@@ -28,11 +28,11 @@ router.post(
 ); // POST
 
 router.post(
-  '/users/:userId/remove-friend-request/:requestId/',
+  '/users/:userId/remove-friend-request/:requestId',
   controllers.removeFriendRequest
 ); // POST
 
-router.post('/users/add-new-friend/:id/', controllers.addUserFriend); // POST
-router.post('/users/remove-friend/:id/', controllers.removeUserFriend); // POST
+router.post('/users/add-new-friend/:id', controllers.addUserFriend); // POST
+router.post('/users/remove-friend/:id', controllers.removeUserFriend); // POST
 
 module.exports = router;
