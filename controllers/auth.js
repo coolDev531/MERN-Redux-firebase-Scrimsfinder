@@ -69,6 +69,7 @@ const loginUser = async (req, res) => {
         name: foundUser.name,
         notifications: foundUser.notifications,
         friendRequests: foundUser.friendRequests,
+        friends: foundUser.friends,
       };
 
       const accessToken = jwt.sign(payload, KEYS.SECRET_OR_KEY, {
@@ -148,6 +149,7 @@ const registerUser = async (req, res) => {
           name: newUser.name,
           notifications: [],
           friendRequests: [],
+          friends: [],
         };
 
         const accessToken = jwt.sign(payload, KEYS.SECRET_OR_KEY, {
@@ -194,6 +196,7 @@ const verifyUser = async (req, res) => {
           name: foundUser.name,
           notifications: foundUser.notifications,
           friendRequests: foundUser.friendRequests,
+          friends: foundUser.friends,
         };
 
         const accessToken = jwt.sign(payload, KEYS.SECRET_OR_KEY, {
@@ -252,6 +255,7 @@ const updateUser = async (req, res) => {
 
       notifications: foundUser.notifications,
       friendRequests: foundUser.friendRequests,
+      friends: foundUser.friends,
     };
 
     bcrypt.genSalt(10, (err, salt) => {
