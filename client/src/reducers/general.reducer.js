@@ -6,6 +6,7 @@ const initialState = {
 
   notificationsOpen: false,
   friendRequestsOpen: false,
+  friendsModalOpen: false,
 };
 
 export default function generalReducer(state = initialState, action) {
@@ -59,6 +60,20 @@ export default function generalReducer(state = initialState, action) {
       return {
         ...state,
         friendRequestsOpen: false,
+      };
+    }
+
+    case 'general/openFriendsModal': {
+      return {
+        ...state,
+        friendsModalOpen: { friends: payload.friends, user: payload.user },
+      };
+    }
+
+    case 'general/closeFriendsModal': {
+      return {
+        ...state,
+        friendsModalOpen: false,
       };
     }
 

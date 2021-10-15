@@ -500,10 +500,10 @@ const removeUserFriend = async (req, res) => {
   const { friendUserId } = req.body;
 
   // user making the friend deletion call
-  const user = await User.findById(id);
+  let user = await User.findById(id);
 
   // user's friend
-  const friendUser = await User.findById(friendUserId);
+  let friendUser = await User.findById(friendUserId);
 
   if (!user) {
     return res.status(500).send(`User not found with id: ${id}`);
@@ -515,58 +515,21 @@ const removeUserFriend = async (req, res) => {
       .send(`Friend user not found with id: ${friendUserId}`);
   }
 
-  const reqBody = {
-    ...user,
-    friends: user.friends.filter(
-      ({ _user }) => String(_user) !== String(friendUser._id)
-    ),
-  };
-
-  // const updatedUser = await User.findByIdAndUpdate(
-  //   id,
-  //   reqBody,
-  //   { new: true },
-  //   (error, user) => {
-  //     if (error) {
-  //       return res.status(500).json({ error: error.message });
-  //     }
-  //     if (!user) {
-  //       return res.status(500).send('User not found');
-  //     }
-
-  //     await scrim.save();
-  //     return user;
-  //   }
-  // );
-
-  const friendBody = {
-    ...user,
-    friends: friendUser.friends.filter(
-      ({ _user }) => String(_user) !== String(user._id)
-    ),
-  };
-
-  const updatedFriend = await User.findByIdAndUpdate(
-    friendUserId,
-    friendBody,
-    { new: true },
-    (error, user) => {
-      if (error) {
-        return res.status(500).json({ error: error.message });
-      }
-      if (!user) {
-        return res.status(500).send('User not found');
-      }
-
-      user.save();
-
-      return user;
-    }
+  user.friends = user.friends.filter(
+    ({ _id }) => String(_id) !== String(friendUser._id)
   );
 
+  await user.save();
+
+  friendUser.friends = friendUser.friends.filter(
+    ({ _id }) => String(_id) !== String(user._id)
+  );
+
+  await friendUser.save();
+
   return res.status(200).json({
-    updatedUser,
-    updatedFriend,
+    userFriends: user.friends,
+    friendUserFriends: friendUser.friends,
   });
 };
 

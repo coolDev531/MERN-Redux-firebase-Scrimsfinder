@@ -82,6 +82,18 @@ export const addUserFriend = async (userId, newFriendId) => {
   }
 };
 
+export const removeUserFriend = async (userId, friendUserId) => {
+  try {
+    const response = await api.post(`/users/remove-friend/${userId}/`, {
+      friendUserId,
+    });
+
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const removeFriendRequest = async (userId, requestId) => {
   try {
     const response = await api.post(

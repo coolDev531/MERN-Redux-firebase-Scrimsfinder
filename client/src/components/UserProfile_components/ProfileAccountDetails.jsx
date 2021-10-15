@@ -1,14 +1,18 @@
 import { useCallback, useState, useEffect, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 
 // components
 import Grid from '@mui/material/Grid';
 import Moment from 'react-moment';
+import Tooltip from './../shared/Tooltip';
 
 const ProfileAccountDetails = ({ user, userParticipatedScrims }) => {
   const [userExp, setUserExp] = useState(0);
   const [userWinrate, setUserWinrate] = useState(0);
   const [userGamesPlayedCount, setUserGamesPlayedCount] = useState(0);
   const [userGamesCastedCount, setUserGamesCastedCount] = useState(0);
+
+  const dispatch = useDispatch();
 
   // calculates the EXP and winrate, also gives us games played count
   // this function also gets games played count and games casted count, so it's not all calculations
@@ -123,6 +127,29 @@ const ProfileAccountDetails = ({ user, userParticipatedScrims }) => {
 
         <Grid item>
           | <strong>EXP:</strong>&nbsp;{userExp}
+        </Grid>
+      </Grid>
+
+      <Grid item spacing={1} container component="li" alignItems="center">
+        <Grid item>
+          <strong>Friends:</strong>&nbsp;{user.friends.length}{' '}
+          {user.friends.length > 0 ? (
+            <>
+              |&nbsp;
+              <Tooltip title={`view ${user?.name}'s friends`}>
+                <span
+                  style={{ cursor: 'pointer' }}
+                  onClick={() =>
+                    dispatch({
+                      type: 'general/openFriendsModal',
+                      payload: { friends: user?.friends, user },
+                    })
+                  }>
+                  View all
+                </span>
+              </Tooltip>
+            </>
+          ) : null}
         </Grid>
       </Grid>
 

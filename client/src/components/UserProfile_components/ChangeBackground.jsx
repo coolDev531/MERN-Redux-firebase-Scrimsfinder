@@ -86,6 +86,7 @@ export default function ChangeBackground({ userBg, setUserBg, userId }) {
       <FormControl>
         <InputLabel>Change Profile Background</InputLabel>
         <Select
+          style={{ maxWidth: '200px' }}
           value={userBg.img}
           disabled={buttonsDisabled}
           label="background image"
