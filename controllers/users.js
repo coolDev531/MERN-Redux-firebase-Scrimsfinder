@@ -373,6 +373,7 @@ const sendFriendRequest = async (req, res) => {
       },
     };
 
+    //  add a new notification to the user
     let newNotification = {
       _relatedUser: userSendingId,
       message: `${userSending.name} sent you a friend request!`,
