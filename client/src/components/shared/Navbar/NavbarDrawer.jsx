@@ -134,16 +134,6 @@ export default function NavbarDrawer({
               </>
             )}
 
-            {/* Settings button */}
-            <ListItem button onClick={() => drawerNavPush('/settings')}>
-              <ListItemIcon>
-                <SettingsIcon />
-              </ListItemIcon>
-              <ListItemText primary="Settings" />
-            </ListItem>
-
-            <Divider />
-
             {/* Create scrim button (admins only) */}
             <AdminArea>
               <ListItem button onClick={() => drawerNavPush('/scrims/new')}>
@@ -154,6 +144,16 @@ export default function NavbarDrawer({
               </ListItem>
               <Divider />
             </AdminArea>
+
+            {/* Settings button */}
+            <ListItem button onClick={() => drawerNavPush('/settings')}>
+              <ListItemIcon>
+                <SettingsIcon />
+              </ListItemIcon>
+              <ListItemText primary="Settings" />
+            </ListItem>
+
+            <Divider />
 
             {/* Log out button */}
             {currentUser?.uid && (

@@ -13,6 +13,12 @@ const Notification = new Schema(
       ref: 'User',
       required: false,
     },
+
+    _relatedScrim: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Scrim',
+      required: false,
+    },
   },
   { timestamps: true }
 );

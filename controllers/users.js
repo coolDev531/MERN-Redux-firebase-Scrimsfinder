@@ -232,11 +232,16 @@ const getUserById = async (req, res) => {
 const pushUserNotification = async (req, res) => {
   const { id } = req.params;
   const relatedUserId = req?.body?.relatedUserId ?? null;
+  const relatedScrimId = req?.body?.relatedScrimId ?? null;
 
   const user = await User.findById(id);
 
   const foundRelatedUser = relatedUserId
     ? await User.findById(relatedUserId)
+    : null;
+
+  const foundRelatedScrim = relatedScrimId
+    ? await Scrim.findById(relatedScrimId)
     : null;
 
   if (!req.body.message) {
@@ -246,6 +251,7 @@ const pushUserNotification = async (req, res) => {
   const newNotification = {
     message: req.body.message,
     _relatedUser: foundRelatedUser,
+    _relatedScrim: foundRelatedScrim,
   };
 
   const reqBody = {

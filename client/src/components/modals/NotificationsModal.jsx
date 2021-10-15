@@ -1,5 +1,6 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 // components
 import Typography from '@mui/material/Typography';
@@ -40,6 +41,7 @@ export default function NotificationsModal() {
       actionButtonProps={{
         title: 'Mark all as read',
         onClick: async () => {
+          //  delete all notifications
           const newNotificationsState = await deleteAllUserNotifications(
             currentUser?._id
           );
@@ -75,9 +77,10 @@ export default function NotificationsModal() {
 
 const OneNotification = ({ notification, closeModal, currentUserId }) => {
   const classes = useStyles();
-
+  const history = useHistory();
   const dispatch = useDispatch();
-  const onDeleteNotification = async () => {
+
+  const onDeleteNotification = useCallback(async () => {
     const resp = await deleteOneUserNotification(
       currentUserId,
       notification._id
@@ -89,19 +92,31 @@ const OneNotification = ({ notification, closeModal, currentUserId }) => {
       type: 'auth/updateCurrentUser',
       payload: { notifications: newNotificationsState },
     });
-  };
+  }, [notification, currentUserId, dispatch]);
+
+  const relatedItem = useMemo(() => {
+    if (notification?._relatedUser) {
+      return 'user';
+    } else if (notification?._relatedScrim) return 'scrim';
+
+    return null;
+  }, [notification]);
 
   return (
     <li className={classes.oneNotification}>
       <div
         style={{
           border: '1px solid red',
-          cursor: notification?._relatedUser ? 'pointer' : 'none',
+          cursor: relatedItem ? 'pointer' : 'inherit',
         }}
         onClick={() => {
-          if (!notification?._relatedUser) return;
+          if (!relatedItem) return;
           closeModal();
-          dispatch({ type: 'general/openFriendRequests' });
+          if (relatedItem === 'user') {
+            dispatch({ type: 'general/openFriendRequests' });
+          } else {
+            history.push(`/scrims/${notification?._relatedScrim}`);
+          }
           onDeleteNotification();
         }}>
         {notification.message}
