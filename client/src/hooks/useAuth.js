@@ -1,4 +1,3 @@
-import devLog from '../utils/devLog';
 import { useCallback, useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,6 +11,7 @@ import { getUserNotifications } from '../services/users';
 
 // utils
 import jwt_decode from 'jwt-decode';
+import devLog from '../utils/devLog';
 
 export default function useAuth() {
   const auth = useSelector(({ auth }) => auth);
