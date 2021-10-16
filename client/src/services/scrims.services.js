@@ -1,4 +1,4 @@
-import api from './apiConfig.service';
+import api from './apiConfig';
 
 export const getAllScrims = async () => {
   try {

@@ -18,8 +18,8 @@ import {
   deleteScrim,
   getScrimById,
   removeCasterFromScrim,
-} from '../../services/scrims.service';
-import { insertCasterInScrim } from '../../services/scrims.service';
+} from '../../services/scrims.services';
+import { insertCasterInScrim } from '../../services/scrims.services';
 
 // utils
 import { compareDates } from '../../utils/compareDates';

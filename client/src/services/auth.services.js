@@ -1,4 +1,4 @@
-import api from './apiConfig.service';
+import api from './apiConfig';
 import devLog from '../utils/devLog';
 import jwt_decode from 'jwt-decode';
 

@@ -18,7 +18,7 @@ import {
   addUserFriend,
   pushUserNotification,
   removeFriendRequest,
-} from '../../services/users.service';
+} from '../../services/users.services';
 
 // icons
 import CheckIcon from '@mui/icons-material/CheckCircle';

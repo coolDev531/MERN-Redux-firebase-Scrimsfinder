@@ -13,7 +13,7 @@ import FormGroup from '@mui/material/FormGroup';
 import Button from '@mui/material/Button';
 
 // services
-import { updateUser } from '../../services/auth.service';
+import { updateUser } from '../../services/auth.services';
 
 // utils
 import devLog from './../../utils/devLog';

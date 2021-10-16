@@ -15,7 +15,7 @@ import S3FileUpload from 'react-s3';
 import {
   addImageToScrim,
   removeImageFromScrim,
-} from '../../services/scrims.service';
+} from '../../services/scrims.services';
 
 // icons
 import UploadIcon from '@mui/icons-material/CloudUpload';
