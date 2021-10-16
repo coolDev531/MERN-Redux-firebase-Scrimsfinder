@@ -6,7 +6,10 @@ import Grid from '@mui/material/Grid';
 import Moment from 'react-moment';
 import Tooltip from './../shared/Tooltip';
 
-const ProfileAccountDetails = ({ user, userParticipatedScrims }) => {
+export default function ProfileAccountDetails({
+  user,
+  userParticipatedScrims,
+}) {
   const [userExp, setUserExp] = useState(0);
   const [userWinrate, setUserWinrate] = useState(0);
   const [userGamesPlayedCount, setUserGamesPlayedCount] = useState(0);
@@ -74,10 +77,17 @@ const ProfileAccountDetails = ({ user, userParticipatedScrims }) => {
       }
     }
 
-    // here the winrate is calculated
-    const winRateResult = Math.floor(
-      (playerWinsCount / (playerWinsCount + playerLossCount)) * 100
-    );
+    let winRateResult;
+
+    if (gamesPlayedCount === 0) {
+      // if player casted but didn't play a game, make sure it's still 0
+      winRateResult = 0;
+    } else {
+      // here the winrate is calculated
+      winRateResult = Math.floor(
+        (playerWinsCount / (playerWinsCount + playerLossCount)) * 100
+      );
+    }
 
     return [expResult, winRateResult, gamesPlayedCount, gamesCastedCount];
   }, [userParticipatedScrims, user._id]);
@@ -187,6 +197,4 @@ const ProfileAccountDetails = ({ user, userParticipatedScrims }) => {
       </Grid>
     </Grid>
   ) : null;
-};
-
-export default ProfileAccountDetails;
+}

@@ -3,7 +3,10 @@ import './App.css';
 // hooks
 import useAppBackground from './hooks/useAppBackground';
 import useAlerts from './hooks/useAlerts';
-import useAuth, { useAuthVerify } from './hooks/useAuth';
+import useAuth, {
+  useAuthVerify,
+  useRefreshNotifications,
+} from './hooks/useAuth';
 import { useFetchScrims, useSetScrimsRegion } from './hooks/useScrims';
 import { useFetchUsers } from './hooks/useUsers';
 
@@ -34,6 +37,7 @@ function App() {
   useFetchUsers(); // fetch all users (for search and settings page)
   useSetScrimsRegion(); // set scrims region to users region on mount and when user changes it on settings
   useFetchScrims(); // fetch scrims on mount or path change
+  useRefreshNotifications(); // reload user notifications on every path change.
 
   if (isVerifyingUser) {
     return (

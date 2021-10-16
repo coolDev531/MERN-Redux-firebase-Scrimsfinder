@@ -136,3 +136,12 @@ export const pushUserNotification = async (userId, newNotification) => {
     throw error;
   }
 };
+
+export const getUserNotifications = async (userId) => {
+  try {
+    const response = await api.get(`/users/user-notifications/${userId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

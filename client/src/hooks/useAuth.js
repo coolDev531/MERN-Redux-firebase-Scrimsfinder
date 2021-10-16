@@ -1,11 +1,17 @@
-import devLog from '../utils/devLog';
 import { useCallback, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import useEffectExceptOnMount from './useEffectExceptOnMount';
+
+// services
 import { auth, provider } from '../firebase';
 import { loginUser, verifyUser } from '../services/auth';
-import jwt_decode from 'jwt-decode';
 import { setAuthToken, removeToken } from '../services/auth';
+import { getUserNotifications } from '../services/users';
+
+// utils
+import jwt_decode from 'jwt-decode';
+import devLog from '../utils/devLog';
 
 export default function useAuth() {
   const auth = useSelector(({ auth }) => auth);
@@ -108,3 +114,28 @@ export function useAuthVerify() {
 
   return null;
 }
+
+export const useRefreshNotifications = () => {
+  const { currentUser } = useAuth();
+  const { pathname } = useLocation();
+  const dispatch = useDispatch();
+
+  const refreshUserNotifications = useCallback(async () => {
+    if (!currentUser?._id) return;
+    devLog('checking notifications for currentUser');
+
+    const { notifications } = await getUserNotifications(currentUser?._id);
+
+    // if notifications from api are different, that means there are new notifications
+    if (notifications.length !== currentUser.notifications?.length) {
+      // update the user in the state
+      dispatch({ type: 'auth/updateCurrentUser', payload: { notifications } });
+    }
+  }, [currentUser, dispatch]);
+
+  // check for new notifications every time pathname change,
+  // add them to the user in the state.
+  useEffectExceptOnMount(() => {
+    refreshUserNotifications();
+  }, [pathname]);
+};
