@@ -6,7 +6,10 @@ import Grid from '@mui/material/Grid';
 import Moment from 'react-moment';
 import Tooltip from './../shared/Tooltip';
 
-const ProfileAccountDetails = ({ user, userParticipatedScrims }) => {
+export default function ProfileAccountDetails({
+  user,
+  userParticipatedScrims,
+}) {
   const [userExp, setUserExp] = useState(0);
   const [userWinrate, setUserWinrate] = useState(0);
   const [userGamesPlayedCount, setUserGamesPlayedCount] = useState(0);
@@ -194,6 +197,4 @@ const ProfileAccountDetails = ({ user, userParticipatedScrims }) => {
       </Grid>
     </Grid>
   ) : null;
-};
-
-export default ProfileAccountDetails;
+}
