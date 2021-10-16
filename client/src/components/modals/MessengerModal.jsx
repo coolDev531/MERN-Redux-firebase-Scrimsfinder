@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Modal } from './../shared/ModalComponents';
 import ChatRoom from '../MessengerModal_components/ChatRoom';
 import UserConversations from '../MessengerModal_components/UserConversations';
-import Button from '@mui/material/Button';
 
 export default function MessengerModal() {
   const [view, setView] = useState('conversations'); // conversations, chat-room

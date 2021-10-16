@@ -1,5 +1,5 @@
+// hooks
 import { useCallback, useState, useEffect } from 'react';
-
 import useAuth from '../../hooks/useAuth';
 import useAlerts from '../../hooks/useAlerts';
 
@@ -11,6 +11,7 @@ import LinearProgress from '@mui/material/LinearProgress';
 
 // services and utils
 import { getConversationMessages } from '../../services/messages.services';
+import { postNewMessage } from './../../services/messages.services';
 import makeStyles from '@mui/styles/makeStyles';
 
 // icons
@@ -52,7 +53,7 @@ export default function ChatRoom({ conversation }) {
   }, [conversation._id]);
 
   const handleSubmitMessage = useCallback(
-    (msgText) => {
+    async (msgText) => {
       if (!msgText) {
         setCurrentAlert({
           type: 'Error',
@@ -60,12 +61,19 @@ export default function ChatRoom({ conversation }) {
         });
       }
 
-      const newMessage = {
+      const newMsg = await postNewMessage({
+        senderId: currentUser?._id,
+        conversationId: conversation._id,
         text: msgText,
-        _sender: currentUser,
+      });
+
+      console.log({ newMsg });
+      const newlyCreatedMessage = {
+        _sender: newMsg._sender,
+        text: newMsg.text,
       };
 
-      setMessages((prevState) => [...prevState, newMessage]);
+      setMessages((prevState) => [...prevState, newlyCreatedMessage]);
 
       setNewMessage('');
     },
@@ -120,7 +128,6 @@ const ChatInput = ({ value, onChange, onSubmit }) => {
   return (
     <OutlinedInput
       multiline
-      rows={2}
       minRows={2}
       maxRows={4}
       sx={{ marginTop: 4, width: '40ch' }} // this width also expands the width of the modal (as wanted tbh)

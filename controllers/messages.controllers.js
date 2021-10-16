@@ -14,7 +14,7 @@ const handleValidId = async (id, res) => {
 
 const postMessage = async (req, res) => {
   try {
-    const { conversationId, senderId } = req.body;
+    const { text, conversationId, senderId } = req.body;
 
     await handleValidId(conversationId, res);
     await handleValidId(senderId, res);
@@ -26,17 +26,27 @@ const postMessage = async (req, res) => {
       return res.status(500).json({ error: 'Sender not found!' });
     }
 
+    if (!text) {
+      return res.status(500).json({ error: 'Message text not provided!' });
+    }
+
     if (!conversation) {
       return res.status(500).json({ error: 'Conversation not found!' });
     }
 
     const newMessage = new Message({
-      text: req.body.text,
+      text,
       _conversation: conversation._id,
       _sender: sender._id,
     });
 
-    const savedMessage = await newMessage.save();
+    let savedMessage = await newMessage.save();
+
+    // make sure we get _sender.name, region, rank etc after creating with populate, or else it will only return id to the client
+    savedMessage = await savedMessage
+      .populate('_sender', ['name', 'discord', 'rank', 'region'])
+      .execPopulate();
+
     return res.status(200).json(savedMessage);
   } catch (error) {
     return res.status(500).json({ error: error.message });
