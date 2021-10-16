@@ -72,7 +72,9 @@ const AllConversations = memo(({ conversations, changeToView }) => (
   <>
     <Box component="ul" display="flex" flexDirection="column">
       {conversations.map((conversation) => (
-        <pre onClick={() => changeToView('chat-room', conversation)}>
+        <pre
+          key={conversation._id}
+          onClick={() => changeToView('chat-room', conversation)}>
           {JSON.stringify(conversation, null, 2)}
         </pre>
       ))}
@@ -82,7 +84,6 @@ const AllConversations = memo(({ conversations, changeToView }) => (
 
 const ChatRoom = ({ conversation }) => {
   const { currentUser } = useAuth();
-  // const { allUsers } = useUsers();
 
   const [messages, setMessages] = useState([]);
 
@@ -153,6 +154,7 @@ const useStyles = makeStyles({
     backgroundColor: ({ isCurrentUser }) => (isCurrentUser ? 'blue' : 'white'),
   },
 });
+
 const ChatBubble = ({ isCurrentUser, messageText, userName }) => {
   const classes = useStyles({ isCurrentUser });
 
