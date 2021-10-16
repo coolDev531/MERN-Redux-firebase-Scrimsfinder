@@ -7,6 +7,7 @@ import {
   useEffect,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import useUsers from './../../hooks/useUsers';
 
 // components
 import Typography from '@mui/material/Typography';
@@ -16,6 +17,7 @@ import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
 
 // services
+import { getConversationMessages } from '../../services/messages.services';
 
 export default function MessengerModal() {
   const [view, setView] = useState('all-conversations'); // all-conversations, chat-room
@@ -32,10 +34,13 @@ export default function MessengerModal() {
 
   const changeToView = useCallback((value, conversationId) => {
     if (value === 'chat-room') {
-      setView('chat-room');
+      setConversationId(conversationId);
+
+      setTimeout(() => {
+        setView('chat-room');
+      }, 100);
       // activate socket for chat or w/e
       // fetch the messages.
-      setConversationId(conversationId);
     } else {
       setView(value);
     }
@@ -72,7 +77,8 @@ const AllConversations = memo(({ conversations, changeToView }) => (
 ));
 
 const ChatRoom = ({ conversationId }) => {
-  const { allUsers } = useSelector(({ allUsers }) => allUsers);
+  // const { allUsers } = useUsers();
+
   const [messages, setMessages] = useState([]);
   const [members, setMembers] = useState({
     currentUser: '',
@@ -81,6 +87,12 @@ const ChatRoom = ({ conversationId }) => {
 
   useEffect(() => {
     // fetch messages by conversationId and set in the state.
+    const fetchMessages = async () => {
+      const messagesData = await getConversationMessages(conversationId);
+      setMessages(messagesData);
+    };
+
+    fetchMessages();
 
     // reset on component unmount
     return () => {
@@ -89,5 +101,5 @@ const ChatRoom = ({ conversationId }) => {
     };
   }, [conversationId]);
 
-  return { conversationId };
+  return <>{conversationId}</>;
 };

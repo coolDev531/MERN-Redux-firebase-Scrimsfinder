@@ -1,4 +1,4 @@
-import api from './apiConfig.service';
+import api from './apiConfig';
 
 /**
  * @method postNewMessage
@@ -17,6 +17,7 @@ export const postNewMessage = async ({ conversationId, senderId }) => {
     throw error;
   }
 };
+
 export const getConversationMessages = async (conversationId) => {
   try {
     const response = await api.get(`/messages/${conversationId}`);

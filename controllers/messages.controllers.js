@@ -45,10 +45,17 @@ const postMessage = async (req, res) => {
 
 const getConversationMessages = async (req, res) => {
   try {
-    const messages = await Message.find({
+    await Message.find({
       _conversation: req.params.conversationId,
-    });
-    return res.status(200).json(messages);
+    })
+      .populate('_sender', ['name', 'discord', 'region', 'rank'])
+      .exec((err, messagesData) => {
+        if (err) {
+          console.log(err);
+          return res.status(400).end();
+        }
+        return res.json(messagesData);
+      });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }

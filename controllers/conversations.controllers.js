@@ -27,7 +27,9 @@ const getUserConversations = async (req, res) => {
   try {
     const conversations = await Conversation.find({
       members: { $in: [req.params.userId] },
-    });
+    })
+      .populate('members', ['name', 'discord', 'region', 'rank'])
+      .exec();
 
     if (!conversations) {
       return res.status(200).json({ conversations: [] });
