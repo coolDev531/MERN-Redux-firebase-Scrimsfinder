@@ -1,4 +1,11 @@
-import { memo, Fragment, useCallback, useState, useMemo } from 'react';
+import {
+  memo,
+  Fragment,
+  useCallback,
+  useState,
+  useMemo,
+  useEffect,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 // components
@@ -62,4 +69,23 @@ const AllConversations = memo(({ conversations, changeToView }) => (
   </>
 ));
 
-const ChatRoom = ({ conversationId }) => <>{conversationId}</>;
+const ChatRoom = ({ conversationId }) => {
+  const { allUsers } = useSelector(({ allUsers }) => allUsers);
+  const [messages, setMessages] = useState([]);
+  const [members, setMembers] = useState({
+    currentUser: '',
+    friendUser: '',
+  });
+
+  useEffect(() => {
+    // fetch messages by conversationId and set in the state.
+
+    // reset on component unmount
+    return () => {
+      setMessages([]);
+      setMembers({});
+    };
+  }, [conversationId]);
+
+  return { conversationId };
+};
