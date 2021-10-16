@@ -30,7 +30,7 @@ const loginUser = async (req, res) => {
   const { email, uid } = req.body;
 
   if (!email) {
-    res.status(500).json({
+    (500).json({
       error: `No Email Provided`,
     });
     return;
