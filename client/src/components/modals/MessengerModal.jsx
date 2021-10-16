@@ -17,9 +17,11 @@ import { Modal } from './../shared/ModalComponents';
 import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
 
-// services
-import { getConversationMessages } from '../../services/messages.services';
 import useAuth from './../../hooks/useAuth';
+
+// services and utils
+import { getConversationMessages } from '../../services/messages.services';
+import makeStyles from '@mui/styles/makeStyles';
 
 export default function MessengerModal() {
   const [view, setView] = useState('all-conversations'); // all-conversations, chat-room
@@ -120,7 +122,45 @@ const ChatRoom = ({ conversation }) => {
 
   return (
     <div>
-      <pre>{JSON.stringify(messages, null, 2)}</pre>
+      {messages.map((message) => (
+        <ChatBubble
+          isCurrentUser={message._sender._id === currentUser._id}
+          key={message._id}
+          messageText={message.text}
+          userName={message._sender.name}
+        />
+      ))}
+    </div>
+  );
+};
+
+const useStyles = makeStyles({
+  bubbleContainer: {
+    width: '100%',
+    display: 'flex', //new added flex so we can put div at left and right side
+    //check style.css for left and right classnaeme based on your data
+    justifyContent: ({ isCurrentUser }) =>
+      isCurrentUser ? 'flex-end' : 'flex-start',
+  },
+
+  bubble: {
+    border: '0.5px solid black',
+    borderRadius: '10px',
+    margin: '5px',
+    padding: '10px',
+    display: 'inline-block',
+    color: ({ isCurrentUser }) => (isCurrentUser ? 'white' : 'black'),
+    backgroundColor: ({ isCurrentUser }) => (isCurrentUser ? 'blue' : 'white'),
+  },
+});
+const ChatBubble = ({ isCurrentUser, messageText, userName }) => {
+  const classes = useStyles({ isCurrentUser });
+
+  return (
+    <div className={classes.bubbleContainer}>
+      <div className={classes.bubble}>
+        <div className={classes.button}>{messageText}</div>
+      </div>
     </div>
   );
 };
