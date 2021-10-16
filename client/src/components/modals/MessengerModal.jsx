@@ -4,6 +4,7 @@ import {
   useCallback,
   useState,
   useMemo,
+  useRef,
   useEffect,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,10 +19,11 @@ import Box from '@mui/material/Box';
 
 // services
 import { getConversationMessages } from '../../services/messages.services';
+import useAuth from './../../hooks/useAuth';
 
 export default function MessengerModal() {
   const [view, setView] = useState('all-conversations'); // all-conversations, chat-room
-  const [conversationId, setConversationId] = useState('');
+  const [conversation, setConversation] = useState('');
 
   const dispatch = useDispatch();
   const [{ conversations }, { messengerOpen }] = useSelector(
@@ -32,9 +34,9 @@ export default function MessengerModal() {
     dispatch({ type: 'general/closeMessenger' });
   }, [dispatch]);
 
-  const changeToView = useCallback((value, conversationId) => {
+  const changeToView = useCallback((value, conversation) => {
     if (value === 'chat-room') {
-      setConversationId(conversationId);
+      setConversation(conversation);
 
       setTimeout(() => {
         setView('chat-room');
@@ -53,7 +55,7 @@ export default function MessengerModal() {
       </button>
 
       {view === 'chat-room' ? (
-        <ChatRoom conversationId={conversationId} />
+        <ChatRoom conversation={conversation} />
       ) : (
         <AllConversations
           changeToView={changeToView}
@@ -68,28 +70,44 @@ const AllConversations = memo(({ conversations, changeToView }) => (
   <>
     <Box component="ul" display="flex" flexDirection="column">
       {conversations.map((conversation) => (
-        <pre onClick={() => changeToView('chat-room', conversation._id)}>
-          {JSON.stringify(conversation, null, 2)}{' '}
+        <pre onClick={() => changeToView('chat-room', conversation)}>
+          {JSON.stringify(conversation, null, 2)}
         </pre>
       ))}
     </Box>
   </>
 ));
 
-const ChatRoom = ({ conversationId }) => {
+const ChatRoom = ({ conversation }) => {
+  const { currentUser } = useAuth();
   // const { allUsers } = useUsers();
 
   const [messages, setMessages] = useState([]);
-  const [members, setMembers] = useState({
-    currentUser: '',
-    friendUser: '',
-  });
+
+  const members = useMemo(() => {
+    const currentUserIndex = conversation.members.findIndex(
+      ({ _id }) => _id === currentUser._id
+    );
+
+    const friendUserIndex = currentUserIndex === 0 ? 1 : 0;
+
+    return {
+      currentUser: conversation.members[currentUserIndex],
+      friendUser: conversation.members[friendUserIndex],
+    };
+  }, [conversation.members, currentUser._id]);
 
   useEffect(() => {
     // fetch messages by conversationId and set in the state.
     const fetchMessages = async () => {
-      const messagesData = await getConversationMessages(conversationId);
-      setMessages(messagesData);
+      const messagesData = await getConversationMessages(conversation._id);
+      setMessages(
+        messagesData.sort((a, b) => {
+          return (
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+          );
+        })
+      );
     };
 
     fetchMessages();
@@ -97,9 +115,12 @@ const ChatRoom = ({ conversationId }) => {
     // reset on component unmount
     return () => {
       setMessages([]);
-      setMembers({});
     };
-  }, [conversationId]);
+  }, [conversation._id]);
 
-  return <>{conversationId}</>;
+  return (
+    <div>
+      <pre>{JSON.stringify(messages, null, 2)}</pre>
+    </div>
+  );
 };
