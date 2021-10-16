@@ -5,9 +5,9 @@ import useEffectExceptOnMount from './useEffectExceptOnMount';
 
 // services
 import { auth, provider } from '../firebase';
-import { loginUser, verifyUser } from '../services/auth';
-import { setAuthToken, removeToken } from '../services/auth';
-import { getUserNotifications } from '../services/users';
+import { loginUser, verifyUser } from '../services/auth.services';
+import { setAuthToken, removeToken } from '../services/auth.services';
+import { getUserNotifications } from '../services/users.services';
 
 // utils
 import jwt_decode from 'jwt-decode';

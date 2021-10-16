@@ -21,8 +21,8 @@ import {
 
 // services & utils
 import { makeStyles } from '@mui/styles';
-import { updateUser } from './../services/auth';
-import { setAuthToken } from './../services/auth';
+import { updateUser } from './../services/auth.services';
+import { setAuthToken } from './../services/auth.services';
 
 // remove spaces from # in discord name
 const removeSpaces = (str) => {

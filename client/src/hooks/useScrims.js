@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import useInterval from '../hooks/useInterval';
 
 // utils and services
-import { getAllScrims, getScrimById } from './../services/scrims';
+import { getAllScrims, getScrimById } from '../services/scrims.services';
 import devLog from '../utils/devLog';
 import { showEarliestFirst, showLatestFirst } from '../utils/getSortedScrims';
 import { compareDates } from '../utils/compareDates';

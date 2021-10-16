@@ -11,11 +11,11 @@ import Moment from 'react-moment';
 import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
 
-// utils
+// utils and services
 import {
   deleteAllUserNotifications,
   deleteOneUserNotification,
-} from './../../services/users';
+} from '../../services/users.services';
 import { makeStyles } from '@mui/styles';
 
 // icons

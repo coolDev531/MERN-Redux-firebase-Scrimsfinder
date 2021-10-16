@@ -28,7 +28,7 @@ import {
   getOneUser,
   getUserCreatedScrims,
   getUserParticipatedScrims,
-} from '../services/users';
+} from '../services/users.services';
 
 // icons
 import VerifiedAdminIcon from '@mui/icons-material/VerifiedUser';

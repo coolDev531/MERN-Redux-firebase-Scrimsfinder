@@ -6,7 +6,7 @@ import Navbar from '../components/shared/Navbar/Navbar';
 import { Helmet } from 'react-helmet';
 import Loading from '../components/shared/Loading';
 import { PageContent } from '../components/shared/PageComponents';
-import { getScrimById } from '../services/scrims';
+import { getScrimById } from '../services/scrims.services';
 import useAlerts from './../hooks/useAlerts';
 
 export default function ScrimDetail() {

@@ -1,7 +1,7 @@
 // hook to fetch scrims
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
-import { getAllUsers } from './../services/users';
+import { getAllUsers } from '../services/users.services';
 import devLog from './../utils/devLog';
 import { useLocation } from 'react-router-dom';
 import useEffectExceptOnMount from './useEffectExceptOnMount';

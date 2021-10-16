@@ -12,7 +12,10 @@ import FormHelperText from '@mui/material/FormHelperText';
 
 // utils
 import S3FileUpload from 'react-s3';
-import { addImageToScrim, removeImageFromScrim } from '../../services/scrims';
+import {
+  addImageToScrim,
+  removeImageFromScrim,
+} from '../../services/scrims.services';
 
 // icons
 import UploadIcon from '@mui/icons-material/CloudUpload';

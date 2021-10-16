@@ -32,7 +32,7 @@ import {
   insertPlayerInScrim,
   removePlayerFromScrim,
   movePlayerInScrim,
-} from '../../services/scrims';
+} from '../../services/scrims.services';
 
 // utils
 import { getTeamBackgroundColor } from '../../utils/scrimMisc';

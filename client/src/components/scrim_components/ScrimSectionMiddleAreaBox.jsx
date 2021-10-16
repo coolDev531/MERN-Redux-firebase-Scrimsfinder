@@ -22,7 +22,7 @@ import pluralize from 'pluralize';
 import { COLORS } from './../../appTheme';
 
 // services
-import { updateScrim } from '../../services/scrims';
+import { updateScrim } from '../../services/scrims.services';
 
 const useStyles = makeStyles({
   infoBoxRoot: {
