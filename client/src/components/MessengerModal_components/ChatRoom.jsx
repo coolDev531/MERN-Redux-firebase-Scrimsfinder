@@ -14,7 +14,6 @@ import { getConversationMessages } from '../../services/messages.services';
 import makeStyles from '@mui/styles/makeStyles';
 
 // icons
-
 import CreateIcon from '@mui/icons-material/Create';
 import Tooltip from '../shared/Tooltip';
 
@@ -22,10 +21,11 @@ import Tooltip from '../shared/Tooltip';
 export default function ChatRoom({ conversation }) {
   const { currentUser } = useAuth();
 
-  const [isLoaded, setIsLoaded] = useState(false);
   const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState('');
+  const [isLoaded, setIsLoaded] = useState(false);
 
-  const setCurrentAlert = useAlerts();
+  const { setCurrentAlert } = useAlerts();
 
   useEffect(() => {
     // fetch messages by conversationId and set in the state.
@@ -56,7 +56,7 @@ export default function ChatRoom({ conversation }) {
       if (!msgText) {
         setCurrentAlert({
           type: 'Error',
-          message: 'cannot send message, input is empty!',
+          message: 'cannot send message, input value is empty!',
         });
       }
 
@@ -65,12 +65,16 @@ export default function ChatRoom({ conversation }) {
         _sender: currentUser,
       };
 
-      return setMessages((prevState) => [...prevState, newMessage]);
+      setMessages((prevState) => [...prevState, newMessage]);
+
+      setNewMessage('');
     },
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [currentUser?._id]
   );
+
+  const onChange = useCallback((e) => setNewMessage(e.target.value), []);
 
   if (!isLoaded) {
     return (
@@ -91,7 +95,11 @@ export default function ChatRoom({ conversation }) {
         />
       ))}
 
-      <ChatInput onSubmit={handleSubmitMessage} />
+      <ChatInput
+        value={newMessage}
+        onChange={onChange}
+        onSubmit={handleSubmitMessage}
+      />
     </div>
   );
 }
@@ -108,9 +116,7 @@ const ChatBubble = ({ isCurrentUser, messageText, userName }) => {
   );
 };
 
-const ChatInput = ({ onSubmit }) => {
-  const [newMessage, setNewMessage] = useState('');
-
+const ChatInput = ({ value, onChange, onSubmit }) => {
   return (
     <OutlinedInput
       multiline
@@ -119,12 +125,12 @@ const ChatInput = ({ onSubmit }) => {
       maxRows={4}
       sx={{ marginTop: 4, width: '40ch' }} // this width also expands the width of the modal (as wanted tbh)
       placeholder="new message"
-      value={newMessage}
-      onChange={(e) => setNewMessage(e.target.value)}
+      value={value}
+      onChange={onChange}
       endAdornment={
         <InputAdornment position="end">
           <Tooltip title="Send message">
-            <IconButton onClick={() => onSubmit(newMessage)}>
+            <IconButton onClick={() => onSubmit(value)}>
               <CreateIcon />
             </IconButton>
           </Tooltip>

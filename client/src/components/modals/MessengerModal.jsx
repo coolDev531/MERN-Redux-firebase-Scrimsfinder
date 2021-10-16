@@ -44,14 +44,6 @@ export default function MessengerModal() {
       title={modalTitle}
       open={messengerOpen}
       onClose={closeMessenger}>
-      {view === 'chat-room' && (
-        <Button
-          sx={{ maxWidth: '30ch', marginBottom: 2 }}
-          onClick={() => changeToView('conversations')}>
-          Go back
-        </Button>
-      )}
-
       {view === 'chat-room' ? (
         <ChatRoom conversation={conversation} />
       ) : (
