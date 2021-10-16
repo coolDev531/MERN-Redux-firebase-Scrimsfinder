@@ -9,7 +9,11 @@ import makeStyles from '@mui/styles/makeStyles';
 
 const UserConversations = memo(({ conversations, changeToView }) => (
   <>
-    <Box component="ul" display="flex" flexDirection="column">
+    <Box
+      component="ul"
+      display="flex"
+      flexDirection="column"
+      style={{ maxHeight: '300px' }}>
       {conversations.map((conversation) => (
         <pre
           key={conversation._id}

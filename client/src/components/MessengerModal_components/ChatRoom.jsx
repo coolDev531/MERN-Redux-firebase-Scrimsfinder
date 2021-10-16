@@ -1,5 +1,5 @@
 // hooks
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, useRef } from 'react';
 import useAuth from '../../hooks/useAuth';
 import useAlerts from '../../hooks/useAlerts';
 
@@ -17,6 +17,7 @@ import makeStyles from '@mui/styles/makeStyles';
 // icons
 import CreateIcon from '@mui/icons-material/Create';
 import Tooltip from '../shared/Tooltip';
+import { useLayoutEffect } from 'react';
 
 // messenger modal chat room
 export default function ChatRoom({ conversation }) {
@@ -25,6 +26,9 @@ export default function ChatRoom({ conversation }) {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
+
+  const scrollRef = useRef(); // automatically scroll to bottom on new message created.
+  const div = useRef();
 
   const { setCurrentAlert } = useAlerts();
 
@@ -78,9 +82,18 @@ export default function ChatRoom({ conversation }) {
 
   const onChange = useCallback((e) => setNewMessage(e.target.value), []);
 
+  useLayoutEffect(() => {
+    if (!isLoaded) return;
+
+    const scroll = scrollRef?.current;
+    scroll.scrollTop = scroll?.scrollHeight;
+
+    scroll.animate({ scrollTop: scroll?.scrollHeight }); // automatically scroll to bottom on new message created and mount
+  }, [messages, isLoaded]);
+
   if (!isLoaded) {
     return (
-      <div>
+      <div style={{ minHeight: '300px', minWidth: '350px' }}>
         <LinearProgress />
       </div>
     );
@@ -88,24 +101,31 @@ export default function ChatRoom({ conversation }) {
 
   return (
     <div>
-      {messages.map((message) => (
-        <ChatBubble
-          isCurrentUser={message._sender._id === currentUser._id}
-          key={message._id}
-          messageText={message.text}
-          userName={message._sender.name}
-        />
-      ))}
+      <div style={{ maxHeight: '300px', overflowY: 'auto' }} ref={scrollRef}>
+        {messages.map((message) => (
+          // one message
+          <ChatBubble
+            isCurrentUser={message._sender._id === currentUser._id}
+            key={message._id}
+            messageText={message.text}
+            userName={message._sender.name}
+            scrollRef={scrollRef} // automatically scroll to bottom on new message created, ref is passed to container div
+          />
+        ))}
+      </div>
 
-      <ChatInput
-        value={newMessage}
-        onChange={onChange}
-        onSubmit={handleSubmitMessage}
-      />
+      <div>
+        <ChatInput
+          value={newMessage}
+          onChange={onChange}
+          onSubmit={handleSubmitMessage}
+        />
+      </div>
     </div>
   );
 }
 
+// one message
 const ChatBubble = ({ isCurrentUser, messageText, userName }) => {
   const classes = useStyles({ isCurrentUser });
 

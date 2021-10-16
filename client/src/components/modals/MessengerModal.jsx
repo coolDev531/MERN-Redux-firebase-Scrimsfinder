@@ -38,6 +38,13 @@ export default function MessengerModal() {
 
   return (
     <Modal
+      customStyles={{
+        display: 'flex',
+        flexDirection: 'column',
+        minWidth: '400px',
+        maxHeight: '100%', // 100% to follow chat bubble overflow instead.
+        overflowWrap: 'break-word',
+      }}
       renderBackButton={view === 'chat-room'}
       onClickBack={() => changeToView('conversations')}
       title={modalTitle}
