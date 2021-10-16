@@ -230,6 +230,26 @@ const getUserById = async (req, res) => {
   }
 };
 
+const getUserNotifications = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    let isValid = mongoose.Types.ObjectId.isValid(id);
+
+    if (!isValid) {
+      return res.status(500).json({ error: 'invalid id' });
+    }
+
+    let user = await User.findById(id);
+
+    if (!user) return res.status(404).json({ message: 'User not found!' });
+
+    return res.json({ notifications: user.notifications });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
 const pushUserNotification = async (req, res) => {
   const { id } = req.params;
   const relatedUserId = req?.body?.relatedUserId ?? null;
@@ -559,6 +579,7 @@ module.exports = {
   getOneUser,
   getUserCreatedScrims,
   getUserParticipatedScrims,
+  getUserNotifications,
   getUserById,
   pushUserNotification,
   removeUserNotification,
