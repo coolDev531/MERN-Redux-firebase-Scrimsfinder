@@ -9,9 +9,11 @@ import Draggable from 'react-draggable';
 import Button from '@mui/material/Button';
 import { withStyles } from '@mui/styles';
 import CloseIcon from '@mui/icons-material/Close';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 // utils
 import { isMobile } from './../../utils/navigator';
+import Tooltip from './Tooltip';
 
 export const styles = (theme) => ({
   title: {
@@ -27,12 +29,37 @@ export const styles = (theme) => ({
     top: theme.spacing(1),
     color: theme.palette.grey[500],
   },
+
+  goBackButton: {
+    position: 'absolute !important',
+    left: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
+  },
 });
 
 export const DialogTitle = withStyles(styles)((props) => {
-  const { children, classes, onClose, ...other } = props;
+  const {
+    children,
+    renderBackButton,
+    onClickBack,
+    classes,
+    onClose,
+    ...other
+  } = props;
   return (
     <>
+      {renderBackButton ? (
+        <Tooltip title="Go back">
+          <IconButton
+            aria-label="go back"
+            className={classes.goBackButton}
+            onClick={onClickBack}>
+            <ArrowBackIcon />
+          </IconButton>
+        </Tooltip>
+      ) : null}
+
       <MuiDialogTitle
         className={classes.title}
         component="h1"
@@ -41,12 +68,14 @@ export const DialogTitle = withStyles(styles)((props) => {
         {children}
       </MuiDialogTitle>
       {onClose ? (
-        <IconButton
-          aria-label="close"
-          className={classes.closeButton}
-          onClick={onClose}>
-          <CloseIcon />
-        </IconButton>
+        <Tooltip title="Close">
+          <IconButton
+            aria-label="close"
+            className={classes.closeButton}
+            onClick={onClose}>
+            <CloseIcon />
+          </IconButton>
+        </Tooltip>
       ) : null}
     </>
   );
@@ -94,11 +123,18 @@ export const Modal = React.memo(
     open,
     actionButtonProps,
     actionButtonStyle,
-    customStyles,
+    customStyles = null,
+    renderBackButton = false,
+    onClickBack = null,
   }) => {
     return (
       <DraggableModal open={open} onClose={onClose}>
-        <DialogTitle onClose={onClose}>{title}</DialogTitle>
+        <DialogTitle
+          renderBackButton={renderBackButton}
+          onClickBack={onClickBack}
+          onClose={onClose}>
+          {title}
+        </DialogTitle>
 
         <DialogContent
           dividers

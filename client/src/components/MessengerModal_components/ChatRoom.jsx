@@ -22,8 +22,8 @@ import Tooltip from '../shared/Tooltip';
 export default function ChatRoom({ conversation }) {
   const { currentUser } = useAuth();
 
+  const [isLoaded, setIsLoaded] = useState(false);
   const [messages, setMessages] = useState([]);
-  const [loaded, setLoaded] = useState(false);
 
   const setCurrentAlert = useAlerts();
 
@@ -39,14 +39,14 @@ export default function ChatRoom({ conversation }) {
         })
       );
 
-      setLoaded(true);
+      setIsLoaded(true);
     };
 
     fetchMessages();
 
     // reset on component unmount
     return () => {
-      setLoaded(false);
+      setIsLoaded(false);
       setMessages([]);
     };
   }, [conversation._id]);
@@ -72,10 +72,10 @@ export default function ChatRoom({ conversation }) {
     [currentUser?._id]
   );
 
-  if (!loaded) {
+  if (!isLoaded) {
     return (
       <div>
-        <LinearProgress sx={{ width: '100%' }} />
+        <LinearProgress />
       </div>
     );
   }

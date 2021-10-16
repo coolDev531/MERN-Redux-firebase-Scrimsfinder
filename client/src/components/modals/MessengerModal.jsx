@@ -5,9 +5,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Modal } from './../shared/ModalComponents';
 import ChatRoom from '../MessengerModal_components/ChatRoom';
 import UserConversations from '../MessengerModal_components/UserConversations';
+import Button from '@mui/material/Button';
 
 export default function MessengerModal() {
-  const [view, setView] = useState('all-conversations'); // all-conversations, chat-room
+  const [view, setView] = useState('conversations'); // conversations, chat-room
   const [conversation, setConversation] = useState('');
 
   const dispatch = useDispatch();
@@ -27,10 +28,8 @@ export default function MessengerModal() {
   const changeToView = useCallback((value, conversation) => {
     if (value === 'chat-room') {
       setConversation(conversation);
+      setView('chat-room');
 
-      setTimeout(() => {
-        setView('chat-room');
-      }, 100);
       // activate socket for chat or w/e
       // fetch the messages.
     } else {
@@ -39,10 +38,19 @@ export default function MessengerModal() {
   }, []);
 
   return (
-    <Modal title={modalTitle} open={messengerOpen} onClose={closeMessenger}>
-      <button onClick={() => changeToView('all-conversations')}>
-        all convos
-      </button>
+    <Modal
+      renderBackButton={view === 'chat-room'}
+      onClickBack={() => changeToView('conversations')}
+      title={modalTitle}
+      open={messengerOpen}
+      onClose={closeMessenger}>
+      {view === 'chat-room' && (
+        <Button
+          sx={{ maxWidth: '30ch', marginBottom: 2 }}
+          onClick={() => changeToView('conversations')}>
+          Go back
+        </Button>
+      )}
 
       {view === 'chat-room' ? (
         <ChatRoom conversation={conversation} />
