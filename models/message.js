@@ -7,6 +7,7 @@ const Message = new Schema(
       type: String,
     },
 
+    // the user id of sender
     sender: {
       type: String,
     },
