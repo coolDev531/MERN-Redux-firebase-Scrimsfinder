@@ -1,8 +1,9 @@
+import useAuth from './../../hooks/useAuth';
 import FriendRequestsModal from './FriendRequestsModal';
 import NotificationsModal from './NotificationsModal';
 import UserFriendsModal from './UserFriendsModal';
-import useAuth from './../../hooks/useAuth';
 import OtherOptionsModal from './OtherOptionsModal';
+import MessengerModal from './MessengerModal';
 
 export default function AppModals() {
   const { currentUser } = useAuth();
@@ -13,6 +14,7 @@ export default function AppModals() {
     <>
       <FriendRequestsModal />
       <NotificationsModal />
+      <MessengerModal />
       <UserFriendsModal />
       <OtherOptionsModal />
     </>

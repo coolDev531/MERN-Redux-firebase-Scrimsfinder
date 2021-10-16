@@ -8,6 +8,8 @@ const initialState = {
   friendRequestsOpen: false,
   friendsModalOpen: false,
 
+  messengerOpen: false,
+
   moreOptionsModalOpen: false,
 };
 
@@ -94,6 +96,20 @@ export default function generalReducer(state = initialState, action) {
       return {
         ...state,
         moreOptionsModalOpen: false,
+      };
+    }
+
+    case 'general/openMessenger': {
+      return {
+        ...state,
+        messengerOpen: true,
+      };
+    }
+
+    case 'general/closeMessenger': {
+      return {
+        ...state,
+        messengerOpen: false,
       };
     }
 

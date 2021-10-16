@@ -27,6 +27,7 @@ import NavbarCheckboxes from './NavbarCheckboxes';
 import NavbarDropdowns from './NavbarDropdowns';
 import UserSearchBar from './UserSearchBar';
 import NotificationsButton from './NotificationsButton';
+import MessengerButton from './MessengerButton';
 
 // icons
 import Logo from '../../../assets/images/bootcamp_llc_media_kit/coin_logo_new2021.png';
@@ -179,6 +180,7 @@ export default function Navbar({ showDropdowns, showLess, showCheckboxes }) {
                       </Grid>
                     )}
 
+                    {currentUser?.uid && <MessengerButton />}
                     {currentUser?.uid && <NotificationsButton />}
 
                     {/* BURGER ICON */}

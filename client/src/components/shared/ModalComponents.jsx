@@ -94,6 +94,7 @@ export const Modal = React.memo(
     open,
     actionButtonProps,
     actionButtonStyle,
+    customStyles,
   }) => {
     return (
       <DraggableModal open={open} onClose={onClose}>
@@ -101,13 +102,19 @@ export const Modal = React.memo(
 
         <DialogContent
           dividers
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            minWidth: '350px',
-            maxHeight: '300px',
-            overflowWrap: 'break-word',
-          }}>
+          style={
+            customStyles
+              ? {
+                  ...customStyles,
+                }
+              : {
+                  display: 'flex',
+                  flexDirection: 'column',
+                  minWidth: '350px',
+                  maxHeight: '300px',
+                  overflowWrap: 'break-word',
+                }
+          }>
           {children}
         </DialogContent>
 
