@@ -3,13 +3,17 @@ const Schema = mongoose.Schema;
 
 const Message = new Schema(
   {
-    conversationId: {
-      type: String,
+    _conversation: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Conversation',
+      required: true,
     },
 
     // the user id of sender
-    sender: {
-      type: String,
+    _sender: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
     },
 
     text: {

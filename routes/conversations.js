@@ -4,11 +4,11 @@ const router = Router();
 
 // create  conv
 router.post('/conversations', async (req, res) => {
-  const newConversation = new Conversation({
-    members: [req.body.senderId, req.body.receiverId],
-  });
-
   try {
+    const newConversation = new Conversation({
+      members: [req.body.senderId, req.body.receiverId],
+    });
+
     const savedConversation = await newConversation.save();
     return res.status(200).json(savedConversation);
   } catch (error) {
