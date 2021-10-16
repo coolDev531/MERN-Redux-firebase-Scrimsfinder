@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const router = Router();
-const controllers = require('../controllers/conversations');
+const controllers = require('../controllers/conversations.controllers');
 
 // create one conversation
 router.post('/conversations', controllers.postConversation);
