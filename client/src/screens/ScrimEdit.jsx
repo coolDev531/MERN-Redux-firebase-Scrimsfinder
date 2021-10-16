@@ -27,7 +27,7 @@ import moment from 'moment';
 import 'moment-timezone';
 import { getDateAndTimeSeparated } from '../utils/getDateAndTimeSeparated';
 import devLog from '../utils/devLog';
-import { updateScrim, getScrimById } from '../services/scrims.services';
+import { updateScrim, getScrimById } from '../services/scrims.service';
 
 /**
  * @method sample

@@ -15,7 +15,7 @@ import Box from '@mui/material/Box';
 import {
   deleteAllUserNotifications,
   deleteOneUserNotification,
-} from '../../services/users.services';
+} from '../../services/users.service';
 import { makeStyles } from '@mui/styles';
 
 // icons

@@ -9,7 +9,7 @@ import FormGroup from '@mui/material/FormGroup';
 import Button from '@mui/material/Button';
 
 // services
-import { sendFriendRequest } from '../../services/users.services';
+import { sendFriendRequest } from '../../services/users.service';
 
 // utils
 import devLog from './../../utils/devLog';

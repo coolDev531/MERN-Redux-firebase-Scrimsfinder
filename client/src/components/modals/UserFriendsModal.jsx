@@ -16,7 +16,7 @@ import Divider from '@mui/material/Divider';
 import { getRankImage } from './../../utils/getRankImage';
 
 // services
-import { removeUserFriend } from '../../services/users.services';
+import { removeUserFriend } from '../../services/users.service';
 
 // icons
 import CancelIcon from '@mui/icons-material/Cancel';

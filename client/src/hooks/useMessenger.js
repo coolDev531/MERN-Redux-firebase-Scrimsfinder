@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { getUserConversations } from '../services/conversations.services';
+import { getUserConversations } from '../services/conversations.service';
 import { useDispatch } from 'react-redux';
 import useAuth from './useAuth';
 

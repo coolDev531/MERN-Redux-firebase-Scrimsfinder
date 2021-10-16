@@ -24,7 +24,7 @@ import {
 import Loading from '../components/shared/Loading';
 
 // utils and services
-import { createScrim } from '../services/scrims.services';
+import { createScrim } from '../services/scrims.service';
 import { getMinutes } from './../utils/getMinutes';
 import moment from 'moment';
 import 'moment-timezone';

@@ -24,7 +24,7 @@ import { auth, provider } from '../firebase';
 import { KEYCODES } from '../utils/keycodes';
 
 // services
-import { registerUser } from '../services/auth.services';
+import { registerUser } from '../services/auth.service';
 
 function getSteps() {
   return [
