@@ -61,17 +61,11 @@ export default function ChatRoom({ conversation }) {
         });
       }
 
-      const newMsg = await postNewMessage({
+      const newlyCreatedMessage = await postNewMessage({
         senderId: currentUser?._id,
         conversationId: conversation._id,
         text: msgText,
       });
-
-      console.log({ newMsg });
-      const newlyCreatedMessage = {
-        _sender: newMsg._sender,
-        text: newMsg.text,
-      };
 
       setMessages((prevState) => [...prevState, newlyCreatedMessage]);
 
