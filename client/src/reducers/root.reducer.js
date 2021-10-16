@@ -5,6 +5,7 @@ import alerts from './alerts.reducer';
 import scrims from './scrims.reducer';
 import users from './users.reducer';
 import general from './general.reducer';
+import messenger from './messenger.reducer';
 
 // this reducer combines all other specific reducers.
 export default combineReducers({
@@ -13,4 +14,5 @@ export default combineReducers({
   scrims,
   users,
   general,
+  messenger,
 });

@@ -25,16 +25,33 @@ const postConversation = async (req, res) => {
 
 const getUserConversations = async (req, res) => {
   try {
-    const conversation = await Conversation.find({
+    const conversations = await Conversation.find({
       members: { $in: [req.params.userId] },
     });
-    return res.status(200).json(conversation);
+
+    if (!conversations) {
+      return res.status(200).json({ conversations: [] });
+    }
+
+    return res.status(200).json(conversations);
   } catch (error) {
     return res.status(500).json({ error: error.message });
+  }
+};
+
+const findOneConversation = async (req, res) => {
+  try {
+    const conversation = await Conversation.findOne({
+      members: { $all: [req.params.firstUserId, req.params.secondUserId] },
+    });
+    return res.status(200).json(conversation);
+  } catch (err) {
+    return res.status(500).json(err);
   }
 };
 
 module.exports = {
   postConversation,
   getUserConversations,
+  findOneConversation,
 };

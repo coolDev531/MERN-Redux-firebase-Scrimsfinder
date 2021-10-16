@@ -2,10 +2,10 @@ const { Router } = require('express');
 const controllers = require('../controllers/messages');
 const router = Router();
 
-// // add
+// add
 router.post('/messages', controllers.postMessage);
 
-//  get
+// get
 router.get('/messages/:conversationId', controllers.getConversationMessages); // GET
 
 module.exports = router;

@@ -206,9 +206,7 @@ const getUserById = async (req, res) => {
     ]);
 
     if (!user)
-      return res
-        .status(404)
-        .json({ message: `User not found in region: ${region}` });
+      return res.status(404).json({ message: `User not found with id: ${id}` });
 
     let userWithNoAdminKey = {
       ...user._doc,

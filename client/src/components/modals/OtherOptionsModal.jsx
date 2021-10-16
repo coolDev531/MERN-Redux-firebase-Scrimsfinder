@@ -1,4 +1,5 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
+import useEffectExceptOnMount from './../../hooks/useEffectExceptOnMount';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
@@ -46,7 +47,7 @@ export default function MoreOptionsModal() {
     });
   }, [dispatch]);
 
-  useEffect(() => {
+  useEffectExceptOnMount(() => {
     onClose(); // close on path change
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

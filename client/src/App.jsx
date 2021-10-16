@@ -24,6 +24,7 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import AppModals from './components/modals/AppModals';
 import { Helmet } from 'react-helmet';
+import useMessenger from './hooks/useMessenger';
 
 function App() {
   const classes = useAppStyles();
@@ -38,6 +39,7 @@ function App() {
   useSetScrimsRegion(); // set scrims region to users region on mount and when user changes it on settings
   useFetchScrims(); // fetch scrims on mount or path change
   useRefreshNotifications(); // reload user notifications on every path change.
+  useMessenger();
 
   if (isVerifyingUser) {
     return (
