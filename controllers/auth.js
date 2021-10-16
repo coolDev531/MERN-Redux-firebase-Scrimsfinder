@@ -210,12 +210,12 @@ const verifyUser = async (req, res) => {
           user: foundUser,
         });
       } else {
-        res.status(500).json({
+        return res.status(500).json({
           message: 'Invalid token',
         });
       }
     } else {
-      res.status(500).json({
+      return res.status(500).json({
         message: 'User not found!',
       });
     }
