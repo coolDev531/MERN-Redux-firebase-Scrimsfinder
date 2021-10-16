@@ -1,6 +1,6 @@
-const Message = require('../models/message');
-const Conversation = require('../models/conversation');
-const User = require('../models/user');
+const Message = require('../models/message.model');
+const Conversation = require('../models/conversation.model');
+const User = require('../models/user.model');
 
 const mongoose = require('mongoose');
 

@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 // models
-const User = require('../models/user');
+const User = require('../models/user.model');
 
 /**
  * @method removeSpacesBeforeHashTag

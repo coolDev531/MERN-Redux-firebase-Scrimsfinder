@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 // models
-const Scrim = require('../models/scrim');
-const User = require('../models/user');
+const Scrim = require('../models/scrim.model');
+const User = require('../models/user.model');
 
 // utils
 const sample = require('../utils/sample');

@@ -9,8 +9,8 @@ const databaseName = 'scrimsTestDatabase';
 const makeUuid = require('../utils/makeUuid');
 
 // models
-const User = require('../models/user');
-const Scrim = require('../models/scrim');
+const User = require('../models/user.model');
+const Scrim = require('../models/scrim.model');
 
 let request = require('supertest');
 let headers = { 'x-api-key': KEYS.API_KEY };

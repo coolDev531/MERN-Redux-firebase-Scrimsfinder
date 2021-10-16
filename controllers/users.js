@@ -1,5 +1,5 @@
-const User = require('../models/user');
-const Scrim = require('../models/scrim');
+const User = require('../models/user.model');
+const Scrim = require('../models/scrim.model');
 const KEYS = require('../config/keys');
 const mongoose = require('mongoose');
 

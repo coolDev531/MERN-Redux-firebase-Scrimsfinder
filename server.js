@@ -5,11 +5,11 @@ const bodyParser = require('body-parser');
 const passport = require('passport');
 const apiKey = require('./utils/apiKey');
 
-const scrimRoutes = require('./routes/scrims');
-const userRoutes = require('./routes/users');
-const authRoutes = require('./routes/auth');
-const conversationRoutes = require('./routes/conversations');
-const messageRoutes = require('./routes/messages');
+const scrimRoutes = require('./routes/scrims.routes');
+const userRoutes = require('./routes/users.routes');
+const authRoutes = require('./routes/auth.routes');
+const conversationRoutes = require('./routes/conversations.routes');
+const messageRoutes = require('./routes/messages.routes');
 
 function createServer() {
   const app = express();
