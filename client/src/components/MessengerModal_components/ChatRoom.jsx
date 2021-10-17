@@ -31,6 +31,7 @@ import Tooltip from '../shared/Tooltip';
 import { getRankImage } from './../../utils/getRankImage';
 import makeStyles from '@mui/styles/makeStyles';
 import { io } from 'socket.io-client';
+import useUsers from './../../hooks/useUsers';
 
 const ONE_MIN_MS = 60000; // for interval to set current time (message date ago text)
 const socketServerUrl = 'ws://localhost:8900';
@@ -38,10 +39,12 @@ const socketServerUrl = 'ws://localhost:8900';
 // messenger modal chat room
 export default function ChatRoom({ conversation }) {
   const { currentUser } = useAuth();
+  const { allUsers } = useUsers();
   const [currentTime, setCurrentTime] = useState(() => new Date());
   const [isLoaded, setIsLoaded] = useState(false);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState(''); // the user input field new message to be sent
+  const [arrivalMessage, setArrivalMessage] = useState(null); // new message that will be received from socket
 
   const socket = useRef();
   const scrollRef = useRef(); // automatically scroll to bottom on new message created.
@@ -50,9 +53,24 @@ export default function ChatRoom({ conversation }) {
 
   const { setCurrentAlert } = useAlerts();
 
+  useInterval(() => {
+    setCurrentTime(new Date());
+  }, ONE_MIN_MS);
+
   useEffect(() => {
     socket.current = io(socketServerUrl);
   }, []);
+
+  useEffect(() => {
+    // take event from server
+    socket.current.on('getMessage', (data) => {
+      setArrivalMessage({
+        _sender: allUsers.find((user) => user._id === data.senderId),
+        text: data.text,
+        createdAt: Date.now(),
+      });
+    });
+  }, [allUsers]);
 
   useEffect(() => {
     // send event to socket server.
@@ -61,10 +79,6 @@ export default function ChatRoom({ conversation }) {
       console.log({ users });
     });
   }, [currentUser]);
-
-  useInterval(() => {
-    setCurrentTime(new Date());
-  }, ONE_MIN_MS);
 
   useEffect(() => {
     // fetch messages by conversationId and set in the state.
@@ -89,6 +103,16 @@ export default function ChatRoom({ conversation }) {
       setMessages([]);
     };
   }, [conversation._id]);
+
+  useEffect(() => {
+    // doing this so we don't see this message at conversations that aren't this one
+    if (
+      arrivalMessage &&
+      conversation?.members.includes(arrivalMessage?._sender?._id)
+    ) {
+      setMessages((prevState) => [...prevState, arrivalMessage]);
+    }
+  }, [arrivalMessage, conversation?.members]);
 
   const handleSubmitMessage = useCallback(
     async (msgText) => {
