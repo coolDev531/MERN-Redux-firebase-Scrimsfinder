@@ -8,6 +8,7 @@ import {
 } from 'react';
 import useAuth from '../../hooks/useAuth';
 import useAlerts from '../../hooks/useAlerts';
+import useInterval from './../../hooks/useInterval';
 
 // components
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -18,36 +19,52 @@ import { Helmet } from 'react-helmet';
 import Moment from 'react-moment';
 import 'moment-timezone';
 
-// services and utils
+// services
 import { getConversationMessages } from '../../services/messages.services';
 import { postNewMessage } from './../../services/messages.services';
-import makeStyles from '@mui/styles/makeStyles';
 
 // icons
 import CreateIcon from '@mui/icons-material/Create';
 import Tooltip from '../shared/Tooltip';
-import useInterval from './../../hooks/useInterval';
+
+// utils
 import { getRankImage } from './../../utils/getRankImage';
+import makeStyles from '@mui/styles/makeStyles';
+import { io } from 'socket.io-client';
+
+const ONE_MIN_MS = 60000; // for interval to set current time (message date ago text)
+const socketServerUrl = 'ws://localhost:8900';
 
 // messenger modal chat room
 export default function ChatRoom({ conversation }) {
   const { currentUser } = useAuth();
-
   const [currentTime, setCurrentTime] = useState(() => new Date());
-
-  const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState(''); // the user input field new message to be sent
 
+  const socket = useRef();
   const scrollRef = useRef(); // automatically scroll to bottom on new message created.
 
   const classes = useStyles();
 
   const { setCurrentAlert } = useAlerts();
 
+  useEffect(() => {
+    socket.current = io(socketServerUrl);
+  }, []);
+
+  useEffect(() => {
+    // send event to socket server.
+    socket.current.emit('addUser', currentUser._id);
+    socket.current.on('getUsers', (users) => {
+      console.log({ users });
+    });
+  }, [currentUser]);
+
   useInterval(() => {
     setCurrentTime(new Date());
-  }, 1000);
+  }, ONE_MIN_MS);
 
   useEffect(() => {
     // fetch messages by conversationId and set in the state.
