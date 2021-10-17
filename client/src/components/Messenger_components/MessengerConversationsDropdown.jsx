@@ -3,6 +3,7 @@ import Grow from '@mui/material/Grow';
 import Paper from '@mui/material/Paper';
 import Popper from '@mui/material/Popper';
 import MenuList from '@mui/material/MenuList';
+import UserConversations from './../MessengerModal_components/UserConversations';
 
 export default function MessengerConversationsDropdown({
   open,
@@ -40,11 +41,7 @@ export default function MessengerConversationsDropdown({
           }}>
           <Paper>
             <ClickAwayListener onClickAway={handleClose}>
-              <MenuList
-                autoFocusItem={open}
-                id="composition-menu"
-                aria-labelledby="composition-button"
-                onKeyDown={handleListKeyDown}></MenuList>
+              <UserConversations />
             </ClickAwayListener>
           </Paper>
         </Grow>

@@ -1,3 +1,5 @@
+import { useState, useCallback, useMemo } from 'react';
+
 // components
 import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
@@ -7,13 +9,31 @@ import Tooltip from '../shared/Tooltip';
 // services and utils
 import makeStyles from '@mui/styles/makeStyles';
 import { getRankImage } from './../../utils/getRankImage';
+import ChatRoom from './ChatRoom';
+import { useSelector } from 'react-redux';
+import useAuth from './../../hooks/useAuth';
 
-export default function UserConversations({
-  conversations,
-  changeToView,
-  onlineUsers,
-  currentUser,
-}) {
+export default function UserConversations() {
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
+  const { onlineUsers, conversations } = useSelector(
+    ({ messenger }) => messenger
+  );
+
+  const [conversation, setConversation] = useState(conversations[0]);
+
+  const { currentUser } = useAuth();
+
+  const onClose = useCallback(() => {
+    setIsChatOpen(false);
+  }, []);
+
+  const open = useMemo(() => {
+    console.log({ conversation });
+    if (!conversation?.members) return false;
+    return isChatOpen === conversation?._id;
+  }, [conversation, isChatOpen]);
+
   return (
     <>
       <Helmet>
@@ -30,9 +50,14 @@ export default function UserConversations({
           conversations={conversations}
           currentUser={currentUser}
           onlineUsers={onlineUsers}
-          changeToView={changeToView}
+          onClose={onClose}
+          onClick={(conversation) => {
+            setConversation(conversation);
+            setIsChatOpen(conversation._id);
+          }}
         />
       </Box>
+      <ChatRoom conversation={conversation} onClose={onClose} open={open} />
     </>
   );
 }
@@ -41,7 +66,7 @@ const ExistingConversations = ({
   conversations,
   currentUser,
   onlineUsers,
-  changeToView,
+  onClick,
 }) => {
   const classes = useStyles();
 
@@ -58,9 +83,7 @@ const ExistingConversations = ({
 
     return (
       <Tooltip title="Move to conversation" key={friendUser._id}>
-        <div
-          className={classes.user}
-          onClick={() => changeToView('chat-room', conversation)}>
+        <div className={classes.user} onClick={() => onClick(conversation)}>
           <div
             // add this bool to user (use socket?) if onlien green, else red
             style={{ backgroundColor: isOnline ? '#AAFF00' : '#EE4B2B' }}

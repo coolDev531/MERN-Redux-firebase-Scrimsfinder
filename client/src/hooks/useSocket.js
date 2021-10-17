@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 // utils
 import { io } from 'socket.io-client';
-import devLog from './../utils/devLog';
 
 const socketServerUrl = 'ws://localhost:8900';
 

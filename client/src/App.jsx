@@ -14,7 +14,6 @@ import useMessenger from './hooks/useMessenger';
 // styles
 import { appTheme } from './appTheme';
 import { useAppStyles } from './styles/App.styles';
-import { useCreateSocket } from './hooks/useSocket';
 
 // components
 import AppRouter from './navigation/AppRouter';
@@ -40,7 +39,6 @@ function App() {
   useSetScrimsRegion(); // set scrims region to users region on mount and when user changes it on settings
   useFetchScrims(); // fetch scrims on mount or path change
   useRefreshNotifications(); // reload user notifications on every path change.
-  // useCreateSocket();
   useMessenger();
 
   if (isVerifyingUser) {

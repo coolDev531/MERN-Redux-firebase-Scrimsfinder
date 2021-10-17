@@ -9,6 +9,8 @@ import {
 } from 'react';
 import useAlerts from '../../hooks/useAlerts';
 import useUsers from './../../hooks/useUsers';
+import useSocket from './../../hooks/useSocket';
+import useAuth from './../../hooks/useAuth';
 
 // components
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -31,14 +33,18 @@ import Tooltip from '../shared/Tooltip';
 import { getRankImage } from './../../utils/getRankImage';
 import makeStyles from '@mui/styles/makeStyles';
 import devLog from './../../utils/devLog';
+import { Modal } from '../shared/ModalComponents';
 
 // messenger modal chat room
-export default function ChatRoom({ conversation, currentUser, socket }) {
+export default function ChatRoom({ conversation, open, onClose }) {
   const { allUsers } = useUsers();
+  const { currentUser } = useAuth();
   const [isLoaded, setIsLoaded] = useState(false);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState(''); // the user input field new message to be sent
   const [arrivalMessage, setArrivalMessage] = useState(null); // new message that will be received from socket
+
+  const socket = useSocket();
 
   const conversationMemberIds = useMemo(
     () => conversation.members.map(({ _id }) => _id),
@@ -53,7 +59,7 @@ export default function ChatRoom({ conversation, currentUser, socket }) {
 
   useEffect(() => {
     // take event from server
-    socket?.on('getMessage', (data) => {
+    socket.current?.on('getMessage', (data) => {
       devLog('getMessage event: ', data);
       setArrivalMessage({
         _sender: allUsers.find((user) => user._id === data.senderId),
@@ -62,7 +68,7 @@ export default function ChatRoom({ conversation, currentUser, socket }) {
         _id: data.messageId,
       });
     });
-  }, [allUsers, socket]);
+  }, [allUsers, isLoaded]);
 
   useEffect(() => {
     // fetch messages by conversationId and set in the state.
@@ -121,7 +127,7 @@ export default function ChatRoom({ conversation, currentUser, socket }) {
         );
 
         // send event to server after creating on client and posting to api
-        socket?.emit('sendMessage', {
+        socket.current?.emit('sendMessage', {
           senderId: currentUser?._id,
           text: msgText,
           receiverId: receiver._id,
@@ -141,19 +147,18 @@ export default function ChatRoom({ conversation, currentUser, socket }) {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [currentUser?._id, conversation._id, socket]
+    [currentUser?._id, conversation._id]
   );
 
   const onChange = useCallback((e) => setNewMessage(e.target.value), []);
 
   useLayoutEffect(() => {
     if (!isLoaded) return;
-
     const scroll = scrollRef?.current;
     scroll.scrollTop = scroll?.scrollHeight;
 
     scroll.animate({ scrollTop: scroll?.scrollHeight }); // automatically scroll to bottom on new message created and mount
-  }, [messages, isLoaded]);
+  }, [messages, scrollRef?.current]);
 
   if (!isLoaded) {
     return (
@@ -164,7 +169,17 @@ export default function ChatRoom({ conversation, currentUser, socket }) {
   }
 
   return (
-    <>
+    <Modal
+      customStyles={{
+        display: 'flex',
+        flexDirection: 'column',
+        minWidth: '600px',
+        maxWidth: '600px',
+        maxHeight: '100%', // 100% to follow chat bubble overflow instead.
+        overflowWrap: 'break-word',
+      }}
+      open={open}
+      onClose={onClose}>
       <Helmet>
         <meta charSet="utf-8" />
         <title>
@@ -172,7 +187,8 @@ export default function ChatRoom({ conversation, currentUser, socket }) {
           {conversation.members[1].name} | Bootcamp LoL Scrim Gym
         </title>
       </Helmet>
-      <div style={{ minWidth: '400px' }}>
+      <div
+        style={{ minWidth: '400px', display: 'flex', flexDirection: 'column' }}>
         <div className={classes.chatRoomMessagesContainer} ref={scrollRef}>
           {messages.map((message) => (
             // one message
@@ -193,7 +209,7 @@ export default function ChatRoom({ conversation, currentUser, socket }) {
           onSubmit={handleSubmitMessage}
         />
       </div>
-    </>
+    </Modal>
   );
 }
 
