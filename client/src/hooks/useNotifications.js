@@ -1,8 +1,13 @@
+// hooks
 import { useEffect } from 'react';
 import useSocket from './useSocket';
 import useAuth from './useAuth';
-import devLog from './../utils/devLog';
 import { useDispatch } from 'react-redux';
+
+// utils
+import devLog from './../utils/devLog';
+
+// services
 import {
   getUserNotifications,
   pushUserNotification,
@@ -44,6 +49,8 @@ export default function useNotifications() {
         }
       }
     });
+
+    //  eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket, currentUser?._id, dispatch]);
 
   useEffect(() => {

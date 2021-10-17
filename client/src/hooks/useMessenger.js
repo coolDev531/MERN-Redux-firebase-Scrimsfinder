@@ -8,7 +8,6 @@ import useAuth from './useAuth';
 import devLog from './../utils/devLog';
 
 import { io } from 'socket.io-client';
-import { pushUserNotification } from '../services/users.services';
 
 const socketServerUrl =
   process.env.NODE_ENV === 'production'
