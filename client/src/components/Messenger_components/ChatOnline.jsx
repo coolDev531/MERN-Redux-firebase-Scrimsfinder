@@ -11,47 +11,8 @@ import makeStyles from '@mui/styles/makeStyles';
 import { getRankImage } from '../../utils/getRankImage';
 import { useSelector, useDispatch } from 'react-redux';
 import useAuth from '../../hooks/useAuth';
-import ChatOnline from './ChatOnline';
 
-export default function UserConversations({ closeMenu }) {
-  const { conversations, onlineFriends } = useSelector(
-    ({ messenger }) => messenger
-  );
-
-  const dispatch = useDispatch();
-
-  const { currentUser } = useAuth();
-
-  const openChat = useCallback((conversation) => {
-    closeMenu();
-    dispatch({
-      type: 'general/chatRoomOpen',
-      payload: { conversation, isOpen: true },
-    });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return (
-    <MenuList style={{ padding: '20px' }}>
-      {/* <ExistingConversations
-        conversations={conversations}
-        currentUser={currentUser}
-        onlineFriends={onlineFriends}
-        openChat={openChat}
-      /> */}
-
-      <ChatOnline
-        conversations={conversations}
-        currentUser={currentUser}
-        onlineFriends={onlineFriends}
-        openChat={openChat}
-      />
-    </MenuList>
-  );
-}
-
-const ExistingConversations = ({
+const ChatOnline = ({
   conversations,
   currentUser,
   onlineFriends,
@@ -113,3 +74,5 @@ const useStyles = makeStyles({
     width: '10px',
   },
 });
+
+export default ChatOnline;
