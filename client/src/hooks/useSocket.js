@@ -7,22 +7,20 @@ import { io } from 'socket.io-client';
 const socketServerUrl = 'ws://localhost:8900';
 
 export default function useSocket() {
-  // socket lifecycle stuff
-
   return useSelector(({ socket }) => socket);
 }
 
+// socket lifecycle stuff
 export const useCreateSocket = () => {
-  const socket = useRef(null);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    socket.current = io(socketServerUrl);
+    let socket = io(socketServerUrl);
 
     dispatch({ type: 'socket/setSocket', payload: socket });
 
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return socket;
+  return;
 };

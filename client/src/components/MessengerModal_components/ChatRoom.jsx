@@ -44,7 +44,7 @@ export default function ChatRoom({ conversation, open, onClose }) {
   const [newMessage, setNewMessage] = useState(''); // the user input field new message to be sent
   const [arrivalMessage, setArrivalMessage] = useState(null); // new message that will be received from socket
 
-  const socket = useSocket();
+  const { socket } = useSocket();
 
   const conversationMemberIds = useMemo(
     () => conversation.members.map(({ _id }) => _id),
@@ -127,6 +127,7 @@ export default function ChatRoom({ conversation, open, onClose }) {
         );
 
         // send event to server after creating on client and posting to api
+        console.log('EMIT');
         socket.current?.emit('sendMessage', {
           senderId: currentUser?._id,
           text: msgText,

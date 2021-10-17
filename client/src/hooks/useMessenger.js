@@ -5,10 +5,22 @@ import useAuth from './useAuth';
 import devLog from './../utils/devLog';
 import { useCreateSocket } from './useSocket';
 
+import { io } from 'socket.io-client';
+
+const socketServerUrl = 'ws://localhost:8900';
+
 export default function useMessenger() {
   const { currentUser } = useAuth();
   const dispatch = useDispatch();
-  const socket = useCreateSocket();
+  let socket = useRef();
+
+  useEffect(() => {
+    socket.current = io(socketServerUrl);
+
+    dispatch({ type: 'socket/setSocket', payload: socket });
+
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (!currentUser?._id) return;
@@ -36,6 +48,4 @@ export default function useMessenger() {
     });
     // send event to socket server.
   }, [currentUser?._id, socket, dispatch]);
-
-  return null;
 }
