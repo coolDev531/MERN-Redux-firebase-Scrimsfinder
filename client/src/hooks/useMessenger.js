@@ -38,12 +38,22 @@ export default function useMessenger() {
   useEffect(() => {
     if (!currentUser?._id) return;
 
+    const userFriendIds = currentUser.friends.map(({ _id }) => _id);
+
     socket.current.emit('addUser', currentUser?._id);
     socket.current.on('getUsers', (users) => {
       devLog('socket getUsers event: ', users);
 
       const onlineUserIds = users.map(({ userId }) => userId);
+
       dispatch({ type: 'messenger/setOnlineUsers', payload: onlineUserIds });
+
+      dispatch({
+        type: 'messenger/setOnlineFriends',
+        payload: onlineUserIds.filter((userId) =>
+          userFriendIds.includes(userId)
+        ),
+      });
     });
     // send event to socket server.
   }, [currentUser?._id, socket, dispatch]);

@@ -1,6 +1,7 @@
 const initialState = {
   conversations: [],
   onlineUsers: [],
+  onlineFriends: [],
 };
 
 export default function messengerReducer(state = initialState, action) {
@@ -18,6 +19,13 @@ export default function messengerReducer(state = initialState, action) {
       return {
         ...state,
         onlineUsers: payload,
+      };
+    }
+
+    case 'messenger/setOnlineFriends': {
+      return {
+        ...state,
+        onlineFriends: payload,
       };
     }
 
