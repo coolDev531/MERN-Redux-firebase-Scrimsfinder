@@ -43,9 +43,15 @@ const getUserConversations = async (req, res) => {
 
 const findOneConversation = async (req, res) => {
   try {
-    const conversation = await Conversation.findOne({
+    let conversation = await Conversation.findOne({
       members: { $all: [req.params.firstUserId, req.params.secondUserId] },
     });
+
+    // populate so client can receive the members attributes
+    conversation = await conversation
+      .populate('members', ['name', 'discord', 'rank', 'region'])
+      .execPopulate();
+
     return res.status(200).json(conversation);
   } catch (err) {
     return res.status(500).json(err);

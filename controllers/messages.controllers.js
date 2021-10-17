@@ -64,7 +64,7 @@ const getConversationMessages = async (req, res) => {
           console.log(err);
           return res.status(400).end();
         }
-        return res.json(messagesData);
+        return res.status(200).json(messagesData);
       });
   } catch (error) {
     return res.status(500).json({ error: error.message });

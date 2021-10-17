@@ -12,6 +12,7 @@ import { getRankImage } from '../../utils/getRankImage';
 import { useSelector, useDispatch } from 'react-redux';
 import useAuth from '../../hooks/useAuth';
 import ChatOnline from './ChatOnline';
+import { findOneConversation } from '../../services/conversations.services';
 
 export default function UserConversations({ closeMenu }) {
   const { conversations, onlineFriends } = useSelector(
@@ -32,6 +33,23 @@ export default function UserConversations({ closeMenu }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const openChat2 = async (user) => {
+    try {
+      // find conversation from api
+      const conversation = await findOneConversation(currentUser._id, user._id);
+      console.log({ conversation });
+
+      // open the chat room modal in the redux store with the conversation object
+      dispatch({
+        type: 'general/chatRoomOpen',
+        payload: { conversation, isOpen: true },
+      });
+      closeMenu();
+    } catch (error) {
+      throw error;
+    }
+  };
+
   return (
     <MenuList style={{ padding: '20px' }}>
       {/* <ExistingConversations
@@ -45,7 +63,7 @@ export default function UserConversations({ closeMenu }) {
         conversations={conversations}
         currentUser={currentUser}
         onlineFriends={onlineFriends}
-        openChat={openChat}
+        openChat={openChat2}
       />
     </MenuList>
   );

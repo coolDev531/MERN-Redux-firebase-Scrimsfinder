@@ -1,16 +1,11 @@
-import { useCallback } from 'react';
-
 // components
 import Divider from '@mui/material/Divider';
 import Tooltip from '../shared/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import MenuList from '@mui/material/MenuList';
 
 // services and utils
 import makeStyles from '@mui/styles/makeStyles';
 import { getRankImage } from '../../utils/getRankImage';
-import { useSelector, useDispatch } from 'react-redux';
-import useAuth from '../../hooks/useAuth';
 
 const ChatOnline = ({
   conversations,
@@ -31,10 +26,12 @@ const ChatOnline = ({
 
     if (!friendUser) return null;
 
+    if (!isOnline) return null;
+
     return (
       <MenuItem>
         <Tooltip title="Move to conversation" key={friendUser._id}>
-          <div className={classes.user} onClick={() => openChat(conversation)}>
+          <div className={classes.user} onClick={() => openChat(friendUser)}>
             <div
               // add this bool to user (use socket?) if onlien green, else red
               style={{ backgroundColor: isOnline ? '#AAFF00' : '#EE4B2B' }}

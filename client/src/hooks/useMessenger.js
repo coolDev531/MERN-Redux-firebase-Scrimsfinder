@@ -48,10 +48,10 @@ export default function useMessenger() {
 
       // dispatch({ type: 'messenger/setOnlineUsers', payload: onlineUserIds });
 
-      // ONLY GET  THIS USERS FRIENDS
-      const currentUserFriends = currentUser.friends.filter((friend) =>
-        users.some((u) => u.userId === friend._id)
-      );
+      // ONLY GET THIS USERS FRIENDS
+      const currentUserFriends = currentUser.friends
+        .filter((friend) => users.some((u) => u.userId === friend._id))
+        .map(({ _id }) => _id); // only get ids
 
       dispatch({
         type: 'messenger/setOnlineFriends',
