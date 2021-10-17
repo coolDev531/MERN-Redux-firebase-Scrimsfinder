@@ -59,5 +59,5 @@ export default function useMessenger() {
       });
     });
     // send event to socket server.
-  }, [currentUser?._id, socket, dispatch]);
+  }, [currentUser?._id, currentUser?.friends, socket, dispatch]);
 }

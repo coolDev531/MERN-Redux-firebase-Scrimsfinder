@@ -2,20 +2,18 @@ import { useCallback } from 'react';
 
 // components
 import Divider from '@mui/material/Divider';
-import Box from '@mui/material/Box';
-import { Helmet } from 'react-helmet';
 import Tooltip from '../shared/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import MenuList from '@mui/material/MenuList';
 
 // services and utils
 import makeStyles from '@mui/styles/makeStyles';
-import { getRankImage } from './../../utils/getRankImage';
+import { getRankImage } from '../../utils/getRankImage';
 import { useSelector, useDispatch } from 'react-redux';
-import useAuth from './../../hooks/useAuth';
+import useAuth from '../../hooks/useAuth';
 
 export default function UserConversations({ closeMenu }) {
-  const { onlineUsers, conversations, onlineFriends } = useSelector(
+  const { conversations, onlineFriends } = useSelector(
     ({ messenger }) => messenger
   );
 
@@ -34,21 +32,14 @@ export default function UserConversations({ closeMenu }) {
   }, []);
 
   return (
-    <>
-      <Helmet>
-        <meta charSet="utf-8" />
-        <title>Messenger: Conversations | Bootcamp LoL Scrim Gym</title>
-      </Helmet>
-
-      <MenuList style={{ padding: '20px' }}>
-        <ExistingConversations
-          conversations={conversations}
-          currentUser={currentUser}
-          onlineFriends={onlineFriends}
-          openChat={openChat}
-        />
-      </MenuList>
-    </>
+    <MenuList style={{ padding: '20px' }}>
+      <ExistingConversations
+        conversations={conversations}
+        currentUser={currentUser}
+        onlineFriends={onlineFriends}
+        openChat={openChat}
+      />
+    </MenuList>
   );
 }
 

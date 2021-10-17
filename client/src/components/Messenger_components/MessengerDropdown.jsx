@@ -3,8 +3,7 @@ import ClickAwayListener from '@mui/material/ClickAwayListener';
 import Grow from '@mui/material/Grow';
 import Paper from '@mui/material/Paper';
 import Popper from '@mui/material/Popper';
-import MenuList from '@mui/material/MenuList';
-import UserConversations from '../MessengerModal_components/UserConversations';
+import UserConversations from './UserConversations';
 import useOnKeyDown from '../../hooks/useOnKeyDown';
 import { KEYCODES } from '../../utils/keycodes';
 
