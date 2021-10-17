@@ -16,7 +16,7 @@ export default function MessengerButton({
   const anchorRef = useRef(null);
 
   return (
-    <Grid item>
+    <>
       <Tooltip title="Messenger">
         <IconButton
           ref={anchorRef}
@@ -37,7 +37,7 @@ export default function MessengerButton({
         open={isMessengerDropdownOpen}
         setOpen={setIsMessengerDropdownOpen}
       />
-    </Grid>
+    </>
   );
 }
 

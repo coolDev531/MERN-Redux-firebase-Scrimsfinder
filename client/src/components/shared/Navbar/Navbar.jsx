@@ -186,7 +186,7 @@ export default function Navbar({ showDropdowns, showLess, showCheckboxes }) {
                     )}
 
                     {currentUser?.uid && (
-                      <>
+                      <Grid item style={{ marginTop: '6px' }}>
                         {/* the MessangerButton component contains the button and the dropdown menu */}
                         <MessengerButton
                           isMessengerDropdownOpen={isMessengerDropdownOpen}
@@ -195,8 +195,9 @@ export default function Navbar({ showDropdowns, showLess, showCheckboxes }) {
                           }
                           onClick={openMessengerDropdown}
                         />
-                      </>
+                      </Grid>
                     )}
+
                     {currentUser?.uid && <NotificationsButton />}
 
                     {/* BURGER ICON */}
