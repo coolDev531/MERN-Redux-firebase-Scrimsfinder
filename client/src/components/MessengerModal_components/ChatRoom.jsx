@@ -68,7 +68,7 @@ export default function ChatRoom({ conversation, open, onClose }) {
         _id: data.messageId,
       });
     });
-  }, [allUsers, isLoaded]);
+  }, [allUsers, socket]);
 
   useEffect(() => {
     // fetch messages by conversationId and set in the state.
@@ -127,7 +127,8 @@ export default function ChatRoom({ conversation, open, onClose }) {
         );
 
         // send event to server after creating on client and posting to api
-        console.log('EMIT');
+        devLog('EMIT'); // emits only once
+
         socket.current?.emit('sendMessage', {
           senderId: currentUser?._id,
           text: msgText,
