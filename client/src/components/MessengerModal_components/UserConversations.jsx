@@ -10,7 +10,7 @@ import Tooltip from '../shared/Tooltip';
 import makeStyles from '@mui/styles/makeStyles';
 import { getRankImage } from './../../utils/getRankImage';
 import ChatRoom from './ChatRoom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import useAuth from './../../hooks/useAuth';
 
 export default function UserConversations() {
@@ -20,19 +20,18 @@ export default function UserConversations() {
     ({ messenger }) => messenger
   );
 
-  const [conversation, setConversation] = useState(conversations[0]);
+  const dispatch = useDispatch();
+
+  const [conversation, setConversation] = useState(null);
 
   const { currentUser } = useAuth();
 
-  const onClose = useCallback(() => {
-    setIsChatOpen(false);
+  const onOpen = useCallback((conversation) => {
+    dispatch({
+      type: 'general/chatRoomOpen',
+      payload: { conversation, isOpen: true },
+    });
   }, []);
-
-  const open = useMemo(() => {
-    console.log({ conversation });
-    if (!conversation?.members) return false;
-    return isChatOpen === conversation?._id;
-  }, [conversation, isChatOpen]);
 
   return (
     <>
@@ -50,14 +49,9 @@ export default function UserConversations() {
           conversations={conversations}
           currentUser={currentUser}
           onlineUsers={onlineUsers}
-          onClose={onClose}
-          onClick={(conversation) => {
-            setConversation(conversation);
-            setIsChatOpen(conversation._id);
-          }}
+          onClick={onOpen}
         />
       </Box>
-      <ChatRoom conversation={conversation} onClose={onClose} open={open} />
     </>
   );
 }

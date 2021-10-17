@@ -34,11 +34,24 @@ import { getRankImage } from './../../utils/getRankImage';
 import makeStyles from '@mui/styles/makeStyles';
 import devLog from './../../utils/devLog';
 import { Modal } from '../shared/ModalComponents';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 // messenger modal chat room
-export default function ChatRoom({ conversation, open, onClose }) {
+export default function ChatRoom() {
   const { allUsers } = useUsers();
   const { currentUser } = useAuth();
+  const { chatRoomOpen } = useSelector(({ general }) => general);
+
+  const { conversation = null, isOpen: open = false } = chatRoomOpen;
+  const dispatch = useDispatch();
+
+  const onClose = () =>
+    dispatch({
+      type: 'general/chatRoomOpen',
+      payload: { conversation: null, isOpen: false },
+    });
+
   const [isLoaded, setIsLoaded] = useState(false);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState(''); // the user input field new message to be sent
@@ -47,8 +60,8 @@ export default function ChatRoom({ conversation, open, onClose }) {
   const { socket } = useSocket();
 
   const conversationMemberIds = useMemo(
-    () => conversation.members.map(({ _id }) => _id),
-    [conversation.members]
+    () => conversation?.members?.map(({ _id }) => _id),
+    [conversation?.members]
   );
 
   const scrollRef = useRef(); // automatically scroll to bottom on new message created.
@@ -58,6 +71,7 @@ export default function ChatRoom({ conversation, open, onClose }) {
   const { setCurrentAlert } = useAlerts();
 
   useEffect(() => {
+    if (!open) return;
     // take event from server
     socket.current?.on('getMessage', (data) => {
       devLog('getMessage event: ', data);
@@ -68,12 +82,12 @@ export default function ChatRoom({ conversation, open, onClose }) {
         _id: data.messageId,
       });
     });
-  }, [allUsers, socket]);
+  }, [allUsers, socket, open]);
 
   useEffect(() => {
     // fetch messages by conversationId and set in the state.
     const fetchMessages = async () => {
-      const messagesData = await getConversationMessages(conversation._id);
+      const messagesData = await getConversationMessages(conversation?._id);
       setMessages(
         messagesData.sort((a, b) => {
           return (
@@ -92,14 +106,14 @@ export default function ChatRoom({ conversation, open, onClose }) {
       setIsLoaded(false);
       setMessages([]);
     };
-  }, [conversation._id]);
+  }, [conversation?._id]);
 
   useEffect(() => {
     // doing this so we don't see this message at conversations that aren't this one
 
     if (
       arrivalMessage &&
-      conversationMemberIds.includes(arrivalMessage?._sender?._id)
+      conversationMemberIds?.includes(arrivalMessage?._sender?._id)
     ) {
       devLog('socket new arrival message added to state (receiver client)');
       setMessages((prevState) => [...prevState, arrivalMessage]);
@@ -118,11 +132,11 @@ export default function ChatRoom({ conversation, open, onClose }) {
 
         const newlyCreatedMessage = await postNewMessage({
           senderId: currentUser?._id,
-          conversationId: conversation._id,
+          conversationId: conversation?._id,
           text: msgText,
         });
 
-        const receiver = conversation.members.find(
+        const receiver = conversation?.members?.find(
           (user) => user._id !== currentUser?._id
         );
 
@@ -149,29 +163,26 @@ export default function ChatRoom({ conversation, open, onClose }) {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [currentUser?._id, conversation._id]
+    [currentUser?._id, conversation?._id]
   );
 
   const onChange = useCallback((e) => setNewMessage(e.target.value), []);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!isLoaded) return;
+    if (!scrollRef?.current) return;
+
     const scroll = scrollRef?.current;
     scroll.scrollTop = scroll?.scrollHeight;
 
     scroll.animate({ scrollTop: scroll?.scrollHeight }); // automatically scroll to bottom on new message created and mount
-  }, [messages, scrollRef?.current]);
+  }, [messages, scrollRef?.current, isLoaded]);
 
-  if (!isLoaded) {
-    return (
-      <div style={{ minHeight: '300px', minWidth: '350px' }}>
-        <LinearProgress />
-      </div>
-    );
-  }
+  if (!open) return null;
 
   return (
     <Modal
+      title={`Messenger Chat (${conversation?.members[0]?.name} & ${conversation?.members[1]?.name})`}
       customStyles={{
         display: 'flex',
         flexDirection: 'column',
@@ -185,32 +196,46 @@ export default function ChatRoom({ conversation, open, onClose }) {
       <Helmet>
         <meta charSet="utf-8" />
         <title>
-          Messenger: {conversation.members[0].name} &&nbsp;
-          {conversation.members[1].name} | Bootcamp LoL Scrim Gym
+          Messenger: {conversation?.members[0]?.name} &&nbsp;
+          {conversation?.members[1]?.name} | Bootcamp LoL Scrim Gym
         </title>
       </Helmet>
-      <div
-        style={{ minWidth: '400px', display: 'flex', flexDirection: 'column' }}>
-        <div className={classes.chatRoomMessagesContainer} ref={scrollRef}>
-          {messages.map((message) => (
-            // one message
-            <ChatBubble
-              isCurrentUser={message._sender._id === currentUser?._id}
-              key={message._id}
-              messageText={message.text}
-              userName={message._sender.name}
-              userRank={message._sender.rank}
-              messageDate={message.createdAt}
-            />
-          ))}
+      {!isLoaded || !conversation?._id ? (
+        <div
+          style={{
+            padding: '50px',
+            margin: '100px 0',
+          }}>
+          <LinearProgress />
         </div>
+      ) : (
+        <div
+          style={{
+            minWidth: '400px',
+            display: 'flex',
+            flexDirection: 'column',
+          }}>
+          <div className={classes.chatRoomMessagesContainer} ref={scrollRef}>
+            {messages.map((message) => (
+              // one message
+              <ChatBubble
+                isCurrentUser={message._sender._id === currentUser?._id}
+                key={message._id}
+                messageText={message.text}
+                userName={message._sender.name}
+                userRank={message._sender.rank}
+                messageDate={message.createdAt}
+              />
+            ))}
+          </div>
 
-        <ChatInput
-          value={newMessage}
-          onChange={onChange}
-          onSubmit={handleSubmitMessage}
-        />
-      </div>
+          <ChatInput
+            value={newMessage}
+            onChange={onChange}
+            onSubmit={handleSubmitMessage}
+          />
+        </div>
+      )}
     </Modal>
   );
 }

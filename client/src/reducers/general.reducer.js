@@ -11,6 +11,8 @@ const initialState = {
   messengerOpen: false,
 
   moreOptionsModalOpen: false,
+
+  chatRoomOpen: { conversation: null, isOpen: false },
 };
 
 export default function generalReducer(state = initialState, action) {
@@ -110,6 +112,13 @@ export default function generalReducer(state = initialState, action) {
       return {
         ...state,
         messengerOpen: false,
+      };
+    }
+
+    case 'general/chatRoomOpen': {
+      return {
+        ...state,
+        chatRoomOpen: payload,
       };
     }
 
