@@ -6,13 +6,17 @@ import devLog from './../utils/devLog';
 
 import { io } from 'socket.io-client';
 
-const socketServerUrl = 'ws://localhost:8900';
+const socketServerUrl =
+  process.env.NODE_ENV === 'production'
+    ? process.env.PROD_SOCKET_URL
+    : 'ws://localhost:8900';
 
 export default function useMessenger() {
   const { currentUser } = useAuth();
   const dispatch = useDispatch();
   let socket = useRef();
 
+  // initialize socket
   useEffect(() => {
     socket.current = io(socketServerUrl);
 

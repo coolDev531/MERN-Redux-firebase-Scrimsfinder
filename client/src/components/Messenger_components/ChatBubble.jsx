@@ -14,10 +14,6 @@ export default function ChatBubble({
 
   return (
     <StyledBubble isCurrentUser={isCurrentUser}>
-      {/* <div className={classes.bubbleUsername}>
-        <img src={rankImage} width="20px" alt={`${userName}'s rank`} />
-        {userName}
-      </div> */}
       <div className="bubble__username">
         <img src={rankImage} width="20px" alt={`${userName}'s rank`} />
         <span>{userName}</span>
