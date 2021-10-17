@@ -1,10 +1,16 @@
 import { useCallback } from 'react';
+import useOnKeyDown from '../../hooks/useOnKeyDown';
+
+// components
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import Grow from '@mui/material/Grow';
 import Paper from '@mui/material/Paper';
 import Popper from '@mui/material/Popper';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 import UserConversations from './UserConversations';
-import useOnKeyDown from '../../hooks/useOnKeyDown';
+
+// utils
 import { KEYCODES } from '../../utils/keycodes';
 
 export default function MessengerDropdown({ open, setOpen, anchorRef }) {
@@ -46,8 +52,21 @@ export default function MessengerDropdown({ open, setOpen, anchorRef }) {
           }}>
           <Paper>
             <ClickAwayListener onClickAway={handleClose}>
-              {/* close dropdown when opening a chat */}
-              <UserConversations closeMenu={handleClose} />
+              <Grid container xs={12} direction="column">
+                <Grid item>
+                  <Typography
+                    sx={{ marginLeft: '20px', marginTop: '20px' }}
+                    component="h1"
+                    variant="h6">
+                    Messenger
+                  </Typography>
+                </Grid>
+
+                {/* close dropdown when opening a chat */}
+                <Grid item xs={12}>
+                  <UserConversations closeMenu={handleClose} />
+                </Grid>
+              </Grid>
             </ClickAwayListener>
           </Paper>
         </Grow>

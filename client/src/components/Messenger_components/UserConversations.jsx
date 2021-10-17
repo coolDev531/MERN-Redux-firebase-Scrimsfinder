@@ -71,9 +71,9 @@ const ExistingConversations = ({
     if (!friendUser) return null;
 
     return (
-      <MenuItem>
+      <MenuItem onClick={() => openChat(friendUser)}>
         <Tooltip title="Move to conversation" key={friendUser._id}>
-          <div className={classes.user} onClick={() => openChat(friendUser)}>
+          <div className={classes.user}>
             <div
               // add this bool to user (use socket?) if onlien green, else red
               style={{ backgroundColor: isOnline ? '#AAFF00' : '#EE4B2B' }}
