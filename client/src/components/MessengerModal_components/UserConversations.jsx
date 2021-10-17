@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useState, useEffect } from 'react';
 
 // components
 import Divider from '@mui/material/Divider';
@@ -10,52 +10,77 @@ import Tooltip from '../shared/Tooltip';
 import makeStyles from '@mui/styles/makeStyles';
 import { getRankImage } from './../../utils/getRankImage';
 
-const UserConversations = memo(
-  ({ conversations, changeToView, currentUser }) => {
-    const classes = useStyles();
-    return (
-      <>
-        <Helmet>
-          <meta charSet="utf-8" />
-          <title>Messenger: Conversations | Bootcamp LoL Scrim Gym</title>
-        </Helmet>
+const UserConversations = ({
+  conversations,
+  changeToView,
+  onlineUsers,
+  currentUser,
+}) => {
+  const classes = useStyles();
 
-        <Box
-          component="ul"
-          display="flex"
-          flexDirection="column"
-          style={{ maxHeight: '300px' }}>
-          {conversations.map((conversation) => {
-            const friendUser = conversation.members.find(
-              ({ _id }) => _id !== currentUser._id
-            );
+  return (
+    <>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Messenger: Conversations | Bootcamp LoL Scrim Gym</title>
+      </Helmet>
 
-            if (!friendUser) return null;
+      <Box
+        component="ul"
+        display="flex"
+        flexDirection="column"
+        style={{ maxHeight: '300px' }}>
+        <ExistingConversations
+          conversations={conversations}
+          currentUser={currentUser}
+          onlineUsers={onlineUsers}
+          changeToView={changeToView}
+        />
+      </Box>
+    </>
+  );
+};
 
-            return (
-              <Tooltip title="Move to conversation" key={friendUser._id}>
-                <div
-                  className={classes.user}
-                  onClick={() => changeToView('chat-room', conversation)}>
-                  <div
-                    // add this bool to user (use socket?) if onlien green, else red
-                    style={{ backgroundColor: true ? '#AAFF00' : '#EE4B2B' }}
-                    className={classes.isOnlineCircle}></div>
-                  {friendUser.name}
-                  <img
-                    src={getRankImage(friendUser)}
-                    alt={friendUser.rank}
-                    width="20px"
-                  />
-                </div>
-              </Tooltip>
-            );
-          })}
-        </Box>
-      </>
+const ExistingConversations = ({
+  conversations,
+  currentUser,
+  onlineUsers,
+  changeToView,
+}) => {
+  const classes = useStyles();
+
+  return conversations.map((conversation, idx) => {
+    const userFriends = currentUser.friends.map(({ _id }) => _id);
+
+    const friendUser = conversation.members.find(({ _id }) =>
+      userFriends.includes(_id)
     );
-  }
-);
+
+    const isOnline = onlineUsers.includes(friendUser?._id);
+
+    if (!friendUser) return null;
+
+    return (
+      <Tooltip title="Move to conversation" key={friendUser._id}>
+        <div
+          className={classes.user}
+          onClick={() => changeToView('chat-room', conversation)}>
+          <div
+            // add this bool to user (use socket?) if onlien green, else red
+            style={{ backgroundColor: isOnline ? '#AAFF00' : '#EE4B2B' }}
+            className={classes.isOnlineCircle}></div>
+          {friendUser.name}
+          <img
+            src={getRankImage(friendUser)}
+            alt={friendUser.rank}
+            width="20px"
+          />
+          {idx !== conversations.length - 1 ? <Divider /> : null}
+        </div>
+      </Tooltip>
+    );
+  });
+};
 
 const useStyles = makeStyles({
   user: {
@@ -63,6 +88,7 @@ const useStyles = makeStyles({
     flexDirection: 'row',
     position: 'relative',
     alignItems: 'center',
+    width: 'fit-content',
   },
 
   isOnlineCircle: {

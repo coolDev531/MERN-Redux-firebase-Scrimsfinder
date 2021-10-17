@@ -12,14 +12,16 @@ import devLog from './../../utils/devLog';
 const socketServerUrl = 'ws://localhost:8900';
 
 export default function MessengerModal() {
-  const [view, setView] = useState('conversations'); // conversations, chat-room
-  const [conversation, setConversation] = useState('');
-  const socket = useRef();
-
-  const dispatch = useDispatch();
   const [{ conversations }, { messengerOpen }, { currentUser }] = useSelector(
     ({ messenger, general, auth }) => [messenger, general, auth]
   );
+  const [view, setView] = useState('conversations'); // conversations, chat-room
+  const [conversation, setConversation] = useState('');
+  const [onlineUsers, setOnlineUsers] = useState([]);
+
+  const socket = useRef();
+
+  const dispatch = useDispatch();
 
   const modalTitle = useMemo(
     () => (view === 'chat-room' ? 'Messenger (Chat Room)' : 'Messenger'),
@@ -57,6 +59,9 @@ export default function MessengerModal() {
     socket.current?.emit('addUser', currentUser?._id);
     socket.current?.on('getUsers', (users) => {
       devLog('socket getUsers event: ', users);
+
+      const onlineUserIds = users.map(({ userId }) => userId);
+      setOnlineUsers(onlineUserIds);
     });
   }, [currentUser?._id, messengerOpen]);
 
@@ -83,6 +88,7 @@ export default function MessengerModal() {
         />
       ) : (
         <UserConversations
+          onlineUsers={onlineUsers}
           currentUser={currentUser}
           changeToView={changeToView}
           conversations={conversations}
