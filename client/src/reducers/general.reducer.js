@@ -12,7 +12,7 @@ const initialState = {
 
   moreOptionsModalOpen: false,
 
-  chatRoomOpen: { conversation: null, isOpen: false },
+  chatRoomOpen: { conversation: null, isOpen: false, extraTitle: '' },
 };
 
 export default function generalReducer(state = initialState, action) {
@@ -119,6 +119,17 @@ export default function generalReducer(state = initialState, action) {
       return {
         ...state,
         chatRoomOpen: payload,
+      };
+    }
+
+    case 'general/closeChatRoom': {
+      return {
+        ...state,
+        chatRoomOpen: {
+          conversation: null,
+          isOpen: false,
+          extraTitle: '',
+        },
       };
     }
 

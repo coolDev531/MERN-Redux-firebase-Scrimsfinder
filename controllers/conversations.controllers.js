@@ -65,7 +65,8 @@ const findOneConversation = async (req, res) => {
 
 const findOneConversationById = async (req, res) => {
   try {
-    const { conversationId } = req.body;
+    const { conversationId } = req.params;
+
     if (!conversationId) {
       return res.status(500).json({ message: 'conversationId not provided!' });
     }
@@ -83,9 +84,33 @@ const findOneConversationById = async (req, res) => {
   }
 };
 
+const findScrimConversation = async (req, res) => {
+  try {
+    const { scrimId } = req.params;
+
+    if (!scrimId) {
+      return res.status(500).json({ message: 'scrimId not provided!' });
+    }
+
+    let conversation = await Conversation.findOne({ _scrim: scrimId });
+
+    console.log({ conversation });
+
+    // populate so client can receive the members attributes
+    conversation = await conversation
+      .populate('members', ['name', 'discord', 'rank', 'region'])
+      .execPopulate();
+
+    return res.status(200).json(conversation);
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+};
+
 module.exports = {
   postConversation,
   getUserConversations,
   findOneConversation,
   findOneConversationById,
+  findScrimConversation,
 };

@@ -3,14 +3,12 @@ const mongoose = require('mongoose');
 // models
 const Scrim = require('../models/scrim.model');
 const User = require('../models/user.model');
+const Conversation = require('../models/conversation.model');
 
 // utils
 const sample = require('../utils/sample');
 const generatePassword = require('../utils/generatePassword');
-const {
-  checkIfScrimIsToday,
-  checkIfScrimIsInACertainDate,
-} = require('../utils/scrimUtils');
+const { checkIfScrimIsToday } = require('../utils/scrimUtils');
 const capitalizeWord = require('../utils/capitalizeWord');
 const AWS = require('aws-sdk');
 const KEYS = require('../config/keys');
@@ -188,7 +186,16 @@ const createScrim = async (req, res) => {
     const scrim = new Scrim(requestBody);
 
     await scrim.save();
+
+    const scrimConversation = new Conversation({
+      members: [],
+      _scrim: scrim._id,
+    });
+    let savedConversation = await scrimConversation.save();
+
     console.log('Scrim created: ', scrim);
+    console.log('conversation created for scirm: ', savedConversation);
+
     return res.status(201).json(scrim);
   } catch (error) {
     console.log(error);

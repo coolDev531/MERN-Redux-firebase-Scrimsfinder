@@ -9,6 +9,7 @@ import MessengerDropdown from '../../Messenger_components/MessengerDropdown';
 
 export default function MessengerButton({
   onClick,
+  withDropdown = true,
   isMessengerDropdownOpen,
   setIsMessengerDropdownOpen,
 }) {
@@ -20,9 +21,15 @@ export default function MessengerButton({
         <IconButton
           ref={anchorRef}
           onClick={onClick}
-          aria-controls={isMessengerDropdownOpen ? 'messenger-menu' : undefined}
-          aria-expanded={isMessengerDropdownOpen ? 'true' : undefined}
-          aria-haspopup="true">
+          aria-controls={
+            withDropdown && isMessengerDropdownOpen
+              ? 'messenger-menu'
+              : undefined
+          }
+          aria-expanded={
+            withDropdown && isMessengerDropdownOpen ? 'true' : undefined
+          }
+          aria-haspopup={withDropdown && 'true'}>
           {/* {conversations.length > 0 ? (
             <div className={classes.newMessagesCount}>
             {conversations.length}
@@ -31,11 +38,13 @@ export default function MessengerButton({
           <MessengerIcon fontSize="large" />
         </IconButton>
       </Tooltip>
-      <MessengerDropdown
-        anchorRef={anchorRef}
-        open={isMessengerDropdownOpen}
-        setOpen={setIsMessengerDropdownOpen}
-      />
+      {withDropdown && (
+        <MessengerDropdown
+          anchorRef={anchorRef}
+          open={isMessengerDropdownOpen}
+          setOpen={setIsMessengerDropdownOpen}
+        />
+      )}
     </>
   );
 }

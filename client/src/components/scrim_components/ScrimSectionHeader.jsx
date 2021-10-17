@@ -1,9 +1,10 @@
-import { useMemo, Fragment, memo, useState } from 'react';
+import { useMemo, Fragment, memo, useState, useCallback } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import useAlerts from './../../hooks/useAlerts';
 import useTheme from '@mui/styles/useTheme';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useScrimSectionStyles } from '../../styles/ScrimSection.styles';
+import { useDispatch } from 'react-redux';
 
 // components
 import Moment from 'react-moment';
@@ -23,6 +24,10 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { ROLE_IMAGES } from './../../utils/imageMaps';
 import { truncate } from './../../utils/truncate';
 import { getTeamBackgroundColor } from '../../utils/scrimMisc';
+import MessengerButton from './../shared/Navbar/MessengerButton';
+
+// services
+import { findScrimConversation } from '../../services/conversations.services';
 
 const MAX_CASTER_AMOUNT = 2;
 
@@ -43,7 +48,7 @@ export default function ScrimSectionHeader({
   const classes = useScrimSectionStyles({ isBoxExpanded });
   const history = useHistory();
   const theme = useTheme();
-
+  const dispatch = useDispatch();
   const matchesMd = useMediaQuery(theme.breakpoints.down('md'));
   const showPlayers = useMediaQuery('(min-width:1000px)');
 
@@ -54,6 +59,23 @@ export default function ScrimSectionHeader({
     [scrim._id]
   );
 
+  const handleOpenConversation = useCallback(async () => {
+    try {
+      const conversation = await findScrimConversation(scrim._id);
+      console.log({ conversation });
+      dispatch({
+        type: 'general/chatRoomOpen',
+        payload: { conversation, isOpen: true },
+      });
+      return;
+    } catch (error) {
+      setCurrentAlert({ type: 'Error', message: 'Error opening conversation' });
+      return;
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scrim._conversation]);
+
   return (
     <Grid
       id="parent"
@@ -61,6 +83,7 @@ export default function ScrimSectionHeader({
       direction="column"
       flexWrap="nowrap"
       className={classes.scrimSectionHeader}>
+      <MessengerButton onClick={handleOpenConversation} />
       <Grid
         item
         container

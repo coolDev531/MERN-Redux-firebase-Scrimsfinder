@@ -11,7 +11,6 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import LinearProgress from '@mui/material/LinearProgress';
-import { Helmet } from 'react-helmet';
 import ChatBubble from './../Messenger_components/ChatBubble';
 
 // services
@@ -42,8 +41,7 @@ export default function ChatRoomModal() {
 
   const onClose = () =>
     dispatch({
-      type: 'general/chatRoomOpen',
-      payload: { conversation: null, isOpen: false },
+      type: 'general/closeChatRoom',
     });
 
   const [isLoaded, setIsLoaded] = useState(false);
@@ -57,10 +55,11 @@ export default function ChatRoomModal() {
 
   const { socket } = useSocket();
 
-  const conversationMemberIds = useMemo(
-    () => conversation?.members?.map(({ _id }) => _id),
-    [conversation?.members]
-  );
+  const conversationMemberIds = useMemo(() => {
+    if (!conversation?.members?.length) return;
+
+    return conversation?.members?.map(({ _id }) => _id);
+  }, [conversation?.members]);
 
   const scrollRef = useRef(); // automatically scroll to bottom on new message created.
 
@@ -183,18 +182,13 @@ export default function ChatRoomModal() {
 
   return (
     <Modal
-      title={`Messenger Chat (${conversation?.members[0]?.name} & ${conversation?.members[1]?.name})`}
+      title={`Messenger Chat${
+        chatRoomOpen.extraTitle ? ` ${chatRoomOpen.extraTitle}` : ''
+      }`}
       customStyles={{}}
       contentClassName={classes.modalContent}
       open={open}
       onClose={onClose}>
-      <Helmet>
-        <meta charSet="utf-8" />
-        <title>
-          Messenger: {conversation?.members[0]?.name} &&nbsp;
-          {conversation?.members[1]?.name} | Bootcamp LoL Scrim Gym
-        </title>
-      </Helmet>
       {!isLoaded || !conversation?._id ? (
         <div
           style={{

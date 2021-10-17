@@ -7,7 +7,7 @@ import api from './apiConfig';
  */
 export const getUserConversations = async (userId) => {
   try {
-    const response = await api.get(`/conversations/${userId}`);
+    const response = await api.get(`/conversations/user/${userId}`);
     return response.data;
   } catch (error) {
     throw error;
@@ -32,6 +32,26 @@ export const findOneConversation = async (userId1, userId2) => {
 export const postNewConversation = async ({ senderId, receiverId }) => {
   try {
     const response = await api.post(`/conversations`, { senderId, receiverId });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getConversationById = async (conversationId) => {
+  try {
+    const response = await api.get(
+      `/conversations/find-by-id/${conversationId}`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const findScrimConversation = async (scrimId) => {
+  try {
+    const response = await api.get(`/conversations/scrim/${scrimId}`);
     return response.data;
   } catch (error) {
     throw error;

@@ -30,14 +30,14 @@ const NewConversationFriends = () => {
   const { currentUser } = useAuth();
 
   const getFriendUserId = (arr) => {
-    let friend = arr.find(({ _id }) => _id !== currentUser._id);
-    return friend._id;
+    let friend = arr.find(({ _id }) => _id !== currentUser?._id);
+    return friend?._id;
   };
 
   return (
     <MenuList>
       {currentUser.friends.map(({ _id: friendId }, idx, arr) => {
-        const friendUser = allUsers.find((user) => user._id === friendId); // not populated on back-end
+        const friendUser = allUsers.find((user) => user?._id === friendId); // not populated on back-end
 
         const isOnline = onlineFriends.includes(friendUser?._id);
 
@@ -45,14 +45,14 @@ const NewConversationFriends = () => {
           getFriendUserId(members)
         );
 
-        const inConversation = memberIds.includes(friendUser._id);
+        const inConversation = memberIds.includes(friendUser?._id);
         // if the user is already in a conversation with current user, we don't want him to show
         // in the new convos screen.
         if (inConversation) return null;
 
         return (
-          <Fragment key={friendUser._id}>
-            <MenuItem onClick={() => setIsCreateModalOpen(friendUser._id)}>
+          <Fragment key={friendUser?._id}>
+            <MenuItem onClick={() => setIsCreateModalOpen(friendUser?._id)}>
               <Tooltip title="Start a new conversation">
                 <div className={classes.user}>
                   <div
