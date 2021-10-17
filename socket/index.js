@@ -18,7 +18,6 @@ const addUser = (userId, socketId) => {
 };
 
 const getUser = (userId) => {
-  console.log({ users });
   return users.find((user) => user.userId === userId);
 };
 

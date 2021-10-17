@@ -9,6 +9,7 @@ import Tooltip from '../shared/Tooltip';
 // services and utils
 import makeStyles from '@mui/styles/makeStyles';
 import { getRankImage } from './../../utils/getRankImage';
+
 const UserConversations = memo(
   ({ conversations, changeToView, currentUser }) => {
     const classes = useStyles();
@@ -32,9 +33,8 @@ const UserConversations = memo(
             if (!friendUser) return null;
 
             return (
-              <Tooltip title="Move to conversation">
+              <Tooltip title="Move to conversation" key={friendUser._id}>
                 <div
-                  key={friendUser._id}
                   className={classes.user}
                   onClick={() => changeToView('chat-room', conversation)}>
                   <div

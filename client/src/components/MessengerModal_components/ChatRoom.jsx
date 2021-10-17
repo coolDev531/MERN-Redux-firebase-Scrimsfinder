@@ -30,13 +30,10 @@ import Tooltip from '../shared/Tooltip';
 // utils
 import { getRankImage } from './../../utils/getRankImage';
 import makeStyles from '@mui/styles/makeStyles';
-import { io } from 'socket.io-client';
 import devLog from './../../utils/devLog';
 
-const socketServerUrl = 'ws://localhost:8900';
-
 // messenger modal chat room
-export default function ChatRoom({ conversation, currentUser }) {
+export default function ChatRoom({ conversation, currentUser, socket }) {
   const { allUsers } = useUsers();
   const [isLoaded, setIsLoaded] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -48,7 +45,6 @@ export default function ChatRoom({ conversation, currentUser }) {
     [conversation.members]
   );
 
-  const socket = useRef();
   const scrollRef = useRef(); // automatically scroll to bottom on new message created.
 
   const classes = useStyles();
@@ -56,12 +52,8 @@ export default function ChatRoom({ conversation, currentUser }) {
   const { setCurrentAlert } = useAlerts();
 
   useEffect(() => {
-    socket.current = io(socketServerUrl);
-  }, []);
-
-  useEffect(() => {
     // take event from server
-    socket.current.on('getMessage', (data) => {
+    socket?.on('getMessage', (data) => {
       devLog('getMessage event: ', data);
       setArrivalMessage({
         _sender: allUsers.find((user) => user._id === data.senderId),
@@ -70,18 +62,7 @@ export default function ChatRoom({ conversation, currentUser }) {
         _id: data.messageId,
       });
     });
-  }, [allUsers]);
-
-  useEffect(() => {
-    // send event to socket server.
-    if (!isLoaded) return;
-    if (!currentUser?._id) return;
-
-    socket.current.emit('addUser', currentUser?._id);
-    socket.current.on('getUsers', (users) => {
-      devLog('socket getUsers event: ', users);
-    });
-  }, [currentUser?._id, isLoaded]);
+  }, [allUsers, socket]);
 
   useEffect(() => {
     // fetch messages by conversationId and set in the state.
@@ -140,7 +121,7 @@ export default function ChatRoom({ conversation, currentUser }) {
         );
 
         // send event to server after creating on client and posting to api
-        socket.current.emit('sendMessage', {
+        socket?.emit('sendMessage', {
           senderId: currentUser?._id,
           text: msgText,
           receiverId: receiver._id,
@@ -159,9 +140,8 @@ export default function ChatRoom({ conversation, currentUser }) {
         return;
       }
     },
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [currentUser?._id]
+    [currentUser?._id, conversation._id, socket]
   );
 
   const onChange = useCallback((e) => setNewMessage(e.target.value), []);

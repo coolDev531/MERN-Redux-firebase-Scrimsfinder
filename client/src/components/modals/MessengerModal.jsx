@@ -1,4 +1,4 @@
-import { useCallback, useState, useMemo } from 'react';
+import { useCallback, useEffect, useState, useMemo, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 // components
@@ -6,9 +6,15 @@ import { Modal } from './../shared/ModalComponents';
 import ChatRoom from '../MessengerModal_components/ChatRoom';
 import UserConversations from '../MessengerModal_components/UserConversations';
 
+// utils
+import { io } from 'socket.io-client';
+import devLog from './../../utils/devLog';
+const socketServerUrl = 'ws://localhost:8900';
+
 export default function MessengerModal() {
   const [view, setView] = useState('conversations'); // conversations, chat-room
   const [conversation, setConversation] = useState('');
+  const socket = useRef();
 
   const dispatch = useDispatch();
   const [{ conversations }, { messengerOpen }, { currentUser }] = useSelector(
@@ -36,6 +42,24 @@ export default function MessengerModal() {
     }
   }, []);
 
+  // socket lifecycle stuff
+  useEffect(() => {
+    if (!messengerOpen) return;
+
+    socket.current = io(socketServerUrl);
+  }, [messengerOpen]);
+
+  useEffect(() => {
+    // send event to socket server.
+    if (!currentUser?._id) return;
+    if (!messengerOpen) return; // dont send messages to servers and receive if messenger is not open
+
+    socket.current?.emit('addUser', currentUser?._id);
+    socket.current?.on('getUsers', (users) => {
+      devLog('socket getUsers event: ', users);
+    });
+  }, [currentUser?._id, messengerOpen]);
+
   return (
     <Modal
       customStyles={{
@@ -52,7 +76,11 @@ export default function MessengerModal() {
       open={messengerOpen}
       onClose={closeMessenger}>
       {view === 'chat-room' ? (
-        <ChatRoom conversation={conversation} currentUser={currentUser} />
+        <ChatRoom
+          socket={socket.current}
+          conversation={conversation}
+          currentUser={currentUser}
+        />
       ) : (
         <UserConversations
           currentUser={currentUser}
