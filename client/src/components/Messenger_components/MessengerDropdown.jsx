@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import useOnKeyDown from '../../hooks/useOnKeyDown';
 import { useSelector } from 'react-redux';
 
@@ -24,10 +24,13 @@ import ForumIcon from '@mui/icons-material/Forum';
 
 export default function MessengerDropdown({ open, setOpen, anchorRef }) {
   const { conversations } = useSelector(({ messenger }) => messenger);
+  const [view, setView] = useState('existing');
 
-  const [view, setView] = useState(() => {
-    return conversations.length > 0 ? 'existing' : 'create-new';
-  });
+  useEffect(() => {
+    setView(() => {
+      return conversations.length > 0 ? 'existing' : 'create-new';
+    });
+  }, [conversations]);
 
   const handleClose = useCallback(() => {
     setOpen(false);

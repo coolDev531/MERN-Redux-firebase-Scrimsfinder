@@ -16,7 +16,12 @@ const postConversation = async (req, res) => {
       members: [req.body.senderId, req.body.receiverId],
     });
 
-    const savedConversation = await newConversation.save();
+    let savedConversation = await newConversation.save();
+
+    savedConversation = await savedConversation
+      .populate('members', ['name', 'discord', 'rank', 'region'])
+      .execPopulate();
+
     return res.status(200).json(savedConversation);
   } catch (error) {
     return res.status(500).json({ message: error.message });
