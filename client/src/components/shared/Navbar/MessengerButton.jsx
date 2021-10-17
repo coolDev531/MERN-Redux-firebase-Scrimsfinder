@@ -6,7 +6,7 @@ import Tooltip from './../Tooltip';
 
 // icons
 import MessengerIcon from '@mui/icons-material/Chat';
-import MessengerConversationsDropdown from '../../Messenger_components/MessengerConversationsDropdown';
+import MessengerDropdown from '../../Messenger_components/MessengerDropdown';
 
 export default function MessengerButton({
   onClick,
@@ -32,7 +32,7 @@ export default function MessengerButton({
           <MessengerIcon fontSize="large" />
         </IconButton>
       </Tooltip>
-      <MessengerConversationsDropdown
+      <MessengerDropdown
         anchorRef={anchorRef}
         open={isMessengerDropdownOpen}
         setOpen={setIsMessengerDropdownOpen}

@@ -102,10 +102,12 @@ const DraggablePaper = (props) => {
   );
 };
 
-export const DraggableModal = ({ children, ...rest }) => {
+export const DraggableModal = ({ children, inputValue = '', ...rest }) => {
   const isMobileDevice = isMobile();
 
-  return !isMobileDevice ? (
+  // if user didn't type anything, it's draggable.
+  // if it's not a mobile device, it's draggable
+  return !isMobileDevice && !inputValue ? (
     <MuiDialog {...rest} PaperComponent={DraggablePaper}>
       {children}
     </MuiDialog>
@@ -126,9 +128,11 @@ export const Modal = React.memo(
     customStyles = null,
     renderBackButton = false,
     onClickBack = null,
+    contentClassName = 'modal__content',
+    inputValue = '',
   }) => {
     return (
-      <DraggableModal open={open} onClose={onClose}>
+      <DraggableModal open={open} onClose={onClose} inputValue={inputValue}>
         <DialogTitle
           renderBackButton={renderBackButton}
           onClickBack={onClickBack}
@@ -138,6 +142,7 @@ export const Modal = React.memo(
 
         <DialogContent
           dividers
+          className={contentClassName}
           style={
             customStyles
               ? {

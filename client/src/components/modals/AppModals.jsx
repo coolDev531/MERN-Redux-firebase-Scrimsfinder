@@ -3,7 +3,7 @@ import FriendRequestsModal from './FriendRequestsModal';
 import NotificationsModal from './NotificationsModal';
 import UserFriendsModal from './UserFriendsModal';
 import OtherOptionsModal from './OtherOptionsModal';
-import ChatRoom from './ChatRoom';
+import ChatRoomModal from './ChatRoomModal';
 
 import { useSelector } from 'react-redux';
 
@@ -19,7 +19,7 @@ export default function AppModals() {
       <NotificationsModal />
       <UserFriendsModal />
       <OtherOptionsModal />
-      {chatRoomOpen.isOpen && <ChatRoom />}
+      {chatRoomOpen.isOpen && <ChatRoomModal />}
     </>
   );
 }

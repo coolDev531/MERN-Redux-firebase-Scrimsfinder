@@ -1,16 +1,9 @@
 // hooks
-import {
-  useCallback,
-  useState,
-  useEffect,
-  useRef,
-  useLayoutEffect,
-  useMemo,
-} from 'react';
+import { useCallback, useState, useEffect, useRef, useMemo, memo } from 'react';
 import useAlerts from '../../hooks/useAlerts';
-import useUsers from './../../hooks/useUsers';
-import useSocket from './../../hooks/useSocket';
-import useAuth from './../../hooks/useAuth';
+import useUsers from '../../hooks/useUsers';
+import useSocket from '../../hooks/useSocket';
+import useAuth from '../../hooks/useAuth';
 
 // components
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -23,22 +16,22 @@ import 'moment-timezone';
 
 // services
 import { getConversationMessages } from '../../services/messages.services';
-import { postNewMessage } from './../../services/messages.services';
+import { postNewMessage } from '../../services/messages.services';
 
 // icons
 import CreateIcon from '@mui/icons-material/Create';
 import Tooltip from '../shared/Tooltip';
 
 // utils
-import { getRankImage } from './../../utils/getRankImage';
+import { getRankImage } from '../../utils/getRankImage';
 import makeStyles from '@mui/styles/makeStyles';
-import devLog from './../../utils/devLog';
+import devLog from '../../utils/devLog';
 import { Modal } from '../shared/ModalComponents';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 
 // messenger modal chat room
-export default function ChatRoom() {
+export default function ChatRoomModal() {
   const { allUsers } = useUsers();
   const { currentUser } = useAuth();
   const { chatRoomOpen } = useSelector(({ general }) => general);
@@ -123,13 +116,6 @@ export default function ChatRoom() {
   const handleSubmitMessage = useCallback(
     async (msgText) => {
       try {
-        if (!msgText) {
-          setCurrentAlert({
-            type: 'Error',
-            message: 'cannot send message, input value is empty!',
-          });
-        }
-
         const newlyCreatedMessage = await postNewMessage({
           senderId: currentUser?._id,
           conversationId: conversation?._id,
@@ -155,9 +141,13 @@ export default function ChatRoom() {
 
         setNewMessage('');
       } catch (error) {
+        const errorMsg =
+          error?.response?.data?.error ??
+          'error sending message, try again later';
+
         setCurrentAlert({
           type: 'Error',
-          message: 'error sending message, try again later',
+          message: errorMsg,
         });
         return;
       }
@@ -166,31 +156,29 @@ export default function ChatRoom() {
     [currentUser?._id, conversation?._id]
   );
 
-  const onChange = useCallback((e) => setNewMessage(e.target.value), []);
-
   useEffect(() => {
     if (!isLoaded) return;
+    if (!open) return;
     if (!scrollRef?.current) return;
 
     const scroll = scrollRef?.current;
     scroll.scrollTop = scroll?.scrollHeight;
 
     scroll.animate({ scrollTop: scroll?.scrollHeight }); // automatically scroll to bottom on new message created and mount
-  }, [messages, scrollRef?.current, isLoaded]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages, isLoaded, open]);
+
+  const handleChange = useCallback((e) => setNewMessage(e.target.value), []);
 
   if (!open) return null;
 
   return (
     <Modal
+      inputValue={newMessage}
       title={`Messenger Chat (${conversation?.members[0]?.name} & ${conversation?.members[1]?.name})`}
-      customStyles={{
-        display: 'flex',
-        flexDirection: 'column',
-        minWidth: '600px',
-        maxWidth: '600px',
-        maxHeight: '100%', // 100% to follow chat bubble overflow instead.
-        overflowWrap: 'break-word',
-      }}
+      customStyles={{}}
+      contentClassName={classes.modalContent}
       open={open}
       onClose={onClose}>
       <Helmet>
@@ -231,7 +219,7 @@ export default function ChatRoom() {
 
           <ChatInput
             value={newMessage}
-            onChange={onChange}
+            onChange={handleChange}
             onSubmit={handleSubmitMessage}
           />
         </div>
@@ -268,13 +256,13 @@ const ChatBubble = ({
   );
 };
 
-const ChatInput = ({ value, onChange, onSubmit }) => {
+const ChatInput = memo(({ value, onChange, onSubmit }) => {
   return (
     <OutlinedInput
       multiline
       minRows={2}
       maxRows={4}
-      sx={{ marginTop: 4, width: '100%' }} // this width also expands the width of the modal (as wanted tbh)
+      sx={{ marginTop: 4, width: '98%' }} // this width also expands the width of the modal (as wanted tbh)
       placeholder="new message"
       value={value}
       onChange={onChange}
@@ -289,9 +277,18 @@ const ChatInput = ({ value, onChange, onSubmit }) => {
       }
     />
   );
-};
+});
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
+  modalContent: {
+    display: 'flex',
+    flexDirection: 'column',
+    minWidth: '300px',
+    maxWidth: '600px',
+    maxHeight: '100%', // 100% to follow chat bubble overflow instead.
+    overflowWrap: 'break-word',
+  },
+
   chatRoomMessagesContainer: {
     maxHeight: '300px',
     overflowY: 'auto',
@@ -336,4 +333,4 @@ const useStyles = makeStyles({
     color: ({ isCurrentUser }) => (isCurrentUser ? 'white' : 'black'),
     backgroundColor: ({ isCurrentUser }) => (isCurrentUser ? 'blue' : 'white'),
   },
-});
+}));

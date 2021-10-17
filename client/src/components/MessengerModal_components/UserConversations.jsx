@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
 
 // components
 import Divider from '@mui/material/Divider';
@@ -27,6 +27,8 @@ export default function UserConversations({ closeMenu }) {
       type: 'general/chatRoomOpen',
       payload: { conversation, isOpen: true },
     });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

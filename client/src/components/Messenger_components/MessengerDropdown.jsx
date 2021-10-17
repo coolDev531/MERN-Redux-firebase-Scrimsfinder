@@ -1,27 +1,33 @@
+import { useCallback } from 'react';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import Grow from '@mui/material/Grow';
 import Paper from '@mui/material/Paper';
 import Popper from '@mui/material/Popper';
 import MenuList from '@mui/material/MenuList';
-import UserConversations from './../MessengerModal_components/UserConversations';
+import UserConversations from '../MessengerModal_components/UserConversations';
+import useOnKeyDown from '../../hooks/useOnKeyDown';
+import { KEYCODES } from '../../utils/keycodes';
 
-export default function MessengerConversationsDropdown({
-  open,
-  setOpen,
-  anchorRef,
-}) {
-  const handleClose = (event) => {
+export default function MessengerDropdown({ open, setOpen, anchorRef }) {
+  const handleClose = useCallback(() => {
     setOpen(false);
-  };
+  }, [setOpen]);
 
-  function handleListKeyDown(event) {
-    if (event.key === 'Tab') {
-      event.preventDefault();
-      setOpen(false);
-    } else if (event.key === 'Escape') {
-      setOpen(false);
-    }
-  }
+  useOnKeyDown(9, (e) => {
+    e.preventDefault();
+    setOpen(false);
+  });
+
+  useOnKeyDown(
+    KEYCODES.ESCAPE,
+    (e) => {
+      console.log('27');
+      if (open) {
+        setOpen(false);
+      }
+    },
+    [open]
+  );
 
   return (
     <Popper
@@ -42,7 +48,7 @@ export default function MessengerConversationsDropdown({
           <Paper>
             <ClickAwayListener onClickAway={handleClose}>
               {/* close dropdown when opening a chat */}
-              <UserConversations closeMenu={() => setOpen(false)} />
+              <UserConversations closeMenu={handleClose} />
             </ClickAwayListener>
           </Paper>
         </Grow>
