@@ -1,7 +1,6 @@
 const initialState = {
   currentUser: null,
   isVerifyingUser: true,
-  toggleNotifications: false, // ref-etch
 };
 
 export default function authReducer(state = initialState, action) {
@@ -36,12 +35,16 @@ export default function authReducer(state = initialState, action) {
       };
     }
 
-    case 'auth/toggleNotifications': {
+    case 'auth/addNotification': {
       return {
         ...state,
-        toggleNotifications: !state.toggleNotifications,
+        currentUser: {
+          ...state.currentUser,
+          notifications: [...state.currentUser.notifications, payload],
+        },
       };
     }
+
     default:
       return state;
   }

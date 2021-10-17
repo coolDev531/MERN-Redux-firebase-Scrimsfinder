@@ -124,7 +124,9 @@ const OneNotification = ({ notification, closeModal, currentUserId }) => {
     <li className={classes.oneNotification}>
       <Tooltip
         title={
-          notification.isFriendRequest
+          notification.isConversationStart
+            ? 'Open conversation'
+            : notification.isFriendRequest
             ? 'Go to friend requests'
             : 'Go to scrim page'
         }
@@ -146,6 +148,14 @@ const OneNotification = ({ notification, closeModal, currentUserId }) => {
               dispatch({ type: 'general/openFriendRequests' });
             } else if (notification.isScrimAlert) {
               history.push(`/scrims/${notification?._relatedScrim}`);
+            } else if (notification.isConversationStart) {
+              dispatch({
+                type: 'general/chatRoomOpen',
+                payload: {
+                  conversation: notification.conversation,
+                  isOpen: true,
+                },
+              });
             }
           }}>
           <span style={{ fontSize: '0.8rem', color: '#ccc' }}>

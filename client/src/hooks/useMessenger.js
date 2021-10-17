@@ -8,6 +8,7 @@ import useAuth from './useAuth';
 import devLog from './../utils/devLog';
 
 import { io } from 'socket.io-client';
+import { pushUserNotification } from '../services/users.services';
 
 const socketServerUrl =
   process.env.NODE_ENV === 'production'
@@ -69,21 +70,44 @@ export default function useMessenger() {
     socket.current.on('getConversation', async (data) => {
       devLog('socket getConversation event: ', data);
 
-      devLog('getMessage event: ', data);
+      if (data.receiverId === currentUser._id) {
+        const newConversation = await findOneConversation(
+          data.senderId,
+          data.receiverId
+        );
 
-      const newConversation = await findOneConversation(
-        data.senderId,
-        data.receiverId
-      );
+        console.log({ newConversation });
 
-      console.log({ newConversation });
+        dispatch({
+          type: 'messenger/addNewConversation',
+          payload: newConversation,
+        });
+      }
+    });
 
-      dispatch({
-        type: 'messenger/addNewConversation',
-        payload: newConversation,
-      });
+    socket.current.on('getNotification', async (data) => {
+      devLog('socket getNotification event: ', data);
+      if (currentUser._id === data.receiverId) {
+        const newNotification = {
+          message: data.message,
+          createdAt: Date.now(),
+          createdDate: Date.now(), // i added this timestamp on backend for some reason...
+          _relatedUser: data?._relatedUser ?? null,
+          _relatedScrim: data?.relatedScrim ?? null,
+          isConversationStart: data?.isConversationStart ?? false,
+          isFriendRequest: data?.isFriendRequest ?? false,
+          conversation: data?.conversation ?? null,
+        };
 
-      dispatch({ type: 'auth/toggleNotifications' }); // re-fetch notifications
+        dispatch({
+          type: 'auth/addNotification',
+          payload: newNotification,
+        });
+
+        if (newNotification.createdDate) {
+          await pushUserNotification(currentUser._id, newNotification);
+        }
+      }
     });
 
     // send event to socket server.

@@ -34,7 +34,7 @@ const ConversationCreateModal = ({
       title={`Start a new conversation`}>
       <Grid item container direction="column">
         <Typography variant="body2">
-          Start a new conversation with with {receiverUser.name}
+          Start a new conversation with {receiverUser.name}
         </Typography>
         <OutlinedInput
           multiline
