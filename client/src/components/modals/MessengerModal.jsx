@@ -11,8 +11,8 @@ export default function MessengerModal() {
   const [conversation, setConversation] = useState('');
 
   const dispatch = useDispatch();
-  const [{ conversations }, { messengerOpen }] = useSelector(
-    ({ messenger, general }) => [messenger, general]
+  const [{ conversations }, { messengerOpen }, { currentUser }] = useSelector(
+    ({ messenger, general, auth }) => [messenger, general, auth]
   );
 
   const modalTitle = useMemo(
@@ -52,9 +52,10 @@ export default function MessengerModal() {
       open={messengerOpen}
       onClose={closeMessenger}>
       {view === 'chat-room' ? (
-        <ChatRoom conversation={conversation} />
+        <ChatRoom conversation={conversation} currentUser={currentUser} />
       ) : (
         <UserConversations
+          currentUser={currentUser}
           changeToView={changeToView}
           conversations={conversations}
         />

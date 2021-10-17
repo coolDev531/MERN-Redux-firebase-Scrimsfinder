@@ -7,9 +7,7 @@ import {
   useLayoutEffect,
   useMemo,
 } from 'react';
-import useAuth from '../../hooks/useAuth';
 import useAlerts from '../../hooks/useAlerts';
-import useInterval from './../../hooks/useInterval';
 import useUsers from './../../hooks/useUsers';
 
 // components
@@ -38,8 +36,7 @@ import devLog from './../../utils/devLog';
 const socketServerUrl = 'ws://localhost:8900';
 
 // messenger modal chat room
-export default function ChatRoom({ conversation }) {
-  const { currentUser } = useAuth();
+export default function ChatRoom({ conversation, currentUser }) {
   const { allUsers } = useUsers();
   const [isLoaded, setIsLoaded] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -78,12 +75,13 @@ export default function ChatRoom({ conversation }) {
   useEffect(() => {
     // send event to socket server.
     if (!isLoaded) return;
+    if (!currentUser?._id) return;
 
-    socket.current.emit('addUser', currentUser._id);
+    socket.current.emit('addUser', currentUser?._id);
     socket.current.on('getUsers', (users) => {
       devLog('socket getUsers event: ', users);
     });
-  }, [currentUser._id, isLoaded]);
+  }, [currentUser?._id, isLoaded]);
 
   useEffect(() => {
     // fetch messages by conversationId and set in the state.
@@ -138,12 +136,12 @@ export default function ChatRoom({ conversation }) {
         });
 
         const receiver = conversation.members.find(
-          (user) => user._id !== currentUser._id
+          (user) => user._id !== currentUser?._id
         );
 
         // send event to server after creating on client and posting to api
         socket.current.emit('sendMessage', {
-          senderId: currentUser._id,
+          senderId: currentUser?._id,
           text: msgText,
           receiverId: receiver._id,
           messageId: newlyCreatedMessage._id,

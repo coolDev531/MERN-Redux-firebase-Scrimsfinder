@@ -5,7 +5,14 @@ import api from './apiConfig';
  * @param {String} senderId
  * @param {String} conversationId
  * @param {String} text
- * @returns {Promise<{text: object, _conversation: object, _sender: object, _id: string}>}
+ * @returns {Promise<
+ *  {
+ *    text: object,
+ *    _conversation: object,
+ *    _sender: object,
+ *    _id: string,
+ *    createdAt: Date
+ *   }>}
  */
 export const postNewMessage = async ({ conversationId, senderId, text }) => {
   try {
