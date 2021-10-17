@@ -23,21 +23,10 @@ export default function UserConversations({ closeMenu }) {
 
   const { currentUser } = useAuth();
 
-  const openChat = useCallback((conversation) => {
-    closeMenu();
-    dispatch({
-      type: 'general/chatRoomOpen',
-      payload: { conversation, isOpen: true },
-    });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const openChat2 = async (user) => {
+  const openChat = async (user) => {
     try {
       // find conversation from api
       const conversation = await findOneConversation(currentUser._id, user._id);
-      console.log({ conversation });
 
       // open the chat room modal in the redux store with the conversation object
       dispatch({
@@ -63,7 +52,7 @@ export default function UserConversations({ closeMenu }) {
         conversations={conversations}
         currentUser={currentUser}
         onlineFriends={onlineFriends}
-        openChat={openChat2}
+        openChat={openChat}
       />
     </MenuList>
   );
@@ -91,7 +80,7 @@ const ExistingConversations = ({
     return (
       <MenuItem>
         <Tooltip title="Move to conversation" key={friendUser._id}>
-          <div className={classes.user} onClick={() => openChat(conversation)}>
+          <div className={classes.user} onClick={() => openChat(friendUser)}>
             <div
               // add this bool to user (use socket?) if onlien green, else red
               style={{ backgroundColor: isOnline ? '#AAFF00' : '#EE4B2B' }}

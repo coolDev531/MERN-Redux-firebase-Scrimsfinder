@@ -26,7 +26,7 @@ const ChatOnline = ({
 
     if (!friendUser) return null;
 
-    if (!isOnline) return null;
+    // if (!isOnline) return null;
 
     return (
       <MenuItem>
