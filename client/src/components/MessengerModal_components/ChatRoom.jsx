@@ -151,7 +151,7 @@ export default function ChatRoom({ conversation }) {
           senderId: currentUser._id,
           text: msgText,
           receiverId: receiver._id,
-          _id: newlyCreatedMessage._id,
+          messageId: newlyCreatedMessage._id,
         });
 
         setMessages((prevState) => [...prevState, newlyCreatedMessage]);

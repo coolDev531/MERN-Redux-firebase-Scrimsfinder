@@ -39,14 +39,25 @@ io.on('connection', (socket) => {
     io.emit('getUsers', users); // emit to client
   });
 
-  socket.on('sendMessage', ({ senderId, receiverId, text, messageId }) => {
-    const user = getUser(receiverId); // send message to receiver
-    io.to(user.socketId).emit('getMessage', {
-      senderId,
-      text,
-      messageId,
-    });
-  });
+  socket.on(
+    'sendMessage',
+    async ({ senderId, receiverId, text, messageId }) => {
+      const receiverUser = getUser(receiverId); // send message to receiver from sender client
+
+      // don't emit if there isn't a receiverUser
+      if (!receiverUser) {
+        return;
+      }
+
+      io.to(receiverUser.socketId).emit('getMessage', {
+        senderId,
+        text,
+        messageId,
+      });
+
+      return;
+    }
+  );
 
   // when disconnect
   // add unsubscribe event listener
@@ -54,5 +65,7 @@ io.on('connection', (socket) => {
     console.log('a user disconnected!');
     removeUser(socket.id);
     io.emit('getUsers', users); // emit to client (return new users state)
+
+    return;
   });
 });
