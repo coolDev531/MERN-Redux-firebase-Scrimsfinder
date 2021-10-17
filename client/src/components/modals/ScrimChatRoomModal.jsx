@@ -34,14 +34,14 @@ import { useDispatch } from 'react-redux';
 export default function ChatRoomModal() {
   const { allUsers } = useUsers();
   const { currentUser } = useAuth();
-  const { chatRoomOpen } = useSelector(({ general }) => general);
+  const { scrimChatRoomOpen } = useSelector(({ general }) => general);
 
-  const { conversation = null, isOpen: open = false } = chatRoomOpen;
+  const { conversation = null, isOpen: open = false } = scrimChatRoomOpen;
   const dispatch = useDispatch();
 
   const onClose = () =>
     dispatch({
-      type: 'general/closeChatRoom',
+      type: 'general/closeScrimChatRoom',
     });
 
   const [isLoaded, setIsLoaded] = useState(false);
@@ -183,9 +183,7 @@ export default function ChatRoomModal() {
 
   return (
     <Modal
-      title={`Messenger Chat${
-        chatRoomOpen.extraTitle ? ` ${chatRoomOpen.extraTitle}` : ''
-      }`}
+      title="Messenger Chat (Scrim)"
       customStyles={{}}
       contentClassName={classes.modalContent}
       open={open}

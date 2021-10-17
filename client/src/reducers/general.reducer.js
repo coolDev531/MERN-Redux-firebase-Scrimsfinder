@@ -12,7 +12,9 @@ const initialState = {
 
   moreOptionsModalOpen: false,
 
-  chatRoomOpen: { conversation: null, isOpen: false, extraTitle: '' },
+  chatRoomOpen: { conversation: null, isOpen: false, extraTitle: '' }, // for friend chat room
+
+  scrimChatRoomOpen: { conversation: null, isOpen: false, extraTitle: '' }, // for scrim chat room
 };
 
 export default function generalReducer(state = initialState, action) {
@@ -126,6 +128,24 @@ export default function generalReducer(state = initialState, action) {
       return {
         ...state,
         chatRoomOpen: {
+          conversation: null,
+          isOpen: false,
+          extraTitle: '',
+        },
+      };
+    }
+
+    case 'general/scrimChatRoomOpen': {
+      return {
+        ...state,
+        scrimChatRoomOpen: payload,
+      };
+    }
+
+    case 'general/closeScrimChatRoom': {
+      return {
+        ...state,
+        scrimChatRoomOpen: {
           conversation: null,
           isOpen: false,
           extraTitle: '',

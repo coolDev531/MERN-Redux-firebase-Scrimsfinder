@@ -64,7 +64,7 @@ export default function ScrimSectionHeader({
       const conversation = await findScrimConversation(scrim._id);
       console.log({ conversation });
       dispatch({
-        type: 'general/chatRoomOpen',
+        type: 'general/scrimChatRoomOpen',
         payload: { conversation, isOpen: true },
       });
       return;

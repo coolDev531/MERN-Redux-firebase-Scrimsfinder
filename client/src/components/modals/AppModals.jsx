@@ -1,15 +1,18 @@
+import { useSelector } from 'react-redux';
+
 import useAuth from './../../hooks/useAuth';
 import FriendRequestsModal from './FriendRequestsModal';
 import NotificationsModal from './NotificationsModal';
 import UserFriendsModal from './UserFriendsModal';
 import OtherOptionsModal from './OtherOptionsModal';
 import ChatRoomModal from './ChatRoomModal';
-
-import { useSelector } from 'react-redux';
+import ScrimChatRoomModal from './ScrimChatRoomModal';
 
 export default function AppModals() {
   const { currentUser } = useAuth();
-  const { chatRoomOpen } = useSelector(({ general }) => general);
+  const { chatRoomOpen, scrimChatRoomOpen } = useSelector(
+    ({ general }) => general
+  );
 
   if (!currentUser?._id) return null;
 
@@ -20,6 +23,7 @@ export default function AppModals() {
       <UserFriendsModal />
       <OtherOptionsModal />
       {chatRoomOpen.isOpen && <ChatRoomModal />}
+      {scrimChatRoomOpen.isOpen && <ScrimChatRoomModal />}
     </>
   );
 }
