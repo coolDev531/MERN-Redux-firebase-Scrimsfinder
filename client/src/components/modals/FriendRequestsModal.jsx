@@ -104,6 +104,10 @@ export default function FriendRequestsModal() {
           type: 'Success',
           message: `${requestUser.name} added as a friend!`,
         });
+
+        setFriendRequests((prevState) =>
+          prevState.filter((request) => request._id !== requestId)
+        );
       } catch (error) {
         if (error?.response?.data?.error === 'Friend already added!') {
           const { friendRequests } = await removeFriendRequest(
@@ -126,7 +130,7 @@ export default function FriendRequestsModal() {
       }
     },
 
-    [currentUser, dispatch, setCurrentAlert]
+    [currentUser, dispatch, setCurrentAlert, socket]
   );
 
   const onRejectClick = useCallback(
@@ -148,6 +152,10 @@ export default function FriendRequestsModal() {
           type: 'Info',
           message: `rejected ${requestUser.name}'s friend request`,
         });
+
+        setFriendRequests((prevState) =>
+          prevState.filter((request) => request._id !== requestId)
+        );
       } catch (error) {
         setCurrentAlert({
           type: 'Error',
