@@ -8,10 +8,7 @@ import { useDispatch } from 'react-redux';
 import devLog from './../utils/devLog';
 
 // services
-import {
-  getUserNotifications,
-  pushUserNotification,
-} from '../services/users.services';
+import { getUserNotifications } from '../services/users.services';
 
 export default function useNotifications() {
   const { socket } = useSocket();
@@ -42,11 +39,6 @@ export default function useNotifications() {
           type: 'auth/addNotification',
           payload: newNotification,
         });
-
-        // if (newNotification.createdDate) {
-        //   // send to back end
-        //   await pushUserNotification(currentUser._id, newNotification);
-        // }
       }
     });
 

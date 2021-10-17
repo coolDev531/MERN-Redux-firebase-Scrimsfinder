@@ -12,6 +12,10 @@ const postConversation = async (req, res) => {
       return res.status(500).json({ message: 'receiverId not provided' });
     }
 
+    let foundConversation = await Conversation.findOne({
+      members: { $all: [req.params.senderId, req.params.receiverId] },
+    });
+
     const newConversation = new Conversation({
       members: [req.body.senderId, req.body.receiverId],
     });
@@ -63,8 +67,29 @@ const findOneConversation = async (req, res) => {
   }
 };
 
+const findOneConversationById = async (req, res) => {
+  try {
+    const { conversationId } = req.body;
+    if (!conversationId) {
+      return res.status(500).json({ message: 'conversationId not provided!' });
+    }
+
+    let conversation = await Conversation.findById(conversationId);
+
+    // populate so client can receive the members attributes
+    conversation = await conversation
+      .populate('members', ['name', 'discord', 'rank', 'region'])
+      .execPopulate();
+
+    return res.status(200).json(conversation);
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+};
+
 module.exports = {
   postConversation,
   getUserConversations,
   findOneConversation,
+  findOneConversationById,
 };

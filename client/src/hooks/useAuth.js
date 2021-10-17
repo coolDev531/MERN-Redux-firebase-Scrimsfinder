@@ -1,13 +1,11 @@
 import { useCallback, useEffect } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import useEffectExceptOnMount from './useEffectExceptOnMount';
 
 // services
 import { auth, provider } from '../firebase';
 import { loginUser, verifyUser } from '../services/auth.services';
 import { setAuthToken, removeToken } from '../services/auth.services';
-import { getUserNotifications } from '../services/users.services';
 
 // utils
 import jwt_decode from 'jwt-decode';

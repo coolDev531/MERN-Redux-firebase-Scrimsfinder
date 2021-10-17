@@ -1,4 +1,3 @@
-import { Children } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import useAuth from '../../hooks/useAuth';
 
@@ -11,9 +10,13 @@ import MenuList from '@mui/material/MenuList';
 // utils
 import makeStyles from '@mui/styles/makeStyles';
 import { getRankImage } from '../../utils/getRankImage';
+import { truncate } from './../../utils/truncate';
 
 // services
 import { findOneConversation } from '../../services/conversations.services';
+
+// icons
+import MsgIcon from '@mui/icons-material/Sms';
 
 // a list of existing conversations with the users friends
 export default function UserConversations({ closeMenu }) {
@@ -42,7 +45,7 @@ export default function UserConversations({ closeMenu }) {
   };
 
   return (
-    <MenuList style={{ padding: '20px' }}>
+    <MenuList>
       <ExistingConversations
         conversations={conversations}
         currentUser={currentUser}
@@ -62,7 +65,7 @@ const ExistingConversations = ({
   const classes = useStyles();
 
   return (
-    <Wrapper>
+    <>
       {conversations.map((conversation, idx) => {
         const userFriends = currentUser.friends.map(({ _id }) => _id);
 
@@ -88,35 +91,20 @@ const ExistingConversations = ({
                   width="20px"
                   className={classes.userRank}
                 />
-                {friendUser.name}
+                {truncate(friendUser.name, 12)}
+
+                <div style={{ position: 'absolute', right: '0', top: '0' }}>
+                  <MsgIcon />
+                </div>
                 {idx !== conversations.length - 1 ? <Divider /> : null}
               </div>
             </Tooltip>
           </MenuItem>
         );
       })}
-    </Wrapper>
-  );
-};
-
-function Wrapper({ children }) {
-  const countArray = Children.toArray(children).length;
-
-  return (
-    <>
-      {countArray > 0 ? (
-        children
-      ) : (
-        <div style={{ padding: '0', fontSize: '0.8rem' }}>
-          <p>
-            No existing conversations found (start a new one with a friend to
-            begin).
-          </p>
-        </div>
-      )}
     </>
   );
-}
+};
 
 const useStyles = makeStyles({
   user: {
@@ -124,7 +112,7 @@ const useStyles = makeStyles({
     flexDirection: 'row',
     position: 'relative',
     alignItems: 'center',
-    width: 'fit-content',
+    width: '100%',
   },
 
   userRank: {

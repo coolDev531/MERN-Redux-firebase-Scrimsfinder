@@ -14,4 +14,9 @@ router.get(
   controllers.findOneConversation
 );
 
+router.get(
+  '/conversations/find-by-id/:conversationId',
+  controllers.findOneConversationById
+);
+
 module.exports = router;

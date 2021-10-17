@@ -1,6 +1,6 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback } from 'react';
 import useOnKeyDown from '../../hooks/useOnKeyDown';
-import { useSelector } from 'react-redux';
+import useAuth from './../../hooks/useAuth';
 
 // components
 import ClickAwayListener from '@mui/material/ClickAwayListener';
@@ -10,27 +10,14 @@ import Popper from '@mui/material/Popper';
 import Grid from '@mui/material/Grid';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '../shared/Tooltip';
 import UserConversations from './UserConversations';
 import NewConversationFriends from './NewConversationFriends';
 
 // utils
 import { KEYCODES } from '../../utils/keycodes';
 
-// icons
-import CreateIcon from '@mui/icons-material/Create';
-import ForumIcon from '@mui/icons-material/Forum';
-
 export default function MessengerDropdown({ open, setOpen, anchorRef }) {
-  const { conversations } = useSelector(({ messenger }) => messenger);
-  const [view, setView] = useState('existing');
-
-  useEffect(() => {
-    setView(() => {
-      return conversations.length > 0 ? 'existing' : 'create-new';
-    });
-  }, [conversations]);
+  const { currentUser } = useAuth();
 
   const handleClose = useCallback(() => {
     setOpen(false);
@@ -90,51 +77,23 @@ export default function MessengerDropdown({ open, setOpen, anchorRef }) {
                     Messenger
                   </Typography>
 
-                  <Grid
-                    item
-                    style={{ marginRight: '-10px' }}
-                    container
-                    alignItems="center"
-                    xs={3}>
-                    {view === 'create-new' ? (
-                      <Tooltip title="View existing conversations">
-                        <IconButton onClick={() => setView('existing')}>
-                          <ForumIcon />
-                        </IconButton>
-                      </Tooltip>
-                    ) : (
-                      <Tooltip title="Start a new conversation">
-                        <IconButton onClick={() => setView('create-new')}>
-                          <CreateIcon />
-                        </IconButton>
-                      </Tooltip>
-                    )}
-                  </Grid>
-
                   <Divider sx={{ width: '100%' }} />
                 </Grid>
 
                 <Grid item xs={12}>
-                  {/* MESSENGER DROPDOWN SUBTITLE */}
-                  <Typography
-                    variant="body2"
-                    gutterBottom
-                    sx={{
-                      marginLeft: '20px',
-                      marginTop: '10px',
-                      marginBottom: '10px',
-                    }}>
-                    {view === 'existing'
-                      ? 'Existing conversations'
-                      : 'Start a new conversation'}
-                  </Typography>
                   <Divider />
 
                   {/* MESSENGER DROPDOWN CONTENT */}
-                  {view === 'existing' ? (
-                    <UserConversations closeMenu={handleClose} /> // close menu will close the drop down after opening a chat room in that component
+
+                  {currentUser.friends.length > 0 ? (
+                    <>
+                      <UserConversations closeMenu={handleClose} />
+                      <NewConversationFriends />
+                    </>
                   ) : (
-                    <NewConversationFriends />
+                    <Typography variant="body2" style={{ padding: '10px' }}>
+                      No Friends found
+                    </Typography>
                   )}
                 </Grid>
               </Grid>
