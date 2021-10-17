@@ -59,6 +59,28 @@ io.on('connection', (socket) => {
     }
   );
 
+  socket.on(
+    'sendConversation',
+    async ({ conversationId, senderId, receiverId }) => {
+      const receiverUser = getUser(receiverId); // send message to receiver from sender client
+
+      // don't emit if there isn't a receiverUser
+      if (!receiverUser) {
+        return;
+      }
+
+      console.log('receiverUser! ', receiverUser);
+
+      io.to(receiverUser.socketId).emit('getConversation', {
+        senderId,
+        receiverId,
+        conversationId,
+      });
+
+      return;
+    }
+  );
+
   // when disconnect
   // add unsubscribe event listener
   socket.on('disconnect', () => {

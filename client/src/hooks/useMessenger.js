@@ -1,5 +1,8 @@
 import { useEffect, useRef } from 'react';
-import { getUserConversations } from '../services/conversations.services';
+import {
+  findOneConversation,
+  getUserConversations,
+} from '../services/conversations.services';
 import { useDispatch } from 'react-redux';
 import useAuth from './useAuth';
 import devLog from './../utils/devLog';
@@ -62,6 +65,27 @@ export default function useMessenger() {
         payload: currentUserFriends,
       });
     });
+
+    socket.current.on('getConversation', async (data) => {
+      devLog('socket getConversation event: ', data);
+
+      devLog('getMessage event: ', data);
+
+      const newConversation = await findOneConversation(
+        data.senderId,
+        data.receiverId
+      );
+
+      console.log({ newConversation });
+
+      dispatch({
+        type: 'messenger/addNewConversation',
+        payload: newConversation,
+      });
+
+      dispatch({ type: 'auth/toggleNotifications' }); // re-fetch notifications
+    });
+
     // send event to socket server.
   }, [currentUser?._id, currentUser?.friends, socket, dispatch]);
 }

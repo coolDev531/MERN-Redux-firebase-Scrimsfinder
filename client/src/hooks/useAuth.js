@@ -116,7 +116,7 @@ export function useAuthVerify() {
 }
 
 export const useRefreshNotifications = () => {
-  const { currentUser } = useAuth();
+  const { currentUser, toggleNotifications } = useAuth();
   const { pathname } = useLocation();
   const dispatch = useDispatch();
 
@@ -131,7 +131,9 @@ export const useRefreshNotifications = () => {
       // update the user in the state
       dispatch({ type: 'auth/updateCurrentUser', payload: { notifications } });
     }
-  }, [currentUser, dispatch]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser, dispatch, toggleNotifications]);
 
   // check for new notifications every time pathname change,
   // add them to the user in the state.

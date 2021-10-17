@@ -2,6 +2,7 @@
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import useAlerts from '../../hooks/useAlerts';
+import useSocket from './../../hooks/useSocket';
 
 // components
 import IconButton from '@mui/material/IconButton';
@@ -16,6 +17,7 @@ import devLog from '../../utils/devLog';
 // services
 import { postNewConversation } from '../../services/conversations.services';
 import { postNewMessage } from '../../services/messages.services';
+import { pushUserNotification } from '../../services/users.services';
 
 // CreateNewConversation button
 export default function CreateNewConversationButton({
@@ -26,6 +28,8 @@ export default function CreateNewConversationButton({
 }) {
   const dispatch = useDispatch();
   const { setCurrentAlert } = useAlerts();
+
+  const { socket } = useSocket();
 
   const handleCreateConversation = useCallback(async () => {
     try {
@@ -45,14 +49,21 @@ export default function CreateNewConversationButton({
       });
 
       devLog('new message added to the conversation!', newlyCreatedMessage);
-      // socket.current?.emit('sendConversation', {
-      //   senderId: currentUser?._id,
-      //   text: msgText,
-      //   receiverId: receiver._id,
-      //   messageId: newlyCreatedMessage._id,
-      //   createdAt: newlyCreatedMessage.createdAt,
-      //   conversationId: newConversation._id
-      // });
+
+      // send notification to user who received the conversation
+      let newNotification = await pushUserNotification(receiverUser._id, {
+        message: `${currentUser.name} has started a conversation with you on messenger!`,
+        _relatedUser: currentUser,
+        createdDate: Date.now(),
+      });
+
+      if (newNotification) {
+        socket.current?.emit('sendConversation', {
+          senderId: currentUser?._id,
+          receiverId: receiverUser._id,
+          conversationId: newConversation._id,
+        });
+      }
 
       dispatch({
         type: 'messenger/addNewConversation',
