@@ -41,7 +41,8 @@ export default function MessengerModal() {
       customStyles={{
         display: 'flex',
         flexDirection: 'column',
-        minWidth: '400px',
+        minWidth: '600px',
+        maxWidth: '600px',
         maxHeight: '100%', // 100% to follow chat bubble overflow instead.
         overflowWrap: 'break-word',
       }}
