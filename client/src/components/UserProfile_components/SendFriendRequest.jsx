@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import useAlerts from './../../hooks/useAlerts';
 import useTheme from '@mui/styles/useTheme';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import useSocket from './../../hooks/useSocket';
 
 // components
 import FormGroup from '@mui/material/FormGroup';
@@ -21,7 +22,7 @@ export default function SendFriendRequest({ user, setUser }) {
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const { currentUser } = useSelector(({ auth }) => auth);
   const { setCurrentAlert } = useAlerts();
-
+  const { socket } = useSocket();
   const theme = useTheme();
   const matchesSm = useMediaQuery(theme.breakpoints.up('sm'));
 
@@ -33,6 +34,19 @@ export default function SendFriendRequest({ user, setUser }) {
         user._id,
         currentUser._id
       ); // current user sending to that user in the profile page.
+
+      //  add a new notification to the user
+      const newNotification = {
+        _relatedUser: currentUser._id,
+        message: `${currentUser._id} sent you a friend request!`,
+        isFriendRequest: true,
+        createdDate: Date.now(),
+        createdAt: Date.now(),
+        receiverId: user?._id,
+      };
+
+      // send notification to user who received the frind request
+      socket.current?.emit('sendNotification', newNotification);
 
       setUser((prevState) => ({
         ...prevState,

@@ -43,10 +43,10 @@ export default function useNotifications() {
           payload: newNotification,
         });
 
-        if (newNotification.createdDate) {
-          // send to back end
-          await pushUserNotification(currentUser._id, newNotification);
-        }
+        // if (newNotification.createdDate) {
+        //   // send to back end
+        //   await pushUserNotification(currentUser._id, newNotification);
+        // }
       }
     });
 

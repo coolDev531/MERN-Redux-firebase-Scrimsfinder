@@ -17,6 +17,7 @@ import devLog from '../../utils/devLog';
 // services
 import { postNewConversation } from '../../services/conversations.services';
 import { postNewMessage } from '../../services/messages.services';
+import { pushUserNotification } from '../../services/users.services';
 
 // CreateNewConversation button
 export default function CreateNewConversationButton({
@@ -55,15 +56,25 @@ export default function CreateNewConversationButton({
         conversationId: newConversation._id,
       });
 
-      // send notification to user who received the conversation
-      socket.current?.emit('sendNotification', {
+      const newNotification = {
         message: `${currentUser.name} has started a conversation with you on messenger!`,
         _relatedUser: currentUser._id,
         createdDate: Date.now(),
         receiverId: receiverUser._id,
         conversation: newConversation,
         isConversationStart: true,
-      });
+      };
+
+      // send notification to user who received the conversation
+      socket.current?.emit('sendNotification', newNotification);
+
+      // send to back end
+      const createdNotification = await pushUserNotification(
+        currentUser._id,
+        newNotification
+      );
+
+      devLog({ createdNotification });
 
       dispatch({
         type: 'messenger/addNewConversation',
