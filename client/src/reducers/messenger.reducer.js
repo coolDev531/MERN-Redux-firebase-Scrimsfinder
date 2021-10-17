@@ -15,6 +15,13 @@ export default function messengerReducer(state = initialState, action) {
       };
     }
 
+    case 'messenger/addNewConversation': {
+      return {
+        ...state,
+        conversations: [...state.conversations, payload],
+      };
+    }
+
     case 'messenger/setOnlineUsers': {
       return {
         ...state,

@@ -53,13 +53,19 @@ export default function MessengerDropdown({ open, setOpen, anchorRef }) {
           <Paper>
             <ClickAwayListener onClickAway={handleClose}>
               <Grid container xs={12} direction="column">
-                <Grid item>
+                <Grid
+                  item
+                  container
+                  alignItems="center"
+                  justifyContent="space-between">
                   <Typography
                     sx={{ marginLeft: '20px', marginTop: '20px' }}
                     component="h1"
                     variant="h6">
                     Messenger
                   </Typography>
+
+                  <Grid item></Grid>
                 </Grid>
 
                 {/* close dropdown when opening a chat */}

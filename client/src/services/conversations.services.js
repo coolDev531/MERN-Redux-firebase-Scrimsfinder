@@ -28,3 +28,12 @@ export const findOneConversation = async (userId1, userId2) => {
     throw error;
   }
 };
+
+export const postNewConversation = async ({ senderId, receiverId }) => {
+  try {
+    const response = await api.post(`/conversations`, { senderId, receiverId });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
