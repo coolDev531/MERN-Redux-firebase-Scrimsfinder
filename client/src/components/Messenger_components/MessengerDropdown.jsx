@@ -1,5 +1,6 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import useOnKeyDown from '../../hooks/useOnKeyDown';
+import { useSelector } from 'react-redux';
 
 // components
 import ClickAwayListener from '@mui/material/ClickAwayListener';
@@ -7,14 +8,21 @@ import Grow from '@mui/material/Grow';
 import Paper from '@mui/material/Paper';
 import Popper from '@mui/material/Popper';
 import Grid from '@mui/material/Grid';
+import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import UserConversations from './UserConversations';
+import NewConversationFriends from './NewConversationFriends';
 
 // utils
 import { KEYCODES } from '../../utils/keycodes';
-import NewConversationFriends from './NewConversationFriends';
 
 export default function MessengerDropdown({ open, setOpen, anchorRef }) {
+  const { conversations } = useSelector(({ messenger }) => messenger);
+
+  const [view, setView] = useState(() => {
+    return conversations.length > 0 ? 'existing' : 'new';
+  });
+
   const handleClose = useCallback(() => {
     setOpen(false);
   }, [setOpen]);
@@ -59,21 +67,46 @@ export default function MessengerDropdown({ open, setOpen, anchorRef }) {
                   container
                   alignItems="center"
                   justifyContent="space-between">
-                  <Typography
-                    sx={{ marginLeft: '20px', marginTop: '20px' }}
-                    component="h1"
-                    variant="h6">
-                    Messenger
-                  </Typography>
+                  <Grid item xs={12}>
+                    {/* MESSENGER DROPDOWN TITLE */}
+                    <Typography
+                      sx={{
+                        marginLeft: '20px',
+                        marginTop: '20px',
+                        marginBottom: '10px',
+                      }}
+                      component="h1"
+                      gutterBottom
+                      variant="h6">
+                      Messenger
+                    </Typography>
+
+                    <Divider />
+                  </Grid>
 
                   <Grid item xs={12}>
-                    <NewConversationFriends />
-                  </Grid>
-                </Grid>
+                    {/* MESSENGER DROPDOWN SUBTITLE */}
+                    <Typography
+                      variant="body2"
+                      gutterBottom
+                      sx={{
+                        marginLeft: '20px',
+                        marginTop: '10px',
+                        marginBottom: '10px',
+                      }}>
+                      {view === 'existing'
+                        ? 'Existing conversations'
+                        : 'Start a new conversation'}
+                    </Typography>
+                    <Divider />
 
-                {/* close dropdown when opening a chat */}
-                <Grid item xs={12}>
-                  <UserConversations closeMenu={handleClose} />
+                    {/* MESSENGER DROPDOWN CONTENT */}
+                    {view === 'existing' ? (
+                      <UserConversations closeMenu={handleClose} /> // close menu will close the drop down after opening a chat room in that component
+                    ) : (
+                      <NewConversationFriends />
+                    )}
+                  </Grid>
                 </Grid>
               </Grid>
             </ClickAwayListener>
