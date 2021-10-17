@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback } from 'react';
 
 // components
 import Divider from '@mui/material/Divider';
@@ -9,24 +9,20 @@ import Tooltip from '../shared/Tooltip';
 // services and utils
 import makeStyles from '@mui/styles/makeStyles';
 import { getRankImage } from './../../utils/getRankImage';
-import ChatRoom from './ChatRoom';
 import { useSelector, useDispatch } from 'react-redux';
 import useAuth from './../../hooks/useAuth';
 
-export default function UserConversations() {
-  const [isChatOpen, setIsChatOpen] = useState(false);
-
+export default function UserConversations({ closeMenu }) {
   const { onlineUsers, conversations } = useSelector(
     ({ messenger }) => messenger
   );
 
   const dispatch = useDispatch();
 
-  const [conversation, setConversation] = useState(null);
-
   const { currentUser } = useAuth();
 
   const onOpen = useCallback((conversation) => {
+    closeMenu();
     dispatch({
       type: 'general/chatRoomOpen',
       payload: { conversation, isOpen: true },

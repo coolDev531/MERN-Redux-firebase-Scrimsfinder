@@ -41,7 +41,8 @@ export default function MessengerConversationsDropdown({
           }}>
           <Paper>
             <ClickAwayListener onClickAway={handleClose}>
-              <UserConversations />
+              {/* close dropdown when opening a chat */}
+              <UserConversations closeMenu={() => setOpen(false)} />
             </ClickAwayListener>
           </Paper>
         </Grow>
