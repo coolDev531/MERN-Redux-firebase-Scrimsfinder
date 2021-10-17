@@ -92,22 +92,41 @@ export default function ChatRoom({ conversation }) {
 
   const handleSubmitMessage = useCallback(
     async (msgText) => {
-      if (!msgText) {
+      try {
+        if (!msgText) {
+          setCurrentAlert({
+            type: 'Error',
+            message: 'cannot send message, input value is empty!',
+          });
+        }
+
+        const newlyCreatedMessage = await postNewMessage({
+          senderId: currentUser?._id,
+          conversationId: conversation._id,
+          text: msgText,
+        });
+
+        const receiverId = conversation.members.find(
+          (user) => user._id !== currentUser._id
+        );
+
+        // send event to server
+        socket.current.emit('sendMessage', {
+          senderId: currentUser._id,
+          text: msgText,
+          receiverId,
+        });
+
+        setMessages((prevState) => [...prevState, newlyCreatedMessage]);
+
+        setNewMessage('');
+      } catch (error) {
         setCurrentAlert({
           type: 'Error',
-          message: 'cannot send message, input value is empty!',
+          message: 'error sending message, try again later',
         });
+        return;
       }
-
-      const newlyCreatedMessage = await postNewMessage({
-        senderId: currentUser?._id,
-        conversationId: conversation._id,
-        text: msgText,
-      });
-
-      setMessages((prevState) => [...prevState, newlyCreatedMessage]);
-
-      setNewMessage('');
     },
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
