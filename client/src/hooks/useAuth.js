@@ -114,30 +114,3 @@ export function useAuthVerify() {
 
   return null;
 }
-
-export const useRefreshNotifications = () => {
-  const { currentUser } = useAuth();
-  const { pathname } = useLocation();
-  const dispatch = useDispatch();
-
-  const refreshUserNotifications = useCallback(async () => {
-    if (!currentUser?._id) return;
-    devLog('checking notifications for currentUser');
-
-    const { notifications } = await getUserNotifications(currentUser?._id);
-
-    // if notifications from api are different, that means there are new notifications
-    if (notifications.length !== currentUser.notifications?.length) {
-      // update the user in the state
-      dispatch({ type: 'auth/updateCurrentUser', payload: { notifications } });
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentUser, dispatch]);
-
-  // check for new notifications every time pathname change,
-  // add them to the user in the state.
-  useEffectExceptOnMount(() => {
-    refreshUserNotifications();
-  }, [pathname]);
-};

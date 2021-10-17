@@ -4,6 +4,7 @@ import useAlerts from '../../hooks/useAlerts';
 import useUsers from '../../hooks/useUsers';
 import useSocket from '../../hooks/useSocket';
 import useAuth from '../../hooks/useAuth';
+import useSound from 'use-sound';
 
 // components
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -20,6 +21,8 @@ import { postNewMessage } from '../../services/messages.services';
 // icons
 import CreateIcon from '@mui/icons-material/Create';
 import Tooltip from '../shared/Tooltip';
+
+import NewMessageSFX from '../../assets/sounds/new_message.mp3';
 
 // utils
 import makeStyles from '@mui/styles/makeStyles';
@@ -47,6 +50,10 @@ export default function ChatRoomModal() {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState(''); // the user input field new message to be sent
   const [arrivalMessage, setArrivalMessage] = useState(null); // new message that will be received from socket
+
+  const [playNewMessageSFX] = useSound(NewMessageSFX, {
+    volume: 0.25,
+  });
 
   const { socket } = useSocket();
 
@@ -107,9 +114,12 @@ export default function ChatRoomModal() {
       conversationMemberIds?.includes(arrivalMessage?._sender?._id)
     ) {
       devLog('socket new arrival message added to state (receiver client)');
+
+      playNewMessageSFX();
+
       setMessages((prevState) => [...prevState, arrivalMessage]);
     }
-  }, [arrivalMessage, conversationMemberIds]);
+  }, [arrivalMessage, conversationMemberIds, playNewMessageSFX]);
 
   const handleSubmitMessage = useCallback(
     async (msgText) => {

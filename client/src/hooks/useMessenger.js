@@ -85,31 +85,6 @@ export default function useMessenger() {
       }
     });
 
-    socket.current.on('getNotification', async (data) => {
-      devLog('socket getNotification event: ', data);
-      if (currentUser._id === data.receiverId) {
-        const newNotification = {
-          message: data.message,
-          createdAt: Date.now(),
-          createdDate: Date.now(), // i added this timestamp on backend for some reason...
-          _relatedUser: data?._relatedUser ?? null,
-          _relatedScrim: data?.relatedScrim ?? null,
-          isConversationStart: data?.isConversationStart ?? false,
-          isFriendRequest: data?.isFriendRequest ?? false,
-          conversation: data?.conversation ?? null,
-        };
-
-        dispatch({
-          type: 'auth/addNotification',
-          payload: newNotification,
-        });
-
-        if (newNotification.createdDate) {
-          await pushUserNotification(currentUser._id, newNotification);
-        }
-      }
-    });
-
     // send event to socket server.
   }, [currentUser?._id, currentUser?.friends, socket, dispatch]);
 }

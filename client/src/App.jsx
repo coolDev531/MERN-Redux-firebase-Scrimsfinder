@@ -3,10 +3,7 @@ import './App.css';
 // hooks
 import useAppBackground from './hooks/useAppBackground';
 import useAlerts from './hooks/useAlerts';
-import useAuth, {
-  useAuthVerify,
-  useRefreshNotifications,
-} from './hooks/useAuth';
+import useAuth, { useAuthVerify } from './hooks/useAuth';
 import { useFetchScrims, useSetScrimsRegion } from './hooks/useScrims';
 import { useFetchUsers } from './hooks/useUsers';
 import useMessenger from './hooks/useMessenger';
@@ -25,6 +22,7 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import AppModals from './components/modals/AppModals';
 import { Helmet } from 'react-helmet';
+import useNotifications from './hooks/useNotifications';
 
 function App() {
   const classes = useAppStyles();
@@ -38,8 +36,8 @@ function App() {
   useFetchUsers(); // fetch all users (for search and settings page)
   useSetScrimsRegion(); // set scrims region to users region on mount and when user changes it on settings
   useFetchScrims(); // fetch scrims on mount or path change
-  useRefreshNotifications(); // reload user notifications on every path change.
-  useMessenger();
+  useMessenger(); // listen for messenger socket events
+  useNotifications(); // reload user notifications on socket events
 
   if (isVerifyingUser) {
     return (
