@@ -1,54 +1,70 @@
-import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { makeStyles } from '@mui/styles';
+import { useCallback, useRef } from 'react';
+// import { useDispatch } from 'react-redux';
+// import { makeStyles } from '@mui/styles';
 
 // components
+import Stack from '@mui/material/Stack';
+
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from './../Tooltip';
 
 // icons
 import MessengerIcon from '@mui/icons-material/Chat';
+import MessengerConversationsDropdown from '../../Messenger_components/MessengerConversationsDropdown';
 
-export default function MessengerButton() {
-  const { conversations } = useSelector(({ messenger }) => messenger);
+export default function MessengerButton({
+  onClick,
+  isMessengerDropdownOpen,
+  setIsMessengerDropdownOpen,
+}) {
+  // const dispatch = useDispatch();
 
-  const dispatch = useDispatch();
+  // const openMessenger = useCallback(() => {
+  //   dispatch({ type: 'general/openMessenger' });
+  // }, [dispatch]);
 
-  const openMessenger = useCallback(() => {
-    dispatch({ type: 'general/openMessenger' });
-  }, [dispatch]);
-
-  const classes = useStyles();
+  // const classes = useStyles();
+  const anchorRef = useRef(null);
 
   return (
-    <Grid item style={{ position: 'relative' }}>
+    <Grid item>
       <Tooltip title="Messenger">
-        <IconButton onClick={openMessenger}>
+        <IconButton
+          ref={anchorRef}
+          onClick={onClick}
+          aria-controls={isMessengerDropdownOpen ? 'messenger-menu' : undefined}
+          aria-expanded={isMessengerDropdownOpen ? 'true' : undefined}
+          aria-haspopup="true">
           {/* {conversations.length > 0 ? (
             <div className={classes.newMessagesCount}>
-              {conversations.length}
+            {conversations.length}
             </div>
           ) : null} */}
           <MessengerIcon fontSize="large" />
         </IconButton>
       </Tooltip>
+      <MessengerConversationsDropdown
+        anchorRef={anchorRef}
+        open={isMessengerDropdownOpen}
+        setOpen={setIsMessengerDropdownOpen}
+      />
     </Grid>
   );
 }
 
-const useStyles = makeStyles({
-  newMessagesCount: {
-    backgroundColor: 'red',
-    borderRadius: '50%',
-    width: '24px',
-    height: '24px',
-    position: 'absolute',
-    top: '0px',
-    right: '-5px',
-    fontSize: '1rem',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
+// const useStyles = makeStyles({
+//   newMessagesCount: {
+//     backgroundColor: 'red',
+//     borderRadius: '50%',
+//     width: '24px',
+//     height: '24px',
+//     position: 'absolute',
+//     top: '0px',
+//     right: '-5px',
+//     fontSize: '1rem',
+//     display: 'flex',
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//   },
+// });

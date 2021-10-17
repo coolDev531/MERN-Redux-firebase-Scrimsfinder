@@ -1,5 +1,3 @@
-import { memo, useState, useEffect } from 'react';
-
 // components
 import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
@@ -10,14 +8,12 @@ import Tooltip from '../shared/Tooltip';
 import makeStyles from '@mui/styles/makeStyles';
 import { getRankImage } from './../../utils/getRankImage';
 
-const UserConversations = ({
+export default function UserConversations({
   conversations,
   changeToView,
   onlineUsers,
   currentUser,
-}) => {
-  const classes = useStyles();
-
+}) {
   return (
     <>
       <Helmet>
@@ -39,7 +35,7 @@ const UserConversations = ({
       </Box>
     </>
   );
-};
+}
 
 const ExistingConversations = ({
   conversations,
@@ -100,4 +96,3 @@ const useStyles = makeStyles({
     width: '10px',
   },
 });
-export default UserConversations;

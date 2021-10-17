@@ -33,6 +33,7 @@ import MessengerButton from './MessengerButton';
 import Logo from '../../../assets/images/bootcamp_llc_media_kit/coin_logo_new2021.png';
 import KeyIcon from '@mui/icons-material/VpnKey';
 import MenuIcon from '@mui/icons-material/Menu'; // burger icon
+import MessengerConversationsDropdown from '../../Messenger_components/MessengerConversationsDropdown';
 
 const useStyles = makeStyles((theme) => ({
   offset: theme.mixins.offset,
@@ -47,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Navbar({ showDropdowns, showLess, showCheckboxes }) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMessengerDropdownOpen, setIsMessengerDropdownOpen] = useState(false);
 
   const classes = useStyles();
 
@@ -180,7 +182,21 @@ export default function Navbar({ showDropdowns, showLess, showCheckboxes }) {
                       </Grid>
                     )}
 
-                    {currentUser?.uid && <MessengerButton />}
+                    {currentUser?.uid && (
+                      <>
+                        <MessengerButton
+                          isMessengerDropdownOpen={isMessengerDropdownOpen}
+                          setIsMessengerDropdownOpen={
+                            setIsMessengerDropdownOpen
+                          }
+                          onClick={() =>
+                            setIsMessengerDropdownOpen(
+                              (prevState) => !prevState
+                            )
+                          }
+                        />
+                      </>
+                    )}
                     {currentUser?.uid && <NotificationsButton />}
 
                     {/* BURGER ICON */}
