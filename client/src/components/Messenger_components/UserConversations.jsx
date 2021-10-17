@@ -14,6 +14,7 @@ import { getRankImage } from '../../utils/getRankImage';
 // services
 import { findOneConversation } from '../../services/conversations.services';
 
+// a list of existing conversations with the users friends
 export default function UserConversations({ closeMenu }) {
   const { conversations, onlineFriends } = useSelector(
     ({ messenger }) => messenger

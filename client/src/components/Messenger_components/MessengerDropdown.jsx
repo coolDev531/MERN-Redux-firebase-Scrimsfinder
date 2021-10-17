@@ -12,6 +12,7 @@ import UserConversations from './UserConversations';
 
 // utils
 import { KEYCODES } from '../../utils/keycodes';
+import NewConversationFriends from './NewConversationFriends';
 
 export default function MessengerDropdown({ open, setOpen, anchorRef }) {
   const handleClose = useCallback(() => {
@@ -65,7 +66,9 @@ export default function MessengerDropdown({ open, setOpen, anchorRef }) {
                     Messenger
                   </Typography>
 
-                  <Grid item></Grid>
+                  <Grid item xs={12}>
+                    <NewConversationFriends />
+                  </Grid>
                 </Grid>
 
                 {/* close dropdown when opening a chat */}

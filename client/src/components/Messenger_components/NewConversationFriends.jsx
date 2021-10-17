@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import useAuth from './../../hooks/useAuth';
-import useMessenger from './../../hooks/useMessenger';
+import useUsers from './../../hooks/useUsers';
 
 // components
 import Divider from '@mui/material/Divider';
@@ -11,21 +11,49 @@ import MenuList from '@mui/material/MenuList';
 // utils
 import makeStyles from '@mui/styles/makeStyles';
 import { getRankImage } from '../../utils/getRankImage';
+import { useHistory } from 'react-router-dom';
 
+// a list of friends that the user doesn't have a conversation with yet.
 const NewConversationFriends = () => {
   const classes = useStyles();
-  const { onlineFriends } = useMessenger();
+  const { allUsers } = useUsers();
+
+  const { onlineFriends, conversations } = useSelector(
+    ({ messenger }) => messenger
+  );
+
   const { currentUser } = useAuth();
+  const history = useHistory();
+
+  const getFriendUserId = (arr) => {
+    let friend = arr.find(({ _id }) => _id !== currentUser._id);
+    return friend._id;
+  };
 
   return (
     <MenuList>
-      {currentUser.friends.map((friendUser, idx, arr) => {
+      {currentUser.friends.map(({ _id: friendId }, idx, arr) => {
+        const friendUser = allUsers.find((user) => user._id === friendId); // not populated on back-end
+
         const isOnline = onlineFriends.includes(friendUser?._id);
 
-        if (!friendUser) return null;
+        const memberIds = conversations.flatMap(({ members }) =>
+          getFriendUserId(members)
+        );
+
+        const inConversation = memberIds.includes(friendUser._id);
+
+        // if the user is already in a conversation with current user, we don't want him to show
+        // in the new convos screen.
+        if (inConversation) return null;
 
         return (
-          <MenuItem onClick={() => {}}>
+          <MenuItem
+            onClick={() => {
+              history.push(
+                `/users/${friendUser.name}?region${friendUser.region}`
+              );
+            }}>
             <Tooltip title="Move to conversation" key={friendUser._id}>
               <div className={classes.user}>
                 <div
