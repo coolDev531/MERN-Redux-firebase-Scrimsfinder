@@ -1,9 +1,4 @@
-import { useCallback, useRef } from 'react';
-// import { useDispatch } from 'react-redux';
-// import { makeStyles } from '@mui/styles';
-
-// components
-import Stack from '@mui/material/Stack';
+import { useRef } from 'react';
 
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
@@ -18,13 +13,6 @@ export default function MessengerButton({
   isMessengerDropdownOpen,
   setIsMessengerDropdownOpen,
 }) {
-  // const dispatch = useDispatch();
-
-  // const openMessenger = useCallback(() => {
-  //   dispatch({ type: 'general/openMessenger' });
-  // }, [dispatch]);
-
-  // const classes = useStyles();
   const anchorRef = useRef(null);
 
   return (

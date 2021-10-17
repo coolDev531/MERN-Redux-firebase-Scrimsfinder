@@ -1,5 +1,5 @@
 // hooks
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import useAuth, { useAuthActions } from './../../../hooks/useAuth';
 import { makeStyles, useTheme } from '@mui/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -33,7 +33,6 @@ import MessengerButton from './MessengerButton';
 import Logo from '../../../assets/images/bootcamp_llc_media_kit/coin_logo_new2021.png';
 import KeyIcon from '@mui/icons-material/VpnKey';
 import MenuIcon from '@mui/icons-material/Menu'; // burger icon
-import MessengerConversationsDropdown from '../../Messenger_components/MessengerConversationsDropdown';
 
 const useStyles = makeStyles((theme) => ({
   offset: theme.mixins.offset,
@@ -59,6 +58,10 @@ export default function Navbar({ showDropdowns, showLess, showCheckboxes }) {
   const { currentUser } = useAuth();
   const { handleLogin } = useAuthActions();
   const dispatch = useDispatch();
+
+  const openMessengerDropdown = useCallback(() => {
+    setIsMessengerDropdownOpen((prevState) => !prevState);
+  }, []);
 
   return (
     <>
@@ -184,16 +187,13 @@ export default function Navbar({ showDropdowns, showLess, showCheckboxes }) {
 
                     {currentUser?.uid && (
                       <>
+                        {/* the MessangerButton component contains the button and the dropdown menu */}
                         <MessengerButton
                           isMessengerDropdownOpen={isMessengerDropdownOpen}
                           setIsMessengerDropdownOpen={
                             setIsMessengerDropdownOpen
                           }
-                          onClick={() =>
-                            setIsMessengerDropdownOpen(
-                              (prevState) => !prevState
-                            )
-                          }
+                          onClick={openMessengerDropdown}
                         />
                       </>
                     )}

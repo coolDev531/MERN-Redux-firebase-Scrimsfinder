@@ -3,7 +3,6 @@ import { getUserConversations } from '../services/conversations.services';
 import { useDispatch } from 'react-redux';
 import useAuth from './useAuth';
 import devLog from './../utils/devLog';
-import { useCreateSocket } from './useSocket';
 
 import { io } from 'socket.io-client';
 
