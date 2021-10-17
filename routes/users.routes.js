@@ -23,6 +23,11 @@ router.post(
   controllers.removeAllUserNotifications
 ); // POST
 
+router.get(
+  '/users/user-friend-requests/:userId',
+  controllers.getUserFriendRequests
+); // GET
+
 router.post(
   '/users/send-friend-request/:userReceivingId/:userSendingId',
   controllers.sendFriendRequest

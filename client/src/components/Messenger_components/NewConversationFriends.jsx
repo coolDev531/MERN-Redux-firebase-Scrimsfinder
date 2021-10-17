@@ -14,6 +14,7 @@ import ConversationCreateModal from './../modals/ConversationCreateModal';
 import makeStyles from '@mui/styles/makeStyles';
 import { getRankImage } from '../../utils/getRankImage';
 
+import CreateIcon from '@mui/icons-material/Create';
 // a list of friends that the user doesn't have a conversation with yet.
 const NewConversationFriends = () => {
   const classes = useStyles();

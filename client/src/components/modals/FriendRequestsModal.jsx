@@ -1,6 +1,9 @@
-import { Fragment, memo, useCallback } from 'react';
+import { Fragment, memo, useCallback, useState, useEffect } from 'react';
 import useAlerts from './../../hooks/useAlerts';
+import useSocket from './../../hooks/useSocket';
 import { useSelector, useDispatch } from 'react-redux';
+
+// components
 import { Modal } from '../shared/ModalComponents';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
@@ -16,6 +19,7 @@ import { getRankImage } from './../../utils/getRankImage';
 // services
 import {
   addUserFriend,
+  getUserFriendRequests,
   pushUserNotification,
   removeFriendRequest,
 } from '../../services/users.services';
@@ -28,13 +32,27 @@ export default function FriendRequestsModal() {
   const [{ friendRequestsOpen }, { currentUser }, { allUsers }] = useSelector(
     ({ general, auth, users }) => [general, auth, users]
   );
+  const [friendRequests, setFriendRequests] = useState(() => {
+    return currentUser.friendRequests ?? [];
+  });
+
+  const { socket } = useSocket();
 
   const dispatch = useDispatch();
   const { setCurrentAlert } = useAlerts();
 
   const onClose = () => dispatch({ type: 'general/closeFriendRequests' });
 
-  const friendRequests = currentUser?.friendRequests ?? [];
+  useEffect(() => {
+    if (!friendRequestsOpen) return;
+
+    // this is for when user recieves notification from socket and opens this page, he didn't refresh, so we need to refetch.
+    const fetchUserFriendRequests = async () => {
+      let friendRequests = await getUserFriendRequests(currentUser?._id);
+      setFriendRequests(friendRequests);
+    };
+    fetchUserFriendRequests();
+  }, [currentUser?._id, friendRequestsOpen]);
 
   const onAcceptClick = useCallback(
     async (requestUser, requestId) => {
@@ -49,7 +67,17 @@ export default function FriendRequestsModal() {
           requestId
         );
 
-        // send notification to user who requested the friend request
+        const receiverNotification = {
+          message: `You and ${currentUser?.name} are now friends!`,
+          _relatedUser: currentUser._id,
+          createdDate: Date.now(),
+          receiverId: requestUser._id,
+        };
+
+        // send event to friend user.
+        socket.current?.emit('sendNotification', receiverNotification);
+
+        // send notification to user who requested the friend request (current User)
         await pushUserNotification(requestUser._id, {
           message: `You and ${currentUser?.name} are now friends!`,
           _relatedUser: currentUser,
