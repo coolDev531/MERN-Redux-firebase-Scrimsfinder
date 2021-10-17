@@ -38,21 +38,24 @@ export default function useMessenger() {
   useEffect(() => {
     if (!currentUser?._id) return;
 
-    const userFriendIds = currentUser.friends.map(({ _id }) => _id);
-
     socket.current.emit('addUser', currentUser?._id);
+
     socket.current.on('getUsers', (users) => {
       devLog('socket getUsers event: ', users);
 
-      const onlineUserIds = users.map(({ userId }) => userId);
+      // if you want to get all online users
+      // const onlineUserIds = users.map(({ userId }) => userId);
 
-      dispatch({ type: 'messenger/setOnlineUsers', payload: onlineUserIds });
+      // dispatch({ type: 'messenger/setOnlineUsers', payload: onlineUserIds });
+
+      // ONLY GET  THIS USERS FRIENDS
+      const currentUserFriends = currentUser.friends.filter((friend) =>
+        users.some((u) => u.userId === friend._id)
+      );
 
       dispatch({
         type: 'messenger/setOnlineFriends',
-        payload: onlineUserIds.filter((userId) =>
-          userFriendIds.includes(userId)
-        ),
+        payload: currentUserFriends,
       });
     });
     // send event to socket server.

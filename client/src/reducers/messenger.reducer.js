@@ -1,6 +1,6 @@
 const initialState = {
   conversations: [],
-  onlineUsers: [],
+  // onlineUsers: [], // maybe in the future we will want all online users?
   onlineFriends: [],
 };
 
