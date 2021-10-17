@@ -11,8 +11,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import LinearProgress from '@mui/material/LinearProgress';
 import { Helmet } from 'react-helmet';
-import Moment from 'react-moment';
-import 'moment-timezone';
+import ChatBubble from './../Messenger_components/ChatBubble';
 
 // services
 import { getConversationMessages } from '../../services/messages.services';
@@ -23,13 +22,11 @@ import CreateIcon from '@mui/icons-material/Create';
 import Tooltip from '../shared/Tooltip';
 
 // utils
-import { getRankImage } from '../../utils/getRankImage';
 import makeStyles from '@mui/styles/makeStyles';
 import devLog from '../../utils/devLog';
 import { Modal } from '../shared/ModalComponents';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import ChatBubble from './../Messenger_components/ChatBubble';
 
 // messenger modal chat room
 export default function ChatRoomModal() {
@@ -228,34 +225,6 @@ export default function ChatRoomModal() {
   );
 }
 
-// one message
-const ChatBubble2 = ({
-  isCurrentUser,
-  messageText,
-  messageDate,
-  userName,
-  userRank,
-}) => {
-  const classes = useStyles({ isCurrentUser });
-  const rankImage = getRankImage(userRank);
-
-  return (
-    <div className={classes.bubbleContainer}>
-      <div className={classes.bubbleUsername}>
-        <img src={rankImage} width="20px" alt={`${userName}'s rank`} />
-        {userName}
-      </div>
-      <div className={classes.bubble}>
-        <div className={classes.button}>{messageText}</div>
-      </div>
-      <div className={classes.bubbleMessageDate}>
-        {/* Including ago with fromNow will omit the suffix from the relative time. */}
-        <Moment fromNow>{messageDate}</Moment>
-      </div>
-    </div>
-  );
-};
-
 const ChatInput = memo(({ value, onChange, onSubmit }) => {
   return (
     <OutlinedInput
@@ -293,45 +262,5 @@ const useStyles = makeStyles((theme) => ({
   chatRoomMessagesContainer: {
     maxHeight: '300px',
     overflowY: 'auto',
-  },
-
-  bubbleContainer: {
-    position: 'relative',
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column', // column because name is ontop of bubble, and time sent is below.
-
-    // if user sent message is the current user, align it to flex-end, else flex-start
-    alignItems: ({ isCurrentUser }) =>
-      isCurrentUser ? 'flex-end' : 'flex-start',
-    padding: '15px',
-  },
-
-  bubbleUsername: {
-    display: 'flex',
-    alignItems: 'center',
-    margin: '5px 0px',
-    position: 'relative',
-    left: ({ isCurrentUser }) => (isCurrentUser ? '-5px' : '5px'),
-    top: '5px',
-  },
-
-  bubbleMessageDate: {
-    fontSize: '0.7rem',
-    maxWidth: '30%',
-    wordBreak: 'break-word',
-    position: 'relative',
-    left: ({ isCurrentUser }) => (isCurrentUser ? '-5px' : '5px'),
-  },
-
-  bubble: {
-    maxWidth: '35%',
-    minWidth: '20%',
-    border: '0.5px solid black',
-    borderRadius: '10px',
-    margin: '5px 0',
-    padding: '10px',
-    color: ({ isCurrentUser }) => (isCurrentUser ? 'white' : 'black'),
-    backgroundColor: ({ isCurrentUser }) => (isCurrentUser ? 'blue' : 'white'),
   },
 }));

@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { getRankImage } from './../../utils/getRankImage';
 import Moment from 'react-moment';
+import 'moment-timezone';
 
 export default function ChatBubble({
   isCurrentUser,
@@ -17,17 +18,24 @@ export default function ChatBubble({
         <img src={rankImage} width="20px" alt={`${userName}'s rank`} />
         {userName}
       </div> */}
+      <div className="bubble__username">
+        <img src={rankImage} width="20px" alt={`${userName}'s rank`} />
+        <span>{userName}</span>
+      </div>
+
       <p className={`${isCurrentUser ? 'from-me' : 'from-them'}`}>
         {messageText}
       </p>
 
-      <div className="message-date">
+      <div className="bubble__message-date">
         {/* Including ago with fromNow will omit the suffix from the relative time. */}
         <Moment fromNow>{messageDate}</Moment>
       </div>
     </StyledBubble>
   );
 }
+
+// https://freefrontend.com/css-speech-bubbles/
 
 const StyledBubble = styled.div`
   display: flex;
@@ -36,13 +44,18 @@ const StyledBubble = styled.div`
   flex-direction: column;
   padding: 20px; // some padding to avoid overflow
 
-.message-date {
-     font-size: 0.7rem;
-    max-width: 30%;
-    word-break: break-word,
-    position: relative;
-    left: ${({ isCurrentUser }) => (isCurrentUser ? '-5px' : '5px')};
-}
+  .bubble__username {
+    display: flex;
+    align-items: center;
+    margin: 5px 0px;
+    /* position: relative; */
+    /* left: ${({ isCurrentUser }) => (isCurrentUser ? '-5px' : '5px')}; */
+    /* top: 5px; */
+
+    img {
+      margin-right: 5px;
+    }
+  }
 
   p {
     border-radius: 1.15rem;
@@ -148,5 +161,13 @@ const StyledBubble = styled.div`
 
   .margin-t_one {
     margin-top: 1rem !important;
+  }
+
+  .bubble__message-date {
+    font-size: 0.7rem;
+    max-width: 30%;
+    word-break: break-word;
+    position: relative;
+    left: ${({ isCurrentUser }) => (isCurrentUser ? '-5px' : '5px')};
   }
 `;
