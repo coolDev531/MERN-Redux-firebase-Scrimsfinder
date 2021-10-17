@@ -96,18 +96,19 @@ export const DialogActions = withStyles((theme) => ({
 
 const DraggablePaper = (props) => {
   return (
-    <Draggable>
+    // https://stackoverflow.com/questions/46427946/react-draggable-components-with-inputs-lose-the-ability-to-focus-when-clicking
+    <Draggable cancel="._draggable__input">
       <MuiPaper {...props} />
     </Draggable>
   );
 };
 
-export const DraggableModal = ({ children, inputValue = '', ...rest }) => {
+export const DraggableModal = ({ children, ...rest }) => {
   const isMobileDevice = isMobile();
 
   // if user didn't type anything, it's draggable.
   // if it's not a mobile device, it's draggable
-  return !isMobileDevice && !inputValue ? (
+  return !isMobileDevice ? (
     <MuiDialog {...rest} PaperComponent={DraggablePaper}>
       {children}
     </MuiDialog>
@@ -129,10 +130,9 @@ export const Modal = React.memo(
     renderBackButton = false,
     onClickBack = null,
     contentClassName = 'modal__content',
-    inputValue = '',
   }) => {
     return (
-      <DraggableModal open={open} onClose={onClose} inputValue={inputValue}>
+      <DraggableModal open={open} onClose={onClose}>
         <DialogTitle
           renderBackButton={renderBackButton}
           onClickBack={onClickBack}

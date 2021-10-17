@@ -1,4 +1,5 @@
-import { useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import useAuth from '../../hooks/useAuth';
 
 // components
 import Divider from '@mui/material/Divider';
@@ -6,12 +7,11 @@ import Tooltip from '../shared/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import MenuList from '@mui/material/MenuList';
 
-// services and utils
+// utils
 import makeStyles from '@mui/styles/makeStyles';
 import { getRankImage } from '../../utils/getRankImage';
-import { useSelector, useDispatch } from 'react-redux';
-import useAuth from '../../hooks/useAuth';
-import ChatOnline from './ChatOnline';
+
+// services
 import { findOneConversation } from '../../services/conversations.services';
 
 export default function UserConversations({ closeMenu }) {
@@ -41,14 +41,7 @@ export default function UserConversations({ closeMenu }) {
 
   return (
     <MenuList style={{ padding: '20px' }}>
-      {/* <ExistingConversations
-        conversations={conversations}
-        currentUser={currentUser}
-        onlineFriends={onlineFriends}
-        openChat={openChat}
-      /> */}
-
-      <ChatOnline
+      <ExistingConversations
         conversations={conversations}
         currentUser={currentUser}
         onlineFriends={onlineFriends}

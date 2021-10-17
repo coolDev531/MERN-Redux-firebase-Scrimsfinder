@@ -175,7 +175,6 @@ export default function ChatRoomModal() {
 
   return (
     <Modal
-      inputValue={newMessage}
       title={`Messenger Chat (${conversation?.members[0]?.name} & ${conversation?.members[1]?.name})`}
       customStyles={{}}
       contentClassName={classes.modalContent}
@@ -260,6 +259,7 @@ const ChatInput = memo(({ value, onChange, onSubmit }) => {
   return (
     <OutlinedInput
       multiline
+      className="_draggable__input"
       minRows={2}
       maxRows={4}
       sx={{ marginTop: 4, width: '98%' }} // this width also expands the width of the modal (as wanted tbh)
