@@ -38,7 +38,7 @@ export default function SendFriendRequest({ user, setUser }) {
       //  add a new notification to the user
       const newNotification = {
         _relatedUser: currentUser._id,
-        message: `${currentUser._id} sent you a friend request!`,
+        message: `${currentUser.name} sent you a friend request!`,
         isFriendRequest: true,
         createdDate: Date.now(),
         createdAt: Date.now(),
