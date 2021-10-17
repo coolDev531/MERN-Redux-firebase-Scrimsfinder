@@ -17,12 +17,17 @@ const addUser = (userId, socketId) => {
   return;
 };
 
+const getUser = (userId) => {
+  return users.find((user) => user.userId === userId);
+};
+
 const removeUser = (socketId) => {
   users = users.filter((user) => user.socketId !== socketId);
   return;
 };
 
 io.on('connection', (socket) => {
+  // when connect-
   console.log('a user connected');
 
   // io.emit('welcome', 'hello this is socket server'); // send to every client (public) (eventName, result)
@@ -33,11 +38,19 @@ io.on('connection', (socket) => {
     io.emit('getUsers', users); // emit to client
   });
 
+  socket.on('sendMessage', ({ senderId, receiverId, text }) => {
+    const user = getUser(receiverId); // send message to receiver
+    io.to(user.socketId).emit('getMessage', {
+      senderId,
+      text,
+    });
+  });
+
+  // when disconnect
   // add unsubscribe event listener
   socket.on('disconnect', () => {
     console.log('a user disconnected!');
     removeUser(socket.id);
     io.emit('getUsers', users); // emit to client (return new users state)
   });
-  
 });
