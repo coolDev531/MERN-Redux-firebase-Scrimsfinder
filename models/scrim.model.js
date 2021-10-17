@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const toIsoString = require('../utils/toIsoString');
+const Conversation = require('./conversation.model');
 
 const getThirtyMinFromNow = () => {
   let now = Date.now();
@@ -71,6 +72,14 @@ const Scrim = new Schema(
     teamWon: { type: 'String', default: null },
     postGameImage: { type: ImageSchema }, // image of the post-game lobby
     isPrivate: false, // if it's private, only people with share link can see.
+
+    _conversation: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Conversation',
+      default: new Conversation({
+        members: [],
+      }),
+    },
   },
   { timestamps: true, optimisticConcurrency: true, versionKey: 'version' }
 );

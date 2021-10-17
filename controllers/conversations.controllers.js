@@ -12,10 +12,6 @@ const postConversation = async (req, res) => {
       return res.status(500).json({ message: 'receiverId not provided' });
     }
 
-    let foundConversation = await Conversation.findOne({
-      members: { $all: [req.params.senderId, req.params.receiverId] },
-    });
-
     const newConversation = new Conversation({
       members: [req.body.senderId, req.body.receiverId],
     });
