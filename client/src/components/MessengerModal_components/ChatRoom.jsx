@@ -1,5 +1,11 @@
 // hooks
-import { useCallback, useState, useEffect, useRef } from 'react';
+import {
+  useCallback,
+  useState,
+  useEffect,
+  useRef,
+  useLayoutEffect,
+} from 'react';
 import useAuth from '../../hooks/useAuth';
 import useAlerts from '../../hooks/useAlerts';
 
@@ -8,6 +14,9 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import LinearProgress from '@mui/material/LinearProgress';
+import { Helmet } from 'react-helmet';
+import Moment from 'react-moment';
+import 'moment-timezone';
 
 // services and utils
 import { getConversationMessages } from '../../services/messages.services';
@@ -17,20 +26,28 @@ import makeStyles from '@mui/styles/makeStyles';
 // icons
 import CreateIcon from '@mui/icons-material/Create';
 import Tooltip from '../shared/Tooltip';
-import { useLayoutEffect } from 'react';
+import useInterval from './../../hooks/useInterval';
+import { getRankImage } from './../../utils/getRankImage';
 
 // messenger modal chat room
 export default function ChatRoom({ conversation }) {
   const { currentUser } = useAuth();
+
+  const [currentTime, setCurrentTime] = useState(() => new Date());
 
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
 
   const scrollRef = useRef(); // automatically scroll to bottom on new message created.
-  const div = useRef();
+
+  const classes = useStyles();
 
   const { setCurrentAlert } = useAlerts();
+
+  useInterval(() => {
+    setCurrentTime(new Date());
+  }, 1000);
 
   useEffect(() => {
     // fetch messages by conversationId and set in the state.
@@ -100,39 +117,64 @@ export default function ChatRoom({ conversation }) {
   }
 
   return (
-    <div>
-      <div style={{ maxHeight: '300px', overflowY: 'auto' }} ref={scrollRef}>
-        {messages.map((message) => (
-          // one message
-          <ChatBubble
-            isCurrentUser={message._sender._id === currentUser._id}
-            key={message._id}
-            messageText={message.text}
-            userName={message._sender.name}
-            scrollRef={scrollRef} // automatically scroll to bottom on new message created, ref is passed to container div
-          />
-        ))}
-      </div>
+    <>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>
+          Messenger: {conversation.members[0].name} &&nbsp;
+          {conversation.members[1].name} | Bootcamp LoL Scrim Gym
+        </title>
+      </Helmet>
+      <div style={{ minWidth: '400px' }}>
+        <div className={classes.chatRoomMessagesContainer} ref={scrollRef}>
+          {messages.map((message) => (
+            // one message
+            <ChatBubble
+              isCurrentUser={message._sender._id === currentUser?._id}
+              key={message._id}
+              messageText={message.text}
+              userName={message._sender.name}
+              userRank={message._sender.rank}
+              messageDate={message.createdAt}
+              currentTime={currentTime}
+            />
+          ))}
+        </div>
 
-      <div>
         <ChatInput
           value={newMessage}
           onChange={onChange}
           onSubmit={handleSubmitMessage}
         />
       </div>
-    </div>
+    </>
   );
 }
 
 // one message
-const ChatBubble = ({ isCurrentUser, messageText, userName }) => {
+const ChatBubble = ({
+  isCurrentUser,
+  messageText,
+  messageDate,
+  userName,
+  userRank,
+  currentTime,
+}) => {
   const classes = useStyles({ isCurrentUser });
+  const rankImage = getRankImage(userRank);
 
   return (
     <div className={classes.bubbleContainer}>
+      <div className={classes.bubbleUsername}>
+        <img src={rankImage} width="20px" alt={`${userName}'s rank`} />
+        {userName}
+      </div>
       <div className={classes.bubble}>
         <div className={classes.button}>{messageText}</div>
+      </div>
+      <div className={classes.bubbleMessageDate}>
+        {/* compare current time to message.createdAt, ex: 35 minutes ago, 2 hours ago, etc. */}
+        <Moment from={currentTime}>{messageDate}</Moment>
       </div>
     </div>
   );
@@ -144,7 +186,7 @@ const ChatInput = ({ value, onChange, onSubmit }) => {
       multiline
       minRows={2}
       maxRows={4}
-      sx={{ marginTop: 4, width: '40ch' }} // this width also expands the width of the modal (as wanted tbh)
+      sx={{ marginTop: 4, width: '100%' }} // this width also expands the width of the modal (as wanted tbh)
       placeholder="new message"
       value={value}
       onChange={onChange}
@@ -162,19 +204,47 @@ const ChatInput = ({ value, onChange, onSubmit }) => {
 };
 
 const useStyles = makeStyles({
+  chatRoomMessagesContainer: {
+    maxHeight: '300px',
+    overflowY: 'auto',
+  },
+
   bubbleContainer: {
+    position: 'relative',
     width: '100%',
     display: 'flex',
-    justifyContent: ({ isCurrentUser }) =>
+    flexDirection: 'column', // column because name is ontop of bubble, and time sent is below.
+
+    // if user sent message is the current user, align it to flex-end, else flex-start
+    alignItems: ({ isCurrentUser }) =>
       isCurrentUser ? 'flex-end' : 'flex-start',
+    padding: '15px',
+  },
+
+  bubbleUsername: {
+    display: 'flex',
+    alignItems: 'center',
+    margin: '5px 0px',
+    position: 'relative',
+    left: ({ isCurrentUser }) => (isCurrentUser ? '-5px' : '5px'),
+    top: '5px',
+  },
+
+  bubbleMessageDate: {
+    fontSize: '0.7rem',
+    maxWidth: '30%',
+    wordBreak: 'break-word',
+    position: 'relative',
+    left: ({ isCurrentUser }) => (isCurrentUser ? '-5px' : '5px'),
   },
 
   bubble: {
+    maxWidth: '35%',
+    minWidth: '20%',
     border: '0.5px solid black',
     borderRadius: '10px',
-    margin: '5px',
+    margin: '5px 0',
     padding: '10px',
-    display: 'inline-block',
     color: ({ isCurrentUser }) => (isCurrentUser ? 'white' : 'black'),
     backgroundColor: ({ isCurrentUser }) => (isCurrentUser ? 'blue' : 'white'),
   },

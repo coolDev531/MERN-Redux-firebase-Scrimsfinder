@@ -9,6 +9,7 @@ import useAuth, {
 } from './hooks/useAuth';
 import { useFetchScrims, useSetScrimsRegion } from './hooks/useScrims';
 import { useFetchUsers } from './hooks/useUsers';
+import useMessenger from './hooks/useMessenger';
 
 // styles
 import { appTheme } from './appTheme';
@@ -24,7 +25,6 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import AppModals from './components/modals/AppModals';
 import { Helmet } from 'react-helmet';
-import useMessenger from './hooks/useMessenger';
 
 function App() {
   const classes = useAppStyles();

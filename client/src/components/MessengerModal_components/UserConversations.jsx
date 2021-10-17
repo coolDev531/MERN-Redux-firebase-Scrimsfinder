@@ -3,12 +3,17 @@ import { memo } from 'react';
 // components
 import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
+import { Helmet } from 'react-helmet';
 
 // services and utils
 import makeStyles from '@mui/styles/makeStyles';
-
 const UserConversations = memo(({ conversations, changeToView }) => (
   <>
+    <Helmet>
+      <meta charSet="utf-8" />
+      <title>Messenger: Conversations | Bootcamp LoL Scrim Gym</title>
+    </Helmet>
+
     <Box
       component="ul"
       display="flex"
