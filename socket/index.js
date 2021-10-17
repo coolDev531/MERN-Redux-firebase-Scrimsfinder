@@ -18,6 +18,7 @@ const addUser = (userId, socketId) => {
 };
 
 const getUser = (userId) => {
+  console.log({ users });
   return users.find((user) => user.userId === userId);
 };
 
@@ -38,11 +39,12 @@ io.on('connection', (socket) => {
     io.emit('getUsers', users); // emit to client
   });
 
-  socket.on('sendMessage', ({ senderId, receiverId, text }) => {
+  socket.on('sendMessage', ({ senderId, receiverId, text, messageId }) => {
     const user = getUser(receiverId); // send message to receiver
     io.to(user.socketId).emit('getMessage', {
       senderId,
       text,
+      messageId,
     });
   });
 

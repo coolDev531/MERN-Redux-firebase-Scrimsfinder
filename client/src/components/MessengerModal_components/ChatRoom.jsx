@@ -5,10 +5,12 @@ import {
   useEffect,
   useRef,
   useLayoutEffect,
+  useMemo,
 } from 'react';
 import useAuth from '../../hooks/useAuth';
 import useAlerts from '../../hooks/useAlerts';
 import useInterval from './../../hooks/useInterval';
+import useUsers from './../../hooks/useUsers';
 
 // components
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -31,7 +33,7 @@ import Tooltip from '../shared/Tooltip';
 import { getRankImage } from './../../utils/getRankImage';
 import makeStyles from '@mui/styles/makeStyles';
 import { io } from 'socket.io-client';
-import useUsers from './../../hooks/useUsers';
+import devLog from './../../utils/devLog';
 
 const ONE_MIN_MS = 60000; // for interval to set current time (message date ago text)
 const socketServerUrl = 'ws://localhost:8900';
@@ -45,6 +47,11 @@ export default function ChatRoom({ conversation }) {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState(''); // the user input field new message to be sent
   const [arrivalMessage, setArrivalMessage] = useState(null); // new message that will be received from socket
+
+  const conversationMemberIds = useMemo(
+    () => conversation.members.map(({ _id }) => _id),
+    [conversation.members]
+  );
 
   const socket = useRef();
   const scrollRef = useRef(); // automatically scroll to bottom on new message created.
@@ -64,21 +71,25 @@ export default function ChatRoom({ conversation }) {
   useEffect(() => {
     // take event from server
     socket.current.on('getMessage', (data) => {
+      devLog('getMessage event: ', data);
       setArrivalMessage({
         _sender: allUsers.find((user) => user._id === data.senderId),
         text: data.text,
         createdAt: Date.now(),
+        _id: data.messageId,
       });
     });
   }, [allUsers]);
 
   useEffect(() => {
     // send event to socket server.
+    if (!isLoaded) return;
+
     socket.current.emit('addUser', currentUser._id);
     socket.current.on('getUsers', (users) => {
       console.log({ users });
     });
-  }, [currentUser]);
+  }, [currentUser._id, isLoaded]);
 
   useEffect(() => {
     // fetch messages by conversationId and set in the state.
@@ -106,13 +117,14 @@ export default function ChatRoom({ conversation }) {
 
   useEffect(() => {
     // doing this so we don't see this message at conversations that aren't this one
+    console.log({ arrivalMessage });
     if (
       arrivalMessage &&
-      conversation?.members.includes(arrivalMessage?._sender?._id)
+      conversationMemberIds.includes(arrivalMessage?._sender?._id)
     ) {
       setMessages((prevState) => [...prevState, arrivalMessage]);
     }
-  }, [arrivalMessage, conversation?.members]);
+  }, [arrivalMessage, conversationMemberIds]);
 
   const handleSubmitMessage = useCallback(
     async (msgText) => {
@@ -130,15 +142,16 @@ export default function ChatRoom({ conversation }) {
           text: msgText,
         });
 
-        const receiverId = conversation.members.find(
+        const receiver = conversation.members.find(
           (user) => user._id !== currentUser._id
         );
 
-        // send event to server
+        // send event to server after creating on client and posting to api
         socket.current.emit('sendMessage', {
           senderId: currentUser._id,
           text: msgText,
-          receiverId,
+          receiverId: receiver._id,
+          _id: newlyCreatedMessage._id,
         });
 
         setMessages((prevState) => [...prevState, newlyCreatedMessage]);
