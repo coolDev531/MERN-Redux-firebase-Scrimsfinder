@@ -29,6 +29,7 @@ import devLog from '../../utils/devLog';
 import { Modal } from '../shared/ModalComponents';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
+import ChatBubble from './../Messenger_components/ChatBubble';
 
 // messenger modal chat room
 export default function ChatRoomModal() {
@@ -228,7 +229,7 @@ export default function ChatRoomModal() {
 }
 
 // one message
-const ChatBubble = ({
+const ChatBubble2 = ({
   isCurrentUser,
   messageText,
   messageDate,
