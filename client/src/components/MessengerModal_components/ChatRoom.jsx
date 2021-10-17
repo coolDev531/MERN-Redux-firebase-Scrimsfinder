@@ -35,14 +35,12 @@ import makeStyles from '@mui/styles/makeStyles';
 import { io } from 'socket.io-client';
 import devLog from './../../utils/devLog';
 
-const ONE_MIN_MS = 60000; // for interval to set current time (message date ago text)
 const socketServerUrl = 'ws://localhost:8900';
 
 // messenger modal chat room
 export default function ChatRoom({ conversation }) {
   const { currentUser } = useAuth();
   const { allUsers } = useUsers();
-  const [currentTime, setCurrentTime] = useState(() => new Date());
   const [isLoaded, setIsLoaded] = useState(false);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState(''); // the user input field new message to be sent
@@ -60,10 +58,6 @@ export default function ChatRoom({ conversation }) {
 
   const { setCurrentAlert } = useAlerts();
 
-  useInterval(() => {
-    setCurrentTime(new Date());
-  }, ONE_MIN_MS);
-
   useEffect(() => {
     socket.current = io(socketServerUrl);
   }, []);
@@ -75,7 +69,7 @@ export default function ChatRoom({ conversation }) {
       setArrivalMessage({
         _sender: allUsers.find((user) => user._id === data.senderId),
         text: data.text,
-        createdAt: Date.now(),
+        createdAt: data.createdAt,
         _id: data.messageId,
       });
     });
@@ -87,7 +81,7 @@ export default function ChatRoom({ conversation }) {
 
     socket.current.emit('addUser', currentUser._id);
     socket.current.on('getUsers', (users) => {
-      console.log({ users });
+      devLog('socket getUsers event: ', users);
     });
   }, [currentUser._id, isLoaded]);
 
@@ -117,11 +111,12 @@ export default function ChatRoom({ conversation }) {
 
   useEffect(() => {
     // doing this so we don't see this message at conversations that aren't this one
-    console.log({ arrivalMessage });
+
     if (
       arrivalMessage &&
       conversationMemberIds.includes(arrivalMessage?._sender?._id)
     ) {
+      devLog('socket new arrival message added to state (receiver client)');
       setMessages((prevState) => [...prevState, arrivalMessage]);
     }
   }, [arrivalMessage, conversationMemberIds]);
@@ -152,6 +147,7 @@ export default function ChatRoom({ conversation }) {
           text: msgText,
           receiverId: receiver._id,
           messageId: newlyCreatedMessage._id,
+          createdAt: newlyCreatedMessage.createdAt,
         });
 
         setMessages((prevState) => [...prevState, newlyCreatedMessage]);
@@ -209,7 +205,6 @@ export default function ChatRoom({ conversation }) {
               userName={message._sender.name}
               userRank={message._sender.rank}
               messageDate={message.createdAt}
-              currentTime={currentTime}
             />
           ))}
         </div>
@@ -231,7 +226,6 @@ const ChatBubble = ({
   messageDate,
   userName,
   userRank,
-  currentTime,
 }) => {
   const classes = useStyles({ isCurrentUser });
   const rankImage = getRankImage(userRank);
@@ -246,8 +240,8 @@ const ChatBubble = ({
         <div className={classes.button}>{messageText}</div>
       </div>
       <div className={classes.bubbleMessageDate}>
-        {/* compare current time to message.createdAt, ex: 35 minutes ago, 2 hours ago, etc. */}
-        <Moment from={currentTime}>{messageDate}</Moment>
+        {/* Including ago with fromNow will omit the suffix from the relative time. */}
+        <Moment fromNow>{messageDate}</Moment>
       </div>
     </div>
   );

@@ -41,7 +41,7 @@ io.on('connection', (socket) => {
 
   socket.on(
     'sendMessage',
-    async ({ senderId, receiverId, text, messageId }) => {
+    async ({ senderId, receiverId, text, messageId, createdAt }) => {
       const receiverUser = getUser(receiverId); // send message to receiver from sender client
 
       // don't emit if there isn't a receiverUser
@@ -53,6 +53,7 @@ io.on('connection', (socket) => {
         senderId,
         text,
         messageId,
+        createdAt,
       });
 
       return;
