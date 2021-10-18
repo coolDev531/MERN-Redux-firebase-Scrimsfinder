@@ -1,5 +1,6 @@
 const initialState = {
   allUsers: [],
+  onlineUsers: [],
   usersLoaded: false,
   usersSearchValue: '',
 };
@@ -20,6 +21,13 @@ export default function usersReducer(state = initialState, action) {
       return {
         ...state,
         usersSearchValue: payload,
+      };
+    }
+
+    case 'users/setOnlineUsers': {
+      return {
+        ...state,
+        onlineUsers: payload,
       };
     }
 

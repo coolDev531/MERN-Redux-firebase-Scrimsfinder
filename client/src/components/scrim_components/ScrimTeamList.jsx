@@ -3,6 +3,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import useAuth from './../../hooks/useAuth';
 import { useScrimSectionStyles } from '../../styles/ScrimSection.styles';
 import useAlerts from './../../hooks/useAlerts';
+import useUsers from './../../hooks/useUsers';
 
 // MUI components
 import List from '@mui/material/List';
@@ -57,6 +58,7 @@ export default function ScrimTeamList({
 }) {
   const { currentUser, isCurrentUserAdmin } = useAuth();
   const { setCurrentAlert } = useAlerts();
+  const { onlineUsers } = useUsers();
 
   const classes = useScrimSectionStyles({ scrim });
   const isSmScreen = useMediaQuery('@media (max-width: 630px)');
@@ -211,6 +213,8 @@ export default function ScrimTeamList({
 
           const isLobbyHost = scrim.lobbyHost?._id === userInfo?._id;
 
+          const isOnline = onlineUsers.includes(userInfo?._id);
+
           if (userInfo) {
             return (
               <Fragment key={idx}>
@@ -242,13 +246,27 @@ export default function ScrimTeamList({
                   <ListItemText
                     primary={
                       <Grid container alignItems="center" wrap="wrap-reverse">
+                        {/* online circle */}
+                        <Tooltip
+                          title={
+                            isOnline
+                              ? `${userInfo?.name} is online`
+                              : `${userInfo?.name} is offline`
+                          }>
+                          <div
+                            className={classes.onlineCircle}
+                            style={{
+                              background: isOnline ? '#AAFF00' : '#EE4B2B',
+                            }}
+                          />
+                        </Tooltip>
                         <Tooltip title={`Visit ${userInfo?.name}'s profile`}>
                           <Link
                             className="link"
                             to={`/users/${userInfo?.name}?region=${userInfo?.region}`}>
                             {isSmScreen
                               ? userInfo?.name
-                              : truncate(userInfo?.name, 16)}
+                              : truncate(userInfo?.name, 12)}
                           </Link>
                         </Tooltip>
 

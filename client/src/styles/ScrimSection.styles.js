@@ -108,4 +108,11 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
   inline: {
     display: 'inline',
   },
+
+  onlineCircle: {
+    marginRight: '10px',
+    borderRadius: '50%',
+    height: '10px',
+    width: '10px',
+  },
 }));

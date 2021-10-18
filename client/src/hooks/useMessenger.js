@@ -37,9 +37,9 @@ export default function useMessenger() {
       devLog('socket getUsers event: ', users);
 
       // if you want to get all online users
-      // const onlineUserIds = users.map(({ userId }) => userId);
+      const onlineUserIds = users.map(({ userId }) => userId);
 
-      // dispatch({ type: 'messenger/setOnlineUsers', payload: onlineUserIds });
+      dispatch({ type: 'users/setOnlineUsers', payload: onlineUserIds });
 
       // ONLY GET THIS USERS FRIENDS
       const currentUserFriends = currentUser.friends
