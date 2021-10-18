@@ -8,7 +8,7 @@ export default function useSocket() {
 
 const socketServerUrl =
   process.env.NODE_ENV === 'production'
-    ? process.env.PROD_SOCKET_URL
+    ? process.env.REACT_APP_PROD_SOCKET_URL
     : 'ws://localhost:8900';
 
 export const useCreateSocket = () => {
