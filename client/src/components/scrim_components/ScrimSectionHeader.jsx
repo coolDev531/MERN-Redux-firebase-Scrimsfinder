@@ -74,7 +74,10 @@ export default function ScrimSectionHeader({
       });
       return;
     } catch (error) {
-      setCurrentAlert({ type: 'Error', message: 'Error opening conversation' });
+      setCurrentAlert({
+        type: 'Error',
+        message: 'Error opening chat for scrim',
+      });
       return;
     }
 
