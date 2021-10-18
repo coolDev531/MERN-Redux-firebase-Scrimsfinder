@@ -62,12 +62,6 @@ export default function ScrimChatRoomModal() {
 
   const { socket } = useSocket();
 
-  const conversationMemberIds = useMemo(() => {
-    if (!conversation?.members?.length) return;
-
-    return conversation?.members?.map(({ _id }) => _id);
-  }, [conversation?.members]);
-
   const scrollRef = useRef(); // automatically scroll to bottom on new message created.
 
   const classes = useStyles();
@@ -114,8 +108,6 @@ export default function ScrimChatRoomModal() {
 
   useEffect(() => {
     return () => {
-      console.log('closed');
-
       // eslint-disable-next-line
       socket.current?.emit('scrimChatClose', {
         userId: currentUser._id,
@@ -123,20 +115,19 @@ export default function ScrimChatRoomModal() {
       });
     };
   }, [socket, currentUser._id, scrimId]);
+
   useEffect(() => {
     // doing this so we don't see this message at conversations that aren't this one
 
-    if (
-      arrivalMessage &&
-      conversationMemberIds?.includes(arrivalMessage?._sender?._id)
-    ) {
+    // push to ui and play sound if it's not currentUser id (all other users)
+    if (arrivalMessage && arrivalMessage._sender._id !== currentUser._id) {
       devLog('socket new arrival message added to state (receiver client)');
 
       playNewMessageSFX();
 
       setMessages((prevState) => [...prevState, arrivalMessage]);
     }
-  }, [arrivalMessage, conversationMemberIds, playNewMessageSFX]);
+  }, [arrivalMessage, playNewMessageSFX, currentUser._id]);
 
   const handleSubmitMessage = useCallback(
     async (msgText) => {
