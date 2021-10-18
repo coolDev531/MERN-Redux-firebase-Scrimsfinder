@@ -29,8 +29,8 @@ import CheckIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 
 export default function FriendRequestsModal() {
-  const [{ friendRequestsOpen }, { currentUser }, { allUsers }] = useSelector(
-    ({ general, auth, users }) => [general, auth, users]
+  const [{ friendRequestsOpen }, { currentUser }] = useSelector(
+    ({ general, auth }) => [general, auth]
   );
   const [friendRequests, setFriendRequests] = useState(() => {
     return currentUser.friendRequests ?? [];
@@ -181,9 +181,7 @@ export default function FriendRequestsModal() {
               onAcceptClick={onAcceptClick}
               onClose={onClose}
               friendRequest={friendRequest}
-              requestUser={allUsers.find(
-                ({ _id }) => _id === friendRequest._user
-              )}
+              requestUser={friendRequest._user}
             />
 
             {idx !== arr.length - 1 ? (

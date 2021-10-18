@@ -572,18 +572,31 @@ const removeUserFriend = async (req, res) => {
   });
 };
 
+const nestedPopulate = (path, modelPath) => {
+  // nested populate
+  return {
+    path: path,
+    populate: {
+      path: modelPath,
+      model: 'User',
+      select: 'name discord rank region', // exclude adminKey,uid and email from showing
+    },
+  };
+};
+
 const getUserFriendRequests = async (req, res) => {
   try {
     const { userId } = req.params;
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(500).send(`User not found with id: ${id}`);
-    }
-
-    const friendRequests = user.friendRequests ?? [];
-
-    return res.status(200).json(friendRequests);
+    return await User.findById(userId)
+      .populate(nestedPopulate('friendRequests', '_user'))
+      .exec((err, user) => {
+        const friendRequests = user?.friendRequests ?? [];
+        if (err) {
+          console.log(err);
+          return res.status(500).json({ error: err.message });
+        }
+        return res.status(200).json(friendRequests);
+      });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
@@ -592,15 +605,16 @@ const getUserFriendRequests = async (req, res) => {
 const getUserFriends = async (req, res) => {
   try {
     const { userId } = req.params;
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(500).send(`User not found with id: ${id}`);
-    }
-
-    const friends = user.friends ?? [];
-
-    return res.status(200).json(friends);
+    return await User.findById(userId)
+      .populate(nestedPopulate('friends', '_id'))
+      .exec((err, user) => {
+        const friends = user?.friends ?? [];
+        if (err) {
+          console.log(err);
+          return res.status(500).json({ error: err.message });
+        }
+        return res.status(200).json(friends);
+      });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }

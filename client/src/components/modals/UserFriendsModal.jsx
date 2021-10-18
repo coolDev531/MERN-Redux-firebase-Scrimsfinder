@@ -27,7 +27,6 @@ export default function UserFriendsModal() {
     {
       friendsModalOpen: { user, bool },
     },
-    { allUsers },
     { currentUser },
   ] = useSelector(({ general, users, auth }) => [general, users, auth]);
 
@@ -69,14 +68,15 @@ export default function UserFriendsModal() {
       open={bool}
       onClose={onClose}>
       {friends?.length > 0 ? (
-        friends?.map((friend, idx, arr) => (
+        // weird nested populate thing...
+        friends?.map(({ _id: friend }, idx, arr) => (
           <Fragment key={friend?._id}>
             <OneFriend
               key={friend?._id}
               user={user}
               currentUser={currentUser}
               onClose={onClose}
-              friend={allUsers.find(({ _id }) => _id === friend?._id)}
+              friend={friend}
             />
             {idx !== arr.length - 1 ? (
               <Box my={2}>

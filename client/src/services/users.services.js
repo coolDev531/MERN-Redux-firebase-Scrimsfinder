@@ -163,3 +163,12 @@ export const getUserFriends = async (userId) => {
     throw error;
   }
 };
+
+export const getUserById = async (userId) => {
+  try {
+    const response = await api.get(`/users/by-id/${userId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
