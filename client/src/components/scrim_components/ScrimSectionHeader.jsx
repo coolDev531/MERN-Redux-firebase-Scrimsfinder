@@ -91,10 +91,6 @@ export default function ScrimSectionHeader({
       direction="column"
       flexWrap="nowrap"
       className={classes.scrimSectionHeader}>
-      {scrim._conversation && (
-        <MessengerButton onClick={handleOpenConversation} />
-      )}
-
       <Grid
         item
         container

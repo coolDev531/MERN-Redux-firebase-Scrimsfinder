@@ -10,8 +10,12 @@ const mongooseConnect = require('../db/connection');
 const main = async () => {
   let scrims = await Scrim.find();
 
+  let scrimsUpdatedCount = 0;
+
   for (let i = 0, l = scrims.length; i < l; i++) {
     let scrim = scrims[i];
+
+    if (scrim._conversation) continue; // it already has a conversation, we don't have to do this.
 
     const scrimConversation = new Conversation({
       members: [],
@@ -23,9 +27,10 @@ const main = async () => {
     scrim._conversation = savedConversation;
 
     await scrim.save();
+    scrimsUpdatedCount++;
   }
 
-  console.log(`updated ${scrims.length} scrims!`);
+  console.log(`updated ${scrimsUpdatedCount} scrims!`);
 };
 
 const run = async () => {

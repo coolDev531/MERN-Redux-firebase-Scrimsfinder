@@ -12,12 +12,13 @@ export default function MessengerButton({
   withDropdown = true,
   isMessengerDropdownOpen,
   setIsMessengerDropdownOpen,
+  tooltipTitle = 'Messenger',
 }) {
   const anchorRef = useRef(null);
 
   return (
     <>
-      <Tooltip title="Messenger">
+      <Tooltip title={tooltipTitle}>
         <IconButton
           ref={anchorRef}
           onClick={onClick}
