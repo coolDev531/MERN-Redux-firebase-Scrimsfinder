@@ -185,13 +185,18 @@ const createScrim = async (req, res) => {
 
     const scrim = new Scrim(requestBody);
 
-    await scrim.save();
-
+    // add scrim to new conversation
     const scrimConversation = new Conversation({
       members: [],
       _scrim: scrim._id,
     });
-    let savedConversation = await scrimConversation.save();
+
+    // add that new conversation as _conversation inside scrim
+    scrim._conversation = scrimConversation._id;
+
+    await scrim.save(); // save scrim
+
+    let savedConversation = await scrimConversation.save(); // save conv
 
     console.log('Scrim created: ', scrim);
     console.log('conversation created for scirm: ', savedConversation);

@@ -79,6 +79,7 @@ export default function ScrimChatRoomModal() {
         text: data.text,
         createdAt: data.createdAt,
         _id: data.messageId,
+        _conversation: data._conversation,
       });
     });
   }, [allUsers, socket, open]);
@@ -122,13 +123,16 @@ export default function ScrimChatRoomModal() {
 
     // push to ui and play sound if it's not currentUser id (all other users)
     if (arrivalMessage && arrivalMessage._sender._id !== currentUser._id) {
+      // people will have multiple scrim conversation chat boxes open
+      // if we dont have this if statement it'll send the message to all open socket scrim chats...
+      if (arrivalMessage._conversation !== conversation._id) return;
       devLog('socket new arrival message added to state (receiver client)');
 
       playNewMessageSFX();
 
       setMessages((prevState) => [...prevState, arrivalMessage]);
     }
-  }, [arrivalMessage, playNewMessageSFX, currentUser._id]);
+  }, [arrivalMessage, playNewMessageSFX, currentUser._id, conversation._id]);
 
   const handleSubmitMessage = useCallback(
     async (msgText) => {
@@ -147,6 +151,7 @@ export default function ScrimChatRoomModal() {
           text: msgText,
           messageId: newlyCreatedMessage._id,
           createdAt: newlyCreatedMessage.createdAt,
+          _conversation: conversation._id,
         });
 
         setMessages((prevState) => [...prevState, newlyCreatedMessage]);

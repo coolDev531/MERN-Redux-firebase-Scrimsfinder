@@ -62,7 +62,7 @@ export default function ScrimSectionHeader({
   const handleOpenConversation = useCallback(async () => {
     try {
       const conversation = await findScrimConversation(scrim._id);
-      console.log({ conversation });
+
       dispatch({
         type: 'general/scrimChatRoomOpen',
         payload: {
@@ -91,7 +91,10 @@ export default function ScrimSectionHeader({
       direction="column"
       flexWrap="nowrap"
       className={classes.scrimSectionHeader}>
-      <MessengerButton onClick={handleOpenConversation} />
+      {scrim._conversation && (
+        <MessengerButton onClick={handleOpenConversation} />
+      )}
+
       <Grid
         item
         container

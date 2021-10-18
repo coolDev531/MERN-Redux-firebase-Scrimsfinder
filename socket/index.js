@@ -128,7 +128,7 @@ io.on('connection', (socket) => {
 
   socket.on(
     'sendScrimMessage',
-    async ({ senderId, text, messageId, createdAt }) => {
+    async ({ senderId, text, messageId, createdAt, _conversation }) => {
       console.log('sendScrimMessage');
       // don't emit if there isn't a receiverUser
 
@@ -137,6 +137,7 @@ io.on('connection', (socket) => {
         text,
         messageId,
         createdAt,
+        _conversation,
       });
 
       return;
