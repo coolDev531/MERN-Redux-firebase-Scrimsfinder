@@ -5,6 +5,7 @@ import { useScrimSectionStyles } from '../../styles/ScrimSection.styles';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import useSocket from './../../hooks/useSocket';
+import { useScrimSocket } from './../../hooks/useScrims';
 
 //  components
 import ScrimTeamList from './ScrimTeamList';
@@ -24,7 +25,6 @@ import { insertCasterInScrim } from '../../services/scrims.services';
 // utils
 import { compareDates } from '../../utils/compareDates';
 import devLog from './../../utils/devLog';
-import { useScrimSocket } from './../../hooks/useScrims';
 
 const MAX_CASTER_AMOUNT = 2;
 

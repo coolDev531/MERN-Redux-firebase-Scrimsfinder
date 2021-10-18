@@ -6,6 +6,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 
 // components
 import Button from '@mui/material/Button';
+import Tooltip from '../shared/Tooltip';
 
 // services
 import { removeUserFriend } from './../../services/users.services';
@@ -71,18 +72,20 @@ export default function DeleteFriendButton({
   }, [dispatch, currentUser, setCurrentAlert, friendToDelete, setFriend]);
 
   return (
-    <Button
-      style={{
-        height: '50px',
-        alignSelf: 'center',
-        marginLeft: !matchesSm ? '0' : '20px',
-        marginTop: '20px',
-      }}
-      startIcon={<CancelIcon />}
-      variant="contained"
-      disabled={buttonsDisabled}
-      onClick={onDeleteFriend}>
-      Unfriend
-    </Button>
+    <Tooltip title={`Unfriend ${friendToDelete?.name}`}>
+      <Button
+        style={{
+          height: '50px',
+          alignSelf: 'center',
+          marginLeft: !matchesSm ? '0' : '20px',
+          marginTop: '20px',
+        }}
+        startIcon={<CancelIcon />}
+        variant="contained"
+        disabled={buttonsDisabled}
+        onClick={onDeleteFriend}>
+        Unfriend
+      </Button>
+    </Tooltip>
   );
 }
