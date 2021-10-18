@@ -77,7 +77,7 @@ export default function ScrimChatRoomModal() {
       setArrivalMessage({
         _sender: allUsers.find((user) => user._id === data.senderId),
         text: data.text,
-        createdAt: data.createdAt,
+        createdAt: Date.now(),
         _id: data.messageId,
         _conversation: data._conversation,
       });

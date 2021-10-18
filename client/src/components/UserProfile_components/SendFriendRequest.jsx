@@ -8,6 +8,7 @@ import useSocket from './../../hooks/useSocket';
 // components
 import FormGroup from '@mui/material/FormGroup';
 import Button from '@mui/material/Button';
+import DeleteFriendButton from './DeleteFriendButton';
 
 // services
 import { sendFriendRequest } from '../../services/users.services';
@@ -88,6 +89,7 @@ export default function SendFriendRequest({ user, setUser }) {
 
   return (
     <FormGroup row>
+      {/* if not friend, show send friend request button */}
       {!isFriend ? (
         <Button
           style={{
@@ -102,7 +104,14 @@ export default function SendFriendRequest({ user, setUser }) {
           onClick={onSubmitFriendRequest}>
           {requestSent ? 'Friend Request Sent' : 'Send Friend Request'}
         </Button>
-      ) : null}
+      ) : (
+        // else show delete button (unfriend)
+        <DeleteFriendButton
+          friendToDelete={user}
+          currentUser={currentUser}
+          setFriend={setUser}
+        />
+      )}
     </FormGroup>
   );
 }

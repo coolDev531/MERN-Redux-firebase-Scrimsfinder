@@ -1,6 +1,5 @@
 import { Fragment, memo, useCallback, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import useAlerts from './../../hooks/useAlerts';
 
 // components
 import { Modal } from '../shared/ModalComponents';
@@ -16,10 +15,7 @@ import Divider from '@mui/material/Divider';
 import { getRankImage } from './../../utils/getRankImage';
 
 // services
-import {
-  getUserFriends,
-  removeUserFriend,
-} from '../../services/users.services';
+import { getUserFriends } from '../../services/users.services';
 
 // icons
 // import CancelIcon from '@mui/icons-material/Cancel';
@@ -39,8 +35,6 @@ export default function UserFriendsModal() {
 
   const dispatch = useDispatch();
 
-  const { setCurrentAlert } = useAlerts();
-
   useEffect(() => {
     if (!bool) return;
     const fetchUserFriends = async () => {
@@ -58,43 +52,6 @@ export default function UserFriendsModal() {
     dispatch({ type: 'general/closeFriendsModal' });
   }, [dispatch]);
 
-  const onDeleteFriend = useCallback(
-    async (friendToDelete) => {
-      let yes = window.confirm(
-        `Are you sure you want to unfriend ${friendToDelete.name}?`
-      );
-
-      if (!yes) return;
-
-      try {
-        const { userFriends } = await removeUserFriend(
-          currentUser?._id,
-          friendToDelete._id
-        );
-
-        dispatch({
-          type: 'auth/updateCurrentUser',
-          payload: {
-            friends: userFriends,
-          },
-        });
-
-        setCurrentAlert({
-          type: 'Success',
-          message: `Unfriended ${friendToDelete.name}`,
-        });
-
-        setFriends(userFriends);
-      } catch (error) {
-        setCurrentAlert({
-          type: 'Error',
-          message: `error Unfriending ${friendToDelete.name}`,
-        });
-      }
-    },
-    [dispatch, currentUser, setCurrentAlert]
-  );
-
   if (!user) return null;
   if (!friends) return null;
 
@@ -102,10 +59,11 @@ export default function UserFriendsModal() {
     <Modal
       customStyles={{
         maxWidth: '500px',
-        minWidth: '500px',
+        minWidth: '400px',
         display: 'flex',
         flexDirection: 'column',
         overflowWrap: 'break-word',
+        maxHeight: '300px',
       }}
       title={`${user?.name}'s Friends`}
       open={bool}
@@ -118,7 +76,6 @@ export default function UserFriendsModal() {
               user={user}
               currentUser={currentUser}
               onClose={onClose}
-              onDeleteFriend={onDeleteFriend}
               friend={allUsers.find(({ _id }) => _id === friend?._id)}
             />
             {idx !== arr.length - 1 ? (
@@ -140,59 +97,52 @@ export default function UserFriendsModal() {
   );
 }
 
-const OneFriend = memo(
-  ({ friend, onClose, user, currentUser, onDeleteFriend }) => {
-    const { conversations } = useSelector(({ messenger }) => messenger);
+const OneFriend = memo(({ friend, onClose, user, currentUser }) => {
+  const { conversations } = useSelector(({ messenger }) => messenger);
 
-    const getFriendUserId = (arr) => {
-      let friend = arr.find(({ _id }) => _id !== currentUser?._id);
-      return friend?._id;
-    };
+  const getFriendUserId = (arr) => {
+    let friend = arr.find(({ _id }) => _id !== currentUser?._id);
+    return friend?._id;
+  };
 
-    const memberIds = conversations.flatMap(({ members }) =>
-      getFriendUserId(members)
-    );
+  const memberIds = conversations.flatMap(({ members }) =>
+    getFriendUserId(members)
+  );
 
-    const inConversation =
-      currentUser?._id !== user?._id ? false : memberIds.includes(friend._id);
+  const inConversation =
+    currentUser?._id !== user?._id ? false : memberIds.includes(friend._id);
 
-    return (
-      <Grid container alignItems="center" justifyContent="space-between">
-        <Grid item container alignItems="center" xs={6}>
-          <Tooltip title={`Visit ${friend.name}'s profile`}>
-            <Link
-              style={{ display: 'flex', alignItems: 'center' }}
-              onClick={onClose}
-              className="link"
-              to={`/users/${friend.name}?region=${friend.region}`}>
-              <img src={getRankImage(friend)} alt={friend.rank} width="20" />
-              &nbsp;
-              <span>{friend.name}</span>
-              <span>({friend.region})</span>
-            </Link>
+  return (
+    <Grid container alignItems="center" justifyContent="space-between">
+      <Grid item container alignItems="center" xs={6}>
+        <Tooltip title={`Visit ${friend.name}'s profile`}>
+          <Link
+            style={{ display: 'flex', alignItems: 'center' }}
+            onClick={onClose}
+            className="link"
+            to={`/users/${friend.name}?region=${friend.region}`}>
+            <img src={getRankImage(friend)} alt={friend.rank} width="20" />
+            &nbsp;
+            <span>{friend.name}</span>
+            <span>({friend.region})</span>
+          </Link>
+        </Tooltip>
+      </Grid>
+
+      {user?._id === currentUser?._id && (
+        <Grid item container direction="row" alignItems="center" xs={2}>
+          <Tooltip
+            title={
+              inConversation
+                ? `Send ${friend.name} a message`
+                : `Start a new conversation`
+            }>
+            <IconButton>
+              {inConversation ? <CreateIcon /> : <MsgIcon />}
+            </IconButton>
           </Tooltip>
         </Grid>
-
-        {user?._id === currentUser?._id && (
-          <Grid item container direction="row" alignItems="center" xs={2}>
-            <Tooltip
-              title={
-                inConversation
-                  ? `Send ${friend.name} a message`
-                  : `Start a new conversation`
-              }>
-              <IconButton>
-                {inConversation ? <CreateIcon /> : <MsgIcon />}
-              </IconButton>
-            </Tooltip>
-            {/* <Tooltip title={`Unfriend ${friend.name}`}>
-              <IconButton onClick={() => onDeleteFriend(friend)}>
-                <CancelIcon fontSize="medium" />
-              </IconButton>
-            </Tooltip> */}
-          </Grid>
-        )}
-      </Grid>
-    );
-  }
-);
+      )}
+    </Grid>
+  );
+});
