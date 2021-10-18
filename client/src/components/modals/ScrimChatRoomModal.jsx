@@ -115,6 +115,8 @@ export default function ScrimChatRoomModal() {
   useEffect(() => {
     return () => {
       console.log('closed');
+
+      // eslint-disable-next-line
       socket.current?.emit('scrimChatClose', {
         userId: currentUser._id,
         scrimId,

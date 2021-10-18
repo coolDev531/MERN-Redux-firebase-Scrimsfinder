@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import useAuth from './useAuth';
 import { io } from 'socket.io-client';
 
 export default function useSocket() {

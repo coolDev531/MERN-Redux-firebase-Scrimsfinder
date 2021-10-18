@@ -136,6 +136,9 @@ io.on('connection', (socket) => {
   });
 
   socket.on('scrimChatClose', async ({ userId, scrimId }) => {
+    console.log('scrimChatClose');
+    if (!scrims[scrimId]) return;
+
     const filteredScrims = scrims[scrimId].filter((uId) => uId !== userId);
     // remove user from the scrim
     console.log({ filteredScrims });
