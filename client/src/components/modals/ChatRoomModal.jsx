@@ -36,7 +36,7 @@ export default function ChatRoomModal() {
   const { currentUser } = useAuth();
   const { chatRoomOpen } = useSelector(({ general }) => general);
 
-  const { conversation = null, isOpen: open = false } = chatRoomOpen;
+  const { conversation = null, isOpen = false } = chatRoomOpen;
   const dispatch = useDispatch();
 
   const onClose = () =>
@@ -68,7 +68,7 @@ export default function ChatRoomModal() {
   const { setCurrentAlert } = useAlerts();
 
   useEffect(() => {
-    if (!open) return;
+    if (!isOpen) return;
     // take event from server
     socket.current?.on('getMessage', (data) => {
       devLog('getMessage event: ', data);
@@ -79,7 +79,7 @@ export default function ChatRoomModal() {
         _id: data.messageId,
       });
     });
-  }, [allUsers, socket, open]);
+  }, [allUsers, socket, isOpen]);
 
   useEffect(() => {
     // fetch messages by conversationId and set in the state.
@@ -166,7 +166,7 @@ export default function ChatRoomModal() {
 
   useEffect(() => {
     if (!isLoaded) return;
-    if (!open) return;
+    if (!isOpen) return;
     if (!scrollRef?.current) return;
 
     const scroll = scrollRef?.current;
@@ -175,11 +175,11 @@ export default function ChatRoomModal() {
     scroll.animate({ scrollTop: scroll?.scrollHeight }); // automatically scroll to bottom on new message created and mount
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [messages, isLoaded, open]);
+  }, [messages, isLoaded, isOpen]);
 
   const handleChange = useCallback((e) => setNewMessage(e.target.value), []);
 
-  if (!open) return null;
+  if (!isOpen) return null;
 
   return (
     <Modal
@@ -188,7 +188,7 @@ export default function ChatRoomModal() {
       }`}
       customStyles={{}}
       contentClassName={classes.modalContent}
-      open={open}
+      open={isOpen}
       onClose={onClose}>
       {!isLoaded || !conversation?._id ? (
         <div

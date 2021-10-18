@@ -11,9 +11,8 @@ import ConversationCreateModal from './ConversationCreateModal';
 
 export default function AppModals() {
   const { currentUser } = useAuth();
-  const { chatRoomOpen, scrimChatRoomOpen } = useSelector(
-    ({ general }) => general
-  );
+  const { chatRoomOpen, scrimChatRoomOpen, conversationCreateModalOpen } =
+    useSelector(({ general }) => general);
 
   if (!currentUser?._id) return null;
 
@@ -23,13 +22,9 @@ export default function AppModals() {
       <NotificationsModal />
       <UserFriendsModal />
       <OtherOptionsModal />
-      {chatRoomOpen.isOpen && <ChatRoomModal />}
-      {scrimChatRoomOpen.isOpen && <ScrimChatRoomModal />}
-      <ConversationCreateModal
-      // open={isCreateModalOpen === friendUser?._id}
-      // setOpen={setIsCreateModalOpen}
-      // receiverUser={friendUser}
-      />
+      {chatRoomOpen?.isOpen && <ChatRoomModal />}
+      {scrimChatRoomOpen?.isOpen && <ScrimChatRoomModal />}
+      {conversationCreateModalOpen?.isOpen && <ConversationCreateModal />}
     </>
   );
 }

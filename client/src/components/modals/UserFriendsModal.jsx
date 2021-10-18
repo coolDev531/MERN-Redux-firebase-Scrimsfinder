@@ -16,9 +16,9 @@ import { getRankImage } from './../../utils/getRankImage';
 
 // services
 import { getUserFriends } from '../../services/users.services';
+import { findOneConversation } from '../../services/conversations.services';
 
 // icons
-// import CancelIcon from '@mui/icons-material/Cancel';
 import CreateIcon from '@mui/icons-material/Create';
 import MsgIcon from '@mui/icons-material/Sms';
 
@@ -98,19 +98,23 @@ export default function UserFriendsModal() {
 }
 
 const OneFriend = memo(({ friend, onClose, user, currentUser }) => {
-  const { conversations } = useSelector(({ messenger }) => messenger);
+  const [conversation, setConversation] = useState([]);
+  const dispatch = useDispatch();
 
-  const getFriendUserId = (arr) => {
-    let friend = arr.find(({ _id }) => _id !== currentUser?._id);
-    return friend?._id;
-  };
+  useEffect(() => {
+    const fetchConversation = async () => {
+      const oneConversation = await findOneConversation(
+        currentUser._id,
+        friend._id
+      );
+      setConversation(oneConversation ?? null);
+    };
+    fetchConversation();
+  }, [currentUser._id, friend._id]);
 
-  const memberIds = conversations.flatMap(({ members }) =>
-    getFriendUserId(members)
-  );
-
+  // this means that these users have an existing conversation
   const inConversation =
-    currentUser?._id !== user?._id ? false : memberIds.includes(friend._id);
+    currentUser?._id !== user?._id ? false : conversation?._id;
 
   return (
     <Grid container alignItems="center" justifyContent="space-between">
@@ -137,7 +141,23 @@ const OneFriend = memo(({ friend, onClose, user, currentUser }) => {
                 ? `Send ${friend.name} a message`
                 : `Start a new conversation`
             }>
-            <IconButton>
+            <IconButton
+              onClick={() => {
+                if (inConversation) {
+                  dispatch({
+                    type: 'general/chatRoomOpen',
+                    payload: { isOpen: true, conversation: conversation },
+                  });
+                } else {
+                  dispatch({
+                    type: 'general/conversationCreateModalOpen',
+                    payload: {
+                      isOpen: true,
+                      receiverUser: friend,
+                    },
+                  });
+                }
+              }}>
               {inConversation ? <CreateIcon /> : <MsgIcon />}
             </IconButton>
           </Tooltip>
