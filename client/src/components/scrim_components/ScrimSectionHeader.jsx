@@ -140,6 +140,17 @@ export default function ScrimSectionHeader({
           direction="row"
           justifyContent={matchesMd ? 'flex-start' : 'flex-end'}
           spacing={2}>
+          {/* messenger button */}
+          {scrim._conversation && (
+            <Grid item>
+              <MessengerButton
+                withDropdown={false}
+                onClick={handleOpenConversation}
+                tooltipTitle="Open scrim chat room"
+              />
+            </Grid>
+          )}
+
           {/* Share button */}
           <Grid item>
             <Tooltip arrow placement="top" title="Copy game link to clipboard">

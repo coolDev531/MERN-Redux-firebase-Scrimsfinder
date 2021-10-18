@@ -31,11 +31,6 @@ export default function MessengerButton({
             withDropdown && isMessengerDropdownOpen ? 'true' : undefined
           }
           aria-haspopup={withDropdown && 'true'}>
-          {/* {conversations.length > 0 ? (
-            <div className={classes.newMessagesCount}>
-            {conversations.length}
-            </div>
-          ) : null} */}
           <MessengerIcon fontSize="large" />
         </IconButton>
       </Tooltip>
@@ -49,19 +44,3 @@ export default function MessengerButton({
     </>
   );
 }
-
-// const useStyles = makeStyles({
-//   newMessagesCount: {
-//     backgroundColor: 'red',
-//     borderRadius: '50%',
-//     width: '24px',
-//     height: '24px',
-//     position: 'absolute',
-//     top: '0px',
-//     right: '-5px',
-//     fontSize: '1rem',
-//     display: 'flex',
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
-// });
