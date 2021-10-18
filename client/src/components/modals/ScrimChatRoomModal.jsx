@@ -1,5 +1,5 @@
 // hooks
-import { useCallback, useState, useEffect, useRef, useMemo, memo } from 'react';
+import { useCallback, useState, useEffect, useRef, memo } from 'react';
 import useAlerts from '../../hooks/useAlerts';
 import useUsers from '../../hooks/useUsers';
 import useSocket from '../../hooks/useSocket';
