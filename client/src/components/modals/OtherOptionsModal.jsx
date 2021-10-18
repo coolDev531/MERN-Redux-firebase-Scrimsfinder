@@ -30,7 +30,6 @@ export default function MoreOptionsModal() {
       type: 'general/openFriendsModal',
       payload: {
         user: currentUser,
-        friends: currentUser.friends,
       },
     });
   }, [currentUser, dispatch]);

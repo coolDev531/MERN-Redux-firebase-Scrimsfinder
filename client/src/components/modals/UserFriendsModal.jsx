@@ -1,4 +1,4 @@
-import { Fragment, memo, useCallback } from 'react';
+import { Fragment, memo, useCallback, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import useAlerts from './../../hooks/useAlerts';
 
@@ -16,7 +16,10 @@ import Divider from '@mui/material/Divider';
 import { getRankImage } from './../../utils/getRankImage';
 
 // services
-import { removeUserFriend } from '../../services/users.services';
+import {
+  getUserFriends,
+  removeUserFriend,
+} from '../../services/users.services';
 
 // icons
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -24,15 +27,30 @@ import CancelIcon from '@mui/icons-material/Cancel';
 export default function UserFriendsModal() {
   const [
     {
-      friendsModalOpen: { friends, user, bool },
+      friendsModalOpen: { user, bool },
     },
     { allUsers },
     { currentUser },
   ] = useSelector(({ general, users, auth }) => [general, users, auth]);
 
+  const [friends, setFriends] = useState([]);
+
   const dispatch = useDispatch();
 
   const { setCurrentAlert } = useAlerts();
+
+  useEffect(() => {
+    if (!bool) return;
+    const fetchUserFriends = async () => {
+      const userFriends = await getUserFriends(user?._id);
+      setFriends(userFriends);
+    };
+    fetchUserFriends();
+
+    return () => {
+      setFriends([]);
+    };
+  }, [user?._id, bool]);
 
   const onClose = useCallback(() => {
     dispatch({ type: 'general/closeFriendsModal' });
@@ -52,18 +70,9 @@ export default function UserFriendsModal() {
           friendToDelete._id
         );
 
-        // update the state in the modal as well
         dispatch({
           type: 'auth/updateCurrentUser',
           payload: {
-            friends: userFriends,
-          },
-        });
-
-        dispatch({
-          type: 'general/openFriendsModal',
-          payload: {
-            user: currentUser,
             friends: userFriends,
           },
         });
@@ -72,6 +81,8 @@ export default function UserFriendsModal() {
           type: 'Success',
           message: `Unfriended ${friendToDelete.name}`,
         });
+
+        setFriends(userFriends);
       } catch (error) {
         setCurrentAlert({
           type: 'Error',
@@ -119,8 +130,21 @@ export default function UserFriendsModal() {
 
 const OneFriend = memo(
   ({ friend, onClose, user, currentUser, onDeleteFriend }) => {
+    const { conversations } = useSelector(({ messenger }) => messenger);
+
+    const inConversation =
+      currentUser?._id !== user?._id
+        ? false
+        : conversations.map(({ members }) =>
+            members.some((member) => member === friend._id)
+          );
+
     return (
-      <Grid container alignItems="center" justifyContent="space-between">
+      <Grid
+        style={{ background: inConversation ? 'red' : 'white' }}
+        container
+        alignItems="center"
+        justifyContent="space-between">
         <Grid item container alignItems="center" xs={10}>
           <Tooltip title={`Visit ${friend.name}'s profile`}>
             <Link

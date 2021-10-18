@@ -154,3 +154,12 @@ export const getUserFriendRequests = async (userId) => {
     throw error;
   }
 };
+
+export const getUserFriends = async (userId) => {
+  try {
+    const response = await api.get(`/users/user-friends/${userId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

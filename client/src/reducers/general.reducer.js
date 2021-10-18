@@ -80,7 +80,6 @@ export default function generalReducer(state = initialState, action) {
       return {
         ...state,
         friendsModalOpen: {
-          friends: payload.friends,
           user: payload.user,
           bool: true,
         },

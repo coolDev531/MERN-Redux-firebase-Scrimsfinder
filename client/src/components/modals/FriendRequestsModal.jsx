@@ -121,6 +121,10 @@ export default function FriendRequestsModal() {
               friendRequests,
             },
           });
+
+          setFriendRequests((prevState) =>
+            prevState.filter((request) => request._id !== requestId)
+          );
         }
 
         setCurrentAlert({

@@ -152,7 +152,7 @@ export default function ProfileAccountDetails({
                   onClick={() =>
                     dispatch({
                       type: 'general/openFriendsModal',
-                      payload: { friends: user?.friends, user },
+                      payload: { user },
                     })
                   }>
                   <b>View more</b>

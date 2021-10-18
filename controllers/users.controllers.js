@@ -589,6 +589,23 @@ const getUserFriendRequests = async (req, res) => {
   }
 };
 
+const getUserFriends = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(500).send(`User not found with id: ${id}`);
+    }
+
+    const friends = user.friends ?? [];
+
+    return res.status(200).json(friends);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   getAllUsers,
   getOneUser,
@@ -604,4 +621,5 @@ module.exports = {
   addUserFriend,
   removeUserFriend,
   getUserFriendRequests,
+  getUserFriends,
 };
