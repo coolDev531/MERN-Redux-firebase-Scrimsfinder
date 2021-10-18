@@ -275,7 +275,7 @@ export default function ScrimTeamList({
                             to={`/users/${userInfo?.name}?region=${userInfo?.region}`}>
                             {isSmScreen
                               ? userInfo?.name
-                              : truncate(userInfo?.name, 12)}
+                              : truncate(userInfo?.name, 11)}
                           </Link>
                         </Tooltip>
 
