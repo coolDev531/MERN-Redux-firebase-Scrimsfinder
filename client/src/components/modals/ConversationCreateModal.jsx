@@ -10,30 +10,33 @@ import { Modal } from '../shared/ModalComponents';
 
 // icons
 import CreateNewConversationButton from '../Messenger_components/CreateNewConversationButton';
+import { useSelector, useDispatch } from 'react-redux';
+import useAuth from './../../hooks/useAuth';
 
-// exists inside NewConversationFriends.jsx
-const ConversationCreateModal = ({
-  receiverUser,
-  currentUser,
-  open,
-  setOpen,
-}) => {
+const ConversationCreateModal = () => {
   const [newMessage, setNewMessage] = useState('');
+  const dispatch = useDispatch();
+  const { currentUser } = useAuth();
+  const {
+    conversationCreateModalOpen: { isOpen = false, receiverUser = null },
+  } = useSelector(({ general }) => general);
+
+  const onClose = () =>
+    dispatch({ type: 'general/conversationCreateModalClose' });
 
   useEffect(() => {
-    if (!open) {
+    if (!isOpen) {
       setNewMessage('');
     }
-  }, [open]);
+  }, [isOpen]);
+
+  if (!isOpen) return null;
 
   return (
-    <Modal
-      open={open}
-      onClose={() => setOpen(false)}
-      title={`Start a new conversation`}>
+    <Modal open={isOpen} onClose={onClose} title={`Start a new conversation`}>
       <Grid item container direction="column">
         <Typography variant="body2">
-          Start a new conversation with {receiverUser.name}
+          Start a new conversation with {receiverUser?.name}
         </Typography>
         <OutlinedInput
           multiline
@@ -49,7 +52,6 @@ const ConversationCreateModal = ({
               <CreateNewConversationButton
                 currentUser={currentUser}
                 receiverUser={receiverUser}
-                setOpen={setOpen}
                 newMessageText={newMessage}
               />
             </InputAdornment>

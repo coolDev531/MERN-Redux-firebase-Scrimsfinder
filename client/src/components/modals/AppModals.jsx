@@ -7,6 +7,7 @@ import UserFriendsModal from './UserFriendsModal';
 import OtherOptionsModal from './OtherOptionsModal';
 import ChatRoomModal from './ChatRoomModal';
 import ScrimChatRoomModal from './ScrimChatRoomModal';
+import ConversationCreateModal from './ConversationCreateModal';
 
 export default function AppModals() {
   const { currentUser } = useAuth();
@@ -24,6 +25,11 @@ export default function AppModals() {
       <OtherOptionsModal />
       {chatRoomOpen.isOpen && <ChatRoomModal />}
       {scrimChatRoomOpen.isOpen && <ScrimChatRoomModal />}
+      <ConversationCreateModal
+      // open={isCreateModalOpen === friendUser?._id}
+      // setOpen={setIsCreateModalOpen}
+      // receiverUser={friendUser}
+      />
     </>
   );
 }

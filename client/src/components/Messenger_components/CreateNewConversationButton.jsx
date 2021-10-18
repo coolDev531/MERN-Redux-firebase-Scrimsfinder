@@ -24,7 +24,6 @@ export default function CreateNewConversationButton({
   currentUser,
   receiverUser,
   newMessageText,
-  setOpen,
 }) {
   const dispatch = useDispatch();
   const { setCurrentAlert } = useAlerts();
@@ -70,7 +69,7 @@ export default function CreateNewConversationButton({
 
       // send to back end
       const createdNotification = await pushUserNotification(
-        currentUser._id,
+        receiverUser._id,
         newNotification
       );
 
@@ -81,7 +80,7 @@ export default function CreateNewConversationButton({
         payload: newConversation,
       });
 
-      setOpen(false);
+      dispatch({ type: 'general/conversationCreateModalClose' });
 
       setTimeout(() => {
         dispatch({
@@ -104,7 +103,6 @@ export default function CreateNewConversationButton({
     socket,
     dispatch,
     setCurrentAlert,
-    setOpen,
     newMessageText,
   ]);
 

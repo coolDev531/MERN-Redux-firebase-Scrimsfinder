@@ -23,6 +23,8 @@ import {
 
 // icons
 import CancelIcon from '@mui/icons-material/Cancel';
+import CreateIcon from '@mui/icons-material/Create';
+import MsgIcon from '@mui/icons-material/Sms';
 
 export default function UserFriendsModal() {
   const [
@@ -97,7 +99,17 @@ export default function UserFriendsModal() {
   if (!friends) return null;
 
   return (
-    <Modal title={`${user?.name}'s Friends`} open={bool} onClose={onClose}>
+    <Modal
+      customStyles={{
+        maxWidth: '500px',
+        minWidth: '500px',
+        display: 'flex',
+        flexDirection: 'column',
+        overflowWrap: 'break-word',
+      }}
+      title={`${user?.name}'s Friends`}
+      open={bool}
+      onClose={onClose}>
       {friends?.length > 0 ? (
         friends?.map((friend, idx, arr) => (
           <Fragment key={friend?._id}>
@@ -132,20 +144,21 @@ const OneFriend = memo(
   ({ friend, onClose, user, currentUser, onDeleteFriend }) => {
     const { conversations } = useSelector(({ messenger }) => messenger);
 
+    const getFriendUserId = (arr) => {
+      let friend = arr.find(({ _id }) => _id !== currentUser?._id);
+      return friend?._id;
+    };
+
+    const memberIds = conversations.flatMap(({ members }) =>
+      getFriendUserId(members)
+    );
+
     const inConversation =
-      currentUser?._id !== user?._id
-        ? false
-        : conversations.map(({ members }) =>
-            members.some((member) => member === friend._id)
-          );
+      currentUser?._id !== user?._id ? false : memberIds.includes(friend._id);
 
     return (
-      <Grid
-        style={{ background: inConversation ? 'red' : 'white' }}
-        container
-        alignItems="center"
-        justifyContent="space-between">
-        <Grid item container alignItems="center" xs={10}>
+      <Grid container alignItems="center" justifyContent="space-between">
+        <Grid item container alignItems="center" xs={6}>
           <Tooltip title={`Visit ${friend.name}'s profile`}>
             <Link
               style={{ display: 'flex', alignItems: 'center' }}
@@ -161,12 +174,22 @@ const OneFriend = memo(
         </Grid>
 
         {user?._id === currentUser?._id && (
-          <Grid item container alignItems="center" xs={2}>
-            <Tooltip title={`Unfriend ${friend.name}`}>
+          <Grid item container direction="row" alignItems="center" xs={2}>
+            <Tooltip
+              title={
+                inConversation
+                  ? `Send ${friend.name} a message`
+                  : `Start a new conversation`
+              }>
+              <IconButton>
+                {inConversation ? <CreateIcon /> : <MsgIcon />}
+              </IconButton>
+            </Tooltip>
+            {/* <Tooltip title={`Unfriend ${friend.name}`}>
               <IconButton onClick={() => onDeleteFriend(friend)}>
                 <CancelIcon fontSize="medium" />
               </IconButton>
-            </Tooltip>
+            </Tooltip> */}
           </Grid>
         )}
       </Grid>

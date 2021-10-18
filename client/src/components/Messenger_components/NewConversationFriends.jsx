@@ -2,13 +2,12 @@ import { Fragment, useState } from 'react';
 import { useSelector } from 'react-redux';
 import useAuth from './../../hooks/useAuth';
 import useUsers from './../../hooks/useUsers';
-
+import { useDispatch } from 'react-redux';
 // components
 import Divider from '@mui/material/Divider';
 import Tooltip from '../shared/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import MenuList from '@mui/material/MenuList';
-import ConversationCreateModal from './../modals/ConversationCreateModal';
 
 // utils
 import makeStyles from '@mui/styles/makeStyles';
@@ -21,11 +20,18 @@ import CreateIcon from '@mui/icons-material/Create';
 const NewConversationFriends = () => {
   const classes = useStyles();
   const { allUsers } = useUsers();
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const { onlineFriends, conversations } = useSelector(
     ({ messenger }) => messenger
   );
+
+  const dispatch = useDispatch();
+
+  const openCreateModal = (receiverUser) =>
+    dispatch({
+      type: 'general/conversationCreateModalOpen',
+      payload: { isOpen: true, receiverUser },
+    });
 
   const { currentUser } = useAuth();
 
@@ -52,7 +58,7 @@ const NewConversationFriends = () => {
 
         return (
           <Fragment key={friendUser?._id}>
-            <MenuItem onClick={() => setIsCreateModalOpen(friendUser?._id)}>
+            <MenuItem onClick={() => openCreateModal(friendUser)}>
               <Tooltip title="Start a new conversation">
                 <div className={classes.user}>
                   <div
@@ -77,12 +83,6 @@ const NewConversationFriends = () => {
                 </div>
               </Tooltip>
             </MenuItem>
-            <ConversationCreateModal
-              open={isCreateModalOpen === friendUser?._id}
-              setOpen={setIsCreateModalOpen}
-              receiverUser={friendUser}
-              currentUser={currentUser}
-            />
           </Fragment>
         );
       })}

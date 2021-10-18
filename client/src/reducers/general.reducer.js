@@ -20,6 +20,11 @@ const initialState = {
     extraTitle: '',
     scrimId: '',
   }, // for scrim chat room
+
+  conversationCreateModalOpen: {
+    receiverUser: null,
+    isOpen: false,
+  },
 };
 
 export default function generalReducer(state = initialState, action) {
@@ -155,6 +160,20 @@ export default function generalReducer(state = initialState, action) {
           extraTitle: '',
           scrimId: '',
         },
+      };
+    }
+
+    case 'general/conversationCreateModalOpen': {
+      return {
+        ...state,
+        conversationCreateModalOpen: payload,
+      };
+    }
+
+    case 'general/conversationCreateModalClose': {
+      return {
+        ...state,
+        conversationCreateModalOpen: { isOpen: false, receiverUser: null },
       };
     }
 
