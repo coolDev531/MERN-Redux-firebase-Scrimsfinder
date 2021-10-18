@@ -28,7 +28,7 @@ export default function UserFriendsModal() {
       friendsModalOpen: { user, bool },
     },
     { currentUser },
-  ] = useSelector(({ general, users, auth }) => [general, users, auth]);
+  ] = useSelector(({ general, auth }) => [general, auth]);
 
   const [friends, setFriends] = useState([]);
 
@@ -123,7 +123,7 @@ const OneFriend = memo(({ friend, onClose, user, currentUser }) => {
             to={`/users/${friend.name}?region=${friend.region}`}>
             <img src={getRankImage(friend)} alt={friend.rank} width="20" />
             &nbsp;
-            <span>{friend.name}</span>
+            <span>{friend.name}</span>&nbsp;
             <span>({friend.region})</span>
           </Link>
         </Tooltip>
