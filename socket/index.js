@@ -81,6 +81,7 @@ io.on('connection', (socket) => {
     }
   );
 
+  // for friend requests or conversation starts
   socket.on(
     'sendNotification',
     async ({
@@ -115,17 +116,17 @@ io.on('connection', (socket) => {
     }
   );
 
-  // add user to scrim chat
+  // just checking that scrim chat has been opened or closed
   socket.on('scrimChatOpen', async ({ userId, scrimId }) => {
     console.log('ScrimChatOpen', userId, scrimId);
 
     return;
   });
-
   socket.on('scrimChatClose', async () => {
     console.log('scrimChatClose');
   });
 
+  // send scrim to scrim chat box
   socket.on(
     'sendScrimMessage',
     async ({ senderId, text, messageId, createdAt, _conversation }) => {
@@ -137,7 +138,7 @@ io.on('connection', (socket) => {
         text,
         messageId,
         createdAt,
-        _conversation,
+        _conversation, // make sure that it's only being sent to that specific scrim chat box.
       });
 
       return;
