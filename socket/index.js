@@ -145,6 +145,13 @@ io.on('connection', (socket) => {
     }
   );
 
+  // scrim team list socket here:
+  socket.on('sendScrimTransaction', async (updatedScrim) => {
+    console.log('sendScrimTransaction: ', updatedScrim);
+    // send the updated scrim
+    io.emit('getScrimTransaction', updatedScrim);
+  });
+
   // when disconnect
   // add unsubscribe event listener
   socket.on('disconnect', () => {

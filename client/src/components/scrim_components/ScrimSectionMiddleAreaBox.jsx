@@ -43,6 +43,7 @@ export default function ScrimSectionMiddleAreaBox({
   playerEntered,
   casterEntered,
   setScrim,
+  socket,
 }) {
   const { currentUser, isCurrentUserAdmin } = useAuth();
   const { setCurrentAlert } = useAlerts();
@@ -152,6 +153,10 @@ export default function ScrimSectionMiddleAreaBox({
                                   );
                                   if (updatedScrim?.createdBy) {
                                     setScrim(updatedScrim);
+                                    socket.current?.emit(
+                                      'sendScrimTransaction',
+                                      updatedScrim
+                                    );
                                   }
                                 }}>
                                 {teamTitle}
@@ -177,6 +182,7 @@ export default function ScrimSectionMiddleAreaBox({
                   <UploadPostGameImage
                     isUploaded={imageUploaded}
                     scrim={scrim}
+                    socket={socket}
                     setScrim={setScrim}
                   />
                 </>

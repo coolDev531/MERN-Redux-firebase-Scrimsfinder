@@ -9,6 +9,7 @@ import { getAllScrims, getScrimById } from '../services/scrims.services';
 import devLog from '../utils/devLog';
 import { showEarliestFirst, showLatestFirst } from '../utils/getSortedScrims';
 import { compareDates } from '../utils/compareDates';
+import useSocket from './useSocket';
 
 export default function useScrims() {
   return useSelector(({ scrims }) => scrims);
@@ -176,4 +177,27 @@ export const useFetchScrimInterval = (isInDetail, isBoxExpanded, scrim) => {
   }, [scrim]);
 
   return [oneScrim, setOneScrim];
+};
+
+export const useScrimSocket = (scrimData, isBoxExpanded) => {
+  const { socket } = useSocket();
+  const [scrim, setScrim] = useState(scrimData);
+
+  const isBoxExpandedRef = useRef();
+
+  useEffect(() => {
+    isBoxExpandedRef.current = isBoxExpanded;
+  });
+
+  useEffect(() => {
+    socket.current?.on('getScrimTransaction', async (updatedScrim) => {
+      if (isBoxExpandedRef.current !== updatedScrim?._id) return;
+      devLog('getScrimTransaction socket, updated scrim: ', updatedScrim);
+      setScrim(updatedScrim);
+    });
+
+    return null;
+  }, [socket]);
+
+  return [scrim, setScrim];
 };

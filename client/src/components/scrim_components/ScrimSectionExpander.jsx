@@ -16,6 +16,7 @@ export default function ScrimSectionExpander({
   isBoxExpanded,
   setIsBoxExpanded,
   scrimBoxRef,
+  scrimId,
 }) {
   const [isHover, setIsHover] = useState(false);
 
@@ -53,7 +54,7 @@ export default function ScrimSectionExpander({
             onMouseLeave={() => setIsHover(false)}
             className="scrim__expand--expandButton"
             onClick={() => {
-              setIsBoxExpanded((prevState) => !prevState);
+              setIsBoxExpanded((prevState) => false);
               setIsHover(false);
               scrollToScrimBox();
               blinkScrimBox();
@@ -68,7 +69,7 @@ export default function ScrimSectionExpander({
             onMouseLeave={() => setIsHover(false)}
             className="scrim__expand--expandButton"
             onClick={() => {
-              setIsBoxExpanded((prevState) => !prevState);
+              setIsBoxExpanded(scrimId);
               setIsHover(false);
               scrollToScrimBox();
               blinkScrimBox();

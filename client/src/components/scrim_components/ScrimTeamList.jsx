@@ -55,6 +55,7 @@ export default function ScrimTeamList({
   buttonsDisabled,
   setButtonsDisabled,
   setScrim,
+  socket,
 }) {
   const { currentUser, isCurrentUserAdmin } = useAuth();
   const { setCurrentAlert } = useAlerts();
@@ -106,6 +107,8 @@ export default function ScrimTeamList({
         'color: #99ff99'
       );
       setScrim(updatedScrim);
+
+      socket.current?.emit('sendScrimTransaction', updatedScrim);
     }
 
     setButtonsDisabled(false);
@@ -134,6 +137,8 @@ export default function ScrimTeamList({
       );
 
       setScrim(updatedScrim);
+
+      socket.current?.emit('sendScrimTransaction', updatedScrim);
     }
 
     setButtonsDisabled(false);
@@ -156,6 +161,8 @@ export default function ScrimTeamList({
       );
 
       setScrim(updatedScrim);
+
+      socket.current?.emit('sendScrimTransaction', updatedScrim);
     }
 
     setButtonsDisabled(false);
@@ -180,6 +187,8 @@ export default function ScrimTeamList({
       );
 
       setScrim(updatedScrim);
+
+      socket.current?.emit('sendScrimTransaction', updatedScrim);
     }
 
     setButtonsDisabled(false);

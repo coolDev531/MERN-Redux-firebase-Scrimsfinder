@@ -43,7 +43,12 @@ const changeFileName = async (file, scrimId) => {
 };
 
 // can also delete image here... maybe needs renaming
-export default function UploadPostGameImage({ scrim, setScrim, isUploaded }) {
+export default function UploadPostGameImage({
+  scrim,
+  setScrim,
+  isUploaded,
+  socket,
+}) {
   const { currentUser } = useAuth();
   const fileInputRef = useRef();
   const { setCurrentAlert } = useAlerts();
@@ -73,6 +78,7 @@ export default function UploadPostGameImage({ scrim, setScrim, isUploaded }) {
         });
 
         setScrim(updatedScrim);
+        socket.current?.emit('sendScrimTransaction', updatedScrim);
       }
 
       setButtonDisabled(false);
@@ -149,6 +155,8 @@ export default function UploadPostGameImage({ scrim, setScrim, isUploaded }) {
 
         setScrim(updatedScrim);
         setButtonDisabled(false);
+
+        socket.current?.emit('sendScrimTransaction', updatedScrim);
       }
     } catch (err) {
       console.log('error uploading image:', err);
