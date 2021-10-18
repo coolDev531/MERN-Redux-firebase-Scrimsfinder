@@ -41,6 +41,7 @@ export default function ScrimChatRoomModal() {
     conversation = null,
     isOpen: open = false,
     scrimId = '',
+    extraTitle = '',
   } = scrimChatRoomOpen;
   const dispatch = useDispatch();
 
@@ -187,7 +188,7 @@ export default function ScrimChatRoomModal() {
 
   return (
     <Modal
-      title="Messenger Chat (Scrim)"
+      title={`${extraTitle} |  Chat`}
       customStyles={{}}
       contentClassName={classes.modalContent}
       open={open}
