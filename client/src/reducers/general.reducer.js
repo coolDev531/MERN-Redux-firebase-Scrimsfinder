@@ -14,7 +14,12 @@ const initialState = {
 
   chatRoomOpen: { conversation: null, isOpen: false, extraTitle: '' }, // for friend chat room
 
-  scrimChatRoomOpen: { conversation: null, isOpen: false, extraTitle: '' }, // for scrim chat room
+  scrimChatRoomOpen: {
+    conversation: null,
+    isOpen: false,
+    extraTitle: '',
+    scrimId: '',
+  }, // for scrim chat room
 };
 
 export default function generalReducer(state = initialState, action) {
@@ -149,6 +154,7 @@ export default function generalReducer(state = initialState, action) {
           conversation: null,
           isOpen: false,
           extraTitle: '',
+          scrimId: '',
         },
       };
     }

@@ -115,6 +115,54 @@ io.on('connection', (socket) => {
     }
   );
 
+  let scrims = {
+    // scrimId: [] array of members
+  };
+
+  // add user to scrim chat
+  socket.on('scrimChatOpen', async ({ userId, scrimId }) => {
+    console.log('found scrim', scrims[scrimId]);
+
+    if (!scrims[scrimId]) {
+      scrims[scrimId] = [userId]; // get scrim members
+    } else {
+      scrims[scrimId].push(userId);
+    }
+
+    console.log({ scrims });
+    io.emit('getScrimUsers', scrims[scrimId]); // emit to client
+
+    return;
+  });
+
+  socket.on('scrimChatClose', async ({ userId, scrimId }) => {
+    const filteredScrims = scrims[scrimId].filter((uId) => uId !== userId);
+    // remove user from the scrim
+    console.log({ filteredScrims });
+    scrims[scrimId] = scrims[scrimId].filter((id) => id !== userId);
+  });
+
+  socket.on(
+    'sendScrimMessage',
+    async ({ senderId, receivers, text, messageId, createdAt }) => {
+      const receiverUser = getUser(receiverId); // send message to receiver from sender client
+
+      // don't emit if there isn't a receiverUser
+      if (!receiverUser) {
+        return;
+      }
+
+      io.to(receiverUser.socketId).emit('getMessage', {
+        senderId,
+        text,
+        messageId,
+        createdAt,
+      });
+
+      return;
+    }
+  );
+
   // when disconnect
   // add unsubscribe event listener
   socket.on('disconnect', () => {

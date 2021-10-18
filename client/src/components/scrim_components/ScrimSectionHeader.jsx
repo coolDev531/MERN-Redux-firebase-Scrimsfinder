@@ -65,7 +65,7 @@ export default function ScrimSectionHeader({
       console.log({ conversation });
       dispatch({
         type: 'general/scrimChatRoomOpen',
-        payload: { conversation, isOpen: true },
+        payload: { conversation, isOpen: true, scrimId: scrim._id },
       });
       return;
     } catch (error) {

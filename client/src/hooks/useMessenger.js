@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import {
   findOneConversation,
   getUserConversations,
@@ -7,26 +7,12 @@ import { useDispatch } from 'react-redux';
 import useAuth from './useAuth';
 import devLog from './../utils/devLog';
 
-import { io } from 'socket.io-client';
-
-const socketServerUrl =
-  process.env.NODE_ENV === 'production'
-    ? process.env.PROD_SOCKET_URL
-    : 'ws://localhost:8900';
+import useSocket from './useSocket';
 
 export default function useMessenger() {
   const { currentUser } = useAuth();
   const dispatch = useDispatch();
-  let socket = useRef();
-
-  // initialize socket
-  useEffect(() => {
-    socket.current = io(socketServerUrl);
-
-    dispatch({ type: 'socket/setSocket', payload: socket });
-
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const { socket } = useSocket();
 
   useEffect(() => {
     if (!currentUser?._id) return;
@@ -87,3 +73,22 @@ export default function useMessenger() {
     // send event to socket server.
   }, [currentUser?._id, currentUser?.friends, socket, dispatch]);
 }
+
+export const useScrimChat = (open, scrimId, userId) => {
+  // add user to scrim chat
+
+  const { socket } = useSocket();
+
+  useEffect(() => {
+    if (open) {
+      socket.current.emit('scrimChatOpen', {
+        scrimId,
+        userId,
+      });
+
+      socket.current.on('getScrimusers', (users) => {
+        devLog('socket getScrimUsers event: ', users);
+      });
+    }
+  }, [open, socket, scrimId, userId]);
+};

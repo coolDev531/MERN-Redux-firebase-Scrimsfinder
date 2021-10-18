@@ -7,6 +7,7 @@ import useAuth, { useAuthVerify } from './hooks/useAuth';
 import { useFetchScrims, useSetScrimsRegion } from './hooks/useScrims';
 import { useFetchUsers } from './hooks/useUsers';
 import useMessenger from './hooks/useMessenger';
+import { useCreateSocket } from './hooks/useSocket';
 
 // styles
 import { appTheme } from './appTheme';
@@ -32,6 +33,7 @@ function App() {
 
   const appWrapperRef = useAppBackground(); // change the background image and blur whenever appBackground or appBgBlur change in the redux store
 
+  useCreateSocket(); // create socket for messenger
   useAuthVerify(); // verify user is authenticated.
   useFetchUsers(); // fetch all users (for search and settings page)
   useSetScrimsRegion(); // set scrims region to users region on mount and when user changes it on settings

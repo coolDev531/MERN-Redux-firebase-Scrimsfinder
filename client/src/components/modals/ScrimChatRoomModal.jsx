@@ -29,14 +29,19 @@ import devLog from '../../utils/devLog';
 import { Modal } from '../shared/ModalComponents';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
+import { useScrimChat } from '../../hooks/useMessenger';
 
 // messenger modal chat room
-export default function ChatRoomModal() {
+export default function ScrimChatRoomModal() {
   const { allUsers } = useUsers();
   const { currentUser } = useAuth();
   const { scrimChatRoomOpen } = useSelector(({ general }) => general);
 
-  const { conversation = null, isOpen: open = false } = scrimChatRoomOpen;
+  const {
+    conversation = null,
+    isOpen: open = false,
+    scrimId = '',
+  } = scrimChatRoomOpen;
   const dispatch = useDispatch();
 
   const onClose = () =>
@@ -48,6 +53,8 @@ export default function ChatRoomModal() {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState(''); // the user input field new message to be sent
   const [arrivalMessage, setArrivalMessage] = useState(null); // new message that will be received from socket
+
+  useScrimChat(open, scrimId, currentUser._id);
 
   const [playNewMessageSFX] = useSound(NewMessageSFX, {
     volume: 0.25,
@@ -105,6 +112,15 @@ export default function ChatRoomModal() {
     };
   }, [conversation?._id]);
 
+  useEffect(() => {
+    return () => {
+      console.log('closed');
+      socket.current?.emit('scrimChatClose', {
+        userId: currentUser._id,
+        scrimId,
+      });
+    };
+  }, [socket, currentUser._id, scrimId]);
   useEffect(() => {
     // doing this so we don't see this message at conversations that aren't this one
 
