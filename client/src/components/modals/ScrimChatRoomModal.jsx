@@ -77,8 +77,8 @@ export default function ScrimChatRoomModal() {
   useEffect(() => {
     if (!open) return;
     // take event from server
-    socket.current?.on('getMessage', (data) => {
-      devLog('getMessage event: ', data);
+    socket.current?.on('getScrimMessage', (data) => {
+      devLog('getScrimMessage event: ', data);
       setArrivalMessage({
         _sender: allUsers.find((user) => user._id === data.senderId),
         text: data.text,
@@ -147,17 +147,12 @@ export default function ScrimChatRoomModal() {
           text: msgText,
         });
 
-        const receiver = conversation?.members?.find(
-          (user) => user._id !== currentUser?._id
-        );
-
         // send event to server after creating on client and posting to api
         devLog('EMIT'); // emits only once
 
-        socket.current?.emit('sendMessage', {
+        socket.current?.emit('sendScrimMessage', {
           senderId: currentUser?._id,
           text: msgText,
-          receiverId: receiver?._id,
           messageId: newlyCreatedMessage._id,
           createdAt: newlyCreatedMessage.createdAt,
         });

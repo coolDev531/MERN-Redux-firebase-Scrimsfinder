@@ -147,15 +147,11 @@ io.on('connection', (socket) => {
 
   socket.on(
     'sendScrimMessage',
-    async ({ senderId, receivers, text, messageId, createdAt }) => {
-      const receiverUser = getUser(receiverId); // send message to receiver from sender client
-
+    async ({ senderId, text, messageId, createdAt }) => {
+      console.log('sendScrimMessage');
       // don't emit if there isn't a receiverUser
-      if (!receiverUser) {
-        return;
-      }
 
-      io.to(receiverUser.socketId).emit('getMessage', {
+      io.emit('getScrimMessage', {
         senderId,
         text,
         messageId,
