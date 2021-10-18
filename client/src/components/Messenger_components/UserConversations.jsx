@@ -87,7 +87,7 @@ const ExistingConversations = ({
                   className={classes.isOnlineCircle}></div>
                 <img
                   src={getRankImage(friendUser)}
-                  alt={friendUser.rank}
+                  alt={friendUser?.rank}
                   width="20px"
                   className={classes.userRank}
                 />
