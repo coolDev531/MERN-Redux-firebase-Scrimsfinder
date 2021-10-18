@@ -115,34 +115,15 @@ io.on('connection', (socket) => {
     }
   );
 
-  let scrims = {
-    // scrimId: [] array of members
-  };
-
   // add user to scrim chat
   socket.on('scrimChatOpen', async ({ userId, scrimId }) => {
-    console.log('found scrim', scrims[scrimId]);
-
-    if (!scrims[scrimId]) {
-      scrims[scrimId] = [userId]; // get scrim members
-    } else {
-      scrims[scrimId].push(userId);
-    }
-
-    console.log({ scrims });
-    io.emit('getScrimUsers', scrims[scrimId]); // emit to client
+    console.log('ScrimChatOpen', userId, scrimId);
 
     return;
   });
 
-  socket.on('scrimChatClose', async ({ userId, scrimId }) => {
+  socket.on('scrimChatClose', async () => {
     console.log('scrimChatClose');
-    if (!scrims[scrimId]) return;
-
-    const filteredScrims = scrims[scrimId].filter((uId) => uId !== userId);
-    // remove user from the scrim
-    console.log({ filteredScrims });
-    scrims[scrimId] = scrims[scrimId].filter((id) => id !== userId);
   });
 
   socket.on(
