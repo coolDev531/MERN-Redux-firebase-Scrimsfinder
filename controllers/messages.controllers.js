@@ -38,6 +38,7 @@ const postMessage = async (req, res) => {
       text,
       _conversation: conversation._id,
       _sender: sender._id,
+      _seenBy: [sender._id],
     });
 
     let savedMessage = await newMessage.save();
@@ -71,7 +72,34 @@ const getConversationMessages = async (req, res) => {
   }
 };
 
+const postMessageSeenByUser = async (req, res) => {
+  try {
+    const { messageId } = req.params;
+
+    await handleValidId(messageId, res);
+
+    if (!req.body.seenByUserId) {
+      return res
+        .status(500)
+        .json({
+          error: 'seen by user id not provided! (req.body.seenByUserId)',
+        });
+    }
+
+    let message = await Message.findById(messageId);
+
+    message._seenBy = [...message._seenBy, req.body.seenByUserId];
+
+    const savedMessage = await message.save();
+
+    return res.status(200).json({ updatedMessage: savedMessage, status: true });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   postMessage,
   getConversationMessages,
+  postMessageSeenByUser,
 };

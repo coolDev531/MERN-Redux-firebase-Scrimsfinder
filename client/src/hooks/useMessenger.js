@@ -3,7 +3,7 @@ import {
   findOneConversation,
   getUserConversations,
 } from '../services/conversations.services';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import useAuth from './useAuth';
 import devLog from './../utils/devLog';
 
@@ -13,6 +13,7 @@ export default function useMessenger() {
   const { currentUser } = useAuth();
   const dispatch = useDispatch();
   const { socket } = useSocket();
+  const { chatRoomOpen } = useSelector(({ general }) => general);
 
   useEffect(() => {
     if (!currentUser?._id) return;
@@ -61,8 +62,6 @@ export default function useMessenger() {
           data.receiverId
         );
 
-        console.log({ newConversation });
-
         dispatch({
           type: 'messenger/addNewConversation',
           payload: newConversation,
@@ -72,6 +71,32 @@ export default function useMessenger() {
 
     // send event to socket server.
   }, [currentUser?._id, currentUser?.friends, socket, dispatch]);
+
+  // useEffect(() => {
+  //   if (!currentUser?._id) return;
+
+  //   socket.current?.on('getMessage', async (data) => {
+  //     devLog('getMessage event: ', data);
+
+  //     if (
+  //       chatRoomOpen?.isOpen &&
+  //       chatRoomOpen?.conversation?._id === data._conversation
+  //     ) {
+  //       return; // message has been seen
+  //     } else {
+  //       devLog('unseen message, pushed to state');
+  //       if (!data._seenBy.includes(currentUser?._id)) {
+  //         dispatch({ type: 'messenger/pushUnseenMessage', payload: data });
+  //       }
+  //     }
+  //   });
+  // }, [
+  //   chatRoomOpen?.conversation?._id,
+  //   chatRoomOpen?.isOpen,
+  //   currentUser?._id,
+  //   dispatch,
+  //   socket,
+  // ]);
 }
 
 export const useScrimChat = (open, scrimId, userId) => {

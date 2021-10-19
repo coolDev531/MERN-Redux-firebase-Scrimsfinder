@@ -19,6 +19,15 @@ const Message = new Schema(
     text: {
       type: String,
     },
+
+    // array of user ids
+    _seenBy: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+      },
+    ],
   },
   { timestamps: true }
 );

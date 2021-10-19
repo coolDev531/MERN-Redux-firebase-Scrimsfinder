@@ -40,7 +40,14 @@ io.on('connection', (socket) => {
 
   socket.on(
     'sendMessage',
-    async ({ senderId, receiverId, text, messageId, createdAt }) => {
+    async ({
+      senderId,
+      receiverId,
+      text,
+      messageId,
+      createdAt,
+      _conversation,
+    }) => {
       const receiverUser = getUser(receiverId); // send message to receiver from sender client
 
       // don't emit if there isn't a receiverUser
@@ -53,6 +60,10 @@ io.on('connection', (socket) => {
         text,
         messageId,
         createdAt,
+        _conversation,
+        receiverId,
+        messageId,
+        _seenBy: [senderId],
       });
 
       return;

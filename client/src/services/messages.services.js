@@ -35,3 +35,20 @@ export const getConversationMessages = async (conversationId) => {
     throw error;
   }
 };
+
+/**
+ * @method postMessageSeenByUser
+ * @param {String} messageId
+ * @param {String} seenByUserId
+ * @returns {Promise<{status: boolean, updatedMessage: object}>}
+ */
+export const postMessageSeenByUser = async (messageId, seenByUserId) => {
+  try {
+    const response = await api.post(`/messages/post-seen/${messageId}`, {
+      seenByUserId,
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

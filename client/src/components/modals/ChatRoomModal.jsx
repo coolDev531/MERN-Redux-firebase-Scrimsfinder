@@ -29,8 +29,10 @@ import devLog from '../../utils/devLog';
 import { Modal } from '../shared/ModalComponents';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
+import { postMessageSeenByUser } from './../../services/messages.services';
 
 // messenger modal chat room
+// the chat room between 2 friends (NOT THE SCRIM CHAT ROOM).
 export default function ChatRoomModal() {
   const { allUsers } = useUsers();
   const { currentUser } = useAuth();
@@ -70,13 +72,18 @@ export default function ChatRoomModal() {
   useEffect(() => {
     if (!isOpen) return;
     // take event from server
-    socket.current?.on('getMessage', (data) => {
+    socket.current?.on('getMessage', async (data) => {
       devLog('getMessage event: ', data);
+
       setArrivalMessage({
         _sender: allUsers.find((user) => user._id === data.senderId),
         text: data.text,
         createdAt: Date.now(),
         _id: data.messageId,
+        _seenBy: [data.senderId, data.receiverId],
+        _conversation: data._conversation,
+        receiverId: data.receiverId,
+        messageId: data.messageId,
       });
     });
   }, [allUsers, socket, isOpen]);
@@ -84,9 +91,26 @@ export default function ChatRoomModal() {
   useEffect(() => {
     // fetch messages by conversationId and set in the state.
     const fetchMessages = async () => {
-      const messagesData = await getConversationMessages(conversation?._id);
+      let messagesData = await getConversationMessages(conversation?._id);
+
+      const newSeenMessages = [];
+
+      for await (const currentMessage of messagesData) {
+        if (!currentMessage?._seenBy?.includes(currentUser?._id)) {
+          devLog('message not seen, pushing to DB (now seen)');
+          await postMessageSeenByUser(currentMessage._id, currentUser?._id);
+
+          newSeenMessages.push({
+            ...currentMessage,
+            _seenBy: [...currentMessage?._seenBy, currentUser?._id],
+          });
+        }
+      }
+
+      const messagesState = [...messagesData, ...newSeenMessages];
+
       setMessages(
-        messagesData.sort((a, b) => {
+        messagesState.sort((a, b) => {
           return (
             new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
           );
@@ -103,22 +127,38 @@ export default function ChatRoomModal() {
       setIsLoaded(false);
       setMessages([]);
     };
-  }, [conversation?._id]);
+  }, [conversation?._id, currentUser?._id]);
 
   useEffect(() => {
     // doing this so we don't see this message at conversations that aren't this one
 
-    if (
-      arrivalMessage &&
-      conversationMemberIds?.includes(arrivalMessage?._sender?._id)
-    ) {
-      devLog('socket new arrival message added to state (receiver client)');
+    const onNewMessageArrival = async () => {
+      if (
+        arrivalMessage &&
+        conversationMemberIds?.includes(arrivalMessage?._sender?._id)
+      ) {
+        devLog('socket new arrival message added to state (receiver client)');
 
-      playNewMessageSFX();
+        if (arrivalMessage.receiverId === currentUser._id) {
+          // put in the DB that the message has been seen.
+          await postMessageSeenByUser(
+            arrivalMessage.messageId,
+            arrivalMessage.receiverId
+          );
+        }
+        playNewMessageSFX();
 
-      setMessages((prevState) => [...prevState, arrivalMessage]);
-    }
-  }, [arrivalMessage, conversationMemberIds, playNewMessageSFX]);
+        setMessages((prevState) => [...prevState, arrivalMessage]);
+      }
+    };
+
+    onNewMessageArrival();
+  }, [
+    arrivalMessage,
+    conversationMemberIds,
+    playNewMessageSFX,
+    currentUser._id,
+  ]);
 
   const handleSubmitMessage = useCallback(
     async (msgText) => {
@@ -142,6 +182,7 @@ export default function ChatRoomModal() {
           receiverId: receiver?._id,
           messageId: newlyCreatedMessage._id,
           createdAt: newlyCreatedMessage.createdAt,
+          _conversation: conversation._id,
         });
 
         setMessages((prevState) => [...prevState, newlyCreatedMessage]);
