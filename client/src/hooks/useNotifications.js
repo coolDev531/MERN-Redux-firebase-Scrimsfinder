@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 import devLog from './../utils/devLog';
 
 // services
-import { getUserNotifications } from '../services/users.services';
+import { getUserNotifications, getUserById } from '../services/users.services';
 
 export default function useNotifications() {
   const { socket } = useSocket();
@@ -39,6 +39,15 @@ export default function useNotifications() {
           type: 'auth/addNotification',
           payload: newNotification,
         });
+
+        // add new user to the current user friends array
+        if (newNotification?.message.includes('are now friends')) {
+          const friendUser = await getUserById(newNotification?._relatedUser);
+          dispatch({
+            type: 'auth/updateCurrentUser',
+            payload: { friends: [...currentUser?.friends, friendUser] },
+          });
+        }
       }
     });
 
