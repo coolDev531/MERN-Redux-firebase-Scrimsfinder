@@ -79,14 +79,18 @@ export default function MessengerDropdown({ open, setOpen, anchorRef }) {
                   <Divider sx={{ width: '100%' }} />
                 </Grid>
 
-                <Grid item xs={12}>
-                  <Divider />
+                <Grid
+                  item
+                  xs={12}
+                  style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                  <Divider sx={{ width: '100%' }} />
 
                   {/* MESSENGER DROPDOWN CONTENT */}
 
                   {currentUser.friends.length > 0 ? (
                     <>
                       <UserConversations closeMenu={handleClose} />
+                      <Divider sx={{ width: '100%' }} />
                       <NewConversationFriends />
                     </>
                   ) : (
