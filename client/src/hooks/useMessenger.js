@@ -72,31 +72,20 @@ export default function useMessenger() {
     // send event to socket server.
   }, [currentUser?._id, currentUser?.friends, socket, dispatch]);
 
-  // useEffect(() => {
-  //   if (!currentUser?._id) return;
+  useEffect(() => {
+    if (!currentUser?._id) return;
 
-  //   socket.current?.on('getMessage', async (data) => {
-  //     devLog('getMessage event: ', data);
-
-  //     if (
-  //       chatRoomOpen?.isOpen &&
-  //       chatRoomOpen?.conversation?._id === data._conversation
-  //     ) {
-  //       return; // message has been seen
-  //     } else {
-  //       devLog('unseen message, pushed to state');
-  //       if (!data._seenBy.includes(currentUser?._id)) {
-  //         dispatch({ type: 'messenger/pushUnseenMessage', payload: data });
-  //       }
-  //     }
-  //   });
-  // }, [
-  //   chatRoomOpen?.conversation?._id,
-  //   chatRoomOpen?.isOpen,
-  //   currentUser?._id,
-  //   dispatch,
-  //   socket,
-  // ]);
+    socket.current?.on('getMessage', async (data) => {
+      if (chatRoomOpen?.conversation?._id === data?._conversation) {
+        return; // message has been seen
+      } else {
+        devLog('unseen message, pushed to state');
+        if (!data._seenBy.includes(currentUser?._id)) {
+          dispatch({ type: 'messenger/pushUnseenMessage', payload: data });
+        }
+      }
+    });
+  }, [chatRoomOpen?.conversation?._id, currentUser?._id, dispatch, socket]);
 }
 
 export const useScrimChat = (open, scrimId, userId) => {
