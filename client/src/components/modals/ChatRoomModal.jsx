@@ -32,8 +32,6 @@ import { Modal } from '../shared/ModalComponents';
 // service
 import { postMessageSeenByUser } from './../../services/messages.services';
 
-import { uniqueFilterAccordingToProp } from '../../utils/uniqueFilterAccordingToProp';
-
 // messenger modal chat room
 // the chat room between 2 friends (NOT THE SCRIM CHAT ROOM).
 export default function ChatRoomModal() {
