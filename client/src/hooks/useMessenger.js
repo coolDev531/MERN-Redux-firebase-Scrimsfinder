@@ -103,15 +103,19 @@ export default function useMessenger() {
       if (
         // if chat room is open but it's a different room that means it's an unseen message
         chatRoomOpen?.conversation?._id !== arrivalMessage?._conversation
-      ) {
-        devLog('unseen message, pushed to state');
+      )
+        if (arrivalMessage._receiver !== currentUser._id) {
+          console.log('false');
+          return;
+        }
 
-        dispatch({
-          type: 'messenger/pushUnseenMessage',
-          payload: arrivalMessage,
-        });
-        setArrivalMessage(null);
-      }
+      devLog('unseen message, pushed to state');
+
+      dispatch({
+        type: 'messenger/pushUnseenMessage',
+        payload: arrivalMessage,
+      });
+      setArrivalMessage(null);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

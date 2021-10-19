@@ -5,6 +5,7 @@ import useUsers from '../../hooks/useUsers';
 import useSocket from '../../hooks/useSocket';
 import useAuth from '../../hooks/useAuth';
 import useSound from 'use-sound';
+import { useSelector, useDispatch } from 'react-redux';
 
 // components
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -27,9 +28,11 @@ import NewMessageSFX from '../../assets/sounds/new_message.mp3';
 import makeStyles from '@mui/styles/makeStyles';
 import devLog from '../../utils/devLog';
 import { Modal } from '../shared/ModalComponents';
-import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
+
+// service
 import { postMessageSeenByUser } from './../../services/messages.services';
+
+import { uniqueFilterAccordingToProp } from '../../utils/uniqueFilterAccordingToProp';
 
 // messenger modal chat room
 // the chat room between 2 friends (NOT THE SCRIM CHAT ROOM).
@@ -95,6 +98,7 @@ export default function ChatRoomModal() {
       let messagesData = await getConversationMessages(conversation?._id);
 
       const newSeenMessages = [];
+      const restMessages = [];
 
       for await (const currentMessage of messagesData) {
         if (!currentMessage?._seenBy?.includes(currentUser?._id)) {
@@ -105,6 +109,8 @@ export default function ChatRoomModal() {
             ...currentMessage,
             _seenBy: [...currentMessage?._seenBy, currentUser?._id],
           });
+        } else {
+          restMessages.push(currentMessage);
         }
       }
 
@@ -114,7 +120,7 @@ export default function ChatRoomModal() {
         payload: newSeenMessages.map(({ _id }) => _id),
       });
 
-      const messagesState = [...messagesData, ...newSeenMessages];
+      const messagesState = [...restMessages, ...newSeenMessages];
 
       setMessages(
         messagesState.sort((a, b) => {
@@ -262,12 +268,12 @@ export default function ChatRoomModal() {
             {messages.map((message) => (
               // one message
               <ChatBubble
-                isCurrentUser={message._sender._id === currentUser?._id}
-                key={message._id}
-                messageText={message.text}
-                userName={message._sender.name}
-                userRank={message._sender.rank}
-                messageDate={message.createdAt}
+                isCurrentUser={message._sender?._id === currentUser?._id}
+                key={message?._id}
+                messageText={message?.text}
+                userName={message._sender?.name}
+                userRank={message._sender?.rank}
+                messageDate={message?.createdAt}
               />
             ))}
           </div>
