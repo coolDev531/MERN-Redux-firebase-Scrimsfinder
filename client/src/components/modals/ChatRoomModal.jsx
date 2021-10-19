@@ -77,13 +77,13 @@ export default function ChatRoomModal() {
       devLog('getMessage event: ', data);
 
       setArrivalMessage({
-        _sender: allUsers.find((user) => user._id === data.senderId),
+        _sender: allUsers.find((user) => user._id === data._sender),
         text: data.text,
         createdAt: Date.now(),
         _id: data.messageId,
         _seenBy: [data.senderId, data.receiverId],
         _conversation: data._conversation,
-        receiverId: data.receiverId,
+        _receiver: data._receiver,
         messageId: data.messageId,
       });
     });

@@ -31,7 +31,6 @@ export default function MessengerDropdown({ open, setOpen, anchorRef }) {
   useOnKeyDown(
     KEYCODES.ESCAPE,
     (e) => {
-      console.log('27');
       if (open) {
         setOpen(false);
       }

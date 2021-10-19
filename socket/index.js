@@ -56,12 +56,12 @@ io.on('connection', (socket) => {
       }
 
       io.to(receiverUser.socketId).emit('getMessage', {
-        senderId,
+        _sender: senderId,
         text,
         messageId,
         createdAt,
         _conversation,
-        receiverId,
+        _receiver: receiverId,
         messageId,
         _seenBy: [senderId],
       });

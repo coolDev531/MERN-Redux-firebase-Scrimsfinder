@@ -72,7 +72,6 @@ const MessengerNotificationSound = () => {
 
   useEffectExceptOnMount(() => {
     if (chatRoomOpen?.isOpen) {
-      console.log('return');
       return;
     }
 
