@@ -56,7 +56,7 @@ export default function MessengerDropdown({ open, setOpen, anchorRef }) {
           }}>
           <Paper>
             <ClickAwayListener onClickAway={handleClose}>
-              <Grid container xs={12} direction="column">
+              <Grid container direction="column">
                 <Grid
                   item
                   container

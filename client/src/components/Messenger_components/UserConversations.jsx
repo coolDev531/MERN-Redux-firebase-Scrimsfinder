@@ -116,9 +116,9 @@ const ExistingConversations = memo(
           if (!friendUser) return null;
 
           return (
-            <MenuItem onClick={() => openChat(friendUser)}>
+            <MenuItem onClick={() => openChat(friendUser)} key={friendUser._id}>
               {/* ONE CONVERSATION */}
-              <Tooltip title="Move to conversation" key={friendUser._id}>
+              <Tooltip title="Move to conversation">
                 <div className={classes.user}>
                   <div
                     // isOnline handled by socket

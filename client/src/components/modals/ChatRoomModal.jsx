@@ -158,6 +158,8 @@ export default function ChatRoomModal() {
         playNewMessageSFX();
 
         setMessages((prevState) => [...prevState, arrivalMessage]);
+
+        setArrivalMessage(null);
       }
     };
 
