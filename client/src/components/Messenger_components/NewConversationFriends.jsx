@@ -1,8 +1,8 @@
-import { Fragment } from 'react';
 import { useSelector } from 'react-redux';
 import useAuth from './../../hooks/useAuth';
 import useUsers from './../../hooks/useUsers';
 import { useDispatch } from 'react-redux';
+
 // components
 import Divider from '@mui/material/Divider';
 import Tooltip from '../shared/Tooltip';
@@ -57,33 +57,33 @@ const NewConversationFriends = () => {
         if (inConversation) return null;
 
         return (
-          <Fragment key={friendUser?._id}>
-            <MenuItem onClick={() => openCreateModal(friendUser)}>
-              <Tooltip title="Start a new conversation">
-                <div className={classes.user}>
-                  <div
-                    // add this bool to user (use socket?) if onlien green, else red
-                    style={{
-                      backgroundColor: isOnline ? '#AAFF00' : '#EE4B2B',
-                    }}
-                    className={classes.isOnlineCircle}></div>
-                  <img
-                    src={getRankImage(friendUser)}
-                    alt={friendUser?.rank}
-                    width="20px"
-                    className={classes.userRank}
-                  />
-                  {truncate(friendUser.name, 12)}
+          <MenuItem
+            onClick={() => openCreateModal(friendUser)}
+            key={friendUser?._id}>
+            <Tooltip title="Start a new conversation">
+              <div className={classes.user}>
+                <div
+                  // add this bool to user (use socket?) if onlien green, else red
+                  style={{
+                    backgroundColor: isOnline ? '#AAFF00' : '#EE4B2B',
+                  }}
+                  className={classes.isOnlineCircle}></div>
+                <img
+                  src={getRankImage(friendUser)}
+                  alt={friendUser?.rank}
+                  width="20px"
+                  className={classes.userRank}
+                />
+                {truncate(friendUser.name, 12)}
 
-                  <div style={{ position: 'absolute', right: '0', top: '0' }}>
-                    <CreateIcon />
-                  </div>
-
-                  {idx !== arr.length - 1 ? <Divider /> : null}
+                <div style={{ position: 'absolute', right: '0', top: '0' }}>
+                  <CreateIcon />
                 </div>
-              </Tooltip>
-            </MenuItem>
-          </Fragment>
+
+                {idx !== arr.length - 1 ? <Divider /> : null}
+              </div>
+            </Tooltip>
+          </MenuItem>
         );
       })}
     </MenuList>

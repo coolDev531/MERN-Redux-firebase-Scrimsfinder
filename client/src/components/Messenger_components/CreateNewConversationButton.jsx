@@ -1,5 +1,5 @@
 // hooks
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import useAlerts from '../../hooks/useAlerts';
 import useSocket from './../../hooks/useSocket';
@@ -31,6 +31,14 @@ export default function CreateNewConversationButton({
 
   const handleCreateConversation = useCallback(async () => {
     try {
+      if (!newMessageText) {
+        setCurrentAlert({
+          type: 'Error',
+          messag: 'cannot start conversation, no message provided!',
+        });
+        return;
+      }
+
       // create the conversation
       const newConversation = await postNewConversation({
         senderId: currentUser._id,
@@ -81,6 +89,12 @@ export default function CreateNewConversationButton({
           payload: { conversation: newConversation, isOpen: true },
         });
       }, 1);
+
+      setCurrentAlert({
+        type: 'Success',
+        message: `started a new conversation with ${receiverUser.name}`,
+      });
+      return;
     } catch (error) {
       console.error(error);
       setCurrentAlert({
@@ -97,6 +111,27 @@ export default function CreateNewConversationButton({
     setCurrentAlert,
     newMessageText,
   ]);
+
+  useEffect(() => {
+    const handleUserKeyPress = (e) => {
+      let shiftKeyPressed = e.shiftKey;
+      if (e.key !== 'Enter') return;
+      if (!e.target.value) {
+        e.preventDefault();
+        return;
+      }
+      // if key is enter and shift isn't pressed submit, else enter a new line
+      if (!shiftKeyPressed) {
+        handleCreateConversation();
+        return;
+      }
+    };
+
+    window.addEventListener('keydown', handleUserKeyPress);
+    return () => {
+      window.removeEventListener('keydown', handleUserKeyPress);
+    };
+  }, [handleCreateConversation]);
 
   if (!currentUser._id) return null;
 

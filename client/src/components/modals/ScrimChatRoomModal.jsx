@@ -12,6 +12,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import LinearProgress from '@mui/material/LinearProgress';
 import ChatBubble from './../Messenger_components/ChatBubble';
+import ChatInput from './../Messenger_components/ChatInput';
 
 // services
 import { getConversationMessages } from '../../services/messages.services';
@@ -233,30 +234,6 @@ export default function ScrimChatRoomModal() {
     </Modal>
   );
 }
-
-const ChatInput = memo(({ value, onChange, onSubmit }) => {
-  return (
-    <OutlinedInput
-      multiline
-      className="_draggable__input"
-      minRows={2}
-      maxRows={4}
-      sx={{ marginTop: 4, width: '98%' }} // this width also expands the width of the modal (as wanted tbh)
-      placeholder="new message"
-      value={value}
-      onChange={onChange}
-      endAdornment={
-        <InputAdornment position="end">
-          <Tooltip title="Send message">
-            <IconButton onClick={() => onSubmit(value)}>
-              <CreateIcon />
-            </IconButton>
-          </Tooltip>
-        </InputAdornment>
-      }
-    />
-  );
-});
 
 const useStyles = makeStyles((theme) => ({
   modalContent: {

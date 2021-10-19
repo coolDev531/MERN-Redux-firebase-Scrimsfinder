@@ -1,4 +1,4 @@
-import { useCallback, memo } from 'react';
+import { useCallback, memo, Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import useAuth from '../../hooks/useAuth';
 
@@ -99,7 +99,7 @@ const ExistingConversations = memo(
     };
 
     return (
-      <>
+      <Fragment>
         {conversations.map((conversation, idx) => {
           const userFriends = currentUser.friends.map(({ _id }) => _id);
 
@@ -152,7 +152,7 @@ const ExistingConversations = memo(
             </MenuItem>
           );
         })}
-      </>
+      </Fragment>
     );
   }
 );

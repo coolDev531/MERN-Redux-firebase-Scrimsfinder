@@ -1,5 +1,5 @@
 // hooks
-import { useCallback, useState, useEffect, useRef, useMemo, memo } from 'react';
+import { useCallback, useState, useEffect, useRef, useMemo } from 'react';
 import useAlerts from '../../hooks/useAlerts';
 import useUsers from '../../hooks/useUsers';
 import useSocket from '../../hooks/useSocket';
@@ -8,19 +8,13 @@ import useSound from 'use-sound';
 import { useSelector, useDispatch } from 'react-redux';
 
 // components
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
 import LinearProgress from '@mui/material/LinearProgress';
 import ChatBubble from './../Messenger_components/ChatBubble';
+import ChatInput from './../Messenger_components/ChatInput';
 
 // services
 import { getConversationMessages } from '../../services/messages.services';
 import { postNewMessage } from '../../services/messages.services';
-
-// icons
-import CreateIcon from '@mui/icons-material/Create';
-import Tooltip from '../shared/Tooltip';
 
 import NewMessageSFX from '../../assets/sounds/new_message.mp3';
 
@@ -286,30 +280,6 @@ export default function ChatRoomModal() {
     </Modal>
   );
 }
-
-const ChatInput = memo(({ value, onChange, onSubmit }) => {
-  return (
-    <OutlinedInput
-      multiline
-      className="_draggable__input"
-      minRows={2}
-      maxRows={4}
-      sx={{ marginTop: 4, width: '98%' }} // this width also expands the width of the modal (as wanted tbh)
-      placeholder="new message"
-      value={value}
-      onChange={onChange}
-      endAdornment={
-        <InputAdornment position="end">
-          <Tooltip title="Send message">
-            <IconButton onClick={() => onSubmit(value)}>
-              <CreateIcon />
-            </IconButton>
-          </Tooltip>
-        </InputAdornment>
-      }
-    />
-  );
-});
 
 const useStyles = makeStyles((theme) => ({
   modalContent: {
