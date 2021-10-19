@@ -12,6 +12,10 @@ import api from './apiConfig';
  *    _sender: object,
  *    _id: string,
  *    createdAt: Date
+ *    _conversation: string,
+ *    _sender: string,
+ *    _seenBy: array,
+ *    _receiver: string,
  *   }>}
  */
 export const postNewMessage = async ({
