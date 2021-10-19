@@ -193,6 +193,7 @@ export default function Navbar({ showDropdowns, showLess, showCheckboxes }) {
                           setIsMessengerDropdownOpen={
                             setIsMessengerDropdownOpen
                           }
+                          isScrim={false}
                           onClick={openMessengerDropdown}
                         />
                       </Grid>

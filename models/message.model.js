@@ -16,6 +16,12 @@ const Message = new Schema(
       required: true,
     },
 
+    _receiver: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: false, // not required because in scrim chats all users can be receivers, only for chat room between friends
+    },
+
     text: {
       type: String,
     },

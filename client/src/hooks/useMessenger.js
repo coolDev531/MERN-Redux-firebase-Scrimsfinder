@@ -1,29 +1,42 @@
-import { useEffect } from 'react';
+// hooks
+import { useEffect, useState } from 'react';
+import useSocket from './useSocket';
+import { useDispatch, useSelector } from 'react-redux';
+import useAuth from './useAuth';
+import useEffectExceptOnMount from './useEffectExceptOnMount';
+
+// services
 import {
   findOneConversation,
   getUserConversations,
 } from '../services/conversations.services';
-import { useDispatch, useSelector } from 'react-redux';
-import useAuth from './useAuth';
-import devLog from './../utils/devLog';
 
-import useSocket from './useSocket';
+// utils
+import devLog from './../utils/devLog';
+import { getUserUnseenMessages } from '../services/messages.services';
 
 export default function useMessenger() {
   const { currentUser } = useAuth();
   const dispatch = useDispatch();
   const { socket } = useSocket();
   const { chatRoomOpen } = useSelector(({ general }) => general);
+  const [arrivalMessage, setArrivalMessage] = useState(null);
 
   useEffect(() => {
     if (!currentUser?._id) return;
 
     const fetchUserConversations = async () => {
       const conversations = await getUserConversations(currentUser?._id);
+      const unseenMessages = await getUserUnseenMessages(currentUser?._id);
 
       dispatch({
         type: 'messenger/setConversations',
         payload: conversations,
+      });
+
+      dispatch({
+        type: 'messenger/setUnseenMessages',
+        payload: unseenMessages,
       });
     };
     fetchUserConversations();
@@ -70,22 +83,41 @@ export default function useMessenger() {
     });
 
     // send event to socket server.
-  }, [currentUser?._id, currentUser?.friends, socket, dispatch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser?._id, currentUser?.friends]);
 
   useEffect(() => {
     if (!currentUser?._id) return;
 
-    socket.current?.on('getMessage', async (data) => {
-      if (chatRoomOpen?.conversation?._id === data?._conversation) {
-        return; // message has been seen (chat is open)
-      } else {
-        devLog('unseen message, pushed to state');
-        if (!data._seenBy.includes(currentUser?._id)) {
-          dispatch({ type: 'messenger/pushUnseenMessage', payload: data });
-        }
-      }
+    socket.current?.on('getMessage', (data) => {
+      setArrivalMessage({ ...data, _id: data.messageId });
     });
-  }, [chatRoomOpen?.conversation?._id, currentUser?._id, dispatch, socket]);
+
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser?._id]);
+
+  useEffectExceptOnMount(() => {
+    if (!currentUser?._id) return;
+
+    if (arrivalMessage) {
+      if (
+        // if chat room is open but it's a different room that means it's an unseen message
+        chatRoomOpen?.conversation?._id !== arrivalMessage?._conversation
+      ) {
+        devLog('unseen message, pushed to state');
+
+        dispatch({
+          type: 'messenger/pushUnseenMessage',
+          payload: arrivalMessage,
+        });
+        setArrivalMessage(null);
+      }
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [arrivalMessage, currentUser?._id]);
+
+  return null;
 }
 
 export const useScrimChat = (open, scrimId, userId) => {

@@ -38,7 +38,8 @@ export default function ChatRoomModal() {
   const { currentUser } = useAuth();
   const { chatRoomOpen } = useSelector(({ general }) => general);
 
-  const { conversation = null, isOpen = false } = chatRoomOpen;
+  const { conversation, isOpen } = chatRoomOpen;
+
   const dispatch = useDispatch();
 
   const onClose = () =>
@@ -107,6 +108,12 @@ export default function ChatRoomModal() {
         }
       }
 
+      // only send id's so it's easier to filter
+      dispatch({
+        type: 'messenger/removeUnseenMessages',
+        payload: newSeenMessages.map(({ _id }) => _id),
+      });
+
       const messagesState = [...messagesData, ...newSeenMessages];
 
       setMessages(
@@ -127,6 +134,8 @@ export default function ChatRoomModal() {
       setIsLoaded(false);
       setMessages([]);
     };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conversation?._id, currentUser?._id]);
 
   useEffect(() => {
@@ -163,15 +172,16 @@ export default function ChatRoomModal() {
   const handleSubmitMessage = useCallback(
     async (msgText) => {
       try {
+        const receiver = conversation?.members?.find(
+          (user) => user._id !== currentUser?._id
+        );
+
         const newlyCreatedMessage = await postNewMessage({
           senderId: currentUser?._id,
           conversationId: conversation?._id,
           text: msgText,
+          receiverId: receiver._id,
         });
-
-        const receiver = conversation?.members?.find(
-          (user) => user._id !== currentUser?._id
-        );
 
         // send event to server after creating on client and posting to api
         devLog('EMIT'); // emits only once

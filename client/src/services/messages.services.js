@@ -14,12 +14,18 @@ import api from './apiConfig';
  *    createdAt: Date
  *   }>}
  */
-export const postNewMessage = async ({ conversationId, senderId, text }) => {
+export const postNewMessage = async ({
+  conversationId,
+  senderId,
+  text,
+  receiverId = null,
+}) => {
   try {
     const response = await api.post(`/messages`, {
       conversationId,
       senderId,
       text,
+      receiverId,
     });
     return response.data;
   } catch (error) {
@@ -47,6 +53,15 @@ export const postMessageSeenByUser = async (messageId, seenByUserId) => {
     const response = await api.post(`/messages/post-seen/${messageId}`, {
       seenByUserId,
     });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getUserUnseenMessages = async (userId) => {
+  try {
+    const response = await api.get(`/messages/unseen-messages/${userId}`);
     return response.data;
   } catch (error) {
     throw error;

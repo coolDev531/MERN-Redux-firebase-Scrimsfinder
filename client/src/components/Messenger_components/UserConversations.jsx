@@ -1,3 +1,4 @@
+import { useCallback, memo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import useAuth from '../../hooks/useAuth';
 
@@ -28,21 +29,27 @@ export default function UserConversations({ closeMenu }) {
 
   const { currentUser } = useAuth();
 
-  const openChat = async (user) => {
-    try {
-      // find conversation from api
-      const conversation = await findOneConversation(currentUser._id, user._id);
+  const openChat = useCallback(
+    async (user) => {
+      try {
+        // find conversation from api
+        const conversation = await findOneConversation(
+          currentUser._id,
+          user._id
+        );
 
-      // open the chat room modal in the redux store with the conversation object
-      dispatch({
-        type: 'general/chatRoomOpen',
-        payload: { conversation, isOpen: true },
-      });
-      closeMenu();
-    } catch (error) {
-      throw error;
-    }
-  };
+        // open the chat room modal in the redux store with the conversation object
+        dispatch({
+          type: 'general/chatRoomOpen',
+          payload: { conversation, isOpen: true },
+        });
+        closeMenu();
+      } catch (error) {
+        throw error;
+      }
+    },
+    [currentUser._id]
+  );
 
   return (
     <MenuList>
@@ -56,55 +63,54 @@ export default function UserConversations({ closeMenu }) {
   );
 }
 
-const ExistingConversations = ({
-  conversations,
-  currentUser,
-  onlineFriends,
-  openChat,
-}) => {
-  const classes = useStyles();
+const ExistingConversations = memo(
+  ({ conversations, currentUser, onlineFriends, openChat }) => {
+    const classes = useStyles();
 
-  return (
-    <>
-      {conversations.map((conversation, idx) => {
-        const userFriends = currentUser.friends.map(({ _id }) => _id);
+    return (
+      <>
+        {conversations.map((conversation, idx) => {
+          const userFriends = currentUser.friends.map(({ _id }) => _id);
 
-        const friendUser = conversation.members.find(({ _id }) =>
-          userFriends.includes(_id)
-        );
+          const friendUser = conversation.members.find(({ _id }) =>
+            userFriends.includes(_id)
+          );
 
-        const isOnline = onlineFriends.includes(friendUser?._id);
+          const isOnline = onlineFriends.includes(friendUser?._id);
 
-        if (!friendUser) return null;
+          if (!friendUser) return null;
 
-        return (
-          <MenuItem onClick={() => openChat(friendUser)}>
-            <Tooltip title="Move to conversation" key={friendUser._id}>
-              <div className={classes.user}>
-                <div
-                  // add this bool to user (use socket?) if onlien green, else red
-                  style={{ backgroundColor: isOnline ? '#AAFF00' : '#EE4B2B' }}
-                  className={classes.isOnlineCircle}></div>
-                <img
-                  src={getRankImage(friendUser)}
-                  alt={friendUser?.rank}
-                  width="20px"
-                  className={classes.userRank}
-                />
-                {truncate(friendUser.name, 12)}
+          return (
+            <MenuItem onClick={() => openChat(friendUser)}>
+              <Tooltip title="Move to conversation" key={friendUser._id}>
+                <div className={classes.user}>
+                  <div
+                    // add this bool to user (use socket?) if onlien green, else red
+                    style={{
+                      backgroundColor: isOnline ? '#AAFF00' : '#EE4B2B',
+                    }}
+                    className={classes.isOnlineCircle}></div>
+                  <img
+                    src={getRankImage(friendUser)}
+                    alt={friendUser?.rank}
+                    width="20px"
+                    className={classes.userRank}
+                  />
+                  {truncate(friendUser.name, 12)}
 
-                <div style={{ position: 'absolute', right: '0', top: '0' }}>
-                  <MsgIcon />
+                  <div style={{ position: 'absolute', right: '0', top: '0' }}>
+                    <MsgIcon />
+                  </div>
+                  {idx !== conversations.length - 1 ? <Divider /> : null}
                 </div>
-                {idx !== conversations.length - 1 ? <Divider /> : null}
-              </div>
-            </Tooltip>
-          </MenuItem>
-        );
-      })}
-    </>
-  );
-};
+              </Tooltip>
+            </MenuItem>
+          );
+        })}
+      </>
+    );
+  }
+);
 
 const useStyles = makeStyles({
   user: {

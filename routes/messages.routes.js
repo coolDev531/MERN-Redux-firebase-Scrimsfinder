@@ -11,5 +11,8 @@ router.post(
 
 // get
 router.get('/messages/:conversationId', controllers.getConversationMessages); // GET
-
+router.get(
+  '/messages/unseen-messages/:userId',
+  controllers.getUserUnseenMessages
+); // GET
 module.exports = router;

@@ -45,6 +45,7 @@ export default function CreateNewConversationButton({
         senderId: currentUser?._id,
         conversationId: newConversation._id,
         text: newMessageText,
+        receiverId: receiverUser._id,
       });
 
       devLog('new message added to the conversation!', newlyCreatedMessage);

@@ -14,7 +14,7 @@ const handleValidId = async (id, res) => {
 
 const postMessage = async (req, res) => {
   try {
-    const { text, conversationId, senderId } = req.body;
+    const { text, conversationId, senderId, receiverId } = req.body;
 
     await handleValidId(conversationId, res);
     await handleValidId(senderId, res);
@@ -39,6 +39,7 @@ const postMessage = async (req, res) => {
       _conversation: conversation._id,
       _sender: sender._id,
       _seenBy: [sender._id],
+      _receiver: receiverId,
     });
 
     let savedMessage = await newMessage.save();
@@ -79,11 +80,9 @@ const postMessageSeenByUser = async (req, res) => {
     await handleValidId(messageId, res);
 
     if (!req.body.seenByUserId) {
-      return res
-        .status(500)
-        .json({
-          error: 'seen by user id not provided! (req.body.seenByUserId)',
-        });
+      return res.status(500).json({
+        error: 'seen by user id not provided! (req.body.seenByUserId)',
+      });
     }
 
     let message = await Message.findById(messageId);
@@ -98,8 +97,27 @@ const postMessageSeenByUser = async (req, res) => {
   }
 };
 
+const getUserUnseenMessages = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    await handleValidId(userId, res);
+
+    const messages = await Message.find({ _receiver: userId });
+
+    const unseenMessages = messages.filter((message) => {
+      return !message?._seenBy?.includes(userId);
+    });
+
+    return res.status(200).json(unseenMessages);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   postMessage,
   getConversationMessages,
   postMessageSeenByUser,
+  getUserUnseenMessages,
 };

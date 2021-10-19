@@ -37,12 +37,8 @@ export default function ScrimChatRoomModal() {
   const { currentUser } = useAuth();
   const { scrimChatRoomOpen } = useSelector(({ general }) => general);
 
-  const {
-    conversation = null,
-    isOpen: open = false,
-    scrimId = '',
-    extraTitle = '',
-  } = scrimChatRoomOpen;
+  const { conversation, isOpen: open, scrimId, extraTitle } = scrimChatRoomOpen;
+
   const dispatch = useDispatch();
 
   const onClose = () =>
