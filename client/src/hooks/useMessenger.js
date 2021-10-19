@@ -77,7 +77,7 @@ export default function useMessenger() {
 
     socket.current?.on('getMessage', async (data) => {
       if (chatRoomOpen?.conversation?._id === data?._conversation) {
-        return; // message has been seen
+        return; // message has been seen (chat is open)
       } else {
         devLog('unseen message, pushed to state');
         if (!data._seenBy.includes(currentUser?._id)) {
