@@ -77,6 +77,7 @@ If you have an admin key, you can host a scrim/lobby. Then players just have to 
 
 - Added the option to send each other friend requests 
 - added the option to search all the users.
+- added notifications on friend request created
 
 ### 10/17/2021
 
@@ -85,6 +86,8 @@ If you have an admin key, you can host a scrim/lobby. Then players just have to 
 - public scrim chat for each scrim
 - replaced scrim data fetching interval with socket.io.
 
+### 10/18/2021
+- Added live socket new message notifications.
 
 ---
 
