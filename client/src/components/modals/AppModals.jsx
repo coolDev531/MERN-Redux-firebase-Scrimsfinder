@@ -25,6 +25,7 @@ export default function AppModals() {
     <>
       {/* these components  do rerender so we need these guard operators for each one for now */}
       {friendRequestsOpen && <FriendRequestsModal />}
+      {/* actually, we can just use memo on them, we can also use connect instead of useSelector (with React.memo) */}
       <NotificationsModal />
       <UserFriendsModal />
       {moreOptionsModalOpen && <OtherOptionsModal />}
