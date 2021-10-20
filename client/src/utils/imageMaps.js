@@ -20,8 +20,9 @@ import challengerImg from '../assets/images/ranks/challenger.png';
 // bg images
 import anniversaryImg from '../assets/images/backgrounds/happy_team.jpg';
 import summonersRiftImg from '../assets/images/backgrounds/summoners_rift.jpg';
-import epicCatImg from '../assets/images/backgrounds/epic_cat.jpg';
 import teemoSunsetImg from '../assets/images/backgrounds/teemo_sunset.png';
+import bootCampDragonImg from '../assets/images/backgrounds/bootcamp_dragon.png';
+import epicCatImg from '../assets/images/backgrounds/epic_cat.jpg';
 
 export const ROLE_IMAGES = {
   Top: topLaneImg,
@@ -48,5 +49,6 @@ export const BG_IMAGES = {
   'Summoners Rift': summonersRiftImg,
   Anniversary: anniversaryImg,
   'Teemo Sunset': teemoSunsetImg,
+  "Bootcamp Dragon": bootCampDragonImg,
   GitCat: epicCatImg,
 };
