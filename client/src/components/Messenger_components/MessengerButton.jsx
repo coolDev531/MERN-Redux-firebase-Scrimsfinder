@@ -1,21 +1,16 @@
 import { useRef } from 'react';
 import { useSelector } from 'react-redux';
-import useSound from 'use-sound';
-import useEffectExceptOnMount from './../../../hooks/useEffectExceptOnMount';
 
 // other
 import { makeStyles } from '@mui/styles';
 
 // components
 import IconButton from '@mui/material/IconButton';
-import Tooltip from './../Tooltip';
+import Tooltip from '../shared/Tooltip';
 
 // icons
 import MessengerIcon from '@mui/icons-material/Chat';
-import MessengerDropdown from '../../Messenger_components/MessengerDropdown';
-
-// sounds
-import NewMessageSFX from '../../../assets/sounds/new_message.mp3';
+import MessengerDropdown from './MessengerDropdown';
 
 export default function MessengerButton({
   onClick,
@@ -31,7 +26,6 @@ export default function MessengerButton({
 
   return (
     <>
-      <MessengerNotificationSound />
       <Tooltip title={tooltipTitle}>
         <IconButton
           ref={anchorRef}
@@ -45,6 +39,7 @@ export default function MessengerButton({
             withDropdown && isMessengerDropdownOpen ? 'true' : undefined
           }
           aria-haspopup={withDropdown && 'true'}>
+          {/* red circle with unseen messages count */}
           {!isScrim && unseenMessages.length > 0 ? (
             <div className={classes.unseenMessagesCount}>
               {unseenMessages.length}
@@ -53,6 +48,7 @@ export default function MessengerButton({
           <MessengerIcon fontSize="large" />
         </IconButton>
       </Tooltip>
+      {/* if withDropdown true (is true for navbar messenger button, show the dropdown) */}
       {withDropdown && (
         <MessengerDropdown
           anchorRef={anchorRef}
@@ -63,23 +59,6 @@ export default function MessengerButton({
     </>
   );
 }
-
-const MessengerNotificationSound = () => {
-  const [{ playSFX }, { chatRoomOpen }] = useSelector(
-    ({ messenger, general }) => [messenger, general]
-  );
-  const [play] = useSound(NewMessageSFX, { interrupt: true, volume: 0.25 });
-
-  useEffectExceptOnMount(() => {
-    if (chatRoomOpen?.isOpen) {
-      return;
-    }
-
-    play();
-  }, [playSFX]);
-
-  return null;
-};
 
 const useStyles = makeStyles({
   unseenMessagesCount: {

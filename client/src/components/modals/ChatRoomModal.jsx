@@ -4,7 +4,6 @@ import useAlerts from '../../hooks/useAlerts';
 import useUsers from '../../hooks/useUsers';
 import useSocket from '../../hooks/useSocket';
 import useAuth from '../../hooks/useAuth';
-import useSound from 'use-sound';
 import { useSelector, useDispatch } from 'react-redux';
 
 // components
@@ -15,8 +14,6 @@ import ChatInput from './../Messenger_components/ChatInput';
 // services
 import { getConversationMessages } from '../../services/messages.services';
 import { postNewMessage } from '../../services/messages.services';
-
-import NewMessageSFX from '../../assets/sounds/new_message.mp3';
 
 // utils
 import makeStyles from '@mui/styles/makeStyles';
@@ -46,10 +43,6 @@ export default function ChatRoomModal() {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState(''); // the user input field new message to be sent
   const [arrivalMessage, setArrivalMessage] = useState(null); // new message that will be received from socket
-
-  const [playNewMessageSFX] = useSound(NewMessageSFX, {
-    volume: 0.25,
-  });
 
   const { socket } = useSocket();
 
@@ -153,7 +146,6 @@ export default function ChatRoomModal() {
             arrivalMessage.receiverId
           );
         }
-        playNewMessageSFX();
 
         setMessages((prevState) => [...prevState, arrivalMessage]);
 
@@ -162,12 +154,7 @@ export default function ChatRoomModal() {
     };
 
     onNewMessageArrival();
-  }, [
-    arrivalMessage,
-    conversationMemberIds,
-    playNewMessageSFX,
-    currentUser._id,
-  ]);
+  }, [arrivalMessage, conversationMemberIds, currentUser._id]);
 
   const handleSubmitMessage = useCallback(
     async (msgText) => {

@@ -48,6 +48,7 @@ export default function messengerReducer(state = initialState, action) {
     }
 
     case 'messenger/pushUnseenMessage': {
+      // when a new unseen message has been received, play the notification SFX, also push it to unseen messages array
       return {
         ...state,
         unseenMessages: [...state.unseenMessages, payload],
@@ -61,13 +62,6 @@ export default function messengerReducer(state = initialState, action) {
         unseenMessages: state.unseenMessages.filter(
           ({ _id }) => !payload.includes(_id)
         ),
-      };
-    }
-    // little notification sound (check MessengerButton component )
-    case 'messenger/playSFX': {
-      return {
-        ...state,
-        playSFX: !state.playSFX,
       };
     }
 

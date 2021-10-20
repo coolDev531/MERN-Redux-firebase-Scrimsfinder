@@ -27,7 +27,7 @@ import NavbarCheckboxes from './NavbarCheckboxes';
 import NavbarDropdowns from './NavbarDropdowns';
 import UserSearchBar from './UserSearchBar';
 import NotificationsButton from './NotificationsButton';
-import MessengerButton from './MessengerButton';
+import MessengerButton from '../../Messenger_components/MessengerButton';
 
 // icons
 import Logo from '../../../assets/images/bootcamp_llc_media_kit/coin_logo_new2021.png';

@@ -12,19 +12,19 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
+import AdminArea from './../shared/AdminArea';
+import MessengerButton from './../Messenger_components/MessengerButton';
 
 // utils
 import 'moment-timezone';
 import { copyTextToClipboard } from './../../utils/copyToClipboard';
-import AdminArea from './../shared/AdminArea';
+import { truncate } from './../../utils/truncate';
+import { getTeamBackgroundColor } from '../../utils/scrimMisc';
 
 // icons
 import ShareIcon from '@mui/icons-material/Share';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { ROLE_IMAGES } from './../../utils/imageMaps';
-import { truncate } from './../../utils/truncate';
-import { getTeamBackgroundColor } from '../../utils/scrimMisc';
-import MessengerButton from './../shared/Navbar/MessengerButton';
 
 // services
 import { findScrimConversation } from '../../services/conversations.services';

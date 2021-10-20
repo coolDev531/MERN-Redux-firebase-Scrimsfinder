@@ -125,7 +125,7 @@ export default function ScrimChatRoomModal() {
       if (arrivalMessage._conversation !== conversation._id) return;
       devLog('socket new arrival message added to state (receiver client)');
 
-      playNewMessageSFX();
+      playNewMessageSFX(); // do we want to play this new message SFX in the scrim chat room? It might confuse users that they got a private message
 
       setMessages((prevState) => [...prevState, arrivalMessage]);
     }

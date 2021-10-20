@@ -4,6 +4,7 @@ import useSocket from './useSocket';
 import { useDispatch, useSelector } from 'react-redux';
 import useAuth from './useAuth';
 import useEffectExceptOnMount from './useEffectExceptOnMount';
+import useSound from 'use-sound';
 
 // services
 import {
@@ -14,6 +15,9 @@ import {
 // utils
 import devLog from './../utils/devLog';
 import { getUserUnseenMessages } from '../services/messages.services';
+
+//sfx
+import NewMessageSFX from '../assets/sounds/new_message.mp3';
 
 export default function useMessenger() {
   const { currentUser } = useAuth();
@@ -105,7 +109,6 @@ export default function useMessenger() {
         chatRoomOpen?.conversation?._id !== arrivalMessage?._conversation
       )
         if (arrivalMessage._receiver !== currentUser._id) {
-          console.log('false');
           return;
         }
 
@@ -121,13 +124,31 @@ export default function useMessenger() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [arrivalMessage, currentUser?._id]);
 
+  useMessengerSound(); // play messenger notification sound whenever playSFX changes in the state.
+
   return null;
 }
 
-export const useScrimChat = (open, scrimId, userId) => {
-  // add user to scrim chat
+const useMessengerSound = () => {
+  const [{ playSFX }] = useSelector(({ messenger }) => [messenger]);
 
+  const [playMessengerNotificationSFX] = useSound(NewMessageSFX, {
+    interrupt: true,
+    volume: 0.25,
+  });
+
+  useEffectExceptOnMount(() => {
+    // playSFX is a boolean state in the general reducer, basically whenever socket emits a getMessage event (on useMessenger), it will dispatch an action to run this.
+    playMessengerNotificationSFX();
+    // play messenger notification sound whenever dispatch action: 'messenger/pushUnseenMessage' runs.
+    return null;
+  }, [playSFX]); // play messenger notification sound whenever playSFX changes in the state.
+};
+
+export const useScrimChat = (open, scrimId, userId) => {
   const { socket } = useSocket();
+
+  // listen to socket whenever scrim chat modal is open.
 
   useEffect(() => {
     if (open) {
