@@ -1,5 +1,5 @@
 // hooks
-import { useCallback, useState, useEffect, useRef, memo } from 'react';
+import { useCallback, useState, useEffect, useRef } from 'react';
 import useAlerts from '../../hooks/useAlerts';
 import useUsers from '../../hooks/useUsers';
 import useSocket from '../../hooks/useSocket';
@@ -7,9 +7,6 @@ import useAuth from '../../hooks/useAuth';
 import useSound from 'use-sound';
 
 // components
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
 import LinearProgress from '@mui/material/LinearProgress';
 import ChatBubble from './../Messenger_components/ChatBubble';
 import ChatInput from './../Messenger_components/ChatInput';
@@ -18,10 +15,7 @@ import ChatInput from './../Messenger_components/ChatInput';
 import { getConversationMessages } from '../../services/messages.services';
 import { postNewMessage } from '../../services/messages.services';
 
-// icons
-import CreateIcon from '@mui/icons-material/Create';
-import Tooltip from '../shared/Tooltip';
-
+// sfx
 import NewMessageSFX from '../../assets/sounds/new_message.mp3';
 
 // utils
