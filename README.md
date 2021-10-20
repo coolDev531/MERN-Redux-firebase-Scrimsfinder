@@ -73,6 +73,22 @@ If you have an admin key, you can host a scrim/lobby. Then players just have to 
 - Added user profile page, users can now visit their own or other users profiles.
 - Added the option to make scrim private on creation or edit.
 
+### 10/16/2021
+
+- Added the option to send each other friend requests 
+- added the option to search all the users.
+- added notifications on friend request created
+
+### 10/17/2021
+
+- Added live chat functionality using socket.io: 
+- private chat between friends 
+- public scrim chat for each scrim
+- replaced scrim data fetching interval with socket.io.
+
+### 10/18/2021
+- Added live socket new message notifications.
+
 ---
 
 <br />
