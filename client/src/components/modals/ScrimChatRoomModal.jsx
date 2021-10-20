@@ -5,11 +5,14 @@ import useUsers from '../../hooks/useUsers';
 import useSocket from '../../hooks/useSocket';
 import useAuth from '../../hooks/useAuth';
 import useSound from 'use-sound';
+import { useSelector, useDispatch } from 'react-redux';
+import { useScrimChat } from '../../hooks/useMessenger';
 
 // components
 import LinearProgress from '@mui/material/LinearProgress';
 import ChatBubble from './../Messenger_components/ChatBubble';
 import ChatInput from './../Messenger_components/ChatInput';
+import { Modal } from '../shared/ModalComponents';
 
 // services
 import { getConversationMessages } from '../../services/messages.services';
@@ -21,10 +24,6 @@ import NewMessageSFX from '../../assets/sounds/new_message.mp3';
 // utils
 import makeStyles from '@mui/styles/makeStyles';
 import devLog from '../../utils/devLog';
-import { Modal } from '../shared/ModalComponents';
-import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
-import { useScrimChat } from '../../hooks/useMessenger';
 
 // messenger modal chat room
 export default function ScrimChatRoomModal() {
