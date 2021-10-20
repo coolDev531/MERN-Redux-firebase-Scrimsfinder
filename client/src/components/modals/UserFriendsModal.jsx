@@ -22,7 +22,7 @@ import { findOneConversation } from '../../services/conversations.services';
 import CreateIcon from '@mui/icons-material/Create';
 import MsgIcon from '@mui/icons-material/Sms';
 
-export default function UserFriendsModal() {
+function UserFriendsModal() {
   const [
     {
       friendsModalOpen: { user, bool },
@@ -54,6 +54,7 @@ export default function UserFriendsModal() {
   if (!user) return null;
   if (!friends) return null;
 
+  console.log('running');
   return (
     <Modal
       customStyles={{
@@ -166,3 +167,5 @@ const OneFriend = memo(({ friend, onClose, user, currentUser }) => {
     </Grid>
   );
 });
+
+export default memo(UserFriendsModal); // this will rerender if not using memo

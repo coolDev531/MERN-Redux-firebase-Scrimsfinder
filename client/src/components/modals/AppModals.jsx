@@ -11,17 +11,23 @@ import ConversationCreateModal from './ConversationCreateModal';
 
 export default function AppModals() {
   const { currentUser } = useAuth();
-  const { chatRoomOpen, scrimChatRoomOpen, conversationCreateModalOpen } =
-    useSelector(({ general }) => general);
+  const {
+    chatRoomOpen,
+    scrimChatRoomOpen,
+    conversationCreateModalOpen,
+    friendRequestsOpen,
+    moreOptionsModalOpen,
+  } = useSelector(({ general }) => general);
 
   if (!currentUser?._id) return null;
 
   return (
     <>
-      <FriendRequestsModal />
+      {/* these components  do rerender so we need these guard operators for each one for now */}
+      {friendRequestsOpen && <FriendRequestsModal />}
       <NotificationsModal />
       <UserFriendsModal />
-      <OtherOptionsModal />
+      {moreOptionsModalOpen && <OtherOptionsModal />}
       {chatRoomOpen?.isOpen && <ChatRoomModal />}
       {scrimChatRoomOpen?.isOpen && <ScrimChatRoomModal />}
       {conversationCreateModalOpen?.isOpen && <ConversationCreateModal />}

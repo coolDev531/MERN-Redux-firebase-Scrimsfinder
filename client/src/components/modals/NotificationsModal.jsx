@@ -1,7 +1,7 @@
-import { Fragment, useCallback, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { Children, memo, useCallback, useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-
+import { connect } from 'react-redux';
 // components
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
@@ -21,11 +21,8 @@ import { makeStyles } from '@mui/styles';
 // icons
 import DeleteIcon from '@mui/icons-material/Delete';
 
-export default function NotificationsModal() {
+function NotificationsModal({ currentUser, notificationsOpen }) {
   const dispatch = useDispatch();
-  const [{ currentUser }, { notificationsOpen }] = useSelector(
-    ({ auth, general }) => [auth, general]
-  );
 
   const closeNotifications = useCallback(() => {
     dispatch({ type: 'general/closeNotifications' });
@@ -57,28 +54,32 @@ export default function NotificationsModal() {
       }}>
       <ul style={{ padding: 0, margin: 0 }}>
         {notifications.length > 0 ? (
-          notifications
-            .sort((a, b) => {
-              let aValue = a?.createdDate ?? a?.createdAt;
-              let bValue = b?.createdDate ?? b.createdAt;
+          // using children because when notification gets received from socket it doesn't have id so we just get unique keys with React.Children
+          Children.toArray(
+            notifications
+              .sort((a, b) => {
+                // I don't know why I gave it a createdDate property when mongoose just adds timestamps...
+                let aValue = a?.createdDate ?? a?.createdAt;
+                let bValue = b?.createdDate ?? b.createdAt;
 
-              // latest first
-              return new Date(bValue).getTime() - new Date(aValue).getTime();
-            })
-            .map((notification, idx, arr) => (
-              <Fragment key={notification._id}>
-                <OneNotification
-                  currentUserId={currentUser._id}
-                  closeModal={closeNotifications}
-                  notification={notification}
-                />
-                {idx !== arr.length - 1 ? (
-                  <Box my={2}>
-                    <Divider />
-                  </Box>
-                ) : null}
-              </Fragment>
-            ))
+                // latest first
+                return new Date(bValue).getTime() - new Date(aValue).getTime();
+              })
+              .map((notification, idx, arr) => (
+                <>
+                  <OneNotification
+                    currentUserId={currentUser._id}
+                    closeModal={closeNotifications}
+                    notification={notification}
+                  />
+                  {idx !== arr.length - 1 ? (
+                    <Box my={2}>
+                      <Divider />
+                    </Box>
+                  ) : null}
+                </>
+              ))
+          )
         ) : (
           <Typography
             textAlign="center"
@@ -92,7 +93,7 @@ export default function NotificationsModal() {
   );
 }
 
-const OneNotification = ({ notification, closeModal, currentUserId }) => {
+const OneNotification = memo(({ notification, closeModal, currentUserId }) => {
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -176,7 +177,7 @@ const OneNotification = ({ notification, closeModal, currentUserId }) => {
       </div>
     </li>
   );
-};
+});
 
 const useStyles = makeStyles({
   oneNotification: {
@@ -187,3 +188,13 @@ const useStyles = makeStyles({
     gap: '20px',
   },
 });
+
+// using connect here so with memo the component won't rerender when it's not supposed to
+export default memo(
+  connect((state) => {
+    return {
+      currentUser: state.auth.currentUser,
+      notificationsOpen: state.general.notificationsOpen,
+    };
+  })(NotificationsModal)
+);

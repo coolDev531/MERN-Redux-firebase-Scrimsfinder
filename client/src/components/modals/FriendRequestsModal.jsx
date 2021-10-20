@@ -32,8 +32,9 @@ export default function FriendRequestsModal() {
   const [{ friendRequestsOpen }, { currentUser }] = useSelector(
     ({ general, auth }) => [general, auth]
   );
+
   const [friendRequests, setFriendRequests] = useState(() => {
-    return currentUser.friendRequests ?? [];
+    return currentUser?.friendRequests ?? [];
   });
 
   const { socket } = useSocket();
