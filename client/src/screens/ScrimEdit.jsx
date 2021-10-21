@@ -436,11 +436,13 @@ export default function ScrimEdit() {
                       onChange={handleChange}
                       fullWidth
                       variant="standard">
-                      {['NA', 'EUW', 'EUNE', 'LAN'].map((region, key) => (
-                        <MenuItem value={region} key={key}>
-                          {region}
-                        </MenuItem>
-                      ))}
+                      {['NA', 'EUW', 'EUNE', 'LAN', 'OCE'].map(
+                        (region, key) => (
+                          <MenuItem value={region} key={key}>
+                            {region}
+                          </MenuItem>
+                        )
+                      )}
                     </Select>
 
                     <FormHelperText className="text-white">

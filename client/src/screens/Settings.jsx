@@ -277,11 +277,14 @@ export default function Settings() {
                       <MenuItem selected disabled>
                         select region
                       </MenuItem>
-                      {['NA', 'EUW', 'EUNE', 'LAN'].map((region, key) => (
-                        <MenuItem value={region} key={key}>
-                          {region}
-                        </MenuItem>
-                      ))}
+                      {/* these regions should really be in a constants file */}
+                      {['NA', 'EUW', 'EUNE', 'LAN', 'OCE'].map(
+                        (region, key) => (
+                          <MenuItem value={region} key={key}>
+                            {region}
+                          </MenuItem>
+                        )
+                      )}
                     </Select>
                   </FormControl>
                 </Grid>

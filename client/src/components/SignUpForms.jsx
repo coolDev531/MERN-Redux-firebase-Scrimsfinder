@@ -55,7 +55,8 @@ export default function SignUpForms({
           <MenuItem selected disabled>
             select region
           </MenuItem>
-          {['NA', 'EUW', 'EUNE', 'LAN'].map((region, key) => (
+          {/* these regions should really just be in a constants file */}
+          {['NA', 'EUW', 'EUNE', 'LAN', 'OCE'].map((region, key) => (
             <MenuItem value={region} key={key}>
               {region}
             </MenuItem>

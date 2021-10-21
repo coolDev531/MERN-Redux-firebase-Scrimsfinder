@@ -55,7 +55,7 @@ const getOneUser = async (req, res) => {
 
     region = region.toUpperCase();
 
-    const regions = ['NA', 'EUW', 'EUNE', 'LAN'];
+    const regions = ['NA', 'EUW', 'EUNE', 'LAN', 'OCE'];
 
     if (!regions.includes(region)) {
       return res.status(404).json({
