@@ -75,18 +75,19 @@ If you have an admin key, you can host a scrim/lobby. Then players just have to 
 
 ### 10/16/2021
 
-- Added the option to send each other friend requests 
+- Added the option to send each other friend requests
 - added the option to search all the users.
 - added notifications on friend request created
 
 ### 10/17/2021
 
-- Added live chat functionality using socket.io: 
-- private chat between friends 
+- Added live chat functionality using socket.io:
+- private chat between friends
 - public scrim chat for each scrim
 - replaced scrim data fetching interval with socket.io.
 
 ### 10/18/2021
+
 - Added live socket new message notifications.
 
 ---
@@ -204,3 +205,5 @@ REACT_APP_FIREBASE_API_KEY
 - Please the request to merge into develop instead of master.
 - Do not merge without being approved.
 - Please squash your commits before merging.
+
+.
