@@ -30,7 +30,7 @@ export default function NavbarDropdowns() {
 
   const dispatch = useDispatch();
 
-  let allRegions = ['NA', 'EUW', 'EUNE', 'LAN'];
+  let allRegions = ['NA', 'EUW', 'EUNE', 'LAN', 'OCE'];
 
   let selectRegions = [
     currentUser?.region,
