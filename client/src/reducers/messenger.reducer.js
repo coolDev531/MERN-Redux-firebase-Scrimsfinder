@@ -6,6 +6,9 @@ const initialState = {
   unseenMessages: [],
 
   playSFX: false, // boolean to juut retrigger playing sound
+
+  msgNotificationVolume:
+    JSON.parse(localStorage.getItem('scrimGymMessengerVolume')) ?? 25, // volume for new message notification
 };
 
 export default function messengerReducer(state = initialState, action) {
@@ -60,8 +63,17 @@ export default function messengerReducer(state = initialState, action) {
       return {
         ...state,
         unseenMessages: state.unseenMessages.filter(
-          ({ _id }) => !payload.includes(_id)
+          ({ _id }) => !payload.includes(_id),
         ),
+      };
+    }
+
+    case 'messenger/setVolume': {
+      localStorage.setItem('scrimGymMessengerVolume', JSON.stringify(payload));
+
+      return {
+        ...state,
+        msgNotificationVolume: payload,
       };
     }
 

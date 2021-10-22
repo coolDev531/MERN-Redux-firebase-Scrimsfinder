@@ -1,9 +1,10 @@
-import { useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import useOnKeyDown from '../../hooks/useOnKeyDown';
 import useAuth from './../../hooks/useAuth';
 
 // components
 import ClickAwayListener from '@mui/material/ClickAwayListener';
+import IconButton from '@mui/material/IconButton';
 import Grow from '@mui/material/Grow';
 import Paper from '@mui/material/Paper';
 import Popper from '@mui/material/Popper';
@@ -15,9 +16,14 @@ import NewConversationFriends from './NewConversationFriends';
 
 // utils
 import { KEYCODES } from '../../utils/keycodes';
+import MessengerVolumeControls from './MessengerVolumeControls';
+
+// icons
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 export default function MessengerDropdown({ open, setOpen, anchorRef }) {
   const { currentUser } = useAuth();
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const handleClose = useCallback(() => {
     setOpen(false);
@@ -35,8 +41,12 @@ export default function MessengerDropdown({ open, setOpen, anchorRef }) {
         setOpen(false);
       }
     },
-    [open]
+    [open],
   );
+
+  const handleExpand = useCallback(() => {
+    setIsExpanded((prevState) => !prevState);
+  }, []);
 
   return (
     <Popper
@@ -46,14 +56,16 @@ export default function MessengerDropdown({ open, setOpen, anchorRef }) {
       role={undefined}
       placement="bottom-start"
       transition
-      disablePortal>
+      disablePortal
+    >
       {({ TransitionProps, placement }) => (
         <Grow
           {...TransitionProps}
           style={{
             transformOrigin:
               placement === 'bottom-start' ? 'left top' : 'left bottom',
-          }}>
+          }}
+        >
           <Paper>
             <ClickAwayListener onClickAway={handleClose}>
               <Grid container direction="column">
@@ -62,8 +74,10 @@ export default function MessengerDropdown({ open, setOpen, anchorRef }) {
                   container
                   alignItems="center"
                   direction="row"
-                  justifyContent="space-between">
+                  justifyContent="space-between"
+                >
                   {/* MESSENGER DROPDOWN TITLE */}
+
                   <Typography
                     sx={{
                       marginLeft: '20px',
@@ -72,17 +86,25 @@ export default function MessengerDropdown({ open, setOpen, anchorRef }) {
                     }}
                     component="h1"
                     gutterBottom
-                    variant="h6">
+                    variant="h6"
+                  >
                     Messenger
                   </Typography>
 
+                  <IconButton onClick={handleExpand}>
+                    <ExpandMoreIcon />
+                  </IconButton>
+
                   <Divider sx={{ width: '100%' }} />
+
+                  <MessengerVolumeControls isShowing={isExpanded} />
                 </Grid>
 
                 <Grid
                   item
                   xs={12}
-                  style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                  style={{ maxHeight: '300px', overflowY: 'auto' }}
+                >
                   <Divider sx={{ width: '100%' }} />
 
                   {/* MESSENGER DROPDOWN CONTENT */}
@@ -94,7 +116,7 @@ export default function MessengerDropdown({ open, setOpen, anchorRef }) {
                       <NewConversationFriends />
                     </>
                   ) : (
-                    <Typography variant="body2" style={{ padding: '10px' }}>
+                    <Typography variant="body2" style={{ padding: '20px' }}>
                       No Friends found
                     </Typography>
                   )}

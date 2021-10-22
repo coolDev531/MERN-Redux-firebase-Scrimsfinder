@@ -76,7 +76,7 @@ export default function useMessenger() {
       if (data.receiverId === currentUser._id) {
         const newConversation = await findOneConversation(
           data.senderId,
-          data.receiverId
+          data.receiverId,
         );
 
         dispatch({
@@ -130,11 +130,13 @@ export default function useMessenger() {
 }
 
 const useMessengerSound = () => {
-  const [{ playSFX }] = useSelector(({ messenger }) => [messenger]);
+  const [{ playSFX, msgNotificationVolume }] = useSelector(({ messenger }) => [
+    messenger,
+  ]);
 
   const [playMessengerNotificationSFX] = useSound(NewMessageSFX, {
     interrupt: true,
-    volume: 0.25,
+    volume: Number(msgNotificationVolume / 100),
   });
 
   useEffectExceptOnMount(() => {

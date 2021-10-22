@@ -29,7 +29,9 @@ import devLog from '../../utils/devLog';
 export default function ScrimChatRoomModal() {
   const { allUsers } = useUsers();
   const { currentUser } = useAuth();
-  const { scrimChatRoomOpen } = useSelector(({ general }) => general);
+  const [{ scrimChatRoomOpen }, { msgNotificationVolume }] = useSelector(
+    ({ general, messenger }) => [general, messenger],
+  );
 
   const { conversation, isOpen: open, scrimId, extraTitle } = scrimChatRoomOpen;
 
@@ -48,7 +50,8 @@ export default function ScrimChatRoomModal() {
   useScrimChat(open, scrimId, currentUser._id);
 
   const [playNewMessageSFX] = useSound(NewMessageSFX, {
-    volume: 0.25,
+    interrupt: true,
+    volume: Number(msgNotificationVolume / 100),
   });
 
   const { socket } = useSocket();
@@ -83,7 +86,7 @@ export default function ScrimChatRoomModal() {
           return (
             new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
           );
-        })
+        }),
       );
 
       setIsLoaded(true);
@@ -161,7 +164,7 @@ export default function ScrimChatRoomModal() {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [currentUser?._id, conversation?._id]
+    [currentUser?._id, conversation?._id],
   );
 
   useEffect(() => {
@@ -187,13 +190,15 @@ export default function ScrimChatRoomModal() {
       customStyles={{}}
       contentClassName={classes.modalContent}
       open={open}
-      onClose={onClose}>
+      onClose={onClose}
+    >
       {!isLoaded || !conversation?._id ? (
         <div
           style={{
             padding: '50px',
             margin: '100px 0',
-          }}>
+          }}
+        >
           <LinearProgress />
         </div>
       ) : (
@@ -202,7 +207,8 @@ export default function ScrimChatRoomModal() {
             minWidth: '400px',
             display: 'flex',
             flexDirection: 'column',
-          }}>
+          }}
+        >
           <div className={classes.chatRoomMessagesContainer} ref={scrollRef}>
             {messages.map((message) => (
               // one message
