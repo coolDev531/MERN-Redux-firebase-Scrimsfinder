@@ -13,6 +13,7 @@ import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import UserConversations from './UserConversations';
 import NewConversationFriends from './NewConversationFriends';
+import Tooltip from '../shared/Tooltip';
 
 // utils
 import { KEYCODES } from '../../utils/keycodes';
@@ -91,14 +92,23 @@ export default function MessengerDropdown({ open, setOpen, anchorRef }) {
                     Messenger
                   </Typography>
 
-                  <IconButton onClick={handleExpand}>
-                    <ExpandMoreIcon />
-                  </IconButton>
+                  <Tooltip title="Show more">
+                    <IconButton
+                      sx={{
+                        marginTop: '20px',
+                        marginBottom: '10px',
+                        marginRight: '10px',
+                      }}
+                      onClick={handleExpand}
+                    >
+                      <ExpandMoreIcon />
+                    </IconButton>
+                  </Tooltip>
 
                   <Divider sx={{ width: '100%' }} />
-
-                  <MessengerVolumeControls isShowing={isExpanded} />
                 </Grid>
+
+                <MessengerVolumeControls isShowing={isExpanded} />
 
                 <Grid
                   item

@@ -104,7 +104,7 @@ export default function ScrimTeamList({
     if (updatedScrim?.createdBy) {
       console.log(
         `%c added ${currentUser?.name} to scrim: ${scrim._id} in team: ${teamJoiningName}`,
-        'color: #99ff99'
+        'color: #99ff99',
       );
       setScrim(updatedScrim);
 
@@ -133,7 +133,7 @@ export default function ScrimTeamList({
     if (updatedScrim?.createdBy) {
       console.log(
         `%cswapped ${currentUser?.name} in scrim: ${scrim._id} to: ${teamName} as ${role}`,
-        'color: #99ff99'
+        'color: #99ff99',
       );
 
       setScrim(updatedScrim);
@@ -157,7 +157,7 @@ export default function ScrimTeamList({
     if (updatedScrim?.createdBy) {
       console.log(
         `%cremoved ${currentUser?.name} from scrim: ${scrim._id}`,
-        'color: #99ff99'
+        'color: #99ff99',
       );
 
       setScrim(updatedScrim);
@@ -183,7 +183,7 @@ export default function ScrimTeamList({
     if (updatedScrim?.createdBy) {
       console.log(
         `%ckicked ${playerToKick?._user?.name} from scrim: ${scrim._id}`,
-        'color: #99ff99'
+        'color: #99ff99',
       );
 
       setScrim(updatedScrim);
@@ -208,10 +208,11 @@ export default function ScrimTeamList({
             </ListSubheader>
             <Divider />
           </>
-        }>
+        }
+      >
         {teamRoles.map((teamRole, idx) => {
           const playerAssigned = teamArray.find(
-            (player) => player?.role === teamRole
+            (player) => player?.role === teamRole,
           );
 
           // doing this so old data is still working on the front-end after the major database update at 9/3/2021
@@ -244,7 +245,8 @@ export default function ScrimTeamList({
                       ? gameStarted &&
                         'linear-gradient(315deg, #7f53ac 0%, #647dee 74%)'
                       : background.gradient,
-                  }}>
+                  }}
+                >
                   <ListItemAvatar>
                     <Avatar
                       alt={playerAssigned?.role}
@@ -261,7 +263,8 @@ export default function ScrimTeamList({
                             isOnline
                               ? `${userInfo?.name} is online`
                               : `${userInfo?.name} is offline`
-                          }>
+                          }
+                        >
                           <div
                             className={classes.onlineCircle}
                             style={{
@@ -272,7 +275,8 @@ export default function ScrimTeamList({
                         <Tooltip title={`Visit ${userInfo?.name}'s profile`}>
                           <Link
                             className="link"
-                            to={`/users/${userInfo?.name}?region=${userInfo?.region}`}>
+                            to={`/users/${userInfo?.name}?region=${userInfo?.region}`}
+                          >
                             {isSmScreen
                               ? userInfo?.name
                               : truncate(userInfo?.name, 11)}
@@ -309,7 +313,8 @@ export default function ScrimTeamList({
                                     type: 'Success',
                                     message: `copied player discord (${userInfo?.discord}) to clipboard`,
                                   });
-                                }}>
+                                }}
+                              >
                                 {isSmScreen
                                   ? userInfo?.discord
                                   : truncate(userInfo?.discord, 9)}
@@ -323,7 +328,8 @@ export default function ScrimTeamList({
                           component="span"
                           variant="body2"
                           className={classes.inline}
-                          color="textPrimary">
+                          color="textPrimary"
+                        >
                           {playerAssigned?.role}
                         </Typography>
                         <br />
@@ -332,7 +338,8 @@ export default function ScrimTeamList({
                           component="span"
                           variant="body2"
                           className={classes.inline}
-                          color="textPrimary">
+                          color="textPrimary"
+                        >
                           {userInfo?.rank}
                         </Typography>
                       </>
@@ -343,10 +350,12 @@ export default function ScrimTeamList({
                     <Tooltip
                       title={`This player is the lobby captain. \n 
                       It's expected of the lobby captain to create the custom lobby and select who won after the game,\n
-                      AND to upload the post-game image to verify the winner`}>
+                      AND to upload the post-game image to verify the winner`}
+                    >
                       <Box
                         style={{ cursor: 'help' }}
-                        className={classes.infoIcon}>
+                        className={classes.infoIcon}
+                      >
                         <InfoIcon />
                       </Box>
                     </Tooltip>
@@ -359,7 +368,8 @@ export default function ScrimTeamList({
                             <IconButton
                               disabled={buttonsDisabled}
                               onMouseDown={(e) => e.preventDefault()}
-                              onClick={() => leaveGame(teamName)}>
+                              onClick={() => leaveGame(teamName)}
+                            >
                               <ExitIcon />
                             </IconButton>
                           </span>
@@ -370,18 +380,20 @@ export default function ScrimTeamList({
                         <AdminArea>
                           <Tooltip
                             title={`Kick ${userInfo?.name}`}
-                            className={classes.iconButton}>
+                            className={classes.iconButton}
+                          >
                             <span>
                               <IconButton
                                 disabled={buttonsDisabled}
                                 onMouseDown={(e) => e.preventDefault()}
                                 onClick={() => {
                                   let yes = window.confirm(
-                                    `Are you sure you want to kick ${userInfo?.name}?`
+                                    `Are you sure you want to kick ${userInfo?.name}?`,
                                   );
                                   if (!yes) return;
                                   kickPlayerFromGame(playerAssigned, teamName);
-                                }}>
+                                }}
+                              >
                                 <KickIcon />
                               </IconButton>
                             </span>
@@ -408,12 +420,14 @@ export default function ScrimTeamList({
                   {!playerEntered ? (
                     <Tooltip
                       title={`Join: ${teamTitleName} as ${teamRole}`}
-                      className={classes.iconButton}>
+                      className={classes.iconButton}
+                    >
                       <span>
                         <IconButton
                           disabled={buttonsDisabled}
                           onMouseDown={(e) => e.preventDefault()}
-                          onClick={() => joinGame(teamName, teamRole)}>
+                          onClick={() => joinGame(teamName, teamRole)}
+                        >
                           <JoinIcon />
                         </IconButton>
                       </span>
@@ -422,14 +436,16 @@ export default function ScrimTeamList({
                     <>
                       <Tooltip
                         title={`Move to: ${teamTitleName} as ${teamRole}`}
-                        className={classes.iconButton}>
+                        className={classes.iconButton}
+                      >
                         <span>
                           <IconButton
                             disabled={buttonsDisabled}
                             onMouseDown={(e) => e.preventDefault()}
                             onClick={async () =>
                               handleMovePlayer(teamName, teamRole)
-                            }>
+                            }
+                          >
                             <SwapIcon />
                           </IconButton>
                         </span>

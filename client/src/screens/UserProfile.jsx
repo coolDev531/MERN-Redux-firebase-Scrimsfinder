@@ -32,11 +32,12 @@ import {
 
 // icons
 import VerifiedAdminIcon from '@mui/icons-material/VerifiedUser';
+import useUsers from './../hooks/useUsers';
 
 export default function UserProfile() {
   const { currentUser, isCurrentUserAdmin } = useAuth();
   const { setCurrentAlert } = useAlerts();
-
+  const { onlineUsers } = useUsers();
   const [userData, setUserData] = useState(null);
   const [userCreatedScrims, setUserCreatedScrims] = useState([]);
   const [userParticipatedScrims, setUserParticipatedScrims] = useState([]);
@@ -45,6 +46,7 @@ export default function UserProfile() {
     img: null,
     blur: '20px',
   });
+  const isOnline = onlineUsers.includes(userData?._id);
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -55,7 +57,7 @@ export default function UserProfile() {
 
   const isCurrentUser = useMemo(
     () => userData?._id === currentUser?._id,
-    [currentUser?._id, userData?._id]
+    [currentUser?._id, userData?._id],
   );
 
   useEffect(() => {
@@ -151,21 +153,24 @@ export default function UserProfile() {
           container
           direction="row"
           alignItems="center"
-          justifyContent="space-between">
+          justifyContent="space-between"
+        >
           <Typography variant="h1">
             <Tooltip title={`visit ${userData?.name}'s op.gg`}>
               <a
                 className="link"
                 href={`https://${userData?.region}.op.gg/summoner/userName=${userData?.name}`}
                 target="_blank"
-                rel="noopener noreferrer">
+                rel="noopener noreferrer"
+              >
                 {`${userData?.name}'s Profile`}
               </a>
             </Tooltip>
             {userData?.isAdmin && (
               <Tooltip
                 placement="top"
-                title={`${userData?.name} is a verified admin`}>
+                title={`${userData?.name} is a verified admin`}
+              >
                 <span style={{ cursor: 'help', marginLeft: '8px' }}>
                   <VerifiedAdminIcon />
                 </span>

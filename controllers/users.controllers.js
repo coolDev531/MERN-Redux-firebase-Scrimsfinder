@@ -46,10 +46,15 @@ const getOneUser = async (req, res) => {
 
     // if user wasn't provided in the query, set it to the first user you can find that matches the name
     if (!region) {
-      let allUsers = await User.find();
-      let foundUser = allUsers.find(
-        (user) => user.name.toLowerCase() === name.toLowerCase()
-      );
+      let foundUser = await User.findOne({
+        name: {
+          $regex: `^${name}$`,
+          $options: 'i',
+        },
+      })
+        .sort({ createdAt: 'desc' }) // first user created first
+        .exec();
+
       region = foundUser.region;
     }
 
@@ -103,9 +108,7 @@ const getOneUser = async (req, res) => {
       return res.status(200).json(user);
     }
 
-    if (deletedAdminKey) {
-      return res.status(200).json(userWithNoAdminKey);
-    }
+    return res.status(200).json(userWithNoAdminKey);
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
@@ -128,7 +131,7 @@ const getUserCreatedScrims = async (req, res) => {
     if (!user) return res.status(404).json({ message: 'User not found!' });
 
     const userCreatedScrims = scrims.filter(
-      (scrim) => String(scrim.createdBy) === String(user._id)
+      (scrim) => String(scrim.createdBy) === String(user._id),
     );
     return res.json(userCreatedScrims);
   } catch (error) {
@@ -163,7 +166,7 @@ const getUserParticipatedScrims = async (req, res) => {
       const foundPlayer = scrimPlayers.find((id) => String(user._id) === id);
 
       const foundCaster = scrim.casters.find(
-        (id) => String(id) === String(user._id)
+        (id) => String(id) === String(user._id),
       );
 
       if (foundPlayer) {
@@ -297,7 +300,7 @@ const pushUserNotification = async (req, res) => {
 
       user.save();
       return res.status(200).json({ notifications: user.notifications });
-    }
+    },
   );
 };
 
@@ -313,7 +316,7 @@ const removeUserNotification = async (req, res) => {
 
     const reqBody = {
       notifications: user.notifications.filter(
-        (notification) => String(notification._id) !== String(notificationId)
+        (notification) => String(notification._id) !== String(notificationId),
       ),
     };
 
@@ -336,7 +339,7 @@ const removeUserNotification = async (req, res) => {
           deletedNotificationId: notificationId,
           notifications: user.notifications,
         });
-      }
+      },
     );
   } catch (error) {
     return res.status(500).json({ error: error.message });
@@ -381,7 +384,7 @@ const sendFriendRequest = async (req, res) => {
     }
 
     const friendRequestFound = userReceiving.friendRequests.find(
-      ({ _user }) => String(_user) === String(userSending._id)
+      ({ _user }) => String(_user) === String(userSending._id),
     );
 
     if (friendRequestFound) {
@@ -437,7 +440,7 @@ const sendFriendRequest = async (req, res) => {
           sentToUser: `${userReceiving.name} (${userReceiving.region})`,
           sentToUserId: userReceiving._id,
         });
-      }
+      },
     );
 
     return;
@@ -456,7 +459,7 @@ const removeFriendRequest = async (req, res) => {
     }
 
     const filteredFriendRequests = user.friendRequests.filter(
-      ({ _id }) => String(_id) !== requestId
+      ({ _id }) => String(_id) !== requestId,
     );
 
     user.friendRequests = filteredFriendRequests;
@@ -555,13 +558,13 @@ const removeUserFriend = async (req, res) => {
   }
 
   user.friends = user.friends.filter(
-    ({ _id }) => String(_id) !== String(friendUser._id)
+    ({ _id }) => String(_id) !== String(friendUser._id),
   );
 
   await user.save();
 
   friendUser.friends = friendUser.friends.filter(
-    ({ _id }) => String(_id) !== String(user._id)
+    ({ _id }) => String(_id) !== String(user._id),
   );
 
   await friendUser.save();
