@@ -68,6 +68,15 @@ export default function messengerReducer(state = initialState, action) {
       };
     }
 
+    case 'messenger/messageSeen': {
+      return {
+        ...state,
+        unseenMessages: state.unseenMessages.filter(
+          ({ _id }) => payload !== _id,
+        ),
+      };
+    }
+
     case 'messenger/setVolume': {
       localStorage.setItem('scrimGymMessengerVolume', JSON.stringify(payload));
 

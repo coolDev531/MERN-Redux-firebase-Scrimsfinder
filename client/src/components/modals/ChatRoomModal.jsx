@@ -69,10 +69,11 @@ export default function ChatRoomModal() {
         text: data.text,
         createdAt: Date.now(),
         _id: data.messageId,
-        _seenBy: [data.senderId, data.receiverId],
+        _seenBy: [data._sender, data._receiver],
         _conversation: data._conversation,
         _receiver: data._receiver,
         messageId: data.messageId,
+        receiverId: data._receiver,
       });
     });
   }, [allUsers, socket, isOpen]);
@@ -112,7 +113,7 @@ export default function ChatRoomModal() {
           return (
             new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
           );
-        })
+        }),
       );
 
       setIsLoaded(true);
@@ -139,12 +140,18 @@ export default function ChatRoomModal() {
       ) {
         devLog('socket new arrival message added to state (receiver client)');
 
-        if (arrivalMessage.receiverId === currentUser._id) {
+        if (arrivalMessage._receiver === currentUser._id) {
+          console.log('yupp!!');
           // put in the DB that the message has been seen.
           await postMessageSeenByUser(
             arrivalMessage.messageId,
-            arrivalMessage.receiverId
+            arrivalMessage._receiver,
           );
+
+          dispatch({
+            type: 'messenger/messageSeen',
+            payload: arrivalMessage._id,
+          });
         }
 
         setMessages((prevState) => [...prevState, arrivalMessage]);
@@ -154,13 +161,13 @@ export default function ChatRoomModal() {
     };
 
     onNewMessageArrival();
-  }, [arrivalMessage, conversationMemberIds, currentUser._id]);
+  }, [arrivalMessage, conversationMemberIds, currentUser?._id]);
 
   const handleSubmitMessage = useCallback(
     async (msgText) => {
       try {
         const receiver = conversation?.members?.find(
-          (user) => user._id !== currentUser?._id
+          (user) => user._id !== currentUser?._id,
         );
 
         const newlyCreatedMessage = await postNewMessage({
@@ -199,7 +206,7 @@ export default function ChatRoomModal() {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [currentUser?._id, conversation?._id]
+    [currentUser?._id, conversation?._id],
   );
 
   useEffect(() => {
@@ -227,13 +234,15 @@ export default function ChatRoomModal() {
       customStyles={{}}
       contentClassName={classes.modalContent}
       open={isOpen}
-      onClose={onClose}>
+      onClose={onClose}
+    >
       {!isLoaded || !conversation?._id ? (
         <div
           style={{
             padding: '50px',
             margin: '100px 0',
-          }}>
+          }}
+        >
           <LinearProgress />
         </div>
       ) : (
@@ -242,7 +251,8 @@ export default function ChatRoomModal() {
             minWidth: '400px',
             display: 'flex',
             flexDirection: 'column',
-          }}>
+          }}
+        >
           <div className={classes.chatRoomMessagesContainer} ref={scrollRef}>
             {messages.map((message) => (
               // one message
