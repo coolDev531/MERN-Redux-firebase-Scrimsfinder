@@ -67,3 +67,8 @@ picture img {
   -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
 }
+
+.inline-flex {
+  display: inline-flex;
+  align-items: center;
+}

@@ -30,6 +30,9 @@ import {
   getUserParticipatedScrims,
 } from '../services/users.services';
 
+// utils
+import { makeStyles } from '@mui/styles';
+
 // icons
 import VerifiedAdminIcon from '@mui/icons-material/VerifiedUser';
 import useUsers from './../hooks/useUsers';
@@ -46,7 +49,13 @@ export default function UserProfile() {
     img: null,
     blur: '20px',
   });
-  const isOnline = onlineUsers.includes(userData?._id);
+
+  const isOnline = useMemo(
+    () => onlineUsers.includes(userData?._id),
+    [onlineUsers, userData?._id],
+  );
+
+  const classes = useStyles({ isOnline });
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -155,7 +164,13 @@ export default function UserProfile() {
           alignItems="center"
           justifyContent="space-between"
         >
-          <Typography variant="h1">
+          <Typography variant="h1" className="inline-flex">
+            <Tooltip
+              title={`${userData?.name} is ${isOnline ? 'online' : 'offline'}`}
+            >
+              <div className={classes.onlineCircle} />
+            </Tooltip>
+
             <Tooltip title={`visit ${userData?.name}'s op.gg`}>
               <a
                 className="link"
@@ -211,3 +226,13 @@ export default function UserProfile() {
     </>
   );
 }
+
+const useStyles = makeStyles({
+  onlineCircle: {
+    background: ({ isOnline }) => (isOnline ? '#AAFF00' : '#EE4B2B'),
+    marginRight: '10px',
+    borderRadius: '50%',
+    height: '10px',
+    width: '10px',
+  },
+});
