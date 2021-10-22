@@ -21,6 +21,7 @@ import MessengerVolumeControls from './MessengerVolumeControls';
 
 // icons
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 export default function MessengerDropdown({ open, setOpen, anchorRef }) {
   const { currentUser } = useAuth();
@@ -92,7 +93,7 @@ export default function MessengerDropdown({ open, setOpen, anchorRef }) {
                     Messenger
                   </Typography>
 
-                  <Tooltip title="Show more">
+                  <Tooltip title={isExpanded ? "Show less" : "Show more"}>
                     <IconButton
                       sx={{
                         marginTop: '20px',
@@ -101,7 +102,7 @@ export default function MessengerDropdown({ open, setOpen, anchorRef }) {
                       }}
                       onClick={handleExpand}
                     >
-                      <ExpandMoreIcon />
+                      {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                     </IconButton>
                   </Tooltip>
 
