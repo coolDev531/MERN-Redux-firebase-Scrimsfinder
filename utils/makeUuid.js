@@ -1,6 +1,8 @@
 // https://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid
 // num | 0 is equal to Math.trunc.
 
+// just download uuid v4 npm library, lol.
+
 /**
  * @method makeUuid
  * makes a valid v4 uuid
