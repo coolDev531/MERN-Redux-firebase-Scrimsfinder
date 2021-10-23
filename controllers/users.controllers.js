@@ -2,6 +2,7 @@ const User = require('../models/user.model');
 const Scrim = require('../models/scrim.model');
 const KEYS = require('../config/keys');
 const mongoose = require('mongoose');
+const escape = require('escape-html'); // sanitize request params
 
 const getAllUsers = async (req, res) => {
   const region = req.query?.region;
@@ -90,7 +91,7 @@ const getOneUser = async (req, res) => {
     if (!user)
       return res
         .status(404)
-        .json({ message: `User not found in region: ${region}` });
+        .json({ message: `User not found in region: ${escape(region)}` });
 
     let userWithNoAdminKey = {
       ...user._doc,
@@ -201,7 +202,9 @@ const getUserById = async (req, res) => {
     ]);
 
     if (!user)
-      return res.status(404).json({ message: `User not found with id: ${id}` });
+      return res
+        .status(404)
+        .json({ message: `User not found with id: ${escape(id)}` });
 
     let userWithNoAdminKey = {
       ...user._doc,
@@ -484,13 +487,13 @@ const addUserFriend = async (req, res) => {
   let friendUser = await User.findById(newFriendUserId);
 
   if (!user) {
-    return res.status(500).send(`User not found with id: ${id}`);
+    return res.status(500).send(`User not found with id: ${escape(id)}`);
   }
 
   if (!friendUser) {
     return res
       .status(500)
-      .send(`Friend user not found with id: ${newFriendUserId}`);
+      .send(`Friend user not found with id: ${escape(newFriendUserId)}`);
   }
 
   if (user.friends.find(({ _id }) => String(_id) === String(friendUser._id))) {
@@ -537,13 +540,13 @@ const removeUserFriend = async (req, res) => {
   let friendUser = await User.findById(friendUserId);
 
   if (!user) {
-    return res.status(500).send(`User not found with id: ${id}`);
+    return res.status(500).send(`User not found with id: ${escape(id)}`);
   }
 
   if (!friendUser) {
     return res
       .status(500)
-      .send(`Friend user not found with id: ${friendUserId}`);
+      .send(`Friend user not found with id: ${escape(friendUserId)}`);
   }
 
   user.friends = user.friends.filter(
