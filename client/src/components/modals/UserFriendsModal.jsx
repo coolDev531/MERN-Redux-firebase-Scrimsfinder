@@ -54,7 +54,6 @@ function UserFriendsModal() {
   if (!user) return null;
   if (!friends) return null;
 
-  console.log('running');
   return (
     <Modal
       customStyles={{
