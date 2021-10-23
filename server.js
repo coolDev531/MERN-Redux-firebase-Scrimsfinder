@@ -11,8 +11,6 @@ const authRoutes = require('./routes/auth.routes');
 const conversationRoutes = require('./routes/conversations.routes');
 const messageRoutes = require('./routes/messages.routes');
 
-require('dotenv').config();
-
 function createServer() {
   const app = express();
 
