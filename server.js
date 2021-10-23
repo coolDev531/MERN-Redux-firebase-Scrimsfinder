@@ -16,11 +16,24 @@ require('dotenv').config();
 function createServer() {
   const app = express();
 
+  const allowedOrigins = [
+    'http://localhost:3001',
+    'https://lol-scrims-finder.netlify.app',
+  ];
+
   const corsOptions = {
-    origin:
-      process.env.NODE_ENV === 'development'
-        ? 'http://localhost:3001'
-        : 'https://lol-scrims-finder.netlify.app/',
+    origin: function (origin, callback) {
+      // allow requests with no origin
+      // (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) === -1) {
+        const msg =
+          'The CORS policy for this site does not ' +
+          'allow access from the specified Origin.';
+        return callback(new Error(msg), false);
+      }
+      return callback(null, true);
+    },
 
     optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
   };
@@ -32,7 +45,7 @@ function createServer() {
   // this route doesn't need an api key because app.use(apikey) is called later
   app.get('/', (_req, res) => {
     res.send(
-      '<h1>LOL BOOTCAMP SCRIMS FINDER</h1> <h2>How to use: go to /api/scrims to find all scrims.</h2>',
+      '<h1>LOL BOOTCAMP SCRIMS FINDER</h1> <h2>How to use: go to /api/scrims to find all scrims.</h2>'
     );
   });
 
