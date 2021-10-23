@@ -69,8 +69,6 @@ const getOneUser = async (req, res) => {
       });
     }
 
-    const adminKeyQuery = req?.query?.adminKey === KEYS.ADMIN_KEY ?? false;
-
     const nameRegex = `^${name}$`;
 
     let user = await User.findOne({
@@ -82,9 +80,7 @@ const getOneUser = async (req, res) => {
       'region',
       'rank',
       'adminKey',
-      adminKeyQuery && 'email', // for when admins want to see the details (not user profile page)
       'createdAt',
-      adminKeyQuery && 'updatedAt', // only show updatedAt when req.query.admin key has been entered and is correct
       'profileBackgroundImg',
       'profileBackgroundBlur',
       'friends',
@@ -103,12 +99,11 @@ const getOneUser = async (req, res) => {
 
     let deletedAdminKey = delete userWithNoAdminKey.adminKey;
 
-    if (adminKeyQuery) {
-      // if we provided admin key in postman, show email and admin key.
-      return res.status(200).json(user);
+    if (deletedAdminKey) {
+      return res.status(200).json(userWithNoAdminKey);
+    } else {
+      return res.status(500).json({ error: 'Please try again' });
     }
-
-    return res.status(200).json(userWithNoAdminKey);
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
@@ -131,7 +126,7 @@ const getUserCreatedScrims = async (req, res) => {
     if (!user) return res.status(404).json({ message: 'User not found!' });
 
     const userCreatedScrims = scrims.filter(
-      (scrim) => String(scrim.createdBy) === String(user._id),
+      (scrim) => String(scrim.createdBy) === String(user._id)
     );
     return res.json(userCreatedScrims);
   } catch (error) {
@@ -166,7 +161,7 @@ const getUserParticipatedScrims = async (req, res) => {
       const foundPlayer = scrimPlayers.find((id) => String(user._id) === id);
 
       const foundCaster = scrim.casters.find(
-        (id) => String(id) === String(user._id),
+        (id) => String(id) === String(user._id)
       );
 
       if (foundPlayer) {
@@ -190,8 +185,6 @@ const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const adminKeyQuery = req?.query?.adminKey === KEYS.ADMIN_KEY ?? false;
-
     const user = await User.findById(id).select([
       'discord',
       'name',
@@ -199,9 +192,8 @@ const getUserById = async (req, res) => {
       'rank',
       'notifications',
       'adminKey',
-      adminKeyQuery && 'email', // for when admins want to see the details (not user profile page)
       'createdAt',
-      adminKeyQuery && 'updatedAt', // only show updatedAt when req.query.admin key has been entered and is correct
+      'updatedAt',
       'profileBackgroundImg',
       'profileBackgroundBlur',
       'friendRequests',
@@ -216,15 +208,12 @@ const getUserById = async (req, res) => {
       isAdmin: user.adminKey === KEYS.ADMIN_KEY, // boolean,
     };
 
-    let deletedAdminKey = delete userWithNoAdminKey.adminKey;
-
-    if (adminKeyQuery) {
-      // if we provided admin key in postman, show email and admin key.
-      return res.status(200).json(user);
-    }
+    let deletedAdminKey = delete userWithNoAdminKey.adminKey; // delete adminkey so not returned in resp
 
     if (deletedAdminKey) {
       return res.status(200).json(userWithNoAdminKey);
+    } else {
+      return res.status(500).json({ error: 'Please try again' });
     }
   } catch (error) {
     return res.status(500).json({ error: error.message });
@@ -300,7 +289,7 @@ const pushUserNotification = async (req, res) => {
 
       user.save();
       return res.status(200).json({ notifications: user.notifications });
-    },
+    }
   );
 };
 
@@ -316,7 +305,7 @@ const removeUserNotification = async (req, res) => {
 
     const reqBody = {
       notifications: user.notifications.filter(
-        (notification) => String(notification._id) !== String(notificationId),
+        (notification) => String(notification._id) !== String(notificationId)
       ),
     };
 
@@ -339,7 +328,7 @@ const removeUserNotification = async (req, res) => {
           deletedNotificationId: notificationId,
           notifications: user.notifications,
         });
-      },
+      }
     );
   } catch (error) {
     return res.status(500).json({ error: error.message });
@@ -384,7 +373,7 @@ const sendFriendRequest = async (req, res) => {
     }
 
     const friendRequestFound = userReceiving.friendRequests.find(
-      ({ _user }) => String(_user) === String(userSending._id),
+      ({ _user }) => String(_user) === String(userSending._id)
     );
 
     if (friendRequestFound) {
@@ -440,7 +429,7 @@ const sendFriendRequest = async (req, res) => {
           sentToUser: `${userReceiving.name} (${userReceiving.region})`,
           sentToUserId: userReceiving._id,
         });
-      },
+      }
     );
 
     return;
@@ -459,7 +448,7 @@ const removeFriendRequest = async (req, res) => {
     }
 
     const filteredFriendRequests = user.friendRequests.filter(
-      ({ _id }) => String(_id) !== requestId,
+      ({ _id }) => String(_id) !== requestId
     );
 
     user.friendRequests = filteredFriendRequests;
@@ -558,13 +547,13 @@ const removeUserFriend = async (req, res) => {
   }
 
   user.friends = user.friends.filter(
-    ({ _id }) => String(_id) !== String(friendUser._id),
+    ({ _id }) => String(_id) !== String(friendUser._id)
   );
 
   await user.save();
 
   friendUser.friends = friendUser.friends.filter(
-    ({ _id }) => String(_id) !== String(user._id),
+    ({ _id }) => String(_id) !== String(user._id)
   );
 
   await friendUser.save();
