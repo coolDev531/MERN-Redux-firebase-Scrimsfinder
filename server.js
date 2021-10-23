@@ -17,10 +17,7 @@ function createServer() {
   const app = express();
 
   const corsOptions = {
-    origin:
-      process.env.NODE_ENV === 'development'
-        ? 'http://localhost:3001'
-        : 'https://lol-scrims-finder.netlify.app/',
+    origin: 'https://lol-scrims-finder.netlify.app/',
 
     optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
   };
@@ -32,7 +29,7 @@ function createServer() {
   // this route doesn't need an api key because app.use(apikey) is called later
   app.get('/', (_req, res) => {
     res.send(
-      '<h1>LOL BOOTCAMP SCRIMS FINDER</h1> <h2>How to use: go to /api/scrims to find all scrims.</h2>',
+      '<h1>LOL BOOTCAMP SCRIMS FINDER</h1> <h2>How to use: go to /api/scrims to find all scrims.</h2>'
     );
   });
 
