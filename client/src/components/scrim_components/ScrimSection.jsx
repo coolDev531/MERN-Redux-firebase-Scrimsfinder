@@ -153,11 +153,6 @@ export default function ScrimSection({ scrimData, isInDetail }) {
 
     // using .createdBy because on error it wont return populated scrim, so we don't set the scrim
     if (updatedScrim?.createdBy) {
-      console.log(
-        `%cadded ${currentUser?.name} as a caster for scrim: ${scrim._id}`,
-        'color: #99ff99'
-      );
-
       setScrim(updatedScrim);
       socket.current?.emit('sendScrimTransaction', updatedScrim);
     }
@@ -176,11 +171,6 @@ export default function ScrimSection({ scrimData, isInDetail }) {
     });
 
     if (updatedScrim?.createdBy) {
-      console.log(
-        `%cremoved ${currentUser?.name} from the caster list for scrim: ${scrim._id}`,
-        'color: #99ff99'
-      );
-
       setScrim(updatedScrim);
       socket.current?.emit('sendScrimTransaction', updatedScrim);
     }

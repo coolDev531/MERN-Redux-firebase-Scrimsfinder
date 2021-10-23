@@ -106,10 +106,6 @@ export default function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
       clearInterval(intervalRef.current);
       setGameStarted(scrim._id);
       setIsTimerStarted(false);
-      console.log(
-        `%cScrim starting for scrim: ${scrim?._id}`,
-        'color: lightgreen'
-      );
     }
     //disabling dependency array warning, can't add the other dependencies it's yelling at me to add without breaking the functionality.
     // eslint-disable-next-line react-hooks/exhaustive-deps

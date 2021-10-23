@@ -143,11 +143,6 @@ export default function UploadPostGameImage({
       );
 
       if (updatedScrim?.createdBy) {
-        console.log(
-          '%csuccessfully uploaded an image for scrim: ' + scrim._id,
-          'color: lightgreen'
-        );
-
         setCurrentAlert({
           type: 'Success',
           message: 'image uploaded successfully',
