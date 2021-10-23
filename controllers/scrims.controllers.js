@@ -12,6 +12,7 @@ const { checkIfScrimIsToday } = require('../utils/scrimUtils');
 const capitalizeWord = require('../utils/capitalizeWord');
 const AWS = require('aws-sdk');
 const KEYS = require('../config/keys');
+const escape = require('escape-html');
 
 let s3Bucket = new AWS.S3({
   Bucket: 'lol-scrimsfinder-bucket',
@@ -280,7 +281,7 @@ const deleteScrim = async (req, res) => {
     const deleted = await Scrim.findByIdAndDelete(id);
 
     if (deleted) {
-      return res.status(200).send(`Scrim with id: ${id} deleted`);
+      return res.status(200).send(`Scrim with id: ${escape(id)} deleted`);
     }
   } catch (error) {
     return res.status(500).json({ error: error.message });
