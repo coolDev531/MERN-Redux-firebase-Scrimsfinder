@@ -6,82 +6,29 @@ const User = require('../models/user.model');
 const Conversation = require('../models/conversation.model');
 
 // utils
-const sample = require('../utils/sample');
 const generatePassword = require('../utils/generatePassword');
-const { checkIfScrimIsToday } = require('../utils/scrimUtils');
+const {
+  checkIfScrimIsToday,
+  swapPlayer,
+  getAvailableRoles,
+  compareArrays,
+  isValidRole,
+  populateTeam,
+  populateUser,
+  getLobbyName,
+  getLobbyHost,
+} = require('../utils/scrimUtils');
 const capitalizeWord = require('../utils/capitalizeWord');
 const AWS = require('aws-sdk');
 const KEYS = require('../config/keys');
 const escape = require('escape-html');
 
+// for post-game lobby image upload
 let s3Bucket = new AWS.S3({
   Bucket: 'lol-scrimsfinder-bucket',
   accessKeyId: KEYS.S3_ACCESS_KEY_ID,
   secretAccessKey: KEYS.S3_SECRET_ACCESS_KEY,
 });
-
-/**
- * @method compareArrays
-    compare if the previous state of team that the player is joining is identical.
-    If it is, he isn't swapping teams (will return true), if it isn't identical, he is swapping teams (will return false)
- * @param {Array} arr1
- * @param {Array} arr2
- * @returns {Boolean}
- */
-const compareArrays = (arr1, arr2) => {
-  if (arr1.length !== arr2.length) return false;
-
-  for (let i = 0; i < arr1.length; i++) {
-    if (arr1[i]._id !== arr2[i]._id) return false;
-  }
-
-  // If all elements were same.
-  return true;
-};
-
-const getLobbyHost = async (scrim) => {
-  if (!scrim) {
-    return console.error('Error, scrim not provided for getLobbyHost function');
-  }
-
-  const lobbyHost = scrim.lobbyHost ?? null;
-
-  // select lobby host
-  if (lobbyHost !== null) {
-    //  if scrim already has a lobby host, just select it.
-    return lobbyHost;
-  } else if (scrim.teamOne.length === 5 && scrim.teamTwo.length === 5) {
-    // if lobby is going to be full after user will join (players length = 10)
-    const result = sample([...scrim.teamOne, ...scrim.teamTwo]);
-    const userResult = await User.findById(result._user);
-    return userResult;
-  } else {
-    return null;
-  }
-};
-
-const getLobbyName = (scrimTitle, region) => {
-  // remove emojis with this .replace
-  // https://stackoverflow.com/questions/10992921/how-to-remove-emoji-code-using-javascript
-  return `${scrimTitle} Custom Lobby (${region})`.replace(
-    /([\uE000-\uF8FF]|\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDDFF])/g,
-    ''
-  );
-};
-
-const populateTeam = (teamName) => {
-  // nested populate
-  return {
-    path: teamName,
-    populate: {
-      path: '_user',
-      model: 'User',
-      select: 'name discord rank region', // exclude adminKey,uid and email from showing
-    },
-  };
-};
-
-const populateUser = ['name', 'discord', 'region'];
 
 const getAllScrims = async (req, res) => {
   const region = req.query?.region;
@@ -172,7 +119,9 @@ const getScrimById = async (req, res) => {
 
 const createScrim = async (req, res) => {
   try {
-    let createdByUser = await User.findOne({ _id: req.body.createdBy._id });
+    let createdByUser = await User.findOne({
+      _id: { $eq: req.body.createdBy._id },
+    });
 
     let requestBody = {
       ...req.body,
@@ -180,7 +129,7 @@ const createScrim = async (req, res) => {
         req.body.title ?? `${createdByUser?.name}'s Scrim`,
         req.body?.region ?? 'NA'
       ),
-      lobbyPassword: await generatePassword(),
+      lobbyPassword: generatePassword(),
       createdBy: createdByUser,
     };
 
@@ -207,36 +156,6 @@ const createScrim = async (req, res) => {
     console.log(error);
     return res.status(500).json({ error: error.message });
   }
-};
-
-const swapPlayer = (currentTeam, movingTeam, movingPlayer) => {
-  const indexToRemove = currentTeam.findIndex(
-    (player) => String(player?._user) === String(movingPlayer?._user._id)
-  );
-  if (indexToRemove > -1) currentTeam.splice(indexToRemove, 1);
-  movingTeam = [...movingTeam, movingPlayer];
-  return [currentTeam, movingTeam];
-};
-
-const getAvailableRoles = (team) => {
-  const roles = ['Top', 'Jungle', 'Mid', 'ADC', 'Support'];
-  const takenRoles = new Set();
-
-  for (const role of roles) {
-    for (const player of team) {
-      if (role === player.role) {
-        takenRoles.add(role);
-      }
-    }
-  }
-
-  return roles.filter((r) => !takenRoles.has(r)).join(', ');
-};
-
-// takes role from req.body.playerData.role and returns true or false if it matches
-const isValidRole = (role) => {
-  const roles = /^Top$|^Jungle$|^Mid$|^ADC$|^Support$/gi; // case insensitive
-  return roles.test(role);
 };
 
 const updateScrim = async (req, res) => {

@@ -1,10 +1,10 @@
 /**
  * @method generatePassword
   generates a random password 
-  is asyncrhonus because of being used in the creation of a scrim, wait for pass to be generated before continuing.
+  being used in the creation of a scrim
  * @return {String} returns the result password.
  */
-const generatePassword = async () => {
+const generatePassword = () => {
   const CHARACTERS_LENGTH = 8;
 
   let pass = '';

@@ -89,7 +89,7 @@ beforeAll(async () => {
       teamOne,
       teamTwo,
       lobbyHost: createdUsers[2],
-      lobbyPassword: await generatePassword(),
+      lobbyPassword: generatePassword(),
       gameStartTime: Date.now(),
       title: `${createdUsers[0].name}'s scrim`,
       lobbyName: 'Scrim 1 Custom Game (NA)',

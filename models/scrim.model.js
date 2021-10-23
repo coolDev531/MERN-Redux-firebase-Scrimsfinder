@@ -1,11 +1,10 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const toIsoString = require('../utils/toIsoString');
 const Conversation = require('./conversation.model');
 
 const getThirtyMinFromNow = () => {
   let now = Date.now();
-  let d1 = toIsoString(now);
+  let d1 = new Date(now).toISOString();
   let d2 = new Date(d1);
   d2.setMinutes(new Date(d1).getMinutes() + 30);
   return d2;

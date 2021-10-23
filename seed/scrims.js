@@ -6,7 +6,9 @@ const User = require('../models/user.model');
 const { MONGODB_URI } = require('../utils/constants');
 const mongooseConnect = require('../db/connection');
 const generatePassword = require('../utils/generatePassword');
-const toIsoString = require('../utils/toIsoString');
+
+// for some reason in some of these scrims you can't delete the players out of their role,
+// I think I messed up somewhere in the user seed file.
 
 // seed users first before running this
 const main = async () => {
@@ -44,7 +46,7 @@ const main = async () => {
       teamTwo,
       casters: [],
       lobbyHost: users[2],
-      lobbyPassword: await generatePassword(),
+      lobbyPassword: generatePassword(),
       gameStartTime: Date.now(),
       title: `${users[0].name}'s scrim`,
       lobbyName: 'Scrim 1 Custom Game (NA)',
@@ -58,10 +60,10 @@ const main = async () => {
       teamTwo: teamOne,
       lobbyHost: users[4],
       casters: [],
-      lobbyPassword: await generatePassword(),
-      gameStartTime: toIsoString(
-        new Date(today.setHours(today.getHours() + 1))
-      ), // 1 hour from seed time
+      lobbyPassword: generatePassword(),
+      gameStartTime: new Date(
+        today.setHours(today.getHours() + 1)
+      ).toISOString(), // 1 hour from seed time
       title: `${users[2].name}'s scrim`,
       lobbyName: 'Scrim 2 Custom Game (NA)',
       lobbyHost: users[2],
@@ -74,7 +76,7 @@ const main = async () => {
       teamTwo,
       casters: [],
       lobbyHost: users[2],
-      lobbyPassword: await generatePassword(),
+      lobbyPassword: generatePassword(),
       gameStartTime: Date.now(),
       title: `${users[3].name}'s scrim`,
       lobbyName: 'Scrim 3 Custom Game (NA)',
@@ -88,7 +90,7 @@ const main = async () => {
       teamTwo: teamOne,
       casters: [],
       lobbyHost: users[2],
-      lobbyPassword: await generatePassword(),
+      lobbyPassword: generatePassword(),
       gameStartTime: Date.now(),
       title: `${users[3].name}'s scrim`,
       lobbyName: 'Scrim 4 Custom Game (NA)',
