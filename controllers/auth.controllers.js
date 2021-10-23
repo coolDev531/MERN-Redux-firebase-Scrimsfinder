@@ -34,7 +34,7 @@ const removeSpacesBeforeHashTag = (str) => {
 };
 
 const allowedRanks = [
-  'Uranked',
+  'Unranked',
   'Iron',
   'Bronze',
   'Silver',
