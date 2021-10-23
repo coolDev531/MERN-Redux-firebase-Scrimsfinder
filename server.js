@@ -35,7 +35,7 @@ function createServer() {
     optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
   };
 
-  app.use(cors());
+  app.use(cors(corsOptions));
   app.use(bodyParser.json());
   app.use(logger('dev'));
 
