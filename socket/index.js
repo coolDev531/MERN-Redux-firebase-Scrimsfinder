@@ -3,7 +3,8 @@ const PORT = process.env.PORT || 8900;
 
 const io = require('socket.io')(PORT, {
   cors: {
-    origin: '*',
+    origin: ['http://localhost:*', 'https://lol-scrims-finder.netlify.app'],
+    credentials: true,
   },
 });
 
@@ -67,7 +68,7 @@ io.on('connection', (socket) => {
       });
 
       return;
-    },
+    }
   );
 
   socket.on(
@@ -89,7 +90,7 @@ io.on('connection', (socket) => {
       });
 
       return;
-    },
+    }
   );
 
   // for friend requests or conversation starts
@@ -124,7 +125,7 @@ io.on('connection', (socket) => {
       });
 
       return;
-    },
+    }
   );
 
   // just checking that scrim chat has been opened or closed
@@ -153,7 +154,7 @@ io.on('connection', (socket) => {
       });
 
       return;
-    },
+    }
   );
 
   // scrim team list socket here:
