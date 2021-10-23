@@ -158,7 +158,8 @@ export default function Settings() {
       }
     } catch (error) {
       console.error('ERROR:', error);
-      const errMsg = error?.messasge;
+      const errMsg = error?.messasge ?? error?.response?.data?.error;
+
       setCurrentAlert({
         type: 'Error',
         message: errMsg ?? JSON.stringify(error),
