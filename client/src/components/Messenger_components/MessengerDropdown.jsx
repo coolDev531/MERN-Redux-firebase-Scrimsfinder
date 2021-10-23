@@ -43,7 +43,7 @@ export default function MessengerDropdown({ open, setOpen, anchorRef }) {
         setOpen(false);
       }
     },
-    [open],
+    [open]
   );
 
   const handleExpand = useCallback(() => {
@@ -58,16 +58,14 @@ export default function MessengerDropdown({ open, setOpen, anchorRef }) {
       role={undefined}
       placement="bottom-start"
       transition
-      disablePortal
-    >
+      disablePortal>
       {({ TransitionProps, placement }) => (
         <Grow
           {...TransitionProps}
           style={{
             transformOrigin:
               placement === 'bottom-start' ? 'left top' : 'left bottom',
-          }}
-        >
+          }}>
           <Paper>
             <ClickAwayListener onClickAway={handleClose}>
               <Grid container direction="column">
@@ -76,8 +74,7 @@ export default function MessengerDropdown({ open, setOpen, anchorRef }) {
                   container
                   alignItems="center"
                   direction="row"
-                  justifyContent="space-between"
-                >
+                  justifyContent="space-between">
                   {/* MESSENGER DROPDOWN TITLE */}
 
                   <Typography
@@ -88,20 +85,18 @@ export default function MessengerDropdown({ open, setOpen, anchorRef }) {
                     }}
                     component="h1"
                     gutterBottom
-                    variant="h6"
-                  >
+                    variant="h6">
                     Messenger
                   </Typography>
 
-                  <Tooltip title={isExpanded ? "Show less" : "Show more"}>
+                  <Tooltip title={isExpanded ? 'Show less' : 'Show more'}>
                     <IconButton
                       sx={{
                         marginTop: '20px',
                         marginBottom: '10px',
                         marginRight: '10px',
                       }}
-                      onClick={handleExpand}
-                    >
+                      onClick={handleExpand}>
                       {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                     </IconButton>
                   </Tooltip>
@@ -114,8 +109,7 @@ export default function MessengerDropdown({ open, setOpen, anchorRef }) {
                 <Grid
                   item
                   xs={12}
-                  style={{ maxHeight: '300px', overflowY: 'auto' }}
-                >
+                  style={{ maxHeight: '300px', overflowY: 'auto' }}>
                   <Divider sx={{ width: '100%' }} />
 
                   {/* MESSENGER DROPDOWN CONTENT */}

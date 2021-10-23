@@ -15,7 +15,7 @@ export default function MessengerVolumeControls({ isShowing }) {
   const [volumeValue, setVolumeValue] = useState(() => {
     //  get the volume value from local storage
     const storedValue = JSON.parse(
-      localStorage.getItem('scrimGymMessengerVolume'),
+      localStorage.getItem('scrimGymMessengerVolume')
     );
 
     return storedValue ?? 25;
@@ -28,10 +28,15 @@ export default function MessengerVolumeControls({ isShowing }) {
     dispatch({ type: 'messenger/setVolume', payload: volumeValue });
   }, [msgNotificationVolume, volumeValue, dispatch]);
 
-  if (!isShowing) return null;
-
   return (
-    <Box sx={{ width: 250, padding: '20px' }}>
+    <Box
+      sx={{
+        width: isShowing ? 250 : 0,
+        padding: isShowing ? '20px' : 0,
+        height: isShowing ? 'auto' : 0,
+        overflow: 'hidden',
+        transition: 'padding 250ms ease-in-out',
+      }}>
       <Typography gutterBottom>Volume</Typography>
       <Grid container spacing={2} alignItems="center">
         <Grid item>
