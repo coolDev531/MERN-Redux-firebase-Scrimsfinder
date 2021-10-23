@@ -4,7 +4,7 @@ const User = require('../models/user.model');
 const faker = require('faker');
 const sample = require('../utils/sample');
 const mongooseConnect = require('../db/connection');
-const makeUuid = require('../utils/makeUuid');
+const { uuid: makeUuid } = require('uuidv4');
 const { MONGODB_URI } = require('../utils/constants');
 
 const main = async () => {

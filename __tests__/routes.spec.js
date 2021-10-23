@@ -6,7 +6,7 @@ const mongooseConnect = require('../db/connection');
 const generatePassword = require('../utils/generatePassword');
 const KEYS = require('../config/keys');
 const databaseName = 'scrimsTestDatabase';
-const makeUuid = require('../utils/makeUuid');
+const { uuid: makeUuid } = require('uuidv4');
 
 // models
 const User = require('../models/user.model');
