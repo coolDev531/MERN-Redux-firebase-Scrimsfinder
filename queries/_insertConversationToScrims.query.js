@@ -6,6 +6,8 @@ const Conversation = require('../models/conversation.model');
 const { MONGODB_URI } = require('../utils/constants');
 const mongooseConnect = require('../db/connection');
 
+// NOTE: I already ran this query, we don't have to run it again, but I'll keep it anyways.
+
 // run this when deploying to live and previous scrims don't have conversations related to them.
 const main = async () => {
   let scrims = await Scrim.find();
