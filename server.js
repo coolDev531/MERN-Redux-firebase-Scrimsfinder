@@ -3,6 +3,7 @@ const logger = require('morgan');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const passport = require('passport');
+const mongoSanitize = require('express-mongo-sanitize');
 const apiKey = require('./utils/apiKey');
 
 const scrimRoutes = require('./routes/scrims.routes');
@@ -36,7 +37,19 @@ function createServer() {
   };
 
   app.use(cors(corsOptions));
+  app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
+
+  // to prohibited characters with _ (mongoSanitize)
+  app.use(
+    mongoSanitize({
+      replaceWith: '_',
+      onSanitize: ({ req, key }) => {
+        console.warn(`This request[${key}] is sanitized`, req);
+      },
+    })
+  );
+
   app.use(logger('dev'));
 
   // this route doesn't need an api key because app.use(apikey) is called later
