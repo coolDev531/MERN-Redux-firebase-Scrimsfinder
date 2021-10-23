@@ -11,16 +11,28 @@ const authRoutes = require('./routes/auth.routes');
 const conversationRoutes = require('./routes/conversations.routes');
 const messageRoutes = require('./routes/messages.routes');
 
+require('dotenv').config();
+
 function createServer() {
   const app = express();
-  app.use(cors());
+
+  const corsOptions = {
+    origin:
+      process.env.NODE_ENV === 'development'
+        ? 'http://localhost:3001'
+        : 'https://lol-scrims-finder.netlify.app/',
+
+    optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+  };
+
+  app.use(cors(corsOptions));
   app.use(bodyParser.json());
   app.use(logger('dev'));
 
   // this route doesn't need an api key because app.use(apikey) is called later
   app.get('/', (_req, res) => {
     res.send(
-      '<h1>LOL BOOTCAMP SCRIMS FINDER</h1> <h2>How to use: go to /api/scrims to find all scrims.</h2>'
+      '<h1>LOL BOOTCAMP SCRIMS FINDER</h1> <h2>How to use: go to /api/scrims to find all scrims.</h2>',
     );
   });
 

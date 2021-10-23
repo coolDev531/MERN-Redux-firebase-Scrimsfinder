@@ -158,10 +158,10 @@ export default function Settings() {
       }
     } catch (error) {
       console.error('ERROR:', error);
-      let errMsg = error.messasge;
+      const errMsg = error?.messasge;
       setCurrentAlert({
         type: 'Error',
-        message: errMsg ?? error,
+        message: errMsg ?? JSON.stringify(error),
       });
     }
   };

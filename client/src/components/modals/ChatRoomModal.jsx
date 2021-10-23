@@ -113,7 +113,7 @@ export default function ChatRoomModal() {
           return (
             new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
           );
-        }),
+        })
       );
 
       setIsLoaded(true);
@@ -145,7 +145,7 @@ export default function ChatRoomModal() {
           // put in the DB that the message has been seen.
           await postMessageSeenByUser(
             arrivalMessage.messageId,
-            arrivalMessage._receiver,
+            arrivalMessage._receiver
           );
 
           dispatch({
@@ -161,13 +161,15 @@ export default function ChatRoomModal() {
     };
 
     onNewMessageArrival();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [arrivalMessage, conversationMemberIds, currentUser?._id]);
 
   const handleSubmitMessage = useCallback(
     async (msgText) => {
       try {
         const receiver = conversation?.members?.find(
-          (user) => user._id !== currentUser?._id,
+          (user) => user._id !== currentUser?._id
         );
 
         const newlyCreatedMessage = await postNewMessage({
@@ -206,7 +208,7 @@ export default function ChatRoomModal() {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [currentUser?._id, conversation?._id],
+    [currentUser?._id, conversation?._id]
   );
 
   useEffect(() => {
@@ -234,15 +236,13 @@ export default function ChatRoomModal() {
       customStyles={{}}
       contentClassName={classes.modalContent}
       open={isOpen}
-      onClose={onClose}
-    >
+      onClose={onClose}>
       {!isLoaded || !conversation?._id ? (
         <div
           style={{
             padding: '50px',
             margin: '100px 0',
-          }}
-        >
+          }}>
           <LinearProgress />
         </div>
       ) : (
@@ -251,8 +251,7 @@ export default function ChatRoomModal() {
             minWidth: '400px',
             display: 'flex',
             flexDirection: 'column',
-          }}
-        >
+          }}>
           <div className={classes.chatRoomMessagesContainer} ref={scrollRef}>
             {messages.map((message) => (
               // one message

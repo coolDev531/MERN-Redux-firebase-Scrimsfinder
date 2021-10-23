@@ -6,6 +6,15 @@ const jwt = require('jsonwebtoken');
 // models
 const User = require('../models/user.model');
 
+const divisionsWithNumbers = [
+  'Iron',
+  'Bronze',
+  'Silver',
+  'Gold',
+  'Platinum',
+  'Diamond',
+];
+
 /**
  * @method removeSpacesBeforeHashTag
  * takes a discord name and trims the spaces.
@@ -23,6 +32,19 @@ const removeSpacesBeforeHashTag = (str) => {
       return el2 + '';
     });
 };
+
+const allowedRanks = [
+  'Uranked',
+  'Iron',
+  'Bronze',
+  'Silver',
+  'Gold',
+  'Platinum',
+  'Diamond',
+  'Master',
+  'Grandmaster',
+  'Challenger',
+];
 
 // get google uid and email by using google auth firebase, then give rest of user data hosted in database.
 // same as verify user but with errors.
@@ -88,7 +110,7 @@ const loginUser = async (req, res) => {
 
 const registerUser = async (req, res) => {
   try {
-    const { uid, name, discord, rank, adminKey, email, region } = req.body;
+    const { uid, name, discord, rank, adminKey = '', email, region } = req.body;
 
     const noSpacesDiscord = removeSpacesBeforeHashTag(discord);
 
@@ -112,6 +134,36 @@ const registerUser = async (req, res) => {
     const discordTaken = await User.findOne({
       discord: { $regex: `^${noSpacesDiscord}$`, $options: 'i' },
     });
+
+    const regionInvalid = !['NA', 'OCE', 'EUW', 'EUNE', 'LAN'].includes(region);
+
+    let rankDivision = rank.replace(/[0-9]/g, '').trim();
+
+    let isDivisionWithNumber = divisionsWithNumbers.includes(rankDivision);
+
+    const rankInvalid = !allowedRanks.includes(rankDivision);
+
+    if (rankInvalid) {
+      return res.status(500).json({
+        status: false,
+        error: 'Invalid rank provided.',
+      });
+    }
+
+    if (isDivisionWithNumber) {
+      if (!/\d/.test(rank)) {
+        return res.status(500).json({
+          status: false,
+          error: 'Rank number not provided',
+        });
+      }
+    }
+
+    if (regionInvalid) {
+      return res.status(500).json({
+        error: 'Invalid region provided.',
+      });
+    }
 
     if (discordTaken) {
       return res.status(500).json({
@@ -227,21 +279,69 @@ const verifyUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const { id } = req.params;
+  const { uid = null } = req.body;
 
   const foundUser = await User.findOne({ _id: id });
 
-  const isMatch = bcrypt.compare(req.body.uid, foundUser.uid); // compare req.body.uid to user uid in db.
+  if (!foundUser) {
+    return res.status(500).json({ status: false, message: 'user not found' });
+  }
+
+  const isMatch = bcrypt.compare(uid, foundUser.uid); // compare req.body.uid to user uid in db.
+
+  if (!isMatch) {
+    return res.status(500).json({ status: false, message: 'unauthorized' });
+  }
+
+  // check for valid rank
+  if (req.body.rank) {
+    let rankDivision = req.body.rank.replace(/[0-9]/g, '').trim();
+
+    let isDivisionWithNumber = divisionsWithNumbers.includes(rankDivision);
+
+    const rankInvalid = !allowedRanks.includes(rankDivision);
+
+    if (rankInvalid) {
+      return res.status(500).json({
+        status: false,
+        error: 'Invalid rank provided.',
+      });
+    }
+
+    if (isDivisionWithNumber) {
+      if (!/\d/.test(req.body.rank)) {
+        return res.status(500).json({
+          status: false,
+          error: 'Rank number not provided',
+        });
+      }
+    }
+  }
+
+  // check for valid region
+  if (req.body.region) {
+    const regionInvalid = !['NA', 'OCE', 'EUW', 'EUNE', 'LAN'].includes(
+      req.body.region
+    );
+
+    if (regionInvalid) {
+      return res.status(500).json({
+        error: 'Invalid region provided.',
+        status: false,
+      });
+    }
+  }
 
   if (isMatch) {
     const payload = {
       uid: foundUser.uid,
       email: foundUser.email,
       _id: foundUser._id,
-      rank: req.body.rank,
-      region: req.body.region,
-      discord: req.body.discord,
-      adminKey: req.body.adminKey,
-      name: req.body.name,
+      rank: req.body.rank ?? foundUser.rank,
+      region: req.body.region ?? foundUser.region,
+      discord: req.body.discord ?? foundUser.discord,
+      adminKey: req.body.adminKey ?? foundUser.adminKey,
+      name: req.body.name ?? foundUser.name,
 
       profileBackgroundImg:
         req.body.profileBackgroundImg ??
@@ -290,6 +390,10 @@ const updateUser = async (req, res) => {
           }
         );
       });
+    });
+  } else {
+    return res.status(500).json({
+      success: false,
     });
   }
 };
