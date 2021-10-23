@@ -47,20 +47,20 @@ const allowedRanks = [
 ];
 
 // get google uid and email by using google auth firebase, then give rest of user data hosted in database.
-// same as verify user but with errors.
+// same as verify user but with more edge-cases.
 const loginUser = async (req, res) => {
   const { email, uid } = req.body;
 
   if (!email) {
     res.status(500).json({
-      error: `No Email Provided`,
+      error: 'Unauthorized',
     });
     return;
   }
 
   if (!uid) {
     res.status(500).json({
-      error: `No google id Provided.`,
+      error: 'Unauthorized',
     });
     return;
   }
@@ -94,6 +94,7 @@ const loginUser = async (req, res) => {
         friends: foundUser.friends,
       };
 
+      // I don't even think we need to hash the uid...
       const accessToken = jwt.sign(payload, KEYS.SECRET_OR_KEY, {
         expiresIn: 31556926, // 1 year in seconds
         // expiresIn: new Date(new Date()).setDate(new Date().getDate() + 30), // 30 days from now, does this work?
