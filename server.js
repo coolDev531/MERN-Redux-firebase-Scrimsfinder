@@ -16,13 +16,13 @@ require('dotenv').config();
 function createServer() {
   const app = express();
 
-  const corsOptions = {
-    origin: 'https://lol-scrims-finder.netlify.app/',
+  // const corsOptions = {
+  //   origin: 'https://lol-scrims-finder.netlify.app/',
 
-    optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-  };
+  //   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+  // };
 
-  app.use(cors(corsOptions));
+  app.use(cors());
   app.use(bodyParser.json());
   app.use(logger('dev'));
 
