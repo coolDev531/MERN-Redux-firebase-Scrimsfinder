@@ -6,6 +6,9 @@ import 'firebase/firestore'; // for cloud firestore
 import 'firebase/messaging'; // for cloud messaging
 import 'firebase/functions'; // for cloud functions
 
+// the only thing we use in this app is firebase auth to connect to google tbh.
+// we store the users in mongodb.
+
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
