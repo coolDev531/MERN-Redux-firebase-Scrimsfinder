@@ -6,7 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import useTimeout from './../../hooks/useTimeout';
 import { useScrimsActions } from '../../hooks/useScrims';
 
-// button to re-fetch scrims that are visible in the page (see useScrims @ useScrimInterval)
+// this button is used in the navbar to re-fetch the scrims
 export default function RefreshScrimsButton() {
   const { fetchScrims } = useScrimsActions();
 

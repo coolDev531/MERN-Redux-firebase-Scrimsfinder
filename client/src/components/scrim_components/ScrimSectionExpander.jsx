@@ -12,6 +12,7 @@ import styled from '@emotion/styled'; // decided to use styled components becaus
 import ShowLessIcon from '@mui/icons-material/ExpandLess';
 import ShowMoreIcon from '@mui/icons-material/ExpandMore';
 
+// the expand more or less button at the bottom of the scrim box at the home page
 export default function ScrimSectionExpander({
   isBoxExpanded,
   setIsBoxExpanded,
