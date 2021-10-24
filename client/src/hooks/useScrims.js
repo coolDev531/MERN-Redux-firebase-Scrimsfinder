@@ -2,10 +2,9 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import useInterval from '../hooks/useInterval';
 
 // utils and services
-import { getAllScrims, getScrimById } from '../services/scrims.services';
+import { getAllScrims } from '../services/scrims.services';
 import devLog from '../utils/devLog';
 import { showEarliestFirst, showLatestFirst } from '../utils/getSortedScrims';
 import { compareDates } from '../utils/compareDates';
@@ -133,50 +132,6 @@ export const useFetchScrims = () => {
   }, [pathname]);
 
   return null;
-};
-
-const ONE_SCRIM_FETCH_INTERVAL = 5000;
-
-// load one isBoxExpanded /detail page scrim every 5 seconds, also listens to reload click to re-fetch
-export const useFetchScrimInterval = (isInDetail, isBoxExpanded, scrim) => {
-  const [oneScrim, setOneScrim] = useState(scrim);
-
-  const isBoxExpandedRef = useRef();
-  const isInDetailRef = useRef();
-
-  useEffect(() => {
-    isBoxExpandedRef.current = isBoxExpanded;
-    isInDetailRef.current = isInDetail;
-  });
-
-  const fetchScrimData = async () => {
-    // if user is in detail just continue (dont worry about isBoxExpanded)
-    // if user is in home and scrim isn't isBoxExpanded don't continue.
-    if (!isBoxExpandedRef.current && !isInDetailRef.current) return;
-
-    const gameEnded = oneScrim?.teamWon ?? false;
-
-    // don't fetch on interval if game has ended, there is nothing that is going to change except maybe the image
-    if (gameEnded) return;
-
-    devLog(`fetching one scrim on interval (${scrim?._id})`);
-
-    const scrimData = await getScrimById(scrim?._id);
-
-    if (scrimData?.createdBy) {
-      setOneScrim(scrimData);
-    }
-  };
-
-  // and the main gaol of the hook, fetch on interval.
-  useInterval(fetchScrimData, ONE_SCRIM_FETCH_INTERVAL);
-
-  useEffect(() => {
-    // everytime the scrim changes, set it to whatever it is
-    setOneScrim(scrim);
-  }, [scrim]);
-
-  return [oneScrim, setOneScrim];
 };
 
 export const useScrimSocket = (scrimData, isBoxExpanded) => {

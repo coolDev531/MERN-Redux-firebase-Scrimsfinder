@@ -4,7 +4,6 @@ const initialState = {
   scrims: [],
   filteredScrims: [], // filtered scrims by date and region
   scrimsLoaded: false,
-  toggleFetch: false, // will fetch visible scrims on page (useFetchScrimInterval) whenever this boolean changes
 
   scrimsDate: moment(), // the date value to filter the scrims by
 
@@ -88,13 +87,6 @@ export default function scrimsReducer(state = initialState, action) {
         filteredScrims: state.filteredScrims.map((scrim) =>
           String(scrim._id) === String(payload._id) ? payload : scrim
         ),
-      };
-    }
-
-    case 'scrims/toggleFetch': {
-      return {
-        ...state,
-        toggleFetch: !state.toggleFetch,
       };
     }
 

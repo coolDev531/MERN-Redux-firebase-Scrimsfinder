@@ -4,6 +4,7 @@ import Typography from '@mui/material/Typography';
 import { Fade } from 'react-awesome-reveal';
 import ScrimSection from './ScrimSection';
 
+// used in Scrims.jsx
 export default function ScrimsColumn({ show, scrims, headerText, altText }) {
   return (
     show && (

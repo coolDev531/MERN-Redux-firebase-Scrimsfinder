@@ -45,9 +45,6 @@ export default function ScrimSection({ scrimData, isInDetail }) {
   const [imageUploaded, setImageUploaded] = useState(false);
   const [buttonsDisabled, setButtonsDisabled] = useState(false); // for when players spam joining or leaving.
 
-  // useFetchScrimInterval: fetch one scrim on 5 sec interval, will run when isBoxExpanded or when in detail page.
-  // the setScrim is only going to update the scrim in this component, not in the redux store.
-  // this is so we don't have to loop through every scrim ever to rerender the component when players make changes
   const [scrim, setScrim] = useScrimSocket(scrimData, isBoxExpanded);
 
   const scrimBoxRef = useRef(null); // element container
