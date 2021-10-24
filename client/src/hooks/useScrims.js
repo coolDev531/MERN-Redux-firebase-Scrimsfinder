@@ -145,7 +145,7 @@ export const useScrimSocket = (scrimData, isBoxExpanded) => {
   });
 
   useEffect(() => {
-    socket.current?.on('getScrimTransaction', async (updatedScrim) => {
+    socket?.on('getScrimTransaction', async (updatedScrim) => {
       if (isBoxExpandedRef.current !== updatedScrim?._id) return;
       devLog('getScrimTransaction socket, updated scrim: ', updatedScrim);
       setScrim(updatedScrim);

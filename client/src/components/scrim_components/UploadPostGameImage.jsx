@@ -81,7 +81,7 @@ export default function UploadPostGameImage({
         });
 
         setScrim(updatedScrim);
-        socket.current?.emit('sendScrimTransaction', updatedScrim);
+        socket?.emit('sendScrimTransaction', updatedScrim);
       }
 
       setButtonDisabled(false);
@@ -156,7 +156,7 @@ export default function UploadPostGameImage({
         setScrim(updatedScrim);
         setButtonDisabled(false);
 
-        socket.current?.emit('sendScrimTransaction', updatedScrim);
+        socket?.emit('sendScrimTransaction', updatedScrim);
       }
     } catch (err) {
       console.log('error uploading image:', err);

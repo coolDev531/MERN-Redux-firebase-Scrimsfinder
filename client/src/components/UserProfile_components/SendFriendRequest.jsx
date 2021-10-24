@@ -47,7 +47,7 @@ export default function SendFriendRequest({ user, setUser }) {
       };
 
       // send notification to user who received the frind request
-      socket.current?.emit('sendNotification', newNotification);
+      socket?.emit('sendNotification', newNotification);
 
       setUser((prevState) => ({
         ...prevState,

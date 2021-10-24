@@ -104,7 +104,7 @@ export default function ScrimTeamList({
     if (updatedScrim?.createdBy) {
       setScrim(updatedScrim);
 
-      socket.current?.emit('sendScrimTransaction', updatedScrim);
+      socket?.emit('sendScrimTransaction', updatedScrim);
     }
 
     setButtonsDisabled(false);
@@ -129,7 +129,7 @@ export default function ScrimTeamList({
     if (updatedScrim?.createdBy) {
       setScrim(updatedScrim);
 
-      socket.current?.emit('sendScrimTransaction', updatedScrim);
+      socket?.emit('sendScrimTransaction', updatedScrim);
     }
 
     setButtonsDisabled(false);
@@ -148,7 +148,7 @@ export default function ScrimTeamList({
     if (updatedScrim?.createdBy) {
       setScrim(updatedScrim);
 
-      socket.current?.emit('sendScrimTransaction', updatedScrim);
+      socket?.emit('sendScrimTransaction', updatedScrim);
     }
 
     setButtonsDisabled(false);
@@ -169,7 +169,7 @@ export default function ScrimTeamList({
     if (updatedScrim?.createdBy) {
       setScrim(updatedScrim);
 
-      socket.current?.emit('sendScrimTransaction', updatedScrim);
+      socket?.emit('sendScrimTransaction', updatedScrim);
     }
 
     setButtonsDisabled(false);

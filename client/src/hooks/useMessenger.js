@@ -49,9 +49,9 @@ export default function useMessenger() {
   useEffect(() => {
     if (!currentUser?._id) return;
 
-    socket.current.emit('addUser', currentUser?._id);
+    socket.emit('addUser', currentUser?._id);
 
-    socket.current.on('getUsers', (users) => {
+    socket.on('getUsers', (users) => {
       devLog('socket getUsers event: ', users);
 
       // if you want to get all online users
@@ -70,13 +70,13 @@ export default function useMessenger() {
       });
     });
 
-    socket.current.on('getConversation', async (data) => {
+    socket.on('getConversation', async (data) => {
       devLog('socket getConversation event: ', data);
 
       if (data.receiverId === currentUser._id) {
         const newConversation = await findOneConversation(
           data.senderId,
-          data.receiverId,
+          data.receiverId
         );
 
         dispatch({
@@ -93,7 +93,7 @@ export default function useMessenger() {
   useEffect(() => {
     if (!currentUser?._id) return;
 
-    socket.current?.on('getMessage', (data) => {
+    socket?.on('getMessage', (data) => {
       setArrivalMessage({ ...data, _id: data.messageId });
     });
 
@@ -154,12 +154,12 @@ export const useScrimChat = (open, scrimId, userId) => {
 
   useEffect(() => {
     if (open) {
-      socket.current.emit('scrimChatOpen', {
+      socket.emit('scrimChatOpen', {
         scrimId,
         userId,
       });
 
-      socket.current.on('getScrimusers', (users) => {
+      socket.on('getScrimusers', (users) => {
         devLog('socket getScrimUsers event: ', users);
       });
     }

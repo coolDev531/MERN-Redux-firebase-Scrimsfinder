@@ -30,7 +30,7 @@ export default function ScrimChatRoomModal() {
   const { allUsers } = useUsers();
   const { currentUser } = useAuth();
   const [{ scrimChatRoomOpen }, { msgNotificationVolume }] = useSelector(
-    ({ general, messenger }) => [general, messenger],
+    ({ general, messenger }) => [general, messenger]
   );
 
   const { conversation, isOpen: open, scrimId, extraTitle } = scrimChatRoomOpen;
@@ -65,7 +65,7 @@ export default function ScrimChatRoomModal() {
   useEffect(() => {
     if (!open) return;
     // take event from server
-    socket.current?.on('getScrimMessage', (data) => {
+    socket?.on('getScrimMessage', (data) => {
       devLog('getScrimMessage event: ', data);
       setArrivalMessage({
         _sender: allUsers.find((user) => user._id === data.senderId),
@@ -86,7 +86,7 @@ export default function ScrimChatRoomModal() {
           return (
             new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
           );
-        }),
+        })
       );
 
       setIsLoaded(true);
@@ -104,7 +104,7 @@ export default function ScrimChatRoomModal() {
   useEffect(() => {
     return () => {
       // eslint-disable-next-line
-      socket.current?.emit('scrimChatClose', {
+      socket?.emit('scrimChatClose', {
         userId: currentUser._id,
         scrimId,
       });
@@ -139,7 +139,7 @@ export default function ScrimChatRoomModal() {
         // send event to server after creating on client and posting to api
         devLog('EMIT'); // emits only once
 
-        socket.current?.emit('sendScrimMessage', {
+        socket?.emit('sendScrimMessage', {
           senderId: currentUser?._id,
           text: msgText,
           messageId: newlyCreatedMessage._id,
@@ -164,7 +164,7 @@ export default function ScrimChatRoomModal() {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [currentUser?._id, conversation?._id],
+    [currentUser?._id, conversation?._id]
   );
 
   useEffect(() => {
@@ -190,15 +190,13 @@ export default function ScrimChatRoomModal() {
       customStyles={{}}
       contentClassName={classes.modalContent}
       open={open}
-      onClose={onClose}
-    >
+      onClose={onClose}>
       {!isLoaded || !conversation?._id ? (
         <div
           style={{
             padding: '50px',
             margin: '100px 0',
-          }}
-        >
+          }}>
           <LinearProgress />
         </div>
       ) : (
@@ -207,8 +205,7 @@ export default function ScrimChatRoomModal() {
             minWidth: '400px',
             display: 'flex',
             flexDirection: 'column',
-          }}
-        >
+          }}>
           <div className={classes.chatRoomMessagesContainer} ref={scrollRef}>
             {messages.map((message) => (
               // one message

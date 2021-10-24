@@ -12,11 +12,11 @@ const socketServerUrl =
     : 'ws://localhost:8900';
 
 export const useCreateSocket = () => {
-  const socket = useRef();
   const dispatch = useDispatch();
+
   // initialize socket
   useEffect(() => {
-    socket.current = io(socketServerUrl);
+    let socket = io(socketServerUrl);
 
     dispatch({ type: 'socket/setSocket', payload: socket });
 

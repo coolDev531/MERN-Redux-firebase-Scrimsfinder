@@ -58,7 +58,7 @@ export default function CreateNewConversationButton({
 
       devLog('new message added to the conversation!', newlyCreatedMessage);
 
-      socket.current?.emit('sendConversation', {
+      socket?.emit('sendConversation', {
         senderId: currentUser?._id,
         receiverId: receiverUser._id,
         conversationId: newConversation._id,
@@ -68,7 +68,7 @@ export default function CreateNewConversationButton({
       devLog('EMIT'); // emits only once
 
       // send to receiver user that he got new message
-      socket.current?.emit('sendMessage', {
+      socket?.emit('sendMessage', {
         senderId: currentUser?._id,
         text: newlyCreatedMessage.text,
         receiverId: newlyCreatedMessage._receiver,

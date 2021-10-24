@@ -151,7 +151,7 @@ export default function ScrimSection({ scrimData, isInDetail }) {
     // using .createdBy because on error it wont return populated scrim, so we don't set the scrim
     if (updatedScrim?.createdBy) {
       setScrim(updatedScrim);
-      socket.current?.emit('sendScrimTransaction', updatedScrim);
+      socket?.emit('sendScrimTransaction', updatedScrim);
     }
 
     setButtonsDisabled(false);
@@ -169,7 +169,7 @@ export default function ScrimSection({ scrimData, isInDetail }) {
 
     if (updatedScrim?.createdBy) {
       setScrim(updatedScrim);
-      socket.current?.emit('sendScrimTransaction', updatedScrim);
+      socket?.emit('sendScrimTransaction', updatedScrim);
     }
 
     setButtonsDisabled(false);

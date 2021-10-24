@@ -61,7 +61,7 @@ export default function ChatRoomModal() {
   useEffect(() => {
     if (!isOpen) return;
     // take event from server
-    socket.current?.on('getMessage', async (data) => {
+    socket?.on('getMessage', async (data) => {
       devLog('getMessage event: ', data);
 
       setArrivalMessage({
@@ -182,7 +182,7 @@ export default function ChatRoomModal() {
         // send event to server after creating on client and posting to api
         devLog('EMIT'); // emits only once
 
-        socket.current?.emit('sendMessage', {
+        socket?.emit('sendMessage', {
           senderId: currentUser?._id,
           text: msgText,
           receiverId: receiver?._id,

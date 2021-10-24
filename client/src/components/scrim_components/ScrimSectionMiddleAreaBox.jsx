@@ -151,7 +151,7 @@ export default function ScrimSectionMiddleAreaBox({
 
                                 if (updatedScrim?.createdBy) {
                                   setScrim(updatedScrim);
-                                  socket.current?.emit(
+                                  socket?.emit(
                                     'sendScrimTransaction',
                                     updatedScrim
                                   );

@@ -76,7 +76,7 @@ export default function FriendRequestsModal() {
         };
 
         // send event to friend user.
-        socket.current?.emit('sendNotification', receiverNotification);
+        socket?.emit('sendNotification', receiverNotification);
 
         // send notification to user who requested the friend request (current User)
         await pushUserNotification(requestUser._id, {

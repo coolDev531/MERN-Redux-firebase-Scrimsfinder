@@ -20,7 +20,7 @@ export default function useNotifications() {
     if (!currentUser?._id) return;
 
     // listen to socket server and get notification data.
-    socket.current.on('getNotification', async (data) => {
+    socket.on('getNotification', async (data) => {
       devLog('socket getNotification event: ', data);
       if (currentUser._id === data.receiverId) {
         const newNotification = {
