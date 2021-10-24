@@ -24,7 +24,7 @@ router.post(
 ); // POST
 
 router.get(
-  '/users/user-friend-requests/:userId',
+  '/users/user-friend-requests/:id',
   controllers.getUserFriendRequests
 ); // GET
 

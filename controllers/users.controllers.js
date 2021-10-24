@@ -45,12 +45,15 @@ const getAllUsers = async (req, res) => {
   }
 };
 
+// @route   GET /api/users/:name?region="region" (NA, LAN, EUW,EUNE, OCE)
+// @desc    get one user by name, also accepts region query, used in the user profile page
+// @access  Public
 const getOneUser = async (req, res) => {
   try {
     let { name } = req.params;
     let region = req.query.region;
 
-    // if user wasn't provided in the query, set it to the first user you can find that matches the name
+    // if region wasn't provided in the query, set it to the first user you can find that matches the name
     if (!region) {
       let foundUser = await User.findOne({
         name: {
@@ -64,6 +67,7 @@ const getOneUser = async (req, res) => {
       region = foundUser.region;
     }
 
+    // upper case region if casing misspelled on postman.
     region = region.toUpperCase();
 
     if (!REGIONS.includes(region)) {
@@ -98,9 +102,10 @@ const getOneUser = async (req, res) => {
 
     let userWithNoAdminKey = {
       ...user._doc,
-      isAdmin: user.adminKey === KEYS.ADMIN_KEY, // boolean,
+      isAdmin: user.adminKey === KEYS.ADMIN_KEY, // isAdmin boolean,
     };
 
+    // don't show admin key in the response
     let deletedAdminKey = delete userWithNoAdminKey.adminKey;
 
     if (deletedAdminKey) {
@@ -113,6 +118,9 @@ const getOneUser = async (req, res) => {
   }
 };
 
+// @route   GET api/users/:id/created-scrims
+// @desc    get all scrims that were created by that one user. (can only be seen by if _id === self._id at UserProfile page)
+// @access  Public
 const getUserCreatedScrims = async (req, res) => {
   try {
     const { id } = req.params;
@@ -138,7 +146,9 @@ const getUserCreatedScrims = async (req, res) => {
   }
 };
 
-// get scrims where the user was a caster, or a player
+// @route   GET /api/users/:id/scrims
+// @desc    get scrims where the user praticipated, ex: user was a caster, or a player (used in UserProfile page)
+// @access  Public
 const getUserParticipatedScrims = async (req, res) => {
   try {
     const { id } = req.params;
@@ -162,10 +172,12 @@ const getUserParticipatedScrims = async (req, res) => {
 
       const scrimPlayers = scrimTeams.map(({ _user }) => String(_user));
 
-      const foundPlayer = scrimPlayers.find((id) => String(user._id) === id);
+      const foundPlayer = scrimPlayers.find(
+        (userId) => String(user._id) === String(userId)
+      );
 
       const foundCaster = scrim.casters.find(
-        (id) => String(id) === String(user._id)
+        (casterId) => String(casterId) === String(user._id)
       );
 
       if (foundPlayer) {
@@ -185,6 +197,9 @@ const getUserParticipatedScrims = async (req, res) => {
   }
 };
 
+// @route   GET /api/users/by-id/:id
+// @desc    get a specific user by user._id
+// @access  Public
 const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -214,6 +229,7 @@ const getUserById = async (req, res) => {
       isAdmin: user.adminKey === KEYS.ADMIN_KEY, // boolean,
     };
 
+    // don't show the admin key in the response
     let deletedAdminKey = delete userWithNoAdminKey.adminKey; // delete adminkey so not returned in resp
 
     if (deletedAdminKey) {
@@ -226,8 +242,12 @@ const getUserById = async (req, res) => {
   }
 };
 
+// @route   GET /api/users/user-notifications/:id
+// @desc    get a specific users notifications
+// @access  Public
 const getUserNotifications = async (req, res) => {
   try {
+    // should probably have some sort of authorization here by comparing uid with bcrypt.
     const { id } = req.params;
 
     let isValid = mongoose.Types.ObjectId.isValid(id);
@@ -246,6 +266,9 @@ const getUserNotifications = async (req, res) => {
   }
 };
 
+// @route   POST api/users/:id/push-notification/
+// @desc    send a notification to a specific user
+// @access  Public
 const pushUserNotification = async (req, res) => {
   const { id } = req.params;
   const relatedUserId = req?.body?.relatedUserId ?? null;
@@ -271,9 +294,9 @@ const pushUserNotification = async (req, res) => {
 
   const newNotification = {
     message: req.body.message,
-    _relatedUser: foundRelatedUser,
-    _relatedScrim: foundRelatedScrim,
-    createdDate: new Date(req.body.createdDate),
+    _relatedUser: foundRelatedUser, // should probably be user sent by (friend request)
+    _relatedScrim: foundRelatedScrim, // _relatedScrim isn't used it, but would be for a scrim that he is participating in (10 min heads up notification?)
+    createdDate: new Date(req.body.createdDate), // we don't need this because mongoose already provides timestamps, I think I did this because of a bug.
   };
 
   const reqBody = {
@@ -299,6 +322,9 @@ const pushUserNotification = async (req, res) => {
   );
 };
 
+// @route   POST /api/users/:userId/remove-notification/:notificationId
+// @desc    remove one notification from a user (ex: mark as read)
+// @access  Public
 const removeUserNotification = async (req, res) => {
   try {
     const { userId, notificationId } = req.params;
@@ -341,6 +367,9 @@ const removeUserNotification = async (req, res) => {
   }
 };
 
+// @route   POST /api/users/remove-all-notifications/:id
+// @desc    remove all user notifications. (ex: mark all as read)
+// @access  Public
 const removeAllUserNotifications = async (req, res) => {
   try {
     const { id } = req.params;
@@ -444,6 +473,9 @@ const sendFriendRequest = async (req, res) => {
   }
 };
 
+// @route   POST /users/:userId/remove-friend-request/:requestId
+// @desc    remove one friend request from user (ex: reject a friend request)
+// @access  Public
 const removeFriendRequest = async (req, res) => {
   try {
     const { requestId, userId } = req.params;
@@ -470,6 +502,9 @@ const removeFriendRequest = async (req, res) => {
   }
 };
 
+// @route   POST api/users/add-new-friend/:id
+// @desc    add a new friend to both parties (the friend requesting and accepting), this happens when a friend request is accepted
+// @access  Public
 const addUserFriend = async (req, res) => {
   const { id } = req.params;
 
@@ -479,7 +514,7 @@ const addUserFriend = async (req, res) => {
 
   if (sendingToSelf) {
     return res.status(500).json({
-      error: 'Friend request cannot be sent to yourself',
+      error: 'Friend request cannot be accepted by yourself',
     });
   }
 
@@ -531,6 +566,9 @@ const addUserFriend = async (req, res) => {
   });
 };
 
+// @route   POST api/users/remove-friend/:id
+// @desc    when both users are already friends but one user decides to "Unfriend" the friend.
+// @access  Public
 const removeUserFriend = async (req, res) => {
   const { id } = req.params;
 
@@ -582,10 +620,14 @@ const nestedPopulate = (path, modelPath) => {
   };
 };
 
+// @route   POST api/users/user-friend-requests/:id
+// @desc    get friend requests for that one user.
+// @access  Public
 const getUserFriendRequests = async (req, res) => {
   try {
-    const { userId } = req.params;
-    return await User.findById(userId)
+    const { id } = req.params;
+    console.log('ID', id);
+    return await User.findById(id)
       .populate(nestedPopulate('friendRequests', '_user'))
       .exec((err, user) => {
         const friendRequests = user?.friendRequests ?? [];
