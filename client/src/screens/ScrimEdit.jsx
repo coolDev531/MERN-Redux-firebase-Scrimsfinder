@@ -133,7 +133,9 @@ export default function ScrimEdit() {
       let date = new Date(value);
       date.setMinutes(0, 0, 0);
 
-      date = new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
+      // value isn't giving us the timezoneOffset.
+      // getTime() gives you the date's representation in milliseconds
+      date = new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000); // converting timezone offset to time, 1 minute has 60 seconds, to convert it to milliseconds you multiply it by a thousand
 
       setDateData((prevState) => ({
         ...prevState,
