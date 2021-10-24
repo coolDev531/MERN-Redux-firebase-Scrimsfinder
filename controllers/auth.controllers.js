@@ -6,6 +6,8 @@ const jwt = require('jsonwebtoken');
 // models
 const User = require('../models/user.model');
 
+const { REGIONS } = require('../utils/constants');
+
 const divisionsWithNumbers = [
   'Iron',
   'Bronze',
@@ -136,7 +138,7 @@ const registerUser = async (req, res) => {
       discord: { $regex: `^${noSpacesDiscord}$`, $options: 'i' },
     });
 
-    const regionInvalid = !['NA', 'OCE', 'EUW', 'EUNE', 'LAN'].includes(region);
+    const regionInvalid = !REGIONS.includes(region);
 
     const rankDivision = rank.replace(/[0-9]/g, '').trim();
 
@@ -377,9 +379,7 @@ const updateUser = async (req, res) => {
 
   // check for valid region
   if (req.body.region) {
-    const regionInvalid = !['NA', 'OCE', 'EUW', 'EUNE', 'LAN'].includes(
-      req.body.region
-    );
+    const regionInvalid = !REGIONS.includes(req.body.region);
 
     if (regionInvalid) {
       return res.status(500).json({

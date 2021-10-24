@@ -25,7 +25,6 @@ import Loading from '../components/shared/Loading';
 
 // utils and services
 import { createScrim } from '../services/scrims.services';
-import { getMinutes } from './../utils/getMinutes';
 import moment from 'moment';
 import 'moment-timezone';
 import devLog from './../utils/devLog';
@@ -37,7 +36,7 @@ export default function ScrimCreate() {
 
   const [scrimData, setScrimData] = useState({
     gameStartTime: new Date().toISOString(),
-    lobbyHost: currentUser,
+    lobbyHost: currentUser?._id,
     region: currentUser?.region,
     createdBy: currentUser,
     title: '',
@@ -46,7 +45,7 @@ export default function ScrimCreate() {
 
   const [dateData, setDateData] = useState({
     gameStartDate: new Date(),
-    gameStartHours: [new Date().getHours().toString(), getMinutes(new Date())],
+    gameStartHours: [new Date().getHours().toString(), new Date().getMinutes()],
   });
 
   const [createdScrim, setCreatedScrim] = useState(null);
@@ -116,7 +115,7 @@ export default function ScrimCreate() {
       const dataSending = {
         ...scrimData,
         adminKey: currentUser?.adminKey ?? '', // to verify if is admin (authorize creation).
-        lobbyHost: scrimData.lobbyHost === 'random' ? null : currentUser,
+        lobbyHost: scrimData.lobbyHost === 'random' ? null : currentUser._id,
       };
 
       const newlyCreatedScrim = await createScrim(dataSending, setCurrentAlert);
@@ -316,9 +315,9 @@ export default function ScrimCreate() {
                       }))
                     }
                     value={scrimData.lobbyHost}>
-                    {[currentUser, 'random'].map((value, key) => (
+                    {[currentUser?._id, 'random'].map((value, key) => (
                       <MenuItem value={value} key={key}>
-                        {value === currentUser
+                        {value === currentUser._id
                           ? 'I will host the lobby'
                           : 'Random host!'}
                       </MenuItem>

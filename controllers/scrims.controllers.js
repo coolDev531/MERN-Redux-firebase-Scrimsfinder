@@ -907,7 +907,7 @@ const removeImageFromScrim = async (req, res) => {
   }
 };
 
-// @route   POST /api/scrims/:id/set-winner
+// @route   PATCH /api/scrims/:id/set-winner
 // @desc    select a winner for the scrim, only an admin or a lobby host can select a winner
 // @access  Public
 const setScrimWinner = async (req, res) => {

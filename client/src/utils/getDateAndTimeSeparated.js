@@ -1,5 +1,3 @@
-import { getMinutes } from './getMinutes';
-
 // separate date, hours and minutes
 export const getDateAndTimeSeparated = (dt) => {
   // convert it ISO date.
@@ -9,7 +7,7 @@ export const getDateAndTimeSeparated = (dt) => {
   let hours = new Date(date).getHours();
 
   // get minutes
-  let minutes = getMinutes(new Date(date));
+  let minutes = new Date(date).getMinutes();
 
   // get only the date with the minutes and hours set to 0.
 

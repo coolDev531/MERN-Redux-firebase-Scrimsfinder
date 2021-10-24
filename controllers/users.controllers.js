@@ -3,14 +3,19 @@ const Scrim = require('../models/scrim.model');
 const KEYS = require('../config/keys');
 const mongoose = require('mongoose');
 const escape = require('escape-html'); // sanitize request params
+const { REGIONS } = require('../utils/constants');
 
+// @route   GET /api/users
+// @desc    get all users for the app
+// @access  Public
 const getAllUsers = async (req, res) => {
   const region = req.query?.region;
   // /api/users?region=NA
+  // optional query to get the users in a specific region, not used in the app
   if (region) {
     try {
       // don't show other fields, using select.
-      const users = await User.find({ region }).select([
+      const users = await User.find({ region: { $eq: region } }).select([
         'discord',
         'name',
         'rank',
@@ -61,12 +66,10 @@ const getOneUser = async (req, res) => {
 
     region = region.toUpperCase();
 
-    const regions = ['NA', 'EUW', 'EUNE', 'LAN', 'OCE'];
-
-    if (!regions.includes(region)) {
+    if (!REGIONS.includes(region)) {
       return res.status(404).json({
         message:
-          'Invalid region, please select one of the following: NA, EUW, EUNE, LAN.',
+          'Invalid region, please select one of the following: NA, EUW, EUNE, LAN, OCE',
       });
     }
 
