@@ -50,7 +50,7 @@ const main = async () => {
     title: `${users[0].name}'s scrim`,
     lobbyName: 'Scrim 1 Custom Game (NA)',
     lobbyHost: users[0],
-    teamWon: 'Team 2 (Red Side)',
+    teamWon: 'teamTwo',
   });
 
   let scrim2 = new Scrim({
@@ -106,7 +106,7 @@ const main = async () => {
     title: `${users[0].name}'s scrim`,
     lobbyName: 'Scrim 1 Custom Game (NA)',
     lobbyHost: users[0],
-    teamWon: 'Team 1 (Blue Side)',
+    teamWon: 'teamOne',
   });
 
   let scrims = [scrim1, scrim2, scrim3, scrim4, scrim5];

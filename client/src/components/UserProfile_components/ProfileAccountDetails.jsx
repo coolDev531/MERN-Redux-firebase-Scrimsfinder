@@ -62,11 +62,10 @@ export default function ProfileAccountDetails({
         gamesPlayedCount += 1;
       }
 
-      const playerTeamName = foundPlayer?.team?.name; // TeamOne, TeamTwo.
-      const playerTeamNumber = playerTeamName === 'teamOne' ? '1' : '2';
+      const playerTeamName = foundPlayer?.team?.name; // teamOne, teamTwo.
 
-      const winnerTeam = scrim?.teamWon;
-      const playerWon = winnerTeam?.includes(playerTeamNumber);
+      const winnerTeamName = scrim?.teamWon;
+      const playerWon = winnerTeamName === playerTeamName;
 
       if (playerWon) {
         expResult += 3; // 3 points for winning

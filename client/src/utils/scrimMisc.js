@@ -1,33 +1,17 @@
 /**
- * @method getCamelCaseTeamName
- * @param {String} teamNameUnformatted not camelCased team name from back-end, ex: Team 1 (Blue Side)
- * @returns {String} formated camelCased team name
- */
-export const getCamelCaseTeamName = (teamNameUnformatted) => {
-  if (!teamNameUnformatted) return null;
-
-  const resultTeamName = teamNameUnformatted.includes('1')
-    ? 'teamOne'
-    : 'teamTwo';
-
-  return resultTeamName;
-};
-
-/**
  * @method getTeamBackgroundColor
+ * for ScrimTeamList to render background color for winner/loser
  * @param {String} teamName
- * @param {String} winnerTeamNameUnformatted not camelCased team name from back-end, ex: Team 1 (Blue Side)
+ * @param {String} winnerTeamName ex: teamOne, teamTwo
  * @returns {{normal: string, gradient: string}}
  */
-export const getTeamBackgroundColor = (teamName, winnerTeamNameUnformatted) => {
+export const getTeamBackgroundColor = (teamName, winnerTeamName) => {
   const initialState = {
     normal: 'inherit',
     gradient: 'inherit',
   };
 
-  if (!winnerTeamNameUnformatted) return initialState;
-
-  const winnerTeamName = getCamelCaseTeamName(winnerTeamNameUnformatted);
+  if (!winnerTeamName) return initialState;
 
   const greenResult = {
     normal: '#63d471',
