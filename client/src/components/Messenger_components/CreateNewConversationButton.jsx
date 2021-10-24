@@ -19,6 +19,7 @@ import { postNewConversation } from '../../services/conversations.services';
 import { postNewMessage } from '../../services/messages.services';
 
 // CreateNewConversation button
+// is inside ConversationCreateModal
 export default function CreateNewConversationButton({
   currentUser,
   receiverUser,
