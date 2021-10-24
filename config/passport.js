@@ -12,6 +12,8 @@ opts.secretOrKey = KEYS.SECRET_OR_KEY;
  I am storing the uid and email in the database,
  google said something about using the uid to compare and verify the user in your own database.
  So I'm hashing it, but I probably didn't even need to do it because google uids are unique to the app.
+
+ we are planning to scrap firebase for discord auth anyways so we won't need this type of authentication anyways
 */
 
 module.exports = (passport) => {
