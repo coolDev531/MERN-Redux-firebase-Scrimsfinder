@@ -183,7 +183,10 @@ export default function ScrimSection({ scrimData, isInDetail }) {
       let yes = window.confirm('Are you sure you want to close this scrim?');
       if (!yes) return;
 
-      let deletedScrim = await deleteScrim(scrim._id);
+      let deletedScrim = await deleteScrim(
+        scrim._id,
+        currentUser.adminKey ?? ''
+      );
 
       if (deletedScrim) {
         dispatch({ type: 'scrims/deleteScrim', payload: scrim });
@@ -199,7 +202,9 @@ export default function ScrimSection({ scrimData, isInDetail }) {
       }
     } catch (err) {
       console.error(err);
-      setCurrentAlert({ type: 'Error', message: 'Error removing scrim' });
+      const errorMsg = err?.response?.data?.error ?? 'error removing scrim';
+
+      setCurrentAlert({ type: 'Error', message: errorMsg });
     }
   };
 

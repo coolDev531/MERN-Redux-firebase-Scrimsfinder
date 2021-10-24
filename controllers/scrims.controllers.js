@@ -17,6 +17,7 @@ const {
   populateUser,
   getLobbyName,
   getLobbyHost,
+  populateOneScrim,
 } = require('../utils/scrimUtils');
 const capitalizeWord = require('../utils/capitalizeWord');
 const AWS = require('aws-sdk');
@@ -30,7 +31,7 @@ let s3Bucket = new AWS.S3({
   secretAccessKey: KEYS.S3_SECRET_ACCESS_KEY,
 });
 
-// @route   GET /api/scrims/
+// @route   GET /api/scrims
 // @desc    Get all scrims / games.
 // @access  Public
 const getAllScrims = async (req, res) => {
@@ -128,7 +129,7 @@ const getScrimById = async (req, res) => {
   }
 };
 
-// @route   POST /api/scrims/
+// @route   POST /api/scrims
 // @desc    create a new scrim / game
 // @access  Private (only people with the admin key can see this page in the app and create one)
 const createScrim = async (req, res) => {
@@ -137,7 +138,7 @@ const createScrim = async (req, res) => {
       _id: { $eq: req.body.createdBy._id },
     });
 
-    // if adminkey isn't provided or is incorrect, throw an error/
+    // if adminkey isn't provided or is incorrect, throw an error
     // it would probably be better to use discord and just give people admin roles instead of entering a key.
     if (!req.body.adminKey || req.body.adminKey !== KEYS.ADMIN_KEY) {
       return res
@@ -180,15 +181,22 @@ const createScrim = async (req, res) => {
   }
 };
 
+// @route   PUT /api/scrims/:id
+// @desc    update an existing scrim (is ScrimEdit in the react app)
+// @access  Private (only people with the admin key can update a scrim)
 const updateScrim = async (req, res) => {
-  // for admins changing scrim data not average user.
-
   const { id } = req.params;
 
   let isValid = mongoose.Types.ObjectId.isValid(id);
 
   if (!isValid) {
     return res.status(500).json({ error: 'invalid id' });
+  }
+
+  // if adminkey isn't provided or is incorrect, throw an error
+  // it would probably be better to use discord and just give people admin roles instead of entering a key.
+  if (!req.body.adminKey || req.body.adminKey !== KEYS.ADMIN_KEY) {
+    return res.status(500).json({ error: 'Cannot update scrim: unauthorized' });
   }
 
   await Scrim.findByIdAndUpdate(id, req.body, { new: true }, (error, scrim) => {
@@ -209,6 +217,9 @@ const updateScrim = async (req, res) => {
     .exec();
 };
 
+// @route   DELETE /api/scrims/:id
+// @desc    delete an existing scrim
+// @access  Private (only people with the admin key can delete a scrim)
 const deleteScrim = async (req, res) => {
   try {
     const { id } = req.params;
@@ -217,6 +228,14 @@ const deleteScrim = async (req, res) => {
 
     if (!isValid) {
       return res.status(500).json({ error: 'invalid id' });
+    }
+
+    // if adminkey isn't provided or is incorrect, throw an error
+    // it would probably be better to use discord and just give people admin roles instead of entering a key.
+    if (!req.body.adminKey || req.body.adminKey !== KEYS.ADMIN_KEY) {
+      return res
+        .status(500)
+        .json({ error: 'Cannot delete scrim: unauthorized' });
     }
 
     const deleted = await Scrim.findByIdAndDelete(id);
@@ -229,6 +248,9 @@ const deleteScrim = async (req, res) => {
   }
 };
 
+// @route   PATCH /api/scrims/:scrimId/insert-player/:userId
+// @desc    This is how a player joins a team in the scrim (is used in ScrimTeamList.jsx)
+// @access  Public
 const insertPlayerInScrim = async (req, res) => {
   // when player joins
   const session = await Scrim.startSession();
@@ -252,7 +274,7 @@ const insertPlayerInScrim = async (req, res) => {
     if (!playerData) {
       return res.status(500).json({
         error:
-          'playerData object not provided, looks like this: team: {name: String}, role: String',
+          'playerData object not provided, looks like this: playerData: { team: {name: String}, role: String }',
       });
     }
 
@@ -260,7 +282,7 @@ const insertPlayerInScrim = async (req, res) => {
     if (!playerData.team?.name) {
       return res.status(500).json({
         error:
-          'team object not provided! looks like this: playerData {team: {name: String}}',
+          'team object not provided! looks like this: playerData: { {team: {name: String}} }',
       });
     }
 
@@ -336,17 +358,12 @@ const insertPlayerInScrim = async (req, res) => {
       [teamJoiningName]: [...teamJoiningArr, playerInTransaction],
     };
 
-    const teamJoiningTitle =
-      teamJoiningName === 'teamOne'
-        ? 'Team 1 (Blue Side)'
-        : 'Team 2 (Red Side)';
-
     const spotTaken = scrim._doc[teamJoiningName].find(
       (player) => player.role === playerInTransaction.role
     );
 
     if (spotTaken) {
-      onSpotTaken(scrim._doc, res, spotsAvailable, teamJoiningTitle);
+      onSpotTaken(scrim._doc, res, spotsAvailable, teamJoiningName);
       return;
     }
 
@@ -595,13 +612,8 @@ const movePlayerInScrim = async (req, res) => {
       };
     }
 
-    const teamJoiningTitle =
-      teamJoiningName === 'teamOne'
-        ? 'Team 1 (Blue Side)'
-        : 'Team 2 (Red Side)';
-
     if (spotTaken) {
-      onSpotTaken(scrim._doc, res, spotsAvailable, teamJoiningTitle);
+      onSpotTaken(scrim._doc, res, spotsAvailable, teamJoiningName);
       return;
     }
 
@@ -868,20 +880,11 @@ const removeImageFromScrim = async (req, res) => {
   }
 };
 
-async function populateOneScrim(scrimId) {
-  const scrimData = await Scrim.findById(scrimId)
-    .populate('createdBy', populateUser)
-    .populate('casters', populateUser)
-    .populate('lobbyHost', populateUser)
-    .populate(populateTeam('teamOne'))
-    .populate(populateTeam('teamTwo'))
-    .exec();
-
-  return scrimData;
-}
-
-async function onSpotTaken(scrim, res, spotsAvailable, teamJoiningTitle) {
+async function onSpotTaken(scrim, res, spotsAvailable, teamJoiningName) {
   const scrimData = await populateOneScrim(scrim._id);
+
+  const teamJoiningTitle =
+    teamJoiningName === 'teamOne' ? 'Team 1 (Blue Side)' : 'Team 2 (Red Side)';
 
   return res.status(500).json({
     error: `spot taken! spots available for ${teamJoiningTitle}: ${spotsAvailable}`,
@@ -910,7 +913,7 @@ const setScrimWinner = async (req, res) => {
 
   scrim.teamWon = winnerTeamName;
 
-  let savedScrim = await scrim.save();
+  await scrim.save();
 
   let populatedScrim = await populateOneScrim(scrim._id);
 

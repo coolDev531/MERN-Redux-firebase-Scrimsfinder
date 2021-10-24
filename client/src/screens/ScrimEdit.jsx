@@ -237,6 +237,7 @@ export default function ScrimEdit() {
 
       const dataSending = {
         ...scrimData,
+        adminKey: currentUser.adminKey ?? '',
         lobbyHost: await getLobbyHost(),
         // if user selected N//A send null for teamWon, else send the actual value and result to null if undefined
         teamWon:

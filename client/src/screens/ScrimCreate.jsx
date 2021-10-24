@@ -140,8 +140,7 @@ export default function ScrimCreate() {
       }
       setIsSubmitting(false);
     } catch (error) {
-      const errorMsg =
-        error?.response?.data?.error ?? 'error creating scrim, try again later';
+      const errorMsg = error?.response?.data?.error ?? 'error creating scrim';
       setCurrentAlert({ type: 'Error', message: errorMsg });
       console.error(error);
       setIsSubmitting(false);

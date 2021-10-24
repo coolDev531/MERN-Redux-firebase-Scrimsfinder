@@ -7,6 +7,13 @@ const opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 opts.secretOrKey = KEYS.SECRET_OR_KEY;
 
+/* this might be a bit overkill
+ but the only reason for passport is because even though users are signing up with firebase:
+ I am storing the uid and email in the database,
+ google said something about using the uid to compare and verify the user in your own database.
+ So I'm hashing it, but I probably didn't even need to do it because google uids are unique to the app.
+*/
+
 module.exports = (passport) => {
   passport.use(
     new JwtStrategy(opts, (jwt_payload, done) => {

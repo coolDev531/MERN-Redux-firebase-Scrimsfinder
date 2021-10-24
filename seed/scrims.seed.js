@@ -7,9 +7,6 @@ const { MONGODB_URI } = require('../utils/constants');
 const mongooseConnect = require('../db/connection');
 const generatePassword = require('../utils/generatePassword');
 
-// for some reason in some of these scrims you can't delete the players out of their role,
-// I think I messed up somewhere in the user seed file.
-
 // seed users first before running this
 const main = async () => {
   let users = await User.find();

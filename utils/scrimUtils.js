@@ -1,3 +1,4 @@
+const Scrim = require('../models/scrim.model');
 const sample = require('./sample');
 
 // utils for scrims.controller.js

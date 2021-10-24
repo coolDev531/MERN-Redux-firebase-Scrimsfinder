@@ -220,9 +220,13 @@ export const removeImageFromScrim = async (id) => {
   }
 };
 
-export const deleteScrim = async (id) => {
+export const deleteScrim = async (id, adminKey) => {
   try {
-    const response = await api.delete(`/scrims/${id}`);
+    const response = await api.delete(`/scrims/${id}`, {
+      data: {
+        adminKey,
+      },
+    });
     return response.data;
   } catch (error) {
     throw error;
