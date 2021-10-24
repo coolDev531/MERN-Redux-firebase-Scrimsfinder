@@ -9,17 +9,18 @@ const getThirtyMinFromNow = () => {
   return d2;
 };
 
+// for s3 bucket upload
 const ImageSchema = new Schema({
-  bucket: { type: String, required: false },
-  key: { type: String, required: false },
-  location: { type: String, required: false },
-  result: { type: Object, required: false },
+  bucket: { type: String },
+  key: { type: String },
+  location: { type: String },
+  result: { type: Object },
   uploadedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // will only show up as user._id if not populated
 });
 
 const PlayerSchema = new Schema({
   role: { type: String },
-  team: { name: { type: String } },
+  team: { name: { type: String } }, // ex: 'teamOne', 'teamTwo'. should've maybe just been teamName?, but now u can easily add more properties.
 
   _user: {
     type: mongoose.Schema.Types.ObjectId,

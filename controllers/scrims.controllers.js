@@ -400,6 +400,9 @@ const insertPlayerInScrim = async (req, res) => {
   session.endSession();
 };
 
+// @route   PATCH /api/scrims/:scrimId/remove-player/:userId
+// @desc    This is how a player leaves a team in the scrim or an admin kicks a player (is used in ScrimTeamList.jsx)
+// @access  Public
 const removePlayerFromScrim = async (req, res) => {
   // when player leaves or gets kicked
   const { userId, scrimId } = req.params;
@@ -468,7 +471,9 @@ const removePlayerFromScrim = async (req, res) => {
     .exec();
 };
 
-// move roles/teams
+// @route   PATCH /api/scrims/:scrimId/move-player/:userId
+// @desc    This is how a player moves positions/roles and also may or may not change teams (is used in ScrimTeamList.jsx)
+// @access  Public
 const movePlayerInScrim = async (req, res) => {
   // when player moves positions and/or teams
   const session = await Scrim.startSession();
@@ -548,6 +553,7 @@ const movePlayerInScrim = async (req, res) => {
 
     const playerInTransaction = {
       // if it's adc, make it all uppercase, else capitalize it.
+      // this is just if someone is using postman and is misspelling the casing.
       role: /adc/gi.test(playerData.role)
         ? playerData.role.toUpperCase()
         : capitalizeWord(playerData.role),
@@ -567,7 +573,7 @@ const movePlayerInScrim = async (req, res) => {
     let newBody = {};
 
     if (isChangingTeams) {
-      // if player is changing teams-
+      // if player is changing teams
 
       const teamChangingToName = playerData.team.name,
         teamLeavingName = previousPlayerState.team.name;
@@ -650,6 +656,9 @@ const movePlayerInScrim = async (req, res) => {
   session.endSession();
 };
 
+// @route   PATCH /api/scrims/:scrimId/insert-caster/:casterId
+// @desc    This is how a user can become a caster for a scrim (used in ScrimSectionHeader)
+// @access  Public
 const insertCasterInScrim = async (req, res) => {
   const session = await Scrim.startSession();
   const { scrimId, casterId } = req.params;
@@ -735,6 +744,9 @@ const insertCasterInScrim = async (req, res) => {
   session.endSession();
 };
 
+// @route   PATCH /api/scrims/:scrimId/remove-caster/:casterId
+// @desc    This is how a user can leave the caster list if he was one for a scrim (used in ScrimSectionHeader)
+// @access  Public
 const removeCasterFromScrim = async (req, res) => {
   const session = await Scrim.startSession();
 
@@ -788,7 +800,9 @@ const removeCasterFromScrim = async (req, res) => {
   });
   session.endSession();
 };
-
+// @route   PATCH /api/scrims/:id/add-image
+// @desc    This is how a lobbyHost or an admin can upload an image to the scrim to verify the winner (more uploading func is in UploadPostGameImage.jsx)
+// @access  Public
 const addImageToScrim = async (req, res) => {
   // client uplaods to s3 bucket, back-end saves endpoints
   const { id } = req.params;
@@ -827,6 +841,9 @@ const addImageToScrim = async (req, res) => {
     .exec();
 };
 
+// @route   PATCH /api/scrims/:id/remove-image
+// @desc    This is how only an admin can remove an image from a scrim
+// @access  Private
 const removeImageFromScrim = async (req, res) => {
   const { id } = req.params;
 
@@ -839,6 +856,14 @@ const removeImageFromScrim = async (req, res) => {
 
     if (scrim.postGameImage === null) {
       return res.status(500).send('Image does not exist!');
+    }
+
+    // if adminkey isn't provided or is incorrect, throw an error
+    // it would probably be better to use discord and just give people admin roles instead of entering a key.
+    if (!req.body.adminKey || req.body.adminKey !== KEYS.ADMIN_KEY) {
+      return res
+        .status(500)
+        .json({ error: 'Cannot remove image from scrim: unauthorized' });
     }
 
     const params = {

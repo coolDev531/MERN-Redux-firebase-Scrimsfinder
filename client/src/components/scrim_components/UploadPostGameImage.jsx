@@ -69,7 +69,10 @@ export default function UploadPostGameImage({
       if (!yes) return;
 
       setButtonDisabled(true);
-      let updatedScrim = await removeImageFromScrim(scrim._id);
+      let updatedScrim = await removeImageFromScrim(
+        scrim._id,
+        currentUser?.adminKey ?? ''
+      );
 
       if (updatedScrim?.createdBy) {
         setCurrentAlert({
@@ -82,8 +85,10 @@ export default function UploadPostGameImage({
       }
 
       setButtonDisabled(false);
-    } catch (err) {
-      setCurrentAlert({ type: 'Error', message: 'error removing image' });
+    } catch (error) {
+      const errorMsg = error?.response?.data?.error ?? 'error removing image';
+
+      setCurrentAlert({ type: 'Error', message: errorMsg });
       setButtonDisabled(false);
     }
   };
