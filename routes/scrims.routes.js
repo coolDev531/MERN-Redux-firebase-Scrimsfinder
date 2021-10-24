@@ -38,7 +38,7 @@ router.patch(
   controllers.removeCasterFromScrim
 ); // PATCH
 
-router.patch('/scrims/:scrimId/set-winner', controllers.setScrimWinner); // PATCH
+router.patch('/scrims/:id/set-winner', controllers.setScrimWinner); // PATCH
 
 router.delete('/scrims/:id', controllers.deleteScrim); // DELETE
 

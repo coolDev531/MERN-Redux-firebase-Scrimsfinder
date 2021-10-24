@@ -474,6 +474,7 @@ const removePlayerFromScrim = async (req, res) => {
 
 // @route   PATCH /api/scrims/:scrimId/move-player/:userId
 // @desc    This is how a player moves positions/roles and also may or may not change teams (is used in ScrimTeamList.jsx)
+// very similiar to insertPlayerInScrim, I used to have both of these in 1 function that would just know what to do, and I think maybe it was better, not sure.
 // @access  Public
 const movePlayerInScrim = async (req, res) => {
   // when player moves positions and/or teams
@@ -906,17 +907,20 @@ const removeImageFromScrim = async (req, res) => {
   }
 };
 
+// @route   POST /api/scrims/:id/set-winner
+// @desc    select a winner for the scrim, only an admin or a lobby host can select a winner
+// @access  Public
 const setScrimWinner = async (req, res) => {
-  const { scrimId } = req.params;
-  const winnerTeamName = escape(req.body.winnerTeamName) ?? '';
+  const { id } = req.params;
+  const winnerTeamName = escape(req.body.winnerTeamName) ?? ''; // we don't need escape anymore because we use sanitize in server.js
 
-  let isValid = mongoose.Types.ObjectId.isValid(scrimId);
+  let isValid = mongoose.Types.ObjectId.isValid(id);
 
   if (!isValid) {
     return res.status(500).json({ error: 'invalid id' });
   }
 
-  let scrim = await Scrim.findOne({ _id: { $eq: scrimId } });
+  let scrim = await Scrim.findOne({ _id: { $eq: id } });
 
   if (!scrim) return res.status(404).json({ message: 'Scrim not found!' });
 
