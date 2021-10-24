@@ -35,7 +35,14 @@ export default function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
   const gameStatusText = useMemo(() => {
     if (!teamsFilled) return 'WAITING FOR PLAYERS';
 
-    if (scrim.teamWon) return `${scrim.teamWon} Won!`.toUpperCase();
+    const winnerAliases = {
+      teamOne: 'Team One (Blue Side)',
+      teamTwo: 'Team Two (Red Side)',
+    };
+
+    if (scrim.teamWon)
+      return `${winnerAliases[scrim.teamWon]} Won!`.toUpperCase();
+
     return 'GAME IN PROGRESS';
   }, [scrim.teamWon, teamsFilled]);
 
