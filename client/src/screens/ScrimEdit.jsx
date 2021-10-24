@@ -505,13 +505,19 @@ export default function ScrimEdit() {
                       name="teamWon"
                       value={scrimData.teamWon || 'N/A'}
                       onChange={handleChange}>
-                      {['Team 1 (Blue Side)', 'Team 2 (Red Side)', 'N/A'].map(
-                        (team, key) => (
+                      {['teamOne', 'teamTwo', 'N/A'].map((team, key) => {
+                        const teamAliases = {
+                          teamOne: 'Team 1 (Blue Side)',
+                          teamTwo: 'Team 2 (Red Side)',
+                          'N/A': 'N/A',
+                        };
+
+                        return (
                           <MenuItem value={team} key={key}>
-                            {team}
+                            {teamAliases[team]}
                           </MenuItem>
-                        )
-                      )}
+                        );
+                      })}
                     </Select>
                   </Grid>
                   <Grid item>
