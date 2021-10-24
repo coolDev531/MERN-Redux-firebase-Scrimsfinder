@@ -94,7 +94,7 @@ beforeAll(async () => {
       title: `${createdUsers[0].name}'s scrim`,
       lobbyName: 'Scrim 1 Custom Game (NA)',
       lobbyHost: createdUsers[0],
-      teamWon: 'Team 2 (Red Side)',
+      teamWon: 'teamTwo',
     },
   ];
 
