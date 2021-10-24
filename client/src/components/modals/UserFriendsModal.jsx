@@ -103,6 +103,7 @@ const OneFriend = memo(({ friend, onClose, user, currentUser }) => {
 
   useEffect(() => {
     const fetchConversation = async () => {
+      if (user._id !== currentUser._id) return; // don't fetch conversation if it's not the own user's friends modal open
       const oneConversation = await findOneConversation(
         currentUser._id,
         friend._id
@@ -110,7 +111,7 @@ const OneFriend = memo(({ friend, onClose, user, currentUser }) => {
       setConversation(oneConversation ?? null);
     };
     fetchConversation();
-  }, [currentUser._id, friend._id]);
+  }, [currentUser._id, friend._id, user._id]);
 
   // this means that these users have an existing conversation
   const inConversation =
