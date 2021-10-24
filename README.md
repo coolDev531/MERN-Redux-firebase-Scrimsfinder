@@ -133,9 +133,14 @@ src
           |__ top.png
           |__ bottom.png
 
-|__ context
-  |__ currentUser.js
-  |__ scrimsContext.js
+|__ store
+  |__ store.dev.js
+  |__ store.prod.js
+  |__ index.js
+  
+|__ reducers
+  |__ auth.reducer.js
+  |__ scrims.reducer.js
 
 |__ components
   |__ CountdownTimer.jsx
@@ -151,9 +156,9 @@ src
 
 |__ services/
    |__ apiConfig.js
-   |__ users.js
-   |__ auth.js
-   |__ scrims.js
+   |__ users.services.js
+   |__ auth.services.js
+   |__ scrims.services.js
 
 |_ styles/
    |__ scrimSection.styles.js
