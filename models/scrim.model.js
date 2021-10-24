@@ -11,10 +11,10 @@ const getThirtyMinFromNow = () => {
 };
 
 const ImageSchema = new Schema({
-  bucket: { type: String, required: true },
-  key: { type: String, required: true },
-  location: { type: String, required: true },
-  result: { type: Object, required: true },
+  bucket: { type: String, required: false },
+  key: { type: String, required: false },
+  location: { type: String, required: false },
+  result: { type: Object, required: false },
   uploadedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // will only show up as user._id if not populated
 });
 

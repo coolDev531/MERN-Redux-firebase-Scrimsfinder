@@ -1,6 +1,5 @@
 // models
 const Scrim = require('../models/scrim.model');
-const Conversation = require('../models/conversation.model');
 
 // utils
 const { MONGODB_URI } = require('../utils/constants');
