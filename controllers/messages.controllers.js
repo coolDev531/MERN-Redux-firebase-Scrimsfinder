@@ -12,6 +12,9 @@ const handleValidId = async (id, res) => {
   }
 };
 
+// @route   POST /api/messages
+// @desc    post a new message
+// @access  Public
 const postMessage = async (req, res) => {
   try {
     const { text, conversationId, senderId, receiverId } = req.body;
@@ -55,6 +58,9 @@ const postMessage = async (req, res) => {
   }
 };
 
+// @route   GET /api/messages/:conversationId
+// @desc    get the messages of the conversation by conversation._id
+// @access  Public
 const getConversationMessages = async (req, res) => {
   try {
     await Message.find({
@@ -73,6 +79,9 @@ const getConversationMessages = async (req, res) => {
   }
 };
 
+// @route   POST /api/messages/post-seen/:messageId
+// @desc    post that the message has been seen by the user
+// @access  Public
 const postMessageSeenByUser = async (req, res) => {
   try {
     const { messageId } = req.params;
@@ -97,6 +106,9 @@ const postMessageSeenByUser = async (req, res) => {
   }
 };
 
+// @route   GET /api/messages/unseen-messages/:userId
+// @desc    get the messages that the user didn't see by user._id
+// @access  Public
 const getUserUnseenMessages = async (req, res) => {
   try {
     const { userId } = req.params;
