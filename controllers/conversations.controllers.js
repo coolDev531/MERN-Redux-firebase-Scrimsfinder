@@ -1,5 +1,8 @@
 const Conversation = require('../models/conversation.model');
 
+// @route   POST /api/conversations
+// @desc    create one conversation between a sender and a receiver (For user messenger)
+// @access  Public
 const postConversation = async (req, res) => {
   try {
     const { senderId, receiverId } = req.body;
@@ -28,6 +31,9 @@ const postConversation = async (req, res) => {
   }
 };
 
+// @route   GET /api/conversations/user/:userId
+// @desc    get many conversations of one specific user
+// @access  Public
 const getUserConversations = async (req, res) => {
   try {
     const conversations = await Conversation.find({
@@ -46,6 +52,9 @@ const getUserConversations = async (req, res) => {
   }
 };
 
+// @route   GET /api/conversations/find/:firstUserId/:secondUserId
+// @desc    get one conversation between 2 users (order doesn't matter)
+// @access  Public
 const findOneConversation = async (req, res) => {
   try {
     let conversation = await Conversation.findOne({
@@ -63,6 +72,9 @@ const findOneConversation = async (req, res) => {
   }
 };
 
+// @route   GET /api/conversations/find-by-id/:conversationId
+// @desc    get one conversation by conversation._id
+// @access  Public
 const findOneConversationById = async (req, res) => {
   try {
     const { conversationId } = req.params;
@@ -84,6 +96,9 @@ const findOneConversationById = async (req, res) => {
   }
 };
 
+// @route   GET /api/conversations/scrim/:scrimId
+// @desc    get one conversation that belongs to a scrim by the scrim._id
+// @access  Public
 const findScrimConversation = async (req, res) => {
   try {
     const { scrimId } = req.params;
@@ -93,8 +108,6 @@ const findScrimConversation = async (req, res) => {
     }
 
     let conversation = await Conversation.findOne({ _scrim: scrimId });
-
-    console.log({ conversation });
 
     // populate so client can receive the members attributes
     conversation = await conversation
