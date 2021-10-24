@@ -3,11 +3,17 @@ import api from './apiConfig';
 /**
  * @method getUserConversations
  * @param {String} userId
+ * @param {String} uid // current user's uid
  * @returns {Promise<Conversation>}
  */
-export const getUserConversations = async (userId) => {
+export const getUserConversations = async (userId, uid) => {
   try {
-    const response = await api.get(`/conversations/user/${userId}`);
+    const response = await api.get(`/conversations/user/${userId}`, {
+      // pass uid in query params to authorize
+      params: {
+        uid,
+      },
+    });
     return response.data;
   } catch (error) {
     throw error;

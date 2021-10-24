@@ -27,10 +27,13 @@ export default function useMessenger() {
   const [arrivalMessage, setArrivalMessage] = useState(null);
 
   useEffect(() => {
-    if (!currentUser?._id) return;
+    if (!currentUser?._id || !currentUser?.uid) return;
 
     const fetchUserConversations = async () => {
-      const conversations = await getUserConversations(currentUser?._id);
+      const conversations = await getUserConversations(
+        currentUser?._id,
+        currentUser?.uid // pass uid to authorize request
+      );
       const unseenMessages = await getUserUnseenMessages(currentUser?._id);
 
       dispatch({
@@ -44,7 +47,7 @@ export default function useMessenger() {
       });
     };
     fetchUserConversations();
-  }, [currentUser?._id, dispatch]);
+  }, [currentUser?._id, currentUser?.uid, dispatch]);
 
   useEffect(() => {
     if (!currentUser?._id) return;

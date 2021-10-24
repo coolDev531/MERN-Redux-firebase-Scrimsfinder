@@ -1,4 +1,6 @@
 const Conversation = require('../models/conversation.model');
+const User = require('../models/user.model');
+const bcrypt = require('bcryptjs');
 
 // @route   POST /api/conversations
 // @desc    create one conversation between a sender and a receiver (For user messenger)
@@ -31,11 +33,31 @@ const postConversation = async (req, res) => {
   }
 };
 
-// @route   GET /api/conversations/user/:userId
-// @desc    get many conversations of one specific user
-// @access  Public
+// @route   GET /api/conversations/user/:userId?uid="xxx"
+// @desc    get many conversations of one specific user (user needs to be authorized with req.body.uid)
+// @access  Private
 const getUserConversations = async (req, res) => {
   try {
+    const { uid = '' } = req.query;
+
+    if (!uid) {
+      return res.status(401).json({ error: 'Unauthorized no uid provided' });
+    }
+
+    const foundUser = await User.findById(req.params.userId);
+
+    if (!foundUser) {
+      return res.status(500).json({ error: 'User not found' });
+    }
+
+    // authorize so only validated user can see his own conversations
+    const isMatch = bcrypt.compare(uid, foundUser.uid); // compare req.body.uid to user uid in db.
+
+    if (!isMatch) {
+      return res.status(401).json({ error: 'Unauthorized uid' });
+    }
+
+    // find the conversations for that user
     const conversations = await Conversation.find({
       members: { $in: [req.params.userId] },
     })
