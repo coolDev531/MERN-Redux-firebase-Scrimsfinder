@@ -17,7 +17,7 @@ import {
   PageSection,
   PageContent,
 } from '../components/shared/PageComponents';
-import SignUpForms from '../components/SignUpForms';
+import SignUpForms from '../components/SignUp_components/SignUpForms';
 
 // utils
 import { auth, provider } from '../firebase';
