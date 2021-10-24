@@ -620,13 +620,13 @@ const nestedPopulate = (path, modelPath) => {
   };
 };
 
-// @route   POST api/users/user-friend-requests/:id
-// @desc    get friend requests for that one user.
+// @route   GET api/users/user-friend-requests/:id
+// @desc    get friend requests for that specific user.
 // @access  Public
 const getUserFriendRequests = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log('ID', id);
+
     return await User.findById(id)
       .populate(nestedPopulate('friendRequests', '_user'))
       .exec((err, user) => {
@@ -642,10 +642,13 @@ const getUserFriendRequests = async (req, res) => {
   }
 };
 
+// @route   GET /users/user-friends/:id
+// @desc    get all the friends for that specific user
+// @access  Public
 const getUserFriends = async (req, res) => {
   try {
-    const { userId } = req.params;
-    return await User.findById(userId)
+    const { id } = req.params;
+    return await User.findById(id)
       .populate(nestedPopulate('friends', '_id'))
       .exec((err, user) => {
         const friends = user?.friends ?? [];

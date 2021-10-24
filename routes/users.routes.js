@@ -41,6 +41,6 @@ router.post(
 router.post('/users/add-new-friend/:id', controllers.addUserFriend); // POST
 router.post('/users/remove-friend/:id', controllers.removeUserFriend); // POST
 
-router.get('/users/user-friends/:userId', controllers.getUserFriends); // GET
+router.get('/users/user-friends/:id', controllers.getUserFriends); // GET
 
 module.exports = router;
