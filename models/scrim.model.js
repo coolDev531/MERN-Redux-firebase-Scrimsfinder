@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const Conversation = require('./conversation.model');
 
 const getThirtyMinFromNow = () => {
   let now = Date.now();
