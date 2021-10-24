@@ -152,6 +152,18 @@ const checkIfScrimIsInACertainDate = (scrim, date) => {
   return certainDate === scrimGameDay;
 };
 
+const onSpotTaken = async (scrim, res, spotsAvailable, teamJoiningName) => {
+  const scrimData = await populateOneScrim(scrim._id);
+
+  const teamJoiningTitle =
+    teamJoiningName === 'teamOne' ? 'Team 1 (Blue Side)' : 'Team 2 (Red Side)';
+
+  return res.status(500).json({
+    error: `spot taken! spots available for ${teamJoiningTitle}: ${spotsAvailable}`,
+    scrim: scrimData,
+  });
+};
+
 module.exports = {
   compareArrays,
   isValidRole,
@@ -165,4 +177,5 @@ module.exports = {
   checkIfScrimIsInACertainDate,
   checkIfScrimIsToday,
   populateOneScrim,
+  onSpotTaken,
 };

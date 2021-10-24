@@ -18,6 +18,7 @@ const {
   getLobbyName,
   getLobbyHost,
   populateOneScrim,
+  onSpotTaken,
 } = require('../utils/scrimUtils');
 const capitalizeWord = require('../utils/capitalizeWord');
 const AWS = require('aws-sdk');
@@ -904,18 +905,6 @@ const removeImageFromScrim = async (req, res) => {
     return res.status(500).json({ error: err });
   }
 };
-
-async function onSpotTaken(scrim, res, spotsAvailable, teamJoiningName) {
-  const scrimData = await populateOneScrim(scrim._id);
-
-  const teamJoiningTitle =
-    teamJoiningName === 'teamOne' ? 'Team 1 (Blue Side)' : 'Team 2 (Red Side)';
-
-  return res.status(500).json({
-    error: `spot taken! spots available for ${teamJoiningTitle}: ${spotsAvailable}`,
-    scrim: scrimData,
-  });
-}
 
 const setScrimWinner = async (req, res) => {
   const { scrimId } = req.params;
