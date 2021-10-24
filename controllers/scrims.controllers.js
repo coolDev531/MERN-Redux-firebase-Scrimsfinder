@@ -143,7 +143,7 @@ const createScrim = async (req, res) => {
     // it would probably be better to use discord and just give people admin roles instead of entering a key.
     if (!req.body.adminKey || req.body.adminKey !== KEYS.ADMIN_KEY) {
       return res
-        .status(500)
+        .status(401)
         .json({ error: 'Cannot create scrim: unauthorized' });
     }
 
@@ -197,7 +197,7 @@ const updateScrim = async (req, res) => {
   // if adminkey isn't provided or is incorrect, throw an error
   // it would probably be better to use discord and just give people admin roles instead of entering a key.
   if (!req.body.adminKey || req.body.adminKey !== KEYS.ADMIN_KEY) {
-    return res.status(500).json({ error: 'Cannot update scrim: unauthorized' });
+    return res.status(401).json({ error: 'Cannot update scrim: unauthorized' });
   }
 
   await Scrim.findByIdAndUpdate(id, req.body, { new: true }, (error, scrim) => {
@@ -235,7 +235,7 @@ const deleteScrim = async (req, res) => {
     // it would probably be better to use discord and just give people admin roles instead of entering a key.
     if (!req.body.adminKey || req.body.adminKey !== KEYS.ADMIN_KEY) {
       return res
-        .status(500)
+        .status(401)
         .json({ error: 'Cannot delete scrim: unauthorized' });
     }
 
@@ -864,7 +864,7 @@ const removeImageFromScrim = async (req, res) => {
     // it would probably be better to use discord and just give people admin roles instead of entering a key.
     if (!req.body.adminKey || req.body.adminKey !== KEYS.ADMIN_KEY) {
       return res
-        .status(500)
+        .status(401)
         .json({ error: 'Cannot remove image from scrim: unauthorized' });
     }
 
