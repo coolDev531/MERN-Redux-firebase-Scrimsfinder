@@ -49,7 +49,7 @@ export default function ScrimCreate() {
     gameStartHours: [new Date().getHours().toString(), getMinutes(new Date())],
   });
 
-  const [isCreated, setCreated] = useState(false);
+  const [createdScrim, setCreatedScrim] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
@@ -99,26 +99,34 @@ export default function ScrimCreate() {
       ...prevState,
       gameStartTime: selectedDate.toISOString(),
     }));
-  }, [dateData]);
+
+    return () => {
+      setScrimData((prevState) => ({
+        ...prevState,
+        gameStartTime: createdScrim?.createdScrim?.gameStartTime,
+      }));
+    };
+  }, [dateData, createdScrim]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
-      const scrimToCreate = {
+      const dataSending = {
         ...scrimData,
+        adminKey: currentUser?.adminKey ?? '', // to verify if is admin (authorize creation).
         lobbyHost: scrimData.lobbyHost === 'random' ? null : currentUser,
       };
 
-      const createdScrim = await createScrim(scrimToCreate, setCurrentAlert);
+      const newlyCreatedScrim = await createScrim(dataSending, setCurrentAlert);
 
       await fetchScrims();
 
-      devLog('created new scrim!', createdScrim);
-      setCreated({ createdScrim });
+      devLog('created new scrim!', newlyCreatedScrim);
+      setCreatedScrim(newlyCreatedScrim);
 
-      if (createdScrim.isPrivate) {
+      if (newlyCreatedScrim.isPrivate) {
         setCurrentAlert({
           type: 'Success',
           message:
@@ -132,7 +140,9 @@ export default function ScrimCreate() {
       }
       setIsSubmitting(false);
     } catch (error) {
-      setCurrentAlert({ type: 'Error', message: 'error creating scrim' });
+      const errorMsg =
+        error?.response?.data?.error ?? 'error creating scrim, try again later';
+      setCurrentAlert({ type: 'Error', message: errorMsg });
       console.error(error);
       setIsSubmitting(false);
     }
@@ -142,14 +152,12 @@ export default function ScrimCreate() {
     return <Redirect to="/" />;
   }
 
-  if (isCreated) {
+  if (createdScrim) {
     return (
       <Redirect
         to={
           // if private push to scrim detail, else push to home
-          isCreated?.createdScrim?.isPrivate
-            ? `/scrims/${isCreated?.createdScrim?._id}`
-            : '/scrims'
+          createdScrim?.isPrivate ? `/scrims/${createdScrim?._id}` : '/scrims'
         }
       />
     );

@@ -30,9 +30,13 @@ let s3Bucket = new AWS.S3({
   secretAccessKey: KEYS.S3_SECRET_ACCESS_KEY,
 });
 
+// @route   GET /api/scrims/
+// @desc    Get all scrims / games.
+// @access  Public
 const getAllScrims = async (req, res) => {
   const region = req.query?.region;
   // /api/scrims?region=NA
+  // right now the region query isn't being used in the app.
   if (region) {
     try {
       // might have to use populate on this, not necessary now.
@@ -55,6 +59,7 @@ const getAllScrims = async (req, res) => {
     }
   } else {
     // if no region, just get all scrims.
+    // this is what we use in the app to get all scrims.
     try {
       return await Scrim.find()
         .populate('createdBy', populateUser)
@@ -74,7 +79,10 @@ const getAllScrims = async (req, res) => {
     }
   }
 };
-
+// @route   GET /api/scrims/today
+// @desc    Get all scrims where the gameStartTime is today, can be scuffed with live server due to different timezone on server host.
+// this is not used in the app, but may be useful.
+// @access  Public
 const getTodaysScrims = async (_req, res) => {
   try {
     const scrims = await Scrim.find();
@@ -85,6 +93,9 @@ const getTodaysScrims = async (_req, res) => {
   }
 };
 
+// @route   GET /api/scrims/:id
+// @desc    Get a specific scrim.
+// @access  Public
 const getScrimById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -117,11 +128,22 @@ const getScrimById = async (req, res) => {
   }
 };
 
+// @route   POST /api/scrims/
+// @desc    create a new scrim / game
+// @access  Private (only people with the admin key can see this page in the app and create one)
 const createScrim = async (req, res) => {
   try {
     let createdByUser = await User.findOne({
       _id: { $eq: req.body.createdBy._id },
     });
+
+    // if adminkey isn't provided or is incorrect, throw an error/
+    // it would probably be better to use discord and just give people admin roles instead of entering a key.
+    if (!req.body.adminKey || req.body.adminKey !== KEYS.ADMIN_KEY) {
+      return res
+        .status(500)
+        .json({ error: 'Cannot create scrim: unauthorized' });
+    }
 
     let requestBody = {
       ...req.body,
