@@ -228,3 +228,18 @@ export const deleteScrim = async (id) => {
     throw error;
   }
 };
+
+// the who won buttons (only admins or lobby captains/hosts can see)
+export const setScrimWinner = async (id, winnerTeamName, setAlert) => {
+  try {
+    const response = await api.patch(`/scrims/${id}/set-winner`, {
+      winnerTeamName,
+    });
+    return response.data;
+  } catch (error) {
+    const errorMsg =
+      error?.response?.data?.error ?? error?.message ?? JSON.stringify(error);
+
+    setAlert({ type: 'Error', message: errorMsg });
+  }
+};

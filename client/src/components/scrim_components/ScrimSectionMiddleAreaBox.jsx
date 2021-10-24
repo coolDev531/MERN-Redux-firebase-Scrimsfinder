@@ -22,7 +22,7 @@ import pluralize from 'pluralize';
 import { COLORS } from './../../appTheme';
 
 // services
-import { updateScrim } from '../../services/scrims.services';
+import { setScrimWinner } from '../../services/scrims.services';
 
 const useStyles = makeStyles({
   infoBoxRoot: {
@@ -124,47 +124,46 @@ export default function ScrimSectionMiddleAreaBox({
                     </Grid>
 
                     <Grid item container direction="row" spacing={2}>
-                      {['Team 1 (Blue Side)', 'Team 2 (Red Side)'].map(
-                        (teamTitle, idx) => (
-                          <Grid item key={idx}>
-                            <Tooltip title={`Select ${teamTitle} as winner`}>
-                              <Button
-                                style={{
-                                  backgroundColor: idx === 0 ? 'blue' : 'red',
-                                  color: '#fff',
-                                }}
-                                variant="contained"
-                                onClick={async () => {
-                                  // set team won for scrim
-                                  let yes =
-                                    window.confirm(`Are you sure ${teamTitle} won this game? \n 
+                      {/* winner buttons (Who won?) */}
+                      {['teamOne', 'teamTwo'].map((teamName, idx) => (
+                        <Grid item key={idx}>
+                          <Tooltip title={`Select ${teamName} as winner`}>
+                            <Button
+                              style={{
+                                backgroundColor: idx === 0 ? 'blue' : 'red',
+                                color: '#fff',
+                              }}
+                              variant="contained"
+                              onClick={async () => {
+                                // set team won for scrim
+                                let yes =
+                                  window.confirm(`Are you sure ${teamName} won this game? \n 
                                   You cannot reverse this.
                                   `);
 
-                                  if (!yes) return;
+                                if (!yes) return;
 
-                                  const dataSending = {
-                                    teamWon: teamTitle,
-                                  };
-                                  const updatedScrim = await updateScrim(
-                                    scrim._id,
-                                    dataSending,
-                                    setCurrentAlert
+                                const updatedScrim = await setScrimWinner(
+                                  scrim._id,
+                                  teamName,
+                                  setCurrentAlert
+                                );
+
+                                if (updatedScrim?.createdBy) {
+                                  setScrim(updatedScrim);
+                                  socket.current?.emit(
+                                    'sendScrimTransaction',
+                                    updatedScrim
                                   );
-                                  if (updatedScrim?.createdBy) {
-                                    setScrim(updatedScrim);
-                                    socket.current?.emit(
-                                      'sendScrimTransaction',
-                                      updatedScrim
-                                    );
-                                  }
-                                }}>
-                                {teamTitle}
-                              </Button>
-                            </Tooltip>
-                          </Grid>
-                        )
-                      )}
+                                }
+                              }}>
+                              {teamName === 'teamOne'
+                                ? 'Team 1 (Blue Side)'
+                                : 'Team 2 (Red Side)'}
+                            </Button>
+                          </Tooltip>
+                        </Grid>
+                      ))}
                     </Grid>
                   </Grid>
                 )}

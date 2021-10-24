@@ -78,6 +78,19 @@ const populateTeam = (teamName) => {
 
 const populateUser = ['name', 'discord', 'region'];
 
+// mongoose populate stuff
+const populateOneScrim = async (scrimId) => {
+  const scrimData = await Scrim.findById(scrimId)
+    .populate('createdBy', populateUser)
+    .populate('casters', populateUser)
+    .populate('lobbyHost', populateUser)
+    .populate(populateTeam('teamOne'))
+    .populate(populateTeam('teamTwo'))
+    .exec();
+
+  return scrimData;
+};
+
 /**
  * gets the title that the admin/mod put in when created the scrim,
  * but removes characters that LoL custom lobbies don't allow
@@ -150,4 +163,5 @@ module.exports = {
   getLobbyHost,
   checkIfScrimIsInACertainDate,
   checkIfScrimIsToday,
+  populateOneScrim,
 };

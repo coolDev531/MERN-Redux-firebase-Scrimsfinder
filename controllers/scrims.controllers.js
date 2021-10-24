@@ -94,7 +94,7 @@ const getScrimById = async (req, res) => {
       return res.status(500).json({ error: 'invalid id' });
     }
 
-    let scrim = Scrim.findOne({ _id: id });
+    let scrim = Scrim.findOne({ _id: { $eq: id } });
 
     if (!scrim) return res.status(404).json({ message: 'Scrim not found!' });
 
@@ -867,6 +867,34 @@ async function onSpotTaken(scrim, res, spotsAvailable, teamJoiningTitle) {
   });
 }
 
+const setScrimWinner = async (req, res) => {
+  const { scrimId } = req.params;
+  const winnerTeamName = escape(req.body.winnerTeamName) ?? '';
+
+  let isValid = mongoose.Types.ObjectId.isValid(scrimId);
+
+  if (!isValid) {
+    return res.status(500).json({ error: 'invalid id' });
+  }
+
+  let scrim = await Scrim.findOne({ _id: { $eq: scrimId } });
+
+  if (!scrim) return res.status(404).json({ message: 'Scrim not found!' });
+
+  // 1: blueside, 2: redside
+  if (!['teamOne', 'teamTwo'].includes(winnerTeamName)) {
+    return res.status(404).json({ message: 'Invalid team name' });
+  }
+
+  scrim.teamWon = winnerTeamName;
+
+  let savedScrim = await scrim.save();
+
+  let populatedScrim = await populateOneScrim(scrim._id);
+
+  return res.status(200).send(populatedScrim);
+};
+
 module.exports = {
   getAllScrims,
   getTodaysScrims,
@@ -881,4 +909,5 @@ module.exports = {
   addImageToScrim,
   movePlayerInScrim,
   removeImageFromScrim,
+  setScrimWinner,
 };

@@ -38,6 +38,8 @@ router.patch(
   controllers.removeCasterFromScrim
 ); // PATCH
 
+router.patch('/scrims/:scrimId/set-winner', controllers.setScrimWinner); // PATCH
+
 router.delete('/scrims/:id', controllers.deleteScrim); // DELETE
 
 module.exports = router;
