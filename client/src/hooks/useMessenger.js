@@ -91,7 +91,7 @@ export default function useMessenger() {
 
     // send event to socket server.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentUser?._id, currentUser?.friends]);
+  }, [currentUser?._id]);
 
   useEffect(() => {
     if (!currentUser?._id) return;
@@ -146,8 +146,9 @@ const useMessengerSound = () => {
     // playSFX is a boolean state in the general reducer, basically whenever socket emits a getMessage event (on useMessenger), it will dispatch an action to run this.
     playMessengerNotificationSFX();
     // play messenger notification sound whenever dispatch action: 'messenger/pushUnseenMessage' runs.
-    return null;
   }, [playSFX]); // play messenger notification sound whenever playSFX changes in the state.
+
+  return null;
 };
 
 export const useScrimChat = (open, scrimId, userId) => {
