@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 
 export default function useOnKeyDown(key, callback, deps) {
   useEffect(() => {
-    const handleKeydown = (ev) => {
-      if (ev.code === key) {
+    const handleKeydown = (e) => {
+      if (e.code === key) {
         callback();
       }
     };
