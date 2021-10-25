@@ -235,6 +235,10 @@ export default function Settings() {
                     style={{ width: 230 }}
                     variant="filled"
                     value={userData.name || ''}
+                    onKeyPress={(e) => {
+                      // if user enters special characters don't do anything, allow spaces
+                      if (!/^[0-9a-zA-Z \b]+$/.test(e.key)) e.preventDefault();
+                    }}
                     onChange={handleChange}
                     label="Summoner Name"
                     required

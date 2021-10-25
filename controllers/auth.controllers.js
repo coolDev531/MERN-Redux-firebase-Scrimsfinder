@@ -25,14 +25,21 @@ const divisionsWithNumbers = [
  */
 const removeSpacesBeforeHashTag = (str) => {
   // for discord name
+  // I'm doing this because right now people are typing out their discord, so I want to trim the spaces before the # so it's easier to compare if it already exists.
   return str
     .trim()
-    .replace(/\s([#])/g, function (el1, el2) {
+    .replace(/\s([#])/g, function (_el1, el2) {
       return '' + el2;
     })
-    .replace(/(«)\s/g, function (el1, el2) {
+    .replace(/(«)\s/g, function (_el1, el2) {
       return el2 + '';
     });
+};
+
+const checkSummonerNameValid = (summonerName) => {
+  const format = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+  // dont allow special characters
+  return format.test(summonerName);
 };
 
 const allowedRanks = [
@@ -214,6 +221,14 @@ const registerUser = async (req, res) => {
       });
     }
 
+    const summonerNameInvalid = checkSummonerNameValid(userData.name);
+
+    if (summonerNameInvalid) {
+      return res.status(500).json({
+        error: 'Error: no special characters in name field allowed!',
+      });
+    }
+
     const newUser = new User(userData);
 
     bcrypt.genSalt(10, (err, salt) => {
@@ -321,7 +336,7 @@ const updateUser = async (req, res) => {
   const isMatch = bcrypt.compare(uid, foundUser.uid); // compare req.body.uid to user uid in db.
 
   if (!isMatch) {
-    return res.status(500).json({ status: false, message: 'unauthorized' });
+    return res.status(401).json({ status: false, message: 'unauthorized' });
   }
 
   // check for valid rank
@@ -387,6 +402,14 @@ const updateUser = async (req, res) => {
         status: false,
       });
     }
+  }
+
+  const summonerNameInvalid = checkSummonerNameValid(req.body.name);
+
+  if (summonerNameInvalid) {
+    return res.status(500).json({
+      error: 'Error: no special characters in name field allowed!',
+    });
   }
 
   if (isMatch) {
