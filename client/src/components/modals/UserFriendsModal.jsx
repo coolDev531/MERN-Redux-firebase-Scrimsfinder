@@ -19,7 +19,7 @@ import { getUserFriends } from '../../services/users.services';
 import { findOneConversation } from '../../services/conversations.services';
 
 // icons
-import CreateIcon from '@mui/icons-material/Create';
+import CreateConversationIcon from '@mui/icons-material/Create';
 import MsgIcon from '@mui/icons-material/Sms';
 
 function UserFriendsModal() {
@@ -114,7 +114,7 @@ const OneFriend = memo(({ friend, onClose, user, currentUser }) => {
   }, [currentUser._id, friend._id, user._id]);
 
   // this means that these users have an existing conversation
-  const inConversation =
+  const existingConversation =
     currentUser?._id !== user?._id ? false : conversation?._id;
 
   return (
@@ -138,13 +138,13 @@ const OneFriend = memo(({ friend, onClose, user, currentUser }) => {
         <Grid item container direction="row" alignItems="center" xs={2}>
           <Tooltip
             title={
-              inConversation
+              existingConversation
                 ? `Send ${friend.name} a message`
                 : `Start a new conversation`
             }>
             <IconButton
               onClick={() => {
-                if (inConversation) {
+                if (existingConversation) {
                   dispatch({
                     type: 'general/chatRoomOpen',
                     payload: { isOpen: true, conversation: conversation },
@@ -159,7 +159,7 @@ const OneFriend = memo(({ friend, onClose, user, currentUser }) => {
                   });
                 }
               }}>
-              {inConversation ? <CreateIcon /> : <MsgIcon />}
+              {existingConversation ? <MsgIcon /> : <CreateConversationIcon />}
             </IconButton>
           </Tooltip>
         </Grid>
