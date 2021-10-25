@@ -35,17 +35,25 @@ export default function CanSendEmailsModal() {
 
     const updatedUser = await updateUser(currentUser._id, {
       ...currentUser,
-      canSendEmailsToUser: true,
+      canSendEmailsToUser: true, // user accepted emails
     });
 
     dispatch({ type: 'auth/updateCurrentUser', payload: updatedUser });
     setIsEmailModalOpen(false);
   }, [currentUser, dispatch]);
 
-  const handleRejectClick = useCallback(() => {
+  const handleRejectClick = useCallback(async () => {
     localStorage.setItem('isEmailModalAnswered', true);
+
+    const updatedUser = await updateUser(currentUser._id, {
+      ...currentUser,
+      canSendEmailsToUser: false, // user rejected emails.
+    });
+
+    dispatch({ type: 'auth/updateCurrentUser', payload: updatedUser });
+
     setIsEmailModalOpen(false);
-  }, []);
+  }, [currentUser, dispatch]);
 
   return (
     <Modal
