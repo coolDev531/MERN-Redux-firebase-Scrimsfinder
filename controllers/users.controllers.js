@@ -87,7 +87,7 @@ const getOneUser = async (req, res) => {
       'name',
       'region',
       'rank',
-      'adminKey',
+      'isAdmin',
       'createdAt',
       'profileBackgroundImg',
       'profileBackgroundBlur',
@@ -100,19 +100,7 @@ const getOneUser = async (req, res) => {
         .status(404)
         .json({ message: `User not found in region: ${escape(region)}` });
 
-    let userWithNoAdminKey = {
-      ...user._doc,
-      isAdmin: user.adminKey === KEYS.ADMIN_KEY, // isAdmin boolean,
-    };
-
-    // don't show admin key in the response
-    let deletedAdminKey = delete userWithNoAdminKey.adminKey;
-
-    if (deletedAdminKey) {
-      return res.status(200).json(userWithNoAdminKey);
-    } else {
-      return res.status(500).json({ error: 'Please try again' });
-    }
+    return res.status(200).json(user);
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
@@ -210,7 +198,7 @@ const getUserById = async (req, res) => {
       'region',
       'rank',
       'notifications',
-      'adminKey',
+      'isAdmin',
       'createdAt',
       'updatedAt',
       'profileBackgroundImg',
@@ -224,19 +212,7 @@ const getUserById = async (req, res) => {
         .status(404)
         .json({ message: `User not found with id: ${escape(id)}` });
 
-    let userWithNoAdminKey = {
-      ...user._doc,
-      isAdmin: user.adminKey === KEYS.ADMIN_KEY, // boolean,
-    };
-
-    // don't show the admin key in the response
-    let deletedAdminKey = delete userWithNoAdminKey.adminKey; // delete adminkey so not returned in resp
-
-    if (deletedAdminKey) {
-      return res.status(200).json(userWithNoAdminKey);
-    } else {
-      return res.status(500).json({ error: 'Please try again' });
-    }
+    return res.status(200).json(user);
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }

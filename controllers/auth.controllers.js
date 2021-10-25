@@ -97,6 +97,7 @@ const loginUser = async (req, res) => {
         region: foundUser.region,
         discord: foundUser.discord,
         adminKey: foundUser.adminKey,
+        isAdmin: foundUser.isAdmin,
         name: foundUser.name,
         notifications: foundUser.notifications,
         friendRequests: foundUser.friendRequests,
@@ -244,6 +245,7 @@ const registerUser = async (req, res) => {
           region: newUser.region,
           discord: newUser.discord,
           adminKey: newUser.adminKey,
+          isAdmin: false,
           name: newUser.name,
           notifications: [],
           friendRequests: [],
@@ -291,6 +293,7 @@ const verifyUser = async (req, res) => {
           region: foundUser.region,
           discord: foundUser.discord,
           adminKey: foundUser.adminKey,
+          isAdmin: foundUser.isAdmin,
           name: foundUser.name,
           notifications: foundUser.notifications,
           friendRequests: foundUser.friendRequests,
@@ -327,7 +330,7 @@ const updateUser = async (req, res) => {
   const { id } = req.params;
   const { uid = null } = req.body;
 
-  const foundUser = await User.findOne({ _id: id });
+  const foundUser = await User.findById(id);
 
   if (!foundUser) {
     return res.status(500).json({ status: false, message: 'user not found' });
@@ -412,6 +415,8 @@ const updateUser = async (req, res) => {
     });
   }
 
+  const isAdmin = req.body.adminKey === KEYS.ADMIN_KEY;
+
   if (isMatch) {
     const payload = {
       uid: foundUser.uid,
@@ -421,7 +426,9 @@ const updateUser = async (req, res) => {
       region: req.body.region ?? foundUser.region,
       discord: req.body.discord ?? foundUser.discord,
       adminKey: req.body.adminKey ?? foundUser.adminKey,
-      name: req.body.name ?? foundUser.name,
+      name: req.body.name?.trim() ?? foundUser.name,
+
+      isAdmin,
 
       profileBackgroundImg:
         req.body.profileBackgroundImg ??
@@ -451,7 +458,7 @@ const updateUser = async (req, res) => {
 
         await User.findByIdAndUpdate(
           id,
-          req.body,
+          payload,
           { new: true },
           (error, user) => {
             if (error) {

@@ -76,6 +76,7 @@ const User = new Schema(
       required: true,
     },
     adminKey: { type: String, default: '' },
+    isAdmin: { type: Boolean, default: false },
     uid: { type: String, required: true, unique: true }, // google id
     email: { type: String, required: true, unique: true }, // google email.
     notifications: { type: [Notification] },
