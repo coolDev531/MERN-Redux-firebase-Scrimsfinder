@@ -80,10 +80,17 @@ const User = new Schema(
     uid: { type: String, required: true, unique: true }, // google id
     email: { type: String, required: true, unique: true }, // google email.
     notifications: { type: [Notification] },
+
+    // friends
     friendRequests: { type: [FriendRequest] },
     friends: { type: [Friend] },
+
+    // profile customization
     profileBackgroundImg: { type: String, default: 'Summoners Rift' },
     profileBackgroundBlur: { type: String, default: '20' },
+
+    // can we send them an email?
+    canSendEmailsToUser: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

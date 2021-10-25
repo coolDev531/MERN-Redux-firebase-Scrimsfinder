@@ -8,6 +8,7 @@ import OtherOptionsModal from './OtherOptionsModal';
 import ChatRoomModal from './ChatRoomModal';
 import ScrimChatRoomModal from './ScrimChatRoomModal';
 import ConversationCreateModal from './ConversationCreateModal';
+import CanSendEmailsModal from './CanSendEmailsModal';
 
 export default function AppModals() {
   const { currentUser } = useAuth();
@@ -23,6 +24,7 @@ export default function AppModals() {
 
   return (
     <>
+      <CanSendEmailsModal />
       {/* these components  do rerender so we need these guard operators for each one for now */}
       {friendRequestsOpen && <FriendRequestsModal />}
       {/* actually, we can just use memo on them, we can also use connect instead of useSelector (with React.memo) */}

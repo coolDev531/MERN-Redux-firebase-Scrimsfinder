@@ -443,6 +443,8 @@ const updateUser = async (req, res) => {
       notifications: foundUser.notifications,
       friendRequests: foundUser.friendRequests,
       friends: foundUser.friends,
+
+      canSendEmailsToUser: req.body.canSendEmailsToUser ?? false,
     };
 
     bcrypt.genSalt(10, (err, salt) => {

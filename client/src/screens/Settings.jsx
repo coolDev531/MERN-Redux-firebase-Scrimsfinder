@@ -13,6 +13,8 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 import Typography from '@mui/material/Typography';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import Navbar from '../components/shared/Navbar/Navbar';
 import {
   InnerColumn,
@@ -54,6 +56,7 @@ export default function Settings() {
     discord: currentUser?.discord,
     adminKey: currentUser?.adminKey ?? '',
     region: currentUser?.region ?? 'NA',
+    canSendEmailsToUser: currentUser?.canSendEmailsToUser ?? false,
     ...currentUser,
   });
 
@@ -375,7 +378,30 @@ export default function Settings() {
                 )}
               </Grid>
 
-              <div className="page-break" />
+              <Grid
+                item
+                container
+                xs={8}
+                alignItems="center"
+                justifyContent="center">
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      onChange={() =>
+                        setUserData((prevState) => ({
+                          ...prevState,
+                          canSendEmailsToUser: !userData.canSendEmailsToUser,
+                        }))
+                      }
+                      checked={userData.canSendEmailsToUser}
+                    />
+                  }
+                  label="Send me emails regarding app updates"
+                />
+              </Grid>
+
+              <Grid container item xs={12} className="page-break" />
+
               <Grid item>
                 <Button variant="contained" color="primary" type="submit">
                   Submit

@@ -103,7 +103,7 @@ const DraggablePaper = (props) => {
   );
 };
 
-export const DraggableModal = ({ children, ...rest }) => {
+const DraggableModal = ({ children, ...rest }) => {
   const isMobileDevice = isMobile();
 
   // if user didn't type anything, it's draggable.
@@ -130,6 +130,7 @@ export const Modal = React.memo(
     renderBackButton = false,
     onClickBack = null,
     contentClassName = 'modal__content',
+    closeBtnTitle = 'Close',
   }) => {
     return (
       <DraggableModal open={open} onClose={onClose}>
@@ -172,7 +173,7 @@ export const Modal = React.memo(
           )}
 
           <Button color="secondary" onClick={onClose} variant="contained">
-            Close
+            {closeBtnTitle}
           </Button>
         </DialogActions>
       </DraggableModal>
