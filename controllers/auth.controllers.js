@@ -273,48 +273,46 @@ const registerUser = async (req, res) => {
   }
 };
 
-// get google uid and email by using google auth firebase, then give rest of user data hosted in database.
+// get google and email by using google auth firebase, then give rest of user data hosted in database.
 const verifyUser = async (req, res) => {
   try {
-    const { email, uid } = req.body;
+    const user = req.user ?? false; // comes from auth middleware
+
+    if (!user) {
+      return res.status(401).json({ error: 'Unauthorized', status: false });
+    }
 
     // will find the one user with the exact uid and email combination
-    const foundUser = await User.findOne({ email });
+    const foundUser = await User.findOne({
+      email: { $eq: user.email },
+    });
 
     if (foundUser) {
-      const isMatch = await bcrypt.compare(uid, foundUser.uid); // compare  eq.body.uid to  user uid in db. (already hased in jwt token front-end)
+      const payload = {
+        uid: foundUser.uid,
+        email: foundUser.email,
+        rank: foundUser.rank,
+        _id: foundUser._id,
+        region: foundUser.region,
+        discord: foundUser.discord,
+        adminKey: foundUser.adminKey,
+        isAdmin: foundUser.isAdmin,
+        name: foundUser.name,
+        notifications: foundUser.notifications,
+        friendRequests: foundUser.friendRequests,
+        friends: foundUser.friends,
+      };
 
-      if (isMatch) {
-        const payload = {
-          uid: foundUser.uid,
-          email: foundUser.email,
-          rank: foundUser.rank,
-          _id: foundUser._id,
-          region: foundUser.region,
-          discord: foundUser.discord,
-          adminKey: foundUser.adminKey,
-          isAdmin: foundUser.isAdmin,
-          name: foundUser.name,
-          notifications: foundUser.notifications,
-          friendRequests: foundUser.friendRequests,
-          friends: foundUser.friends,
-        };
+      const accessToken = jwt.sign(payload, KEYS.SECRET_OR_KEY, {
+        expiresIn: 31556926, // 1 year in seconds
+        // expiresIn: new Date(new Date()).setDate(new Date().getDate() + 30), // 30 days from now, does this work?
+      });
 
-        const accessToken = jwt.sign(payload, KEYS.SECRET_OR_KEY, {
-          expiresIn: 31556926, // 1 year in seconds
-          // expiresIn: new Date(new Date()).setDate(new Date().getDate() + 30), // 30 days from now, does this work?
-        });
-
-        return res.status(200).json({
-          success: true,
-          token: accessToken,
-          user: foundUser,
-        });
-      } else {
-        return res.status(500).json({
-          message: 'Invalid token',
-        });
-      }
+      return res.status(200).json({
+        success: true,
+        token: accessToken,
+        user: foundUser,
+      });
     } else {
       return res.status(500).json({
         message: 'User not found!',

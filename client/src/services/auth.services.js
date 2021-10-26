@@ -64,40 +64,41 @@ export const registerUser = async (userData, setAlert) => {
   }
 };
 
-export const verifyUser = async ({ uid, email }) => {
-  if (localStorage.jwtToken) {
-    const token = localStorage.jwtToken;
-    setAuthToken(token);
+export const verifyUser = async () => {
+  const token = localStorage?.jwtToken ?? '';
 
-    try {
-      const resp = await api.post('/auth/verify', {
-        uid,
-        email,
-      });
-      return resp.data;
-    } catch (error) {
-      // these lines are to handle the case when heroku is hibernating and the home page is loading because the content hasn't loaded but we don't have a user to associate it with.
-      // if the user isn't verified and heroku is hibernating.
-      devLog('heroku is hibernating, cannot verify user, pushing to /signup');
+  try {
+    const resp = await api.post('/auth/verify', null, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return resp.data;
+  } catch (error) {
+    // these lines are to handle the case when heroku is hibernating and the home page is loading because the content hasn't loaded but we don't have a user to associate it with.
+    // if the user isn't verified and heroku is hibernating.
+    devLog('heroku is hibernating, cannot verify user, pushing to /signup');
 
-      localStorage.removeItem('jwtToken'); // remove token because we have an error verifying the user.
+    localStorage.removeItem('jwtToken'); // remove token because we have an error verifying the user.
 
-      let path = window.location.origin + '/signup';
-      // and the path isn't signup
-      if (window.location.origin + '/signup' !== path) {
-        // send the user to signup.
-        window.location.href = window.location.origin + '/signup';
-      }
+    let path = window.location.origin + '/signup';
+    // and the path isn't signup
+    if (window.location.origin + '/signup' !== path) {
+      // send the user to signup.
+      window.location.href = window.location.origin + '/signup';
     }
   }
+
   return null;
 };
 
 export const updateUser = async (userData) => {
   try {
-    const response = await api.put('/auth/update-user', userData, {
+    const token = localStorage?.jwtToken ?? '';
+
+    const response = await api.put(`/auth/update-user`, userData, {
       headers: {
-        Authorization: `Bearer ${localStorage.jwtToken}`, // auth middleware takes this
+        Authorization: `Bearer ${token}`,
       },
     });
     return response.data;
