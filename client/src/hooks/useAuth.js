@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 
 // services
 import { auth, provider } from '../firebase';
-import { loginUser, verifyUser } from '../services/auth.services';
-import { setAuthToken, removeToken } from '../services/auth.services';
+import { loginUser, verifyUser, setAuthToken } from '../services/auth.services';
+import { removeToken } from '../services/auth.services';
 
 // utils
 import jwt_decode from 'jwt-decode';
@@ -73,11 +73,15 @@ export function useAuthVerify() {
       if (localStorage.jwtToken) {
         // Set auth token header auth
         const token = localStorage.jwtToken;
-        setAuthToken(token);
 
         const decodedUser = jwt_decode(token);
 
-        const data = await verifyUser();
+        setAuthToken(token);
+
+        const data = await verifyUser({
+          email: decodedUser?.email,
+          uid: decodedUser?.uid,
+        });
 
         // if there is no token PrivateRoute.jsx should send us to /sign-up automatically.
         if (data?.token) {

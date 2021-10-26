@@ -50,7 +50,13 @@ const getUserConversations = async (req, res) => {
       return res.status(500).json({ error: 'User not found' });
     }
 
-    // find the conversations for that user
+    const isMatch = user.email === foundUser.email;
+
+    if (!isMatch) {
+      return res.status(401).json({ error: 'Unauthorized', status: false });
+    }
+
+    // find the  conversations for that user
     const conversations = await Conversation.find({
       members: { $in: [user._id] },
     })

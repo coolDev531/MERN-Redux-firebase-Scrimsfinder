@@ -86,7 +86,7 @@ const loginUser = async (req, res) => {
 
   // Check uid
   try {
-    const isMatch = await bcrypt.compare(uid, foundUser.uid); // compare unhashed req.body.uid to hashed user uid in db.
+    const isMatch = bcrypt.compare(uid, foundUser.uid); // compare unhashed req.body.uid to hashed user uid in db.
 
     if (isMatch) {
       const payload = {
@@ -261,7 +261,7 @@ const registerUser = async (req, res) => {
         console.log('User created: ', newUser);
         return res.status(201).json({
           success: true,
-          token: accessToken,
+          token: `Bearer ${accessToken}`,
           user: newUser,
         });
       });
@@ -279,6 +279,7 @@ const verifyUser = async (req, res) => {
     const user = req.user ?? false; // comes from auth middleware
 
     if (!user) {
+      console.log('no user');
       return res.status(401).json({ error: 'Unauthorized', status: false });
     }
 
@@ -286,6 +287,12 @@ const verifyUser = async (req, res) => {
     const foundUser = await User.findOne({
       email: { $eq: user.email },
     });
+
+    const isMatch = req.body.uid === user.uid && req.body.email === user.email;
+
+    if (!isMatch) {
+      return res.status(401).json({ error: 'Unauthorized', status: false });
+    }
 
     if (foundUser) {
       const payload = {
@@ -310,7 +317,7 @@ const verifyUser = async (req, res) => {
 
       return res.status(200).json({
         success: true,
-        token: accessToken,
+        token: `Bearer ${accessToken}`,
         user: foundUser,
       });
     } else {
@@ -469,7 +476,7 @@ const updateUser = async (req, res) => {
 
             return res.status(201).json({
               success: true,
-              token: accessToken,
+              token: `Bearer ${accessToken}`,
               user: updatedUser,
             });
           }

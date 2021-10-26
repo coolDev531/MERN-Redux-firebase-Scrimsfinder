@@ -57,7 +57,7 @@ export default function ChangeBackground({ userBg, setUserBg, userId }) {
     setButtonsDisabled(true);
 
     try {
-      const updatedUser = await updateUser(userId, {
+      const updatedUser = await updateUser({
         ...currentUser,
         profileBackgroundImg: bgImgValue,
         profileBackgroundBlur: blurValue,

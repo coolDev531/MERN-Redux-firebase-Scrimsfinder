@@ -64,15 +64,9 @@ export const registerUser = async (userData, setAlert) => {
   }
 };
 
-export const verifyUser = async () => {
-  const token = localStorage?.jwtToken ?? '';
-
+export const verifyUser = async (userData) => {
   try {
-    const resp = await api.post('/auth/verify', null, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const resp = await api.post('/auth/verify', userData); // we get the authToken with setAuthToken in handleVerify in useAuth (useAuthActions)
     return resp.data;
   } catch (error) {
     // these lines are to handle the case when heroku is hibernating and the home page is loading because the content hasn't loaded but we don't have a user to associate it with.
@@ -98,7 +92,7 @@ export const updateUser = async (userData) => {
 
     const response = await api.put(`/auth/update-user`, userData, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: token,
       },
     });
     return response.data;

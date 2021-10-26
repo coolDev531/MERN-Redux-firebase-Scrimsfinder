@@ -16,7 +16,7 @@ import { updateUser } from './../../services/auth.services';
 // This modal will probably only be used for 1 day until users know about this feature and then they will just access it in settings (will default to false in db)
 export default function CanSendEmailsModal() {
   const [submitDisabled, setSubmitDisabled] = useState(false);
-  const { currentUser, uid } = useAuth();
+  const { currentUser } = useAuth();
   const dispatch = useDispatch();
 
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(() => {
@@ -33,29 +33,33 @@ export default function CanSendEmailsModal() {
     localStorage.setItem('isEmailModalAnswered', true);
     setSubmitDisabled(true);
 
-    const updatedUser = await updateUser(currentUser._id, {
+    const { canSendEmailsToUser } = await updateUser({
       ...currentUser,
-      uid,
       canSendEmailsToUser: true, // user accepted emails
     });
 
-    dispatch({ type: 'auth/updateCurrentUser', payload: updatedUser });
+    dispatch({
+      type: 'auth/updateCurrentUser',
+      payload: { canSendEmailsToUser },
+    });
     setIsEmailModalOpen(false);
-  }, [currentUser, dispatch, uid]);
+  }, [currentUser, dispatch]);
 
   const handleRejectClick = useCallback(async () => {
     localStorage.setItem('isEmailModalAnswered', true);
 
-    const updatedUser = await updateUser(currentUser._id, {
+    const { canSendEmailsToUser } = await updateUser({
       ...currentUser,
-      uid,
       canSendEmailsToUser: false, // user rejected emails.
     });
 
-    dispatch({ type: 'auth/updateCurrentUser', payload: updatedUser });
+    dispatch({
+      type: 'auth/updateCurrentUser',
+      payload: { canSendEmailsToUser },
+    });
 
     setIsEmailModalOpen(false);
-  }, [currentUser, dispatch, uid]);
+  }, [currentUser, dispatch]);
 
   return (
     <Modal
