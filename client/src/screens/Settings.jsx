@@ -133,18 +133,9 @@ export default function Settings() {
       return;
     }
 
-    let yes = window.confirm(`are you sure you want to update your account? \n
-    Summoner Name: ${userData.name} \n
-    Region: ${userData.region} \n
-    Rank: ${userData.rank} \n
-     ${userData.adminKey ? 'Admin key: ' + userData.adminKey : ''}
-    `);
-
-    if (!yes) return;
     try {
       const data = await updateUser({
         ...userData,
-
         name: userData.name.trim(),
       });
 

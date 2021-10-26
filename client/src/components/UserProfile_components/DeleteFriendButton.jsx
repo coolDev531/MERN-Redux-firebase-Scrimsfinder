@@ -14,6 +14,9 @@ import { removeUserFriend } from './../../services/users.services';
 // icons
 import CancelIcon from '@mui/icons-material/Cancel';
 
+// utils
+import { encode } from 'html-entities';
+
 export default function DeleteFriendButton({
   currentUser,
   friendToDelete,
@@ -28,7 +31,7 @@ export default function DeleteFriendButton({
 
   const onDeleteFriend = useCallback(async () => {
     let yes = window.confirm(
-      `Are you sure you want to unfriend ${friendToDelete.name}?`
+      `Are you sure you want to unfriend ${encode(friendToDelete.name)}?`
     );
 
     if (!yes) return;

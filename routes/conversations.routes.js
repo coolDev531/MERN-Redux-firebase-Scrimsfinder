@@ -13,6 +13,7 @@ router.get('/conversations/user', auth, controllers.getUserConversations);
 router.get('/conversations/scrim/:scrimId', controllers.findScrimConversation);
 
 // get one conv includes two userId
+// $TODO: authorize this
 router.get(
   '/conversations/find/:firstUserId/:secondUserId',
   controllers.findOneConversation

@@ -27,6 +27,7 @@ import { Link } from 'react-router-dom';
 import { ROLE_IMAGES } from '../../utils/imageMaps';
 import { truncate } from '../../utils/truncate';
 import { copyTextToClipboard } from '../../utils/copyToClipboard';
+import { encode } from 'html-entities';
 
 // services
 import {
@@ -288,7 +289,9 @@ export default function ScrimTeamList({
                                   copyTextToClipboard(userInfo?.discord);
                                   setCurrentAlert({
                                     type: 'Success',
-                                    message: `copied player discord (${userInfo?.discord}) to clipboard`,
+                                    message: `copied player discord (${encode(
+                                      userInfo?.discord
+                                    )}) to clipboard`,
                                   });
                                 }}>
                                 {isSmScreen
@@ -350,7 +353,7 @@ export default function ScrimTeamList({
                       !gameEnded && (
                         <AdminArea>
                           <Tooltip
-                            title={`Kick ${userInfo?.name}`}
+                            title={`Kick ${encode(userInfo?.name)}`}
                             className={classes.iconButton}>
                             <span>
                               <IconButton
@@ -358,7 +361,9 @@ export default function ScrimTeamList({
                                 onMouseDown={(e) => e.preventDefault()}
                                 onClick={() => {
                                   let yes = window.confirm(
-                                    `Are you sure you want to kick ${userInfo?.name}?`
+                                    `Are you sure you want to kick ${encode(
+                                      userInfo?.name
+                                    )}?`
                                   );
                                   if (!yes) return;
                                   kickPlayerFromGame(playerAssigned, teamName);
