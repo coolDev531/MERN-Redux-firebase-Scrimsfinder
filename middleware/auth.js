@@ -13,11 +13,11 @@ module.exports = async function (req, res, next) {
 
   // Verify token
   try {
-    await jwt.verify(token, KEYS.SECRET_OR_KEY, (error, decoded) => {
+    return jwt.verify(token, KEYS.SECRET_OR_KEY, (error, decodedUser) => {
       if (error) {
         res.status(401).json({ msg: 'Token is not valid' });
       } else {
-        req.user = decoded.user;
+        req.user = decodedUser;
         next();
       }
     });

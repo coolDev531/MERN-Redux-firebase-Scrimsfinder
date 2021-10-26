@@ -328,22 +328,16 @@ const verifyUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { uid = '' } = req.body;
-    if (!id) {
-      return res.status(500).json({ status: false, message: 'no id provided' });
+    const user = req.user ?? false; // comes from auth middleware
+
+    if (!user) {
+      return res.status(500).json({ status: false, message: 'unauthorized' });
     }
 
-    const foundUser = await User.findById(id);
+    const foundUser = await User.findById(user?._id);
 
     if (!foundUser) {
       return res.status(500).json({ status: false, message: 'user not found' });
-    }
-
-    const isMatch = await bcrypt.compare(uid, foundUser.uid); // compare req.body.uid to user uid in db.
-
-    if (!isMatch) {
-      return res.status(401).json({ status: false, message: 'unauthorized' });
     }
 
     // check for valid rank
@@ -422,74 +416,68 @@ const updateUser = async (req, res) => {
 
     const isAdmin = req.body.adminKey === KEYS.ADMIN_KEY;
 
-    if (isMatch) {
-      const payload = {
-        uid: foundUser.uid,
-        email: foundUser.email,
-        _id: foundUser._id,
-        rank: req.body.rank ?? foundUser.rank,
-        region: req.body.region ?? foundUser.region,
-        discord: req.body.discord ?? foundUser.discord,
-        adminKey: req.body.adminKey ?? foundUser.adminKey,
-        name: req.body.name?.trim() ?? foundUser.name,
+    const payload = {
+      uid: foundUser.uid,
+      email: foundUser.email,
+      _id: foundUser._id,
+      rank: req.body.rank ?? foundUser.rank,
+      region: req.body.region ?? foundUser.region,
+      discord: req.body.discord ?? foundUser.discord,
+      adminKey: req.body.adminKey ?? foundUser.adminKey,
+      name: req.body.name?.trim() ?? foundUser.name,
 
-        isAdmin,
+      isAdmin,
 
-        profileBackgroundImg:
-          req.body.profileBackgroundImg ??
-          foundUser?.profileBackgroundImg ??
-          'Summoners Rift',
+      profileBackgroundImg:
+        req.body.profileBackgroundImg ??
+        foundUser?.profileBackgroundImg ??
+        'Summoners Rift',
 
-        profileBackgroundBlur:
-          req.body.profileBackgroundBlur ??
-          foundUser?.profileBackgroundBlur ??
-          '20',
+      profileBackgroundBlur:
+        req.body.profileBackgroundBlur ??
+        foundUser?.profileBackgroundBlur ??
+        '20',
 
-        notifications: foundUser.notifications,
-        friendRequests: foundUser.friendRequests,
-        friends: foundUser.friends,
+      notifications: foundUser.notifications,
+      friendRequests: foundUser.friendRequests,
+      friends: foundUser.friends,
 
-        canSendEmailsToUser: req.body.canSendEmailsToUser ?? false,
-      };
+      canSendEmailsToUser: req.body.canSendEmailsToUser ?? false,
+    };
 
-      bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(req.body.uid, salt, async (err, hash) => {
-          if (err) throw err;
+    bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(req.body.uid, salt, async (err, hash) => {
+        if (err) throw err;
 
-          req.body.uid = hash;
+        req.body.uid = hash;
 
-          const accessToken = jwt.sign(payload, KEYS.SECRET_OR_KEY, {
-            expiresIn: 31556926, // 1 year in seconds
-            // expiresIn: new Date(new Date()).setDate(new Date().getDate() + 30), // 30 days from now, does this work?
-          });
-
-          await User.findByIdAndUpdate(
-            id,
-            payload,
-            { new: true },
-            (error, user) => {
-              if (error) {
-                return res.status(500).json({ error: error.message });
-              }
-
-              if (!user) {
-                return res.status(404).json(user);
-              }
-
-              return res.status(201).json({
-                success: true,
-                token: accessToken,
-                user,
-              });
-            }
-          );
+        const accessToken = jwt.sign(payload, KEYS.SECRET_OR_KEY, {
+          expiresIn: 31556926, // 1 year in seconds
+          // expiresIn: new Date(new Date()).setDate(new Date().getDate() + 30), // 30 days from now, does this work?
         });
+
+        await User.findByIdAndUpdate(
+          user._id,
+          payload,
+          { new: true },
+          (error, updatedUser) => {
+            if (error) {
+              return res.status(500).json({ error: error.message });
+            }
+
+            if (!updatedUser) {
+              return res.status(404).json(updatedUser);
+            }
+
+            return res.status(201).json({
+              success: true,
+              token: accessToken,
+              user: updatedUser,
+            });
+          }
+        );
       });
-    } else {
-      return res.status(500).json({
-        success: false,
-      });
-    }
+    });
   } catch (error) {
     return res.status(500).json(error);
   }

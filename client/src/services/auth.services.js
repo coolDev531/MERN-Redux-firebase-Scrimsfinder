@@ -93,11 +93,11 @@ export const verifyUser = async ({ uid, email }) => {
   return null;
 };
 
-export const updateUser = async (id, userData) => {
+export const updateUser = async (userData) => {
   try {
-    const response = await api.put(`/auth/update-user/${id}`, userData, {
+    const response = await api.put('/auth/update-user', userData, {
       headers: {
-        Authorization: `Bearer ${localStorage.jwtToken}`,
+        Authorization: `Bearer ${localStorage.jwtToken}`, // auth middleware takes this
       },
     });
     return response.data;
