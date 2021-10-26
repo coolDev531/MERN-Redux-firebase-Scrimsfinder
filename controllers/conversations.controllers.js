@@ -1,6 +1,5 @@
 const Conversation = require('../models/conversation.model');
 const User = require('../models/user.model');
-const bcrypt = require('bcryptjs');
 
 // @route   POST /api/conversations
 // @desc    create one conversation between a sender and a receiver (For user messenger)
@@ -38,28 +37,22 @@ const postConversation = async (req, res) => {
 // @access  Private
 const getUserConversations = async (req, res) => {
   try {
-    const { uid = '' } = req.query;
+    // authorize so only validated user can see his own conversations
+    const user = req.user ?? false; // comes from auth middleware;
 
-    if (!uid) {
-      return res.status(401).json({ error: 'Unauthorized no uid provided' });
+    if (!user) {
+      return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const foundUser = await User.findById(req.params.userId);
+    const foundUser = await User.findById(user._id);
 
     if (!foundUser) {
       return res.status(500).json({ error: 'User not found' });
     }
 
-    // authorize so only validated user can see his own conversations
-    const isMatch = await bcrypt.compare(uid, foundUser.uid); // compare pure req.body.uid to hashed user uid in db.
-
-    if (!isMatch) {
-      return res.status(401).json({ error: 'Unauthorized uid' });
-    }
-
     // find the conversations for that user
     const conversations = await Conversation.find({
-      members: { $in: [req.params.userId] },
+      members: { $in: [user._id] },
     })
       .populate('members', ['name', 'discord', 'region', 'rank'])
       .exec();

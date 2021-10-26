@@ -6,12 +6,12 @@ import api from './apiConfig';
  * @param {String} uid // current user's uid
  * @returns {Promise<Conversation>}
  */
-export const getUserConversations = async (userId, uid) => {
+export const getUserConversations = async () => {
   try {
-    const response = await api.get(`/conversations/user/${userId}`, {
+    const response = await api.get(`/conversations/user`, {
       // pass uid in query params to authorize
-      params: {
-        uid,
+      headers: {
+        Authorization: `Bearer ${localStorage.jwtToken}`, // auth middleware takes this
       },
     });
     return response.data;
