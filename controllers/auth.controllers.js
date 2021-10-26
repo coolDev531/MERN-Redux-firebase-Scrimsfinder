@@ -86,7 +86,7 @@ const loginUser = async (req, res) => {
 
   // Check uid
   try {
-    const isMatch = await bcrypt.compare(uid, foundUser.uid); // compare req.body.uid to user uid in db.
+    const isMatch = await bcrypt.compare(uid, foundUser.uid); // compare unhashed req.body.uid to hashed user uid in db.
 
     if (isMatch) {
       const payload = {
@@ -283,7 +283,7 @@ const verifyUser = async (req, res) => {
     const foundUser = await User.findOne({ email });
 
     if (foundUser) {
-      const isMatch = await bcrypt.compare(uid, foundUser.uid); // compare pure req.body.uid to hashed user uid in db. (already hased in jwt token front-end)
+      const isMatch = uid === foundUser.uid; // compare  eq.body.uid to  user uid in db. (already hased in jwt token front-end)
 
       if (isMatch) {
         const payload = {
@@ -341,7 +341,7 @@ const updateUser = async (req, res) => {
       return res.status(500).json({ status: false, message: 'user not found' });
     }
 
-    const isMatch = await bcrypt.compare(uid, foundUser.uid); // compare req.body.uid to user uid in db.
+    const isMatch = uid === foundUser.uid; // compare req.body.uid to user uid in db.
 
     if (!isMatch) {
       return res.status(401).json({ status: false, message: 'unauthorized' });

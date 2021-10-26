@@ -92,6 +92,7 @@ const getOneUser = async (req, res) => {
       'profileBackgroundImg',
       'profileBackgroundBlur',
       'friends',
+      'friendRequests',
     ]);
 
     if (!user)
@@ -203,6 +204,7 @@ const getUserById = async (req, res) => {
       'profileBackgroundImg',
       'profileBackgroundBlur',
       'friends',
+      'friendRequests',
     ]);
 
     if (!user)

@@ -76,14 +76,8 @@ export function useAuthVerify() {
 
         const decodedUser = jwt_decode(token);
 
-        let pureUid = currentUser?.uid; // unhashed uid
-
-        if (!pureUid) {
-          handleLogout();
-        }
-
         const data = await verifyUser({
-          uid: pureUid, // compare pure uid from firebase so bcrypt can compare with hased
+          uid: decodedUser?.uid, // compare pure uid from firebase so bcrypt can compare with hased
           email: decodedUser?.email,
         });
 
