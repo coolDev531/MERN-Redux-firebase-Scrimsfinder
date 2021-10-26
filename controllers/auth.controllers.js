@@ -86,7 +86,7 @@ const loginUser = async (req, res) => {
 
   // Check uid
   try {
-    const isMatch = bcrypt.compare(uid, foundUser.uid); // compare unhashed req.body.uid to hashed user uid in db.
+    const isMatch = await bcrypt.compare(uid, foundUser.uid); // compare unhashed req.body.uid to hashed user uid in db.
 
     if (isMatch) {
       const payload = {
@@ -450,39 +450,30 @@ const updateUser = async (req, res) => {
       canSendEmailsToUser: req.body.canSendEmailsToUser ?? false,
     };
 
-    bcrypt.genSalt(10, (err, salt) => {
-      bcrypt.hash(req.body.uid, salt, async (err, hash) => {
-        if (err) throw err;
-
-        req.body.uid = hash;
-
-        const accessToken = jwt.sign(payload, KEYS.SECRET_OR_KEY, {
-          expiresIn: 31556926, // 1 year in seconds
-          // expiresIn: new Date(new Date()).setDate(new Date().getDate() + 30), // 30 days from now, does this work?
-        });
-
-        await User.findByIdAndUpdate(
-          user._id,
-          payload,
-          { new: true },
-          (error, updatedUser) => {
-            if (error) {
-              return res.status(500).json({ error: error.message });
-            }
-
-            if (!updatedUser) {
-              return res.status(404).json(updatedUser);
-            }
-
-            return res.status(201).json({
-              success: true,
-              token: `Bearer ${accessToken}`,
-              user: updatedUser,
-            });
-          }
-        );
-      });
+    const accessToken = jwt.sign(payload, KEYS.SECRET_OR_KEY, {
+      expiresIn: 31556926, // 1 year in seconds
     });
+
+    await User.findByIdAndUpdate(
+      user._id,
+      payload,
+      { new: true },
+      (error, updatedUser) => {
+        if (error) {
+          return res.status(500).json({ error: error.message });
+        }
+
+        if (!updatedUser) {
+          return res.status(404).json(updatedUser);
+        }
+
+        return res.status(201).json({
+          success: true,
+          token: `Bearer ${accessToken}`,
+          user: updatedUser,
+        });
+      }
+    );
   } catch (error) {
     return res.status(500).json(error);
   }
