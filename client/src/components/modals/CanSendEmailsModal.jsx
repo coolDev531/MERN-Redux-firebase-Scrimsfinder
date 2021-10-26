@@ -35,6 +35,7 @@ export default function CanSendEmailsModal() {
 
     const updatedUser = await updateUser(currentUser._id, {
       ...currentUser,
+      uid: localStorage.getItem('userUid'),
       canSendEmailsToUser: true, // user accepted emails
     });
 
@@ -47,6 +48,7 @@ export default function CanSendEmailsModal() {
 
     const updatedUser = await updateUser(currentUser._id, {
       ...currentUser,
+      uid: localStorage.getItem('userUid'),
       canSendEmailsToUser: false, // user rejected emails.
     });
 
