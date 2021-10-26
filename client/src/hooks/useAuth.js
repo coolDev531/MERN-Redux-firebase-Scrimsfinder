@@ -69,35 +69,42 @@ export function useAuthVerify() {
   const handleVerify = useCallback(async () => {
     devLog('verifying user');
     try {
-      if (localStorage.jwtToken) {
-        // Set auth token header auth
-        const token = localStorage.jwtToken;
-        setAuthToken(token);
+      auth.onAuthStateChanged(async (googleUser) => {
+        if (googleUser) {
+          if (localStorage.jwtToken) {
+            // Set auth token header auth
+            const token = localStorage.jwtToken;
+            setAuthToken(token);
 
-        const decodedUser = jwt_decode(token);
+            const decodedUser = jwt_decode(token);
 
-        const data = await verifyUser({
-          uid: decodedUser?.uid,
-          email: decodedUser?.email,
-        });
+            const data = await verifyUser({
+              uid: googleUser.uid,
+              email: decodedUser?.email,
+            });
 
-        // if there is no token PrivateRoute.jsx should send us to /sign-up automatically.
-        if (data?.token) {
-          localStorage.setItem('jwtToken', data?.token);
-          // Set user
-          setCurrentUser(data?.user);
-          // Check for expired token
-          const currentTime = Date.now() / 1000; // to get in milliseconds
-          if (decodedUser.exp < currentTime) {
-            // if time passed expiration
-            // Logout user
-            handleLogout();
-            // Redirect to login
-            history.push('/signup');
+            // if there is no token PrivateRoute.jsx should send us to /sign-up automatically.
+            if (data?.token) {
+              localStorage.setItem('jwtToken', data?.token);
+              // Set user
+              setCurrentUser(data?.user);
+              // Check for expired token
+              const currentTime = Date.now() / 1000; // to get in milliseconds
+              if (decodedUser.exp < currentTime) {
+                // if time passed expiration
+                // Logout user
+                handleLogout();
+                // Redirect to login
+                history.push('/signup');
+              }
+            }
           }
+          dispatch({ type: 'auth/setIsVerifyingUser', payload: false });
+        } else {
+          console.log('Logged out!');
+          //window.location.href = "index.html";
         }
-      }
-      dispatch({ type: 'auth/setIsVerifyingUser', payload: false });
+      });
     } catch (error) {
       handleLogout();
       dispatch({ type: 'auth/setIsVerifyingUser', payload: false });
