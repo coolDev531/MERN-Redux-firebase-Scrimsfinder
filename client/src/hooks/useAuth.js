@@ -32,6 +32,7 @@ export function useAuthActions() {
     auth.signOut();
     localStorage.removeItem('jwtToken'); // remove token from localStorage
     removeToken();
+    localStorage.setItem('userUid', ''); // remove uid
     dispatch({ type: 'auth/logout' });
     history.push('/signup'); // push back to signup
   };
@@ -47,6 +48,8 @@ export function useAuthActions() {
         uid: result.user.uid, // google id
         email: result.user.email,
       };
+
+      localStorage.setItem('userUid', result.user.uid); // pure unhashed uid
 
       // token = `Bearer ${bcryptHash}`
       const decodedUser = await loginUser(googleParams); // get the jwt token from backend with params
@@ -68,35 +71,46 @@ export function useAuthVerify() {
 
   const handleVerify = useCallback(async () => {
     devLog('verifying user');
-    if (localStorage.jwtToken) {
-      // Set auth token header auth
-      const token = localStorage.jwtToken;
-      setAuthToken(token);
+    try {
+      if (localStorage.jwtToken) {
+        // Set auth token header auth
+        const token = localStorage.jwtToken;
+        setAuthToken(token);
 
-      const decodedUser = jwt_decode(token);
+        const decodedUser = jwt_decode(token);
 
-      const data = await verifyUser({
-        uid: decodedUser?.uid,
-        email: decodedUser?.email,
-      });
+        let pureUid = localStorage.getItem('userUid'); // unhashed uid
 
-      // if there is no token PrivateRoute.jsx should send us to /sign-up automatically.
-      if (data?.token) {
-        localStorage.setItem('jwtToken', data?.token);
-        // Set user
-        setCurrentUser(data?.user);
-        // Check for expired token
-        const currentTime = Date.now() / 1000; // to get in milliseconds
-        if (decodedUser.exp < currentTime) {
-          // if time passed expiration
-          // Logout user
+        if (!pureUid) {
           handleLogout();
-          // Redirect to login
-          history.push('/signup');
+        }
+
+        const data = await verifyUser({
+          uid: pureUid, // compare pure uid from firebase so bcrypt can compare with hased
+          email: decodedUser?.email,
+        });
+
+        // if there is no token PrivateRoute.jsx should send us to /sign-up automatically.
+        if (data?.token) {
+          localStorage.setItem('jwtToken', data?.token);
+          // Set user
+          setCurrentUser(data?.user);
+          // Check for expired token
+          const currentTime = Date.now() / 1000; // to get in milliseconds
+          if (decodedUser.exp < currentTime) {
+            // if time passed expiration
+            // Logout user
+            handleLogout();
+            // Redirect to login
+            history.push('/signup');
+          }
         }
       }
+      dispatch({ type: 'auth/setIsVerifyingUser', payload: false });
+    } catch (error) {
+      handleLogout();
+      dispatch({ type: 'auth/setIsVerifyingUser', payload: false });
     }
-    dispatch({ type: 'auth/setIsVerifyingUser', payload: false });
 
     // eslint-disable-next-line
   }, []);

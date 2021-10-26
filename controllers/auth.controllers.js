@@ -86,7 +86,7 @@ const loginUser = async (req, res) => {
 
   // Check uid
   try {
-    const isMatch = bcrypt.compare(uid, foundUser.uid); // compare req.body.uid to user uid in db.
+    const isMatch = await bcrypt.compare(uid, foundUser.uid); // compare req.body.uid to user uid in db.
 
     if (isMatch) {
       const payload = {
@@ -282,8 +282,10 @@ const verifyUser = async (req, res) => {
     // will find the one user with the exact uid and email combination
     const foundUser = await User.findOne({ email });
 
+    console.log({ uid });
     if (foundUser) {
-      const isMatch = bcrypt.compare(uid, foundUser.uid); // compare req.body.uid to user uid in db.
+      const isMatch = await bcrypt.compare(uid, foundUser.uid); // compare pure req.body.uid to hashed user uid in db. (already hased in jwt token front-end)
+
       if (isMatch) {
         const payload = {
           uid: foundUser.uid,
@@ -327,163 +329,171 @@ const verifyUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const { id } = req.params;
-  const { uid = null } = req.body;
+  try {
+    const { id } = req.params;
+    const { uid = '' } = req.body;
+    if (!id) {
+      return res.status(500).json({ status: false, message: 'no id provided' });
+    }
 
-  const foundUser = await User.findById(id);
+    const foundUser = await User.findById(id);
 
-  if (!foundUser) {
-    return res.status(500).json({ status: false, message: 'user not found' });
-  }
+    if (!foundUser) {
+      return res.status(500).json({ status: false, message: 'user not found' });
+    }
 
-  const isMatch = bcrypt.compare(uid, foundUser.uid); // compare req.body.uid to user uid in db.
+    const isMatch = await bcrypt.compare(uid, foundUser.uid); // compare req.body.uid to user uid in db.
 
-  if (!isMatch) {
-    return res.status(401).json({ status: false, message: 'unauthorized' });
-  }
+    if (!isMatch) {
+      return res.status(401).json({ status: false, message: 'unauthorized' });
+    }
 
-  // check for valid rank
-  if (req.body.rank) {
-    let rankDivision = req.body.rank.replace(/[0-9]/g, '').trim();
+    // check for valid rank
+    if (req.body.rank) {
+      let rankDivision = req.body.rank.replace(/[0-9]/g, '').trim();
 
-    let isDivisionWithNumber = divisionsWithNumbers.includes(rankDivision);
+      let isDivisionWithNumber = divisionsWithNumbers.includes(rankDivision);
 
-    const rankInvalid = !allowedRanks.includes(rankDivision);
+      const rankInvalid = !allowedRanks.includes(rankDivision);
 
-    if (rankInvalid) {
+      if (rankInvalid) {
+        return res.status(500).json({
+          status: false,
+          error: 'Invalid rank provided.',
+        });
+      }
+
+      if (isDivisionWithNumber) {
+        const rankNumber = req.body.rank.replace(/[a-z]/gi, '').trim();
+
+        // check that rank has digits
+        if (!/\d/.test(req.body.rank)) {
+          return res.status(500).json({
+            status: false,
+            error: 'Rank number not provided',
+          });
+        }
+
+        // check that rankNumber is only 1 digit
+        if (!/^\d{1,1}$/.test(rankNumber)) {
+          return res.status(500).json({
+            status: false,
+            error:
+              'Rank number invalid: should only contain one digit from 1-4.',
+          });
+        }
+
+        // check that rankNumber is a digit in range from one to four
+        if (!/[1-4]/.test(rankNumber)) {
+          return res.status(500).json({
+            status: false,
+            error:
+              'Rank number is invalid! (should only contain one digit from 1-4)',
+          });
+        }
+      } else if (!isDivisionWithNumber) {
+        // if the rank division doesn't have a number (aka challenger, master, etc), check that it doesn't have digits
+        if (/\d/.test(req.body.rank)) {
+          return res.status(500).json({
+            status: false,
+            error: 'The provided rank should not have a number',
+          });
+        }
+      }
+    }
+
+    // check for valid region
+    if (req.body.region) {
+      const regionInvalid = !REGIONS.includes(req.body.region);
+
+      if (regionInvalid) {
+        return res.status(500).json({
+          error: 'Invalid region provided.',
+          status: false,
+        });
+      }
+    }
+
+    const summonerNameInvalid = checkSummonerNameValid(req.body.name);
+
+    if (summonerNameInvalid) {
       return res.status(500).json({
-        status: false,
-        error: 'Invalid rank provided.',
+        error: 'Error: no special characters in name field allowed!',
       });
     }
 
-    if (isDivisionWithNumber) {
-      const rankNumber = req.body.rank.replace(/[a-z]/gi, '').trim();
+    const isAdmin = req.body.adminKey === KEYS.ADMIN_KEY;
 
-      // check that rank has digits
-      if (!/\d/.test(req.body.rank)) {
-        return res.status(500).json({
-          status: false,
-          error: 'Rank number not provided',
+    if (isMatch) {
+      const payload = {
+        uid: foundUser.uid,
+        email: foundUser.email,
+        _id: foundUser._id,
+        rank: req.body.rank ?? foundUser.rank,
+        region: req.body.region ?? foundUser.region,
+        discord: req.body.discord ?? foundUser.discord,
+        adminKey: req.body.adminKey ?? foundUser.adminKey,
+        name: req.body.name?.trim() ?? foundUser.name,
+
+        isAdmin,
+
+        profileBackgroundImg:
+          req.body.profileBackgroundImg ??
+          foundUser?.profileBackgroundImg ??
+          'Summoners Rift',
+
+        profileBackgroundBlur:
+          req.body.profileBackgroundBlur ??
+          foundUser?.profileBackgroundBlur ??
+          '20',
+
+        notifications: foundUser.notifications,
+        friendRequests: foundUser.friendRequests,
+        friends: foundUser.friends,
+
+        canSendEmailsToUser: req.body.canSendEmailsToUser ?? false,
+      };
+
+      bcrypt.genSalt(10, (err, salt) => {
+        bcrypt.hash(req.body.uid, salt, async (err, hash) => {
+          if (err) throw err;
+
+          req.body.uid = hash;
+
+          const accessToken = jwt.sign(payload, KEYS.SECRET_OR_KEY, {
+            expiresIn: 31556926, // 1 year in seconds
+            // expiresIn: new Date(new Date()).setDate(new Date().getDate() + 30), // 30 days from now, does this work?
+          });
+
+          await User.findByIdAndUpdate(
+            id,
+            payload,
+            { new: true },
+            (error, user) => {
+              if (error) {
+                return res.status(500).json({ error: error.message });
+              }
+
+              if (!user) {
+                return res.status(404).json(user);
+              }
+
+              return res.status(201).json({
+                success: true,
+                token: accessToken,
+                user,
+              });
+            }
+          );
         });
-      }
-
-      // check that rankNumber is only 1 digit
-      if (!/^\d{1,1}$/.test(rankNumber)) {
-        return res.status(500).json({
-          status: false,
-          error: 'Rank number invalid: should only contain one digit from 1-4.',
-        });
-      }
-
-      // check that rankNumber is a digit in range from one to four
-      if (!/[1-4]/.test(rankNumber)) {
-        return res.status(500).json({
-          status: false,
-          error:
-            'Rank number is invalid! (should only contain one digit from 1-4)',
-        });
-      }
-    } else if (!isDivisionWithNumber) {
-      // if the rank division doesn't have a number (aka challenger, master, etc), check that it doesn't have digits
-      if (/\d/.test(req.body.rank)) {
-        return res.status(500).json({
-          status: false,
-          error: 'The provided rank should not have a number',
-        });
-      }
-    }
-  }
-
-  // check for valid region
-  if (req.body.region) {
-    const regionInvalid = !REGIONS.includes(req.body.region);
-
-    if (regionInvalid) {
+      });
+    } else {
       return res.status(500).json({
-        error: 'Invalid region provided.',
-        status: false,
+        success: false,
       });
     }
-  }
-
-  const summonerNameInvalid = checkSummonerNameValid(req.body.name);
-
-  if (summonerNameInvalid) {
-    return res.status(500).json({
-      error: 'Error: no special characters in name field allowed!',
-    });
-  }
-
-  const isAdmin = req.body.adminKey === KEYS.ADMIN_KEY;
-
-  if (isMatch) {
-    const payload = {
-      uid: foundUser.uid,
-      email: foundUser.email,
-      _id: foundUser._id,
-      rank: req.body.rank ?? foundUser.rank,
-      region: req.body.region ?? foundUser.region,
-      discord: req.body.discord ?? foundUser.discord,
-      adminKey: req.body.adminKey ?? foundUser.adminKey,
-      name: req.body.name?.trim() ?? foundUser.name,
-
-      isAdmin,
-
-      profileBackgroundImg:
-        req.body.profileBackgroundImg ??
-        foundUser?.profileBackgroundImg ??
-        'Summoners Rift',
-
-      profileBackgroundBlur:
-        req.body.profileBackgroundBlur ??
-        foundUser?.profileBackgroundBlur ??
-        '20',
-
-      notifications: foundUser.notifications,
-      friendRequests: foundUser.friendRequests,
-      friends: foundUser.friends,
-
-      canSendEmailsToUser: req.body.canSendEmailsToUser ?? false,
-    };
-
-    bcrypt.genSalt(10, (err, salt) => {
-      bcrypt.hash(req.body.uid, salt, async (err, hash) => {
-        if (err) throw err;
-
-        req.body.uid = hash;
-
-        const accessToken = jwt.sign(payload, KEYS.SECRET_OR_KEY, {
-          expiresIn: 31556926, // 1 year in seconds
-          // expiresIn: new Date(new Date()).setDate(new Date().getDate() + 30), // 30 days from now, does this work?
-        });
-
-        await User.findByIdAndUpdate(
-          id,
-          payload,
-          { new: true },
-          (error, user) => {
-            if (error) {
-              return res.status(500).json({ error: error.message });
-            }
-
-            if (!user) {
-              return res.status(404).json(user);
-            }
-
-            return res.status(201).json({
-              success: true,
-              token: accessToken,
-              user,
-            });
-          }
-        );
-      });
-    });
-  } else {
-    return res.status(500).json({
-      success: false,
-    });
+  } catch (error) {
+    return res.status(500).json(error);
   }
 };
 
