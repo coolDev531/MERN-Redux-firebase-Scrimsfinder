@@ -112,7 +112,7 @@ const loginUser = async (req, res) => {
 
       return res.json({ success: true, token: 'Bearer ' + accessToken });
     } else {
-      return res.status(500).json('password incorrect');
+      return res.status(500).json('failed to match google user (uid)');
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
