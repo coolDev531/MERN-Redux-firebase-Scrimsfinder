@@ -47,7 +47,7 @@ export default function useMessenger() {
       });
     };
     fetchUserConversations();
-  }, [currentUser?._id, currentUser?.uid, dispatch]);
+  }, [currentUser?._id, uid, dispatch]);
 
   useEffect(() => {
     if (!currentUser?._id) return;

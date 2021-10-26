@@ -95,7 +95,11 @@ export const verifyUser = async ({ uid, email }) => {
 
 export const updateUser = async (id, userData) => {
   try {
-    const response = await api.put(`/auth/update-user/${id}`, userData);
+    const response = await api.put(`/auth/update-user/${id}`, userData, {
+      headers: {
+        Authorization: `Bearer ${localStorage.jwtToken}`,
+      },
+    });
     return response.data;
   } catch (error) {
     throw error;

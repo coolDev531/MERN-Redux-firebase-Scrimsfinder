@@ -4,7 +4,7 @@ const KEYS = require('../config/keys');
 module.exports = async function (req, res, next) {
   // Get token from header
   const authHeader = req.header('Authorization');
-  const token = authHeader.split(' ')[1];
+  const token = authHeader.split(' ')[1]; // jwt token
 
   // Check if not token
   if (!token) {
