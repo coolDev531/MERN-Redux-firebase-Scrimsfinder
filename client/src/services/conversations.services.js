@@ -7,12 +7,7 @@ import api from './apiConfig';
  */
 export const getUserConversations = async (userData) => {
   try {
-    const response = await api.get(`/conversations/user`, userData, {
-      // pass uid in query params to authorize
-      headers: {
-        Authorization: localStorage.jwtToken, // auth middleware takes this
-      },
-    });
+    const response = await api.get(`/conversations/user`, userData);
     return response.data;
   } catch (error) {
     throw error;
@@ -27,14 +22,7 @@ export const getUserConversations = async (userData) => {
  */
 export const findOneConversation = async (userId1, userId2) => {
   try {
-    const response = await api.get(
-      `/conversations/find/${userId1}/${userId2}`,
-      {
-        headers: {
-          Authorization: localStorage.jwtToken,
-        },
-      }
-    );
+    const response = await api.get(`/conversations/find/${userId1}/${userId2}`);
     return response.data;
   } catch (error) {
     throw error;

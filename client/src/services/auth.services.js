@@ -88,13 +88,7 @@ export const verifyUser = async (userData) => {
 
 export const updateUser = async (userData) => {
   try {
-    const token = localStorage?.jwtToken ?? '';
-
-    const response = await api.put(`/auth/update-user`, userData, {
-      headers: {
-        Authorization: token,
-      },
-    });
+    const response = await api.put(`/auth/update-user`, userData);
     return response.data;
   } catch (error) {
     throw error;
