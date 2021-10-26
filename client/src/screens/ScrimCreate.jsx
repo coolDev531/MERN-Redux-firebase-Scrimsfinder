@@ -315,7 +315,7 @@ export default function ScrimCreate() {
                       }))
                     }
                     value={scrimData.lobbyHost}>
-                    {[currentUser?._id, 'random'].map((value, key) => (
+                    {['random', currentUser?._id].map((value, key) => (
                       <MenuItem value={value} key={key}>
                         {value === currentUser._id
                           ? 'I will host the lobby'
