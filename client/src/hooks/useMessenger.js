@@ -32,7 +32,7 @@ export default function useMessenger() {
     const fetchUserConversations = async () => {
       const conversations = await getUserConversations(
         currentUser?._id,
-        localStorage.getItem('userUid') // pass uid to authorize request
+        currentUser?.uid // pass uid to authorize request
       );
       const unseenMessages = await getUserUnseenMessages(currentUser?._id);
 

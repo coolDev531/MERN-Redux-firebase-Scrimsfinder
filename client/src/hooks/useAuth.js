@@ -32,7 +32,6 @@ export function useAuthActions() {
     auth.signOut();
     localStorage.removeItem('jwtToken'); // remove token from localStorage
     removeToken();
-    localStorage.setItem('userUid', ''); // remove uid
     dispatch({ type: 'auth/logout' });
     history.push('/signup'); // push back to signup
   };
@@ -48,8 +47,6 @@ export function useAuthActions() {
         uid: result.user.uid, // google id
         email: result.user.email,
       };
-
-      localStorage.setItem('userUid', result.user.uid); // pure unhashed uid
 
       // token = `Bearer ${bcryptHash}`
       const decodedUser = await loginUser(googleParams); // get the jwt token from backend with params
@@ -79,7 +76,7 @@ export function useAuthVerify() {
 
         const decodedUser = jwt_decode(token);
 
-        let pureUid = localStorage.getItem('userUid'); // unhashed uid
+        let pureUid = currentUser?.uid; // unhashed uid
 
         if (!pureUid) {
           handleLogout();

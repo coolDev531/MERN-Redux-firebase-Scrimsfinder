@@ -144,7 +144,7 @@ export default function Settings() {
     try {
       const data = await updateUser(currentUser?._id, {
         ...userData,
-        uid: localStorage.getItem('userUid'),
+        uid: currentUser?.uid,
         name: userData.name.trim(),
       });
 
