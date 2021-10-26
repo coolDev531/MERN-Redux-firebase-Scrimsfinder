@@ -89,6 +89,7 @@ const loginUser = async (req, res) => {
   // Check uid
   try {
     const isMatch = await bcrypt.compare(uid, foundUser.uid); // compare unhashed req.body.uid to hashed user uid in db.
+    console.log({ uid, foundUserUid: foundUser.uid, isMatch });
 
     if (isMatch) {
       const payload = {
