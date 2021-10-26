@@ -5,6 +5,7 @@ import 'firebase/database'; // for realtime database
 import 'firebase/firestore'; // for cloud firestore
 import 'firebase/messaging'; // for cloud messaging
 import 'firebase/functions'; // for cloud functions
+import 'firebase/analytics';
 
 // the only thing we use in this app is firebase auth to connect to google tbh.
 // we store the users in mongodb.
@@ -24,7 +25,8 @@ const db = firebaseApp.firestore();
 const auth = firebase.auth();
 const provider = new firebase.auth.GoogleAuthProvider();
 const storage = firebase.storage();
+const analytics = firebase.analytics();
 
-export { auth, provider, storage };
+export { auth, provider, storage, analytics };
 
 export default db;

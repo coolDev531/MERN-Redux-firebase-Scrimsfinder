@@ -103,7 +103,7 @@ export default function NavbarDrawer({
           })}>
           <List>
             {/* My Profile */}
-            {currentUser?.uid && (
+            {currentUser?._id && (
               <>
                 <ListItem
                   button
@@ -122,7 +122,7 @@ export default function NavbarDrawer({
             )}
 
             {/* Scrims button */}
-            {currentUser?.uid && (
+            {currentUser?._id && (
               <>
                 <ListItem button onClick={() => drawerNavPush('/scrims')}>
                   <ListItemIcon>
@@ -135,7 +135,7 @@ export default function NavbarDrawer({
               </>
             )}
 
-            {currentUser?.uid && (
+            {currentUser?._id && (
               <>
                 <ListItem
                   button
@@ -166,7 +166,7 @@ export default function NavbarDrawer({
             <Divider />
 
             {/* Log out button */}
-            {currentUser?.uid && (
+            {currentUser?._id && (
               <>
                 <ListItem button onClick={handleLogout}>
                   <ListItemIcon>
