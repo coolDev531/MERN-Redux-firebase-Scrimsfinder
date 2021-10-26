@@ -1,5 +1,7 @@
 const KEYS = require('../config/keys');
+
 // jwt
+// using JWT with firebase is so scuffed.
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
