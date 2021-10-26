@@ -12,10 +12,10 @@ router.get('/conversations/user', auth, controllers.getUserConversations);
 // get one scrim conversation
 router.get('/conversations/scrim/:scrimId', controllers.findScrimConversation);
 
-// get one conv includes two userId
-// $TODO: authorize this
+// get one conv includes two userId (private chat between 2 friends)
 router.get(
   '/conversations/find/:firstUserId/:secondUserId',
+  auth,
   controllers.findOneConversation
 );
 

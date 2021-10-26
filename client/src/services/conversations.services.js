@@ -3,7 +3,6 @@ import api from './apiConfig';
 /**
  * @method getUserConversations
  * @param {String} userId
- * @param {String} uid // current user's uid
  * @returns {Promise<Conversation>}
  */
 export const getUserConversations = async (userData) => {
@@ -28,7 +27,14 @@ export const getUserConversations = async (userData) => {
  */
 export const findOneConversation = async (userId1, userId2) => {
   try {
-    const response = await api.get(`/conversations/find/${userId1}/${userId2}`);
+    const response = await api.get(
+      `/conversations/find/${userId1}/${userId2}`,
+      {
+        headers: {
+          Authorization: localStorage.jwtToken,
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     throw error;

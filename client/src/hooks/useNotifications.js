@@ -16,7 +16,7 @@ export default function useNotifications() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!socket?.current) return;
+    if (!socket) return;
     if (!currentUser?._id) return;
 
     // listen to socket server and get notification data.

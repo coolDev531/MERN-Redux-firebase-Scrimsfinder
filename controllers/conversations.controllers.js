@@ -50,7 +50,7 @@ const getUserConversations = async (req, res) => {
       return res.status(500).json({ error: 'User not found' });
     }
 
-    const isMatch = user.email === foundUser.email;
+    const isMatch = user.email === foundUser.email; // tbh ofc it's going to be a match, if it found the user it already will match LOL...
 
     if (!isMatch) {
       return res.status(401).json({ error: 'Unauthorized', status: false });
@@ -75,12 +75,26 @@ const getUserConversations = async (req, res) => {
 
 // @route   GET /api/conversations/find/:firstUserId/:secondUserId
 // @desc    get one conversation between 2 users (order doesn't matter)
-// @access  Public
+// @access  Private
 const findOneConversation = async (req, res) => {
   try {
+    const userId = req.user._id ?? false;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized', status: false });
+    }
+
     let conversation = await Conversation.findOne({
       members: { $all: [req.params.firstUserId, req.params.secondUserId] },
     });
+
+    const authorized = conversation.members.find((memberId) => {
+      return String(memberId) === String(userId);
+    });
+
+    if (!authorized) {
+      return res.status(401).json({ error: 'Unauthorized', status: false });
+    }
 
     // populate so client can receive the members attributes
     conversation = await conversation
