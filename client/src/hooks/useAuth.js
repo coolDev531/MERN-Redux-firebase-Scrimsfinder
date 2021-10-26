@@ -77,7 +77,7 @@ export function useAuthVerify() {
         const decodedUser = jwt_decode(token);
 
         const data = await verifyUser({
-          uid: decodedUser?.uid, // compare pure uid from firebase so bcrypt can compare with hased
+          uid: decodedUser?.uid,
           email: decodedUser?.email,
         });
 
