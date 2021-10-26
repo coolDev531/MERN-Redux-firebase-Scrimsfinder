@@ -14,7 +14,9 @@ opts.secretOrKey = KEYS.SECRET_OR_KEY;
  So I'm hashing it, but I probably didn't even need to do it because google uids are unique to the app.
 
  we are planning to scrap firebase for discord auth anyways so we won't need this type of authentication anyways
-*/
+
+ UPDATE: hashing uid was incorrect, google says uids are safe to use as they are.
+ */
 
 module.exports = (passport) => {
   passport.use(
