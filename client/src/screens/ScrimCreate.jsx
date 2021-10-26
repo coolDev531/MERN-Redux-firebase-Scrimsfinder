@@ -36,7 +36,7 @@ export default function ScrimCreate() {
 
   const [scrimData, setScrimData] = useState({
     gameStartTime: new Date().toISOString(),
-    lobbyHost: currentUser?._id,
+    lobbyHost: 'random',
     region: currentUser?.region,
     createdBy: currentUser,
     title: '',
