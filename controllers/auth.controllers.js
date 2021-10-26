@@ -1,7 +1,5 @@
 const KEYS = require('../config/keys');
-
 // jwt
-// using JWT with firebase is so scuffed.
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -88,8 +86,7 @@ const loginUser = async (req, res) => {
 
   // Check uid
   try {
-    const isMatch = await bcrypt.compare(uid, foundUser.uid); // compare unhashed req.body.uid to hashed user uid in db.
-    console.log({ uid, foundUserUid: foundUser.uid, isMatch });
+    const isMatch = bcrypt.compare(uid, foundUser.uid); // compare unhashed req.body.uid to hashed user uid in db.
 
     if (isMatch) {
       const payload = {
@@ -110,7 +107,6 @@ const loginUser = async (req, res) => {
       // I don't even think we need to hash the uid...
       const accessToken = jwt.sign(payload, KEYS.SECRET_OR_KEY, {
         expiresIn: 31556926, // 1 year in seconds
-        // expiresIn: new Date(new Date()).setDate(new Date().getDate() + 30), // 30 days from now, does this work?
       });
 
       return res.json({ success: true, token: 'Bearer ' + accessToken });
