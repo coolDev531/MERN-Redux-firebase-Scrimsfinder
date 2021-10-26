@@ -18,6 +18,7 @@ function createServer() {
   const allowedOrigins = [
     'http://localhost:3001',
     'https://lol-scrims-finder.netlify.app',
+    'https://distracted-bhabha-a1f4de.netlify.app', // deployed dev testing endpoint
   ];
 
   const corsOptions = {
