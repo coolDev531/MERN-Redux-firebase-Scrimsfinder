@@ -4,7 +4,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const mongoSanitize = require('express-mongo-sanitize');
-const apiKey = require('./utils/apiKey');
+const apiKey = require('./middleware/apiKey');
 
 const scrimRoutes = require('./routes/scrims.routes');
 const userRoutes = require('./routes/users.routes');
