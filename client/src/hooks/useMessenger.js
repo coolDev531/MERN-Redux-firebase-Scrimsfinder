@@ -20,19 +20,19 @@ import { getUserUnseenMessages } from '../services/messages.services';
 import NewMessageSFX from '../assets/sounds/new_message.mp3';
 
 export default function useMessenger() {
-  const { currentUser } = useAuth();
+  const { currentUser, uid } = useAuth();
   const dispatch = useDispatch();
   const { socket } = useSocket();
   const { chatRoomOpen } = useSelector(({ general }) => general);
   const [arrivalMessage, setArrivalMessage] = useState(null);
 
   useEffect(() => {
-    if (!currentUser?._id || !currentUser?.uid) return;
+    if (!currentUser?._id || !uid) return;
 
     const fetchUserConversations = async () => {
       const conversations = await getUserConversations(
         currentUser?._id,
-        currentUser?.uid // pass uid to authorize request
+        uid // pass pure uid to authorize request
       );
       const unseenMessages = await getUserUnseenMessages(currentUser?._id);
 

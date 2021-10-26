@@ -45,6 +45,13 @@ export default function authReducer(state = initialState, action) {
       };
     }
 
+    case 'auth/setUID': {
+      return {
+        ...state,
+        uid: payload,
+      };
+    }
+
     default:
       return state;
   }

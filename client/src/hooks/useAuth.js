@@ -83,6 +83,8 @@ export function useAuthVerify() {
               email: decodedUser?.email,
             });
 
+            dispatch({ type: 'auth/setUID', payload: googleUser.uid });
+
             // if there is no token PrivateRoute.jsx should send us to /sign-up automatically.
             if (data?.token) {
               localStorage.setItem('jwtToken', data?.token);

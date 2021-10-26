@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
 
 // userEdit
 export default function Settings() {
-  const { currentUser } = useAuth();
+  const { currentUser, uid } = useAuth();
   const { setCurrentUser } = useAuthActions();
   const { allUsers } = useUsers();
 
@@ -144,7 +144,7 @@ export default function Settings() {
     try {
       const data = await updateUser(currentUser?._id, {
         ...userData,
-        uid: currentUser?.uid,
+        uid,
         name: userData.name.trim(),
       });
 

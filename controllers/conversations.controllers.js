@@ -51,7 +51,7 @@ const getUserConversations = async (req, res) => {
     }
 
     // authorize so only validated user can see his own conversations
-    const isMatch = uid === foundUser.uid; // compare req.body.uid to user uid in db.
+    const isMatch = await bcrypt.compare(uid, foundUser.uid); // compare pure req.body.uid to hashed user uid in db.
 
     if (!isMatch) {
       return res.status(401).json({ error: 'Unauthorized uid' });

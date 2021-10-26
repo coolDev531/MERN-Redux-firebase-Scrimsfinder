@@ -111,7 +111,7 @@ const loginUser = async (req, res) => {
 
       return res.json({ success: true, token: 'Bearer ' + accessToken });
     } else {
-      return res.status(500).json('failed to match google user (uid)');
+      return res.status(500).json('unauthorized');
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -340,7 +340,7 @@ const updateUser = async (req, res) => {
       return res.status(500).json({ status: false, message: 'user not found' });
     }
 
-    const isMatch = uid === foundUser.uid; // compare req.body.uid to user uid in db.
+    const isMatch = await bcrypt.compare(uid, foundUser.uid); // compare req.body.uid to user uid in db.
 
     if (!isMatch) {
       return res.status(401).json({ status: false, message: 'unauthorized' });
