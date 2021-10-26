@@ -282,7 +282,6 @@ const verifyUser = async (req, res) => {
     // will find the one user with the exact uid and email combination
     const foundUser = await User.findOne({ email });
 
-    console.log({ uid });
     if (foundUser) {
       const isMatch = await bcrypt.compare(uid, foundUser.uid); // compare pure req.body.uid to hashed user uid in db. (already hased in jwt token front-end)
 
