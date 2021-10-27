@@ -102,6 +102,7 @@ const loginUser = async (req, res) => {
         notifications: foundUser.notifications,
         friendRequests: foundUser.friendRequests,
         friends: foundUser.friends,
+        canSendEmailsToUser: foundUser.canSendEmailsToUser ?? false, // didn't exist on db in older versions
       };
 
       // I don't even think we need to hash the uid...
