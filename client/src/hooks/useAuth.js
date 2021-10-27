@@ -59,7 +59,7 @@ export function useAuthActions() {
       } catch (error) {
         const errorMsg =
           error?.response?.data?.error ??
-          'error logging in, please try again later or DM GitCat#9811 for assistance';
+          'error logging in, please try again later.';
 
         dispatch({
           type: 'alerts/setCurrentAlert',

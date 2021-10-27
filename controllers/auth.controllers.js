@@ -110,12 +110,12 @@ const loginUser = async (req, res) => {
         expiresIn: 31556926, // 1 year in seconds
       });
 
-      return res.json({ success: true, token: 'Bearer ' + accessToken });
+      return res.json({ success: true, token: `Bearer ${accessToken}` });
     } else {
-      return res.status(401).json('unauthorized');
+      return res.status(401).json({ error: 'Unauthorized', status: false });
     }
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.status(500).json({ error: error.message });
   }
 };
 
