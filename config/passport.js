@@ -11,11 +11,9 @@ opts.secretOrKey = KEYS.SECRET_OR_KEY;
  but the only reason for passport is because even though users are signing up with firebase:
  I am storing the uid and email in the database,
  google said something about using the uid to compare and verify the user in your own database.
- So I'm hashing it, but I probably didn't even need to do it because google uids are unique to the app.
+ So I'm hashing it.
 
- we are planning to scrap firebase for discord auth anyways so we won't need this type of authentication anyways
-
- UPDATE: hashing uid was incorrect, google says uids are safe to use as they are.
+ CHECK THIS: https://firebase.google.com/docs/auth/admin/verify-id-tokens#node.js
  */
 
 module.exports = (passport) => {
