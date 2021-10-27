@@ -172,3 +172,14 @@ export const getUserById = async (userId) => {
     throw error;
   }
 };
+
+export const checkFriendRequestSent = async (receiverId) => {
+  try {
+    const response = await api.get(
+      `/users/check-friend-request-sent/${receiverId}`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

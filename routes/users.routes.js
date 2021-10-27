@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const controllers = require('../controllers/users.controllers');
+const auth = require('../middleware/auth');
 
 const router = Router();
 
@@ -40,6 +41,12 @@ router.post(
 
 router.post('/users/add-new-friend/:id', controllers.addUserFriend); // POST
 router.post('/users/remove-friend/:id', controllers.removeUserFriend); // POST
+
+router.get(
+  '/users/check-friend-request-sent/:receiverId',
+  auth,
+  controllers.checkFriendRequestSent
+); // POST
 
 router.get('/users/user-friends/:id', controllers.getUserFriends); // GET
 
