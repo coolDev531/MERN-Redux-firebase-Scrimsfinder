@@ -86,7 +86,8 @@ const loginUser = async (req, res) => {
 
   // Check uid
   try {
-    const isMatch = await bcrypt.compare(uid, foundUser.uid); // compare unhashed req.body.uid to hashed user uid in db.
+    // making this a promise broke in prod (I accidentally double hashed the uids...)
+    const isMatch = bcrypt.compare(uid, foundUser.uid); // compare unhashed req.body.uid to hashed user uid in db.
 
     if (isMatch) {
       const payload = {
