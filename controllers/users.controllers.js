@@ -1,6 +1,5 @@
 const User = require('../models/user.model');
 const Scrim = require('../models/scrim.model');
-const KEYS = require('../config/keys');
 const mongoose = require('mongoose');
 const escape = require('escape-html'); // sanitize request params
 const { REGIONS } = require('../utils/constants');
@@ -92,7 +91,6 @@ const getOneUser = async (req, res) => {
       'profileBackgroundImg',
       'profileBackgroundBlur',
       'friends',
-      'friendRequests',
     ]);
 
     if (!user)
@@ -204,7 +202,6 @@ const getUserById = async (req, res) => {
       'profileBackgroundImg',
       'profileBackgroundBlur',
       'friends',
-      'friendRequests',
     ]);
 
     if (!user)
@@ -618,7 +615,7 @@ const getUserFriendRequests = async (req, res) => {
   }
 };
 
-// @route   GET /users/user-friends/:id
+// @route   GET api/users/user-friends/:id
 // @desc    get all the friends for that specific user
 // @access  Public
 const getUserFriends = async (req, res) => {
@@ -634,6 +631,30 @@ const getUserFriends = async (req, res) => {
         }
         return res.status(200).json(friends);
       });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+// @route   GET api/users/check-friend-request-sent/:receiverId
+// @desc    check if the sender sent a friend request to the receiver user
+// @access  Private
+const checkFriendRequestSent = async (req, res) => {
+  try {
+    const { receiverId } = req.params;
+    const senderId = req.user._id;
+
+    const receiverUser = await User.findById(receiverId);
+
+    if (!receiverUser) {
+      return res.status(500).json({ error: 'receiver not found' });
+    }
+
+    const isFriendRequestSentBySender = receiverUser.friendRequests.some(
+      (request) => String(request?._user) === String(senderId)
+    );
+
+    return res.status(200).json(isFriendRequestSentBySender);
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
@@ -655,4 +676,5 @@ module.exports = {
   removeUserFriend,
   getUserFriendRequests,
   getUserFriends,
+  checkFriendRequestSent,
 };

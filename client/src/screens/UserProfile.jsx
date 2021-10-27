@@ -52,7 +52,7 @@ export default function UserProfile() {
 
   const isOnline = useMemo(
     () => onlineUsers.includes(userData?._id),
-    [onlineUsers, userData?._id],
+    [onlineUsers, userData?._id]
   );
 
   const classes = useStyles({ isOnline });
@@ -66,7 +66,7 @@ export default function UserProfile() {
 
   const isCurrentUser = useMemo(
     () => userData?._id === currentUser?._id,
-    [currentUser?._id, userData?._id],
+    [currentUser?._id, userData?._id]
   );
 
   useEffect(() => {
@@ -162,12 +162,10 @@ export default function UserProfile() {
           container
           direction="row"
           alignItems="center"
-          justifyContent="space-between"
-        >
+          justifyContent="space-between">
           <Typography variant="h1" className="inline-flex">
             <Tooltip
-              title={`${userData?.name} is ${isOnline ? 'online' : 'offline'}`}
-            >
+              title={`${userData?.name} is ${isOnline ? 'online' : 'offline'}`}>
               <div className={classes.onlineCircle} />
             </Tooltip>
 
@@ -176,16 +174,14 @@ export default function UserProfile() {
                 className="link"
                 href={`https://${userData?.region}.op.gg/summoner/userName=${userData?.name}`}
                 target="_blank"
-                rel="noopener noreferrer"
-              >
+                rel="noopener noreferrer">
                 {`${userData?.name}'s Profile`}
               </a>
             </Tooltip>
             {userData?.isAdmin && (
               <Tooltip
                 placement="top"
-                title={`${userData?.name} is a verified admin`}
-              >
+                title={`${userData?.name} is a verified admin`}>
                 <span style={{ cursor: 'help', marginLeft: '8px' }}>
                   <VerifiedAdminIcon />
                 </span>

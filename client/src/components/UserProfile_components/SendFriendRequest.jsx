@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import useAlerts from './../../hooks/useAlerts';
 import useTheme from '@mui/styles/useTheme';
@@ -11,7 +11,10 @@ import Button from '@mui/material/Button';
 import DeleteFriendButton from './DeleteFriendButton';
 
 // services
-import { sendFriendRequest } from '../../services/users.services';
+import {
+  sendFriendRequest,
+  checkFriendRequestSent,
+} from '../../services/users.services';
 
 // utils
 import devLog from './../../utils/devLog';
@@ -21,6 +24,8 @@ import AddFriendIcon from '@mui/icons-material/AddReaction';
 
 export default function SendFriendRequest({ user, setUser }) {
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
+  const [requestSent, setRequestSent] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // loading friend request status (sent or not)
   const { currentUser } = useSelector(({ auth }) => auth);
   const { setCurrentAlert } = useAlerts();
   const { socket } = useSocket();
@@ -49,12 +54,9 @@ export default function SendFriendRequest({ user, setUser }) {
       // send notification to user who received the frind request
       socket?.emit('sendNotification', newNotification);
 
-      setUser((prevState) => ({
-        ...prevState,
-        friendRequests: [...prevState.friendRequests, newFriendRequest],
-      }));
-
       devLog('sent friend request', newFriendRequest);
+
+      setRequestSent({ newFriendRequest });
 
       setCurrentAlert({
         type: 'Success',
@@ -73,13 +75,19 @@ export default function SendFriendRequest({ user, setUser }) {
     }
   };
 
-  const requestSent = useMemo(() => {
-    return user.friendRequests.find(
-      (request) => request?._user === currentUser?._id
-    )
-      ? true
-      : false;
-  }, [currentUser?._id, user?.friendRequests]);
+  useEffect(() => {
+    const checkIsRequestSent = async () => {
+      if (!user?._id) return;
+      try {
+        setIsLoading(true);
+        setRequestSent(await checkFriendRequestSent(user?._id));
+        setIsLoading(false);
+      } catch (error) {
+        setIsLoading(false);
+      }
+    };
+    checkIsRequestSent();
+  }, [user?._id]);
 
   const isFriend = useMemo(() => {
     return user.friends.find((friend) => friend._id === currentUser._id)
@@ -88,7 +96,13 @@ export default function SendFriendRequest({ user, setUser }) {
   }, [user.friends, currentUser._id]);
 
   return (
-    <FormGroup row>
+    <FormGroup
+      row
+      style={{
+        opacity: isLoading ? 0 : 1,
+        userSelect: isLoading ? 'none' : 'inherit',
+        transition: 'all 250ms ease-in-out',
+      }}>
       {/* if not friend, show send friend request button */}
       {!isFriend ? (
         <Button
