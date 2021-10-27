@@ -61,14 +61,14 @@ const loginUser = async (req, res) => {
   const { email, uid } = req.body;
 
   if (!email) {
-    res.status(500).json({
+    res.status(401).json({
       error: 'Unauthorized',
     });
     return;
   }
 
   if (!uid) {
-    res.status(500).json({
+    res.status(401).json({
       error: 'Unauthorized',
     });
     return;
@@ -112,7 +112,7 @@ const loginUser = async (req, res) => {
 
       return res.json({ success: true, token: 'Bearer ' + accessToken });
     } else {
-      return res.status(500).json('unauthorized');
+      return res.status(401).json('unauthorized');
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });

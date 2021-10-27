@@ -32,11 +32,7 @@ export const loginUser = async (googleParams) => {
       );
     }
   } catch (error) {
-    const errorMsg = error?.response?.data?.error;
-
-    if (errorMsg) {
-      return alert(errorMsg);
-    }
+    throw error;
   }
 };
 

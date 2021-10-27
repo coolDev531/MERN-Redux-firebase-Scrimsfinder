@@ -35,7 +35,7 @@ export default function CreateNewConversationButton({
       if (!newMessageText) {
         setCurrentAlert({
           type: 'Error',
-          messag: 'cannot start conversation, no message provided!',
+          message: 'cannot start conversation, no message provided!',
         });
         return;
       }

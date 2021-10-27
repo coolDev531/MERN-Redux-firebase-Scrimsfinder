@@ -49,11 +49,25 @@ export function useAuthActions() {
       };
 
       // token = `Bearer ${bcryptHash}`
-      const decodedUser = await loginUser(googleParams); // get the jwt token from backend with params
+      try {
+        const decodedUser = await loginUser(googleParams); // get the jwt token from backend with params
 
-      if (decodedUser) {
-        setCurrentUser(decodedUser);
-        history.push('/');
+        if (decodedUser) {
+          setCurrentUser(decodedUser);
+          history.push('/');
+        }
+      } catch (error) {
+        const errorMsg =
+          error?.response?.data?.error ??
+          'error logging in, please try again later or DM GitCat#9811 for assistance';
+
+        dispatch({
+          type: 'alerts/setCurrentAlert',
+          payload: {
+            type: 'Error',
+            message: errorMsg,
+          },
+        });
       }
     }
   };
