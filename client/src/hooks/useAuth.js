@@ -92,10 +92,7 @@ export function useAuthVerify() {
 
         setAuthToken(token);
 
-        const data = await verifyUser({
-          email: decodedUser?.email,
-          uid: decodedUser?.uid,
-        });
+        const data = await verifyUser();
 
         // if there is no token PrivateRoute.jsx should send us to /sign-up automatically.
         if (data?.token) {

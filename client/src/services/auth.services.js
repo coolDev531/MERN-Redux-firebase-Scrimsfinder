@@ -60,9 +60,9 @@ export const registerUser = async (userData, setAlert) => {
   }
 };
 
-export const verifyUser = async (userData) => {
+export const verifyUser = async () => {
   try {
-    const resp = await api.post('/auth/verify', userData); // we get the authToken with setAuthToken in handleVerify in useAuth (useAuthActions)
+    const resp = await api.post('/auth/verify'); // we get the authToken with setAuthToken in handleVerify in useAuth (useAuthActions)
     return resp.data;
   } catch (error) {
     // these lines are to handle the case when heroku is hibernating and the home page is loading because the content hasn't loaded but we don't have a user to associate it with.

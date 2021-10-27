@@ -287,13 +287,8 @@ const verifyUser = async (req, res) => {
     // will find the one user with the exact uid and email combination
     const foundUser = await User.findOne({
       email: { $eq: user.email },
+      uid: { $eq: user.uid },
     });
-
-    const isMatch = req.body.uid === user.uid && req.body.email === user.email;
-
-    if (!isMatch) {
-      return res.status(401).json({ error: 'Unauthorized', status: false });
-    }
 
     if (foundUser) {
       const payload = {
