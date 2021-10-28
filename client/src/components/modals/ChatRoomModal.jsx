@@ -89,7 +89,7 @@ export default function ChatRoomModal() {
       for await (const currentMessage of messagesData) {
         if (!currentMessage?._seenBy?.includes(currentUser?._id)) {
           devLog('message not seen, pushing to DB (now seen)');
-          await postMessageSeenByUser(currentMessage._id, currentUser?._id);
+          await postMessageSeenByUser(currentMessage._id);
 
           newSeenMessages.push({
             ...currentMessage,
@@ -141,12 +141,8 @@ export default function ChatRoomModal() {
         devLog('socket new arrival message added to state (receiver client)');
 
         if (arrivalMessage._receiver === currentUser._id) {
-          console.log('yupp!!');
           // put in the DB that the message has been seen.
-          await postMessageSeenByUser(
-            arrivalMessage.messageId,
-            arrivalMessage._receiver
-          );
+          await postMessageSeenByUser(arrivalMessage.messageId);
 
           dispatch({
             type: 'messenger/messageSeen',

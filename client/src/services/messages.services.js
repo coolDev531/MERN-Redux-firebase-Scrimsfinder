@@ -20,16 +20,14 @@ import api from './apiConfig';
  */
 export const postNewMessage = async ({
   conversationId,
-  senderId,
   text,
   receiverId = null,
 }) => {
   try {
     const response = await api.post(`/messages`, {
       conversationId,
-      senderId,
       text,
-      receiverId,
+      receiverId, // if no receiverId, it's probably a scrim
     });
     return response.data;
   } catch (error) {
