@@ -16,6 +16,7 @@ import {
   deleteAllUserNotifications,
   deleteOneUserNotification,
 } from '../../services/notification.services';
+import { getUserById } from './../../services/users.services';
 import { makeStyles } from '@mui/styles';
 
 // icons
@@ -129,7 +130,10 @@ const OneNotification = memo(({ notification, closeModal, currentUserId }) => {
             ? 'Open conversation'
             : notification.isFriendRequest
             ? 'Go to friend requests'
-            : 'Go to scrim page'
+            : notification.isScrimAlert
+            ? 'Go to scrim page'
+            : notification.message.includes('are now friends') &&
+              'Visit friend page'
         }
         open={isHover && relatedItem !== null}>
         <div
@@ -141,7 +145,7 @@ const OneNotification = memo(({ notification, closeModal, currentUserId }) => {
             cursor: relatedItem ? 'pointer' : 'inherit',
             alignItems: 'flex-start',
           }}
-          onClick={() => {
+          onClick={async () => {
             if (!relatedItem) return;
             closeModal();
 
@@ -157,6 +161,9 @@ const OneNotification = memo(({ notification, closeModal, currentUserId }) => {
                   isOpen: true,
                 },
               });
+            } else if (notification.message.includes('are now friends')) {
+              const user = await getUserById(notification._relatedUser);
+              history.push(`/users/${user.name}?region=${user.region}`);
             }
           }}>
           <span style={{ fontSize: '0.8rem', color: '#ccc' }}>

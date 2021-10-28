@@ -7,16 +7,17 @@ const router = Router();
 router.get(
   '/notifications/user-notifications',
   auth,
-  controllers,
-  getUserNotifications
+  controllers.getUserNotifications
 ); // GET
 
 router.post(
-  '/notifications/:id/push-user-notification/',
+  '/notifications/push-user-notification/:id',
   controllers.pushUserNotification
 ); // POST
+
 router.post(
-  '/notifications/:userId/remove-user-notification/:notificationId',
+  '/notifications/remove-user-notification/:notificationId',
+  auth,
   controllers.removeUserNotification
 ); // POST
 

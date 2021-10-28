@@ -1,7 +1,7 @@
-const User = require('../modles/user');
+const User = require('../models/user.model');
 const mongoose = require('mongoose');
 
-// @route   GET /api/users/user-notifications
+// @route   GET /api/notifications/user-notifications
 // @desc    get a specific users notifications
 // @access  Private
 const getUserNotifications = async (req, res) => {
@@ -24,7 +24,7 @@ const getUserNotifications = async (req, res) => {
   }
 };
 
-// @route   POST api/users/:id/push-notification/
+// @route   POST api/notifications/push-user-notification/:id
 // @desc    send a notification to a specific user
 // @access  Public
 const pushUserNotification = async (req, res) => {
@@ -80,12 +80,14 @@ const pushUserNotification = async (req, res) => {
   );
 };
 
-// @route   POST /api/users/:userId/remove-notification/:notificationId
+// @route   POST api/notifications/remove-user-notification/:notificationId
 // @desc    remove one notification from a user (ex: mark as read)
-// @access  Public
+// @access  Private
 const removeUserNotification = async (req, res) => {
   try {
-    const { userId, notificationId } = req.params;
+    const { notificationId } = req.params;
+
+    const userId = req.user._id;
 
     const user = await User.findById(userId);
 
@@ -125,7 +127,7 @@ const removeUserNotification = async (req, res) => {
   }
 };
 
-// @route   POST /api/users/remove-all-notifications/:id
+// @route   POST /notifications/remove-all-user-notifications/:id
 // @desc    remove all user notifications. (ex: mark all as read)
 // @access  Public
 const removeAllUserNotifications = async (req, res) => {

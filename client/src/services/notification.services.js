@@ -2,7 +2,7 @@ import api from './apiConfig';
 
 export const getUserNotifications = async () => {
   try {
-    const response = await api.get('/notifications/user-notifications/');
+    const response = await api.get('notifications/user-notifications/');
     return response.data;
   } catch (error) {
     throw error;
@@ -12,7 +12,7 @@ export const getUserNotifications = async () => {
 export const pushUserNotification = async (userId, newNotification) => {
   try {
     const response = await api.post(
-      `/notifications/${userId}/push-user-notification/`,
+      `notifications/push-user-notification/${userId}`,
       newNotification
     );
 
@@ -25,7 +25,7 @@ export const pushUserNotification = async (userId, newNotification) => {
 export const deleteOneUserNotification = async (userId, notificationId) => {
   try {
     const response = await api.post(`
-/notifications/${userId}/remove-user-notification/${notificationId}`);
+notifications/remove-user-notification/${notificationId}`);
     return response.data;
   } catch (error) {
     throw error;
@@ -35,7 +35,7 @@ export const deleteOneUserNotification = async (userId, notificationId) => {
 export const deleteAllUserNotifications = async (userId) => {
   try {
     const response = await api.post(`
-/notifications/remove-all-user-notifications/${userId}`);
+notifications/remove-all-user-notifications/${userId}`);
     return response.data;
   } catch (error) {
     throw error;
