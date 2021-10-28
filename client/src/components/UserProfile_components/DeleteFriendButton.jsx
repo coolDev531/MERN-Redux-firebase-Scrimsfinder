@@ -9,7 +9,7 @@ import Button from '@mui/material/Button';
 import Tooltip from '../shared/Tooltip';
 
 // services
-import { removeUserFriend } from './../../services/users.services';
+import { removeUserFriend } from './../../services/friends.services';
 
 // icons
 import CancelIcon from '@mui/icons-material/Cancel';

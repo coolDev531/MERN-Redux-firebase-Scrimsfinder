@@ -14,7 +14,7 @@ import DeleteFriendButton from './DeleteFriendButton';
 import {
   sendFriendRequest,
   checkFriendRequestSent,
-} from '../../services/users.services';
+} from '../../services/friends.services';
 
 // utils
 import devLog from './../../utils/devLog';

@@ -17,12 +17,13 @@ import { Link } from 'react-router-dom';
 import { getRankImage } from './../../utils/getRankImage';
 
 // services
+import { pushUserNotification } from '../../services/users.services';
+
 import {
-  addUserFriend,
+  rejectFriendRequest,
+  acceptFriendRequest,
   getUserFriendRequests,
-  pushUserNotification,
-  removeFriendRequest,
-} from '../../services/users.services';
+} from '../../services/friends.services';
 
 // icons
 import CheckIcon from '@mui/icons-material/CheckCircle';
@@ -58,12 +59,12 @@ export default function FriendRequestsModal() {
   const onAcceptClick = useCallback(
     async (requestUser, requestId) => {
       try {
-        const { updatedUserFriends } = await addUserFriend(
+        const { updatedUserFriends } = await acceptFriendRequest(
           currentUser?._id,
           requestUser._id
         );
 
-        const { friendRequests } = await removeFriendRequest(
+        const { friendRequests } = await rejectFriendRequest(
           currentUser?._id,
           requestId
         );
@@ -111,7 +112,7 @@ export default function FriendRequestsModal() {
         );
       } catch (error) {
         if (error?.response?.data?.error === 'Friend already added!') {
-          const { friendRequests } = await removeFriendRequest(
+          const { friendRequests } = await rejectFriendRequest(
             currentUser?._id,
             requestId
           );
@@ -141,7 +142,7 @@ export default function FriendRequestsModal() {
   const onRejectClick = useCallback(
     async (requestUser, requestId) => {
       try {
-        const { friendRequests } = await removeFriendRequest(
+        const { friendRequests } = await rejectFriendRequest(
           currentUser?._id,
           requestId
         );

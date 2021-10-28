@@ -24,31 +24,4 @@ router.post(
   controllers.removeAllUserNotifications
 ); // POST
 
-router.get(
-  '/users/user-friend-requests/verifiedUser', // adding the /verifiedUser because it breaks without an extra slash
-  auth,
-  controllers.getUserFriendRequests
-); // GET
-
-router.post(
-  '/users/send-friend-request/:userReceivingId/:userSendingId',
-  controllers.sendFriendRequest
-); // POST
-
-router.post(
-  '/users/:userId/remove-friend-request/:requestId',
-  controllers.removeFriendRequest // (reject friend request)
-); // POST
-
-router.post('/users/add-new-friend/:id', controllers.addUserFriend); // POST (accept friend request)
-router.post('/users/remove-friend/:id', controllers.removeUserFriend); // POST (unfriend)
-
-router.get(
-  '/users/check-friend-request-sent/:receiverId',
-  auth,
-  controllers.checkFriendRequestSent
-); // POST
-
-router.get('/users/user-friends/:id', controllers.getUserFriends); // GET
-
 module.exports = router;

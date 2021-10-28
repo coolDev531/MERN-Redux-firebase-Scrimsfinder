@@ -70,30 +70,6 @@ export const deleteAllUserNotifications = async (userId) => {
   }
 };
 
-export const addUserFriend = async (userId, newFriendId) => {
-  try {
-    const response = await api.post(`/users/add-new-friend/${userId}`, {
-      newFriendUserId: newFriendId,
-    });
-
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const removeUserFriend = async (userId, friendUserId) => {
-  try {
-    const response = await api.post(`/users/remove-friend/${userId}/`, {
-      friendUserId,
-    });
-
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
 /**
  * @method sendFriendRequest
  * @param {String} userReceivingId
@@ -104,18 +80,6 @@ export const sendFriendRequest = async (userReceivingId, userSendingId) => {
   try {
     const response = await api.post(
       `/users/send-friend-request/${userReceivingId}/${userSendingId}`
-    );
-
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const removeFriendRequest = async (userId, requestId) => {
-  try {
-    const response = await api.post(
-      `/users/${userId}/remove-friend-request/${requestId}`
     );
 
     return response.data;
@@ -147,37 +111,6 @@ export const getUserNotifications = async (userId) => {
 };
 
 /**
- * @method getUserFriendRequests
- * @desc get the current user friend requests
- * @access private
- * @returns {Array<{_user: string}>}
- */
-export const getUserFriendRequests = async () => {
-  try {
-    const response = await api.get('/users/user-friend-requests/verifiedUser');
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-/**
- * @method getUserFriends
- * @desc get all the friends that belong to that one user
- * @access public
- * @param {String} userId the userId that you want to get his friends list.
- * @returns {Array<User>}
- */
-export const getUserFriends = async (userId) => {
-  try {
-    const response = await api.get(`/users/user-friends/${userId}`);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-/**
  * @method getUserById
  * @access public
  * @param {String} userId (the other using receiving the friend request)
@@ -186,24 +119,6 @@ export const getUserFriends = async (userId) => {
 export const getUserById = async (userId) => {
   try {
     const response = await api.get(`/users/by-id/${userId}`);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-/**
- * @method checkFriendRequestSent
- * @desc used in SendFriendRequest.jsx which is inside UserProfile
- * @access private (takes user from jwt token)
- * @param {String} receiverId (the other using receiving the friend request)
- * @returns {Boolean} returns true or false based on if the sender (currentUser) has sent a friend request
- */
-export const checkFriendRequestSent = async (receiverId) => {
-  try {
-    const response = await api.get(
-      `/users/check-friend-request-sent/${receiverId}`
-    );
     return response.data;
   } catch (error) {
     throw error;

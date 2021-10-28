@@ -15,7 +15,7 @@ import Divider from '@mui/material/Divider';
 import { getRankImage } from './../../utils/getRankImage';
 
 // services
-import { getUserFriends } from '../../services/users.services';
+import { getUserFriends } from '../../services/friends.services';
 import { findOneConversation } from '../../services/conversations.services';
 
 // icons

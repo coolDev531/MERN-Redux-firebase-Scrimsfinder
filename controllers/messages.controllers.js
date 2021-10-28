@@ -61,6 +61,7 @@ const postMessage = async (req, res) => {
 
 // @route   GET /api/messages/:conversationId
 // @desc    get the messages of the conversation by conversation._id
+// TODO: there should be a check for if it's a scrim conversation make it public, else make it private if it's private DM
 // @access  Public
 const getConversationMessages = async (req, res) => {
   try {

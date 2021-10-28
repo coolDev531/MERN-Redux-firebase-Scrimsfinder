@@ -11,6 +11,7 @@ const userRoutes = require('./routes/users.routes');
 const authRoutes = require('./routes/auth.routes');
 const conversationRoutes = require('./routes/conversations.routes');
 const messageRoutes = require('./routes/messages.routes');
+const friendRoutes = require('./routes/friends.routes');
 
 function createServer() {
   const app = express();
@@ -71,6 +72,7 @@ function createServer() {
   app.use('/api', authRoutes);
   app.use('/api', conversationRoutes);
   app.use('/api', messageRoutes);
+  app.use('/api', friendRoutes);
 
   // another way to require api key for a specific route only.
   // router.get('/scrims', apiKey, controllers.getAllScrims);
