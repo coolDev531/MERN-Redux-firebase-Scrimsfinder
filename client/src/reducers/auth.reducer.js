@@ -1,6 +1,7 @@
 const initialState = {
   currentUser: null,
   isVerifyingUser: true,
+  notifications: [],
 };
 
 export default function authReducer(state = initialState, action) {

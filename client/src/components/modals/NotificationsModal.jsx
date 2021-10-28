@@ -42,13 +42,13 @@ function NotificationsModal({ currentUser, notificationsOpen }) {
         title: 'Mark all as read',
         onClick: async () => {
           //  delete all notifications
-          const newNotificationsState = await deleteAllUserNotifications(
+          const { notifications } = await deleteAllUserNotifications(
             currentUser?._id
           );
 
           dispatch({
             type: 'auth/updateCurrentUser',
-            payload: { notifications: newNotificationsState },
+            payload: { notifications },
           });
         },
       }}>
