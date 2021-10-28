@@ -108,17 +108,22 @@ const postMessageSeenByUser = async (req, res) => {
 
 // @route   GET /api/messages/unseen-messages/:userId
 // @desc    get the messages that the user didn't see by user._id
-// @access  Public
+// @access  Private
 const getUserUnseenMessages = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const userId = req.user._id;
+    const currentUser = await User.findById(userId).select(['friends']);
 
     await handleValidId(userId, res);
 
     const messages = await Message.find({ _receiver: userId });
 
+    const friendIds = currentUser.friends.map(({ _id }) => _id);
+
     const unseenMessages = messages.filter((message) => {
-      return !message?._seenBy?.includes(userId);
+      if (!message?._seenBy.some((id) => friendIds.includes(id))) return false; // if not friend, return false. (if unfriended)
+
+      return !message?._seenBy?.includes(userId); // return if is friend and user didn't see it.
     });
 
     return res.status(200).json(unseenMessages);

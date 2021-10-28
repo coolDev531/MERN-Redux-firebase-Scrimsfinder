@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const controllers = require('../controllers/messages.controllers');
 const router = Router();
+const auth = require('../middleware/auth');
 
 // add
 router.post('/messages', controllers.postMessage);
@@ -10,9 +11,10 @@ router.post(
 );
 
 // get
-router.get('/messages/:conversationId', controllers.getConversationMessages); 
+router.get('/messages/:conversationId', controllers.getConversationMessages);
 router.get(
-  '/messages/unseen-messages/:userId',
+  '/messages/verifiedUser/unseen-messages',
+  auth,
   controllers.getUserUnseenMessages
-); 
+);
 module.exports = router;

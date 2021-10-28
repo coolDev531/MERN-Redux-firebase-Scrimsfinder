@@ -63,9 +63,9 @@ export const postMessageSeenByUser = async (messageId, seenByUserId) => {
   }
 };
 
-export const getUserUnseenMessages = async (userId) => {
+export const getUserUnseenMessages = async () => {
   try {
-    const response = await api.get(`/messages/unseen-messages/${userId}`);
+    const response = await api.get('/messages/verifiedUser/unseen-messages');
     return response.data;
   } catch (error) {
     throw error;
