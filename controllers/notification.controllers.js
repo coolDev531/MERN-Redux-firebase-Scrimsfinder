@@ -1,5 +1,5 @@
-const User = require('../models/user.model');
 const mongoose = require('mongoose');
+const User = require('../models/user.model');
 
 // @route   GET /api/notifications/user-notifications
 // @desc    get a specific users notifications
@@ -24,15 +24,15 @@ const getUserNotifications = async (req, res) => {
   }
 };
 
-// @route   POST api/notifications/push-user-notification/:id
+// @route   POST api/notifications/push-user-notification/:userId
 // @desc    send a notification to a specific user
 // @access  Public
 const pushUserNotification = async (req, res) => {
-  const { id } = req.params;
+  const { userId } = req.params;
   const relatedUserId = req?.body?.relatedUserId ?? null;
   const relatedScrimId = req?.body?.relatedScrimId ?? null;
 
-  const user = await User.findById(id);
+  const user = await User.findById(userId);
 
   const foundRelatedUser = relatedUserId
     ? await User.findById(relatedUserId)
@@ -62,7 +62,7 @@ const pushUserNotification = async (req, res) => {
   };
 
   await User.findByIdAndUpdate(
-    id,
+    userId,
     reqBody,
     { new: true },
     async (error, user) => {
@@ -75,7 +75,10 @@ const pushUserNotification = async (req, res) => {
       }
 
       user.save();
-      return res.status(200).json({ notifications: user.notifications });
+      return res.status(200).json({
+        notifications: user.notifications,
+        newNotification: newNotification,
+      });
     }
   );
 };

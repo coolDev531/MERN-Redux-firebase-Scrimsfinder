@@ -36,23 +36,22 @@ export default function SendFriendRequest({ user, setUser }) {
     setButtonsDisabled(true);
 
     try {
-      const { newFriendRequest } = await sendFriendRequest(
+      const { newFriendRequest, newNotification } = await sendFriendRequest(
         user._id,
         currentUser._id
       ); // current user sending to that user in the profile page.
 
       //  add a new notification to the user
-      const newNotification = {
-        _relatedUser: currentUser._id,
-        message: `${currentUser.name} sent you a friend request!`,
-        isFriendRequest: true,
+      const socketNotification = {
+        ...newNotification,
         createdDate: Date.now(),
         createdAt: Date.now(),
         receiverId: user?._id,
       };
 
+      console.log({ socketNotification });
       // send notification to user who received the frind request
-      socket?.emit('sendNotification', newNotification);
+      socket?.emit('sendNotification', socketNotification);
 
       devLog('sent friend request', newFriendRequest);
 
@@ -65,6 +64,7 @@ export default function SendFriendRequest({ user, setUser }) {
 
       setButtonsDisabled(false);
     } catch (error) {
+      console.log({ error });
       setCurrentAlert({
         type: 'Error',
         message: 'Error sending friend request',

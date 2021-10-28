@@ -69,9 +69,11 @@ function NotificationsModal({ currentUser, notificationsOpen }) {
               .map((notification, idx, arr) => (
                 <>
                   <OneNotification
+                    key={notification._id}
                     currentUserId={currentUser._id}
                     closeModal={closeNotifications}
                     notification={notification}
+                    notifications={notifications}
                   />
                   {idx !== arr.length - 1 ? (
                     <Box my={2}>
@@ -94,17 +96,14 @@ function NotificationsModal({ currentUser, notificationsOpen }) {
   );
 }
 
-const OneNotification = memo(({ notification, closeModal, currentUserId }) => {
+const OneNotification = memo(({ notification, closeModal }) => {
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useDispatch();
   const [isHover, setIsHover] = useState(false);
 
   const onDeleteNotification = useCallback(async () => {
-    const resp = await deleteOneUserNotification(
-      currentUserId,
-      notification._id
-    );
+    const resp = await deleteOneUserNotification(notification._id);
 
     const newNotificationsState = resp.notifications;
 
@@ -112,7 +111,7 @@ const OneNotification = memo(({ notification, closeModal, currentUserId }) => {
       type: 'auth/updateCurrentUser',
       payload: { notifications: newNotificationsState },
     });
-  }, [notification, currentUserId, dispatch]);
+  }, [notification, dispatch]);
 
   const relatedItem = useMemo(() => {
     if (notification?._relatedUser) {

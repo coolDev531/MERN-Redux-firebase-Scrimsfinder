@@ -79,14 +79,14 @@ export default function FriendRequestsModal() {
         // send event to friend user.
         socket?.emit('sendNotification', receiverNotification);
 
-        // send notification to user who requested the friend request (current User)
+        // send notification to new friend
         await pushUserNotification(requestUser._id, {
           message: `You and ${currentUser?.name} are now friends!`,
           _relatedUser: currentUser,
           createdDate: Date.now(),
         });
 
-        // send notification to user that they're friends
+        // send notification to currentUser
         const { notifications } = await pushUserNotification(currentUser._id, {
           message: `You and ${requestUser?.name} are now friends!`,
           _relatedUser: requestUser,

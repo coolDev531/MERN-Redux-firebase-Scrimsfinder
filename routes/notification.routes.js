@@ -11,7 +11,7 @@ router.get(
 ); // GET
 
 router.post(
-  '/notifications/push-user-notification/:id',
+  '/notifications/push-user-notification/:userId',
   controllers.pushUserNotification
 ); // POST
 

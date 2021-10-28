@@ -22,7 +22,7 @@ export const pushUserNotification = async (userId, newNotification) => {
   }
 };
 
-export const deleteOneUserNotification = async (userId, notificationId) => {
+export const deleteOneUserNotification = async (notificationId) => {
   try {
     const response = await api.post(`
 notifications/remove-user-notification/${notificationId}`);
