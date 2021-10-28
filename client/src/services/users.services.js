@@ -148,7 +148,7 @@ export const getUserNotifications = async (userId) => {
 
 /**
  * @method getUserFriendRequests
- * get the current user friend requests
+ * @desc get the current user friend requests
  * @access private
  * @returns {Array<{_user: string}>}
  */
@@ -163,7 +163,7 @@ export const getUserFriendRequests = async () => {
 
 /**
  * @method getUserFriends
- * get all the friends that belong to that one user
+ * @desc get all the friends that belong to that one user
  * @access public
  * @param {String} userId the userId that you want to get his friends list.
  * @returns {Array<User>}
@@ -194,7 +194,7 @@ export const getUserById = async (userId) => {
 
 /**
  * @method checkFriendRequestSent
- * used in SendFriendRequest.jsx which is inside UserProfile
+ * @desc used in SendFriendRequest.jsx which is inside UserProfile
  * @access private (takes user from jwt token)
  * @param {String} receiverId (the other using receiving the friend request)
  * @returns {Boolean} returns true or false based on if the sender (currentUser) has sent a friend request

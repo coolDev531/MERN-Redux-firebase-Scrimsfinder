@@ -63,6 +63,12 @@ export const postMessageSeenByUser = async (messageId, seenByUserId) => {
   }
 };
 
+/**
+ * @method getUserUnseenMessages
+ * @desc get the messages that the current user didn't see (sent by his friends)
+ * @access  private
+ * @returns
+ */
 export const getUserUnseenMessages = async () => {
   try {
     const response = await api.get('/messages/verifiedUser/unseen-messages');
