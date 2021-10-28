@@ -13,8 +13,6 @@ const apiUrl =
 const api = axios.create({
   baseURL: apiUrl,
   headers: {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
     'x-api-key': process.env.REACT_APP_API_KEY,
   },
 });
