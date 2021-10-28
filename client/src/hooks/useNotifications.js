@@ -8,7 +8,8 @@ import { useDispatch } from 'react-redux';
 import devLog from './../utils/devLog';
 
 // services
-import { getUserNotifications, getUserById } from '../services/users.services';
+import { getUserById } from '../services/users.services';
+import { getUserNotifications } from '../services/notification.services';
 
 export default function useNotifications() {
   const { socket } = useSocket();

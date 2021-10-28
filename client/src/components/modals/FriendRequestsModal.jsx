@@ -17,7 +17,7 @@ import { Link } from 'react-router-dom';
 import { getRankImage } from './../../utils/getRankImage';
 
 // services
-import { pushUserNotification } from '../../services/users.services';
+import { pushUserNotification } from '../../services/notification.services';
 
 import {
   rejectFriendRequest,

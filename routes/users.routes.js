@@ -12,16 +12,4 @@ router.get('/users/by-id/:id', controllers.getUserById); // get
 router.get('/users/:id/created-scrims', controllers.getUserCreatedScrims); // GET
 router.get('/users/:id/scrims', controllers.getUserParticipatedScrims); // GET
 
-router.get('/users/user-notifications/:id', controllers.getUserNotifications); // GET
-router.post('/users/:id/push-notification/', controllers.pushUserNotification); // POST
-router.post(
-  '/users/:userId/remove-notification/:notificationId',
-  controllers.removeUserNotification
-); // POST
-
-router.post(
-  '/users/remove-all-notifications/:id',
-  controllers.removeAllUserNotifications
-); // POST
-
 module.exports = router;

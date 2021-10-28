@@ -50,66 +50,6 @@ export const getUsersInRegion = async (region) => {
   }
 };
 
-export const deleteOneUserNotification = async (userId, notificationId) => {
-  try {
-    const response = await api.post(`
-/users/${userId}/remove-notification/${notificationId}`);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const deleteAllUserNotifications = async (userId) => {
-  try {
-    const response = await api.post(`
-/users/remove-all-notifications/${userId}`);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-/**
- * @method sendFriendRequest
- * @param {String} userReceivingId
- * @param {String} userSendingId
- * @returns {<{newFriendRequest: object, sentToUser: string, sentToUserId, string}>}}
- */
-export const sendFriendRequest = async (userReceivingId, userSendingId) => {
-  try {
-    const response = await api.post(
-      `/users/send-friend-request/${userReceivingId}/${userSendingId}`
-    );
-
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const pushUserNotification = async (userId, newNotification) => {
-  try {
-    const response = await api.post(
-      `/users/${userId}/push-notification/`,
-      newNotification
-    );
-
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const getUserNotifications = async (userId) => {
-  try {
-    const response = await api.get(`/users/user-notifications/${userId}`);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
 /**
  * @method getUserById
  * @access public
