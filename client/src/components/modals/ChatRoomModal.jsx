@@ -173,7 +173,6 @@ export default function ChatRoomModal() {
         );
 
         const newlyCreatedMessage = await postNewMessage({
-          senderId: currentUser?._id,
           conversationId: conversation?._id,
           text: msgText,
           receiverId: receiver._id,

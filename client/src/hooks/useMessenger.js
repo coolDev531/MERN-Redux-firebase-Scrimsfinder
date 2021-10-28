@@ -27,12 +27,10 @@ export default function useMessenger() {
   const [arrivalMessage, setArrivalMessage] = useState(null);
 
   useEffect(() => {
-    if (!currentUser?._id || !currentUser?.uid) return;
-
     const fetchUserConversations = async () => {
       const conversations = await getUserConversations();
 
-      const unseenMessages = await getUserUnseenMessages(currentUser?._id);
+      const unseenMessages = await getUserUnseenMessages();
 
       dispatch({
         type: 'messenger/setConversations',
@@ -45,7 +43,7 @@ export default function useMessenger() {
       });
     };
     fetchUserConversations();
-  }, [currentUser?._id, currentUser?.uid, dispatch]);
+  }, [dispatch]);
 
   useEffect(() => {
     if (!currentUser?._id) return;

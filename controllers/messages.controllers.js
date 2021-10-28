@@ -14,10 +14,11 @@ const handleValidId = async (id, res) => {
 
 // @route   POST /api/messages
 // @desc    post a new message
-// @access  Public
+// @access  Private
 const postMessage = async (req, res) => {
   try {
-    const { text, conversationId, senderId, receiverId } = req.body;
+    const { text, conversationId, receiverId } = req.body;
+    const senderId = req.user._id ?? '';
 
     await handleValidId(conversationId, res);
     await handleValidId(senderId, res);
@@ -81,7 +82,7 @@ const getConversationMessages = async (req, res) => {
 
 // @route   POST /api/messages/post-seen/:messageId
 // @desc    post that the message has been seen by the currentUser
-// @access  Public
+// @access  Private
 const postMessageSeenByUser = async (req, res) => {
   try {
     const { messageId } = req.params;
