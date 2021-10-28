@@ -48,15 +48,15 @@ export const getConversationMessages = async (conversationId) => {
 
 /**
  * @method postMessageSeenByUser
+ * @desc tell the back-end and database that the currentUser has seen this message.
  * @param {String} messageId
  * @param {String} seenByUserId
+ * @access private
  * @returns {Promise<{status: boolean, updatedMessage: object}>}
  */
-export const postMessageSeenByUser = async (messageId, seenByUserId) => {
+export const postMessageSeenByUser = async (messageId) => {
   try {
-    const response = await api.post(`/messages/post-seen/${messageId}`, {
-      seenByUserId,
-    });
+    const response = await api.post(`/messages/post-seen/${messageId}`);
     return response.data;
   } catch (error) {
     throw error;

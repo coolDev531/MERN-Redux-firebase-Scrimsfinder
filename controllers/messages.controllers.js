@@ -80,15 +80,16 @@ const getConversationMessages = async (req, res) => {
 };
 
 // @route   POST /api/messages/post-seen/:messageId
-// @desc    post that the message has been seen by the user
+// @desc    post that the message has been seen by the currentUser
 // @access  Public
 const postMessageSeenByUser = async (req, res) => {
   try {
     const { messageId } = req.params;
+    const seenByUserId = req.user._id ?? false;
 
     await handleValidId(messageId, res);
 
-    if (!req.body.seenByUserId) {
+    if (!seenByUserId) {
       return res.status(500).json({
         error: 'seen by user id not provided! (req.body.seenByUserId)',
       });
@@ -96,7 +97,7 @@ const postMessageSeenByUser = async (req, res) => {
 
     let message = await Message.findById(messageId);
 
-    message._seenBy = [...message._seenBy, req.body.seenByUserId];
+    message._seenBy = [...message._seenBy, seenByUserId];
 
     const savedMessage = await message.save();
 

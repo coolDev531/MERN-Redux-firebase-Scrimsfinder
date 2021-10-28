@@ -7,6 +7,7 @@ const auth = require('../middleware/auth');
 router.post('/messages', controllers.postMessage);
 router.post(
   '/messages/post-seen/:messageId',
+  auth,
   controllers.postMessageSeenByUser
 );
 
