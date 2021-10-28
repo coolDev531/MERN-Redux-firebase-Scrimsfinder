@@ -595,10 +595,10 @@ const nestedPopulate = (path, modelPath) => {
 
 // @route   GET api/users/user-friend-requests/:id
 // @desc    get friend requests for that specific user.
-// @access  Public
+// @access  Private
 const getUserFriendRequests = async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = req.user._id;
 
     return await User.findById(id)
       .populate(nestedPopulate('friendRequests', '_user'))

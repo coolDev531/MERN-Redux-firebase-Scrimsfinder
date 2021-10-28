@@ -146,15 +146,28 @@ export const getUserNotifications = async (userId) => {
   }
 };
 
-export const getUserFriendRequests = async (userId) => {
+/**
+ * @method getUserFriendRequests
+ * get the current user friend requests
+ * @access private
+ * @returns {Array<{_user: string}>}
+ */
+export const getUserFriendRequests = async () => {
   try {
-    const response = await api.get(`/users/user-friend-requests/${userId}`);
+    const response = await api.get('/users/user-friend-requests/verifiedUser');
     return response.data;
   } catch (error) {
     throw error;
   }
 };
 
+/**
+ * @method getUserFriends
+ * get all the friends that belong to that one user
+ * @access public
+ * @param {String} userId the userId that you want to get his friends list.
+ * @returns {Array<User>}
+ */
 export const getUserFriends = async (userId) => {
   try {
     const response = await api.get(`/users/user-friends/${userId}`);
@@ -164,6 +177,12 @@ export const getUserFriends = async (userId) => {
   }
 };
 
+/**
+ * @method getUserById
+ * @access public
+ * @param {String} userId (the other using receiving the friend request)
+ * @returns {<{name: string, discord: string, _id: string, friends: array<User>, isAdmin: boolean}>} returns the user attributes
+ */
 export const getUserById = async (userId) => {
   try {
     const response = await api.get(`/users/by-id/${userId}`);
@@ -173,6 +192,13 @@ export const getUserById = async (userId) => {
   }
 };
 
+/**
+ * @method checkFriendRequestSent
+ * used in SendFriendRequest.jsx which is inside UserProfile
+ * @access private (takes user from jwt token)
+ * @param {String} receiverId (the other using receiving the friend request)
+ * @returns {Boolean} returns true or false based on if the sender (currentUser) has sent a friend request
+ */
 export const checkFriendRequestSent = async (receiverId) => {
   try {
     const response = await api.get(

@@ -25,7 +25,8 @@ router.post(
 ); // POST
 
 router.get(
-  '/users/user-friend-requests/:id',
+  '/users/user-friend-requests/verifiedUser', // adding the /verifiedUser because it breaks without an extra slash
+  auth,
   controllers.getUserFriendRequests
 ); // GET
 
@@ -36,11 +37,11 @@ router.post(
 
 router.post(
   '/users/:userId/remove-friend-request/:requestId',
-  controllers.removeFriendRequest
+  controllers.removeFriendRequest // (reject friend request)
 ); // POST
 
-router.post('/users/add-new-friend/:id', controllers.addUserFriend); // POST
-router.post('/users/remove-friend/:id', controllers.removeUserFriend); // POST
+router.post('/users/add-new-friend/:id', controllers.addUserFriend); // POST (accept friend request)
+router.post('/users/remove-friend/:id', controllers.removeUserFriend); // POST (unfriend)
 
 router.get(
   '/users/check-friend-request-sent/:receiverId',

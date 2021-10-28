@@ -49,7 +49,7 @@ export default function FriendRequestsModal() {
 
     // this is for when user recieves notification from socket and opens this page, he didn't refresh, so we need to refetch.
     const fetchUserFriendRequests = async () => {
-      let friendRequests = await getUserFriendRequests(currentUser?._id);
+      const friendRequests = await getUserFriendRequests();
       setFriendRequests(friendRequests);
     };
     fetchUserFriendRequests();
