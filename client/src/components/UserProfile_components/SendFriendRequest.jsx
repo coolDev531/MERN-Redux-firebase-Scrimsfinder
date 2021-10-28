@@ -49,7 +49,6 @@ export default function SendFriendRequest({ user, setUser }) {
         receiverId: user?._id,
       };
 
-      console.log({ socketNotification });
       // send notification to user who received the frind request
       socket?.emit('sendNotification', socketNotification);
 
