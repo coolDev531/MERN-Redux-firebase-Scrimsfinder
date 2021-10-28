@@ -48,6 +48,7 @@ const getUserFriendRequests = async (req, res) => {
           console.log(err);
           return res.status(500).json({ error: err.message });
         }
+        console.log('success');
         return res.status(200).json(friendRequests);
       });
   } catch (error) {
@@ -258,20 +259,21 @@ const acceptFriendRequest = async (req, res) => {
 
 // @route   POST api/friends/remove-friend/:id
 // @desc    when both users are already friends but one user decides to "Unfriend" the friend.
-// @access  Public
+// @access  Private
 const unfriendUser = async (req, res) => {
-  const { id } = req.params;
-
   const { friendUserId } = req.body;
+  const currentUserId = req.user._id;
 
   // user making the friend deletion call
-  let user = await User.findById(id);
+  let user = await User.findById(currentUserId);
 
   // user's friend
   let friendUser = await User.findById(friendUserId);
 
   if (!user) {
-    return res.status(500).send(`User not found with id: ${escape(id)}`);
+    return res
+      .status(500)
+      .send(`User not found with id: ${escape(currentUserId)}`);
   }
 
   if (!friendUser) {

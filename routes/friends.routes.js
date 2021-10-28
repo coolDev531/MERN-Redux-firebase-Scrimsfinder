@@ -4,11 +4,7 @@ const auth = require('../middleware/auth');
 
 const router = Router();
 
-router.get(
-  '/friend-requests/verifiedUser',
-  auth,
-  controllers.getUserFriendRequests
-); // GET
+router.get('/friend-requests', auth, controllers.getUserFriendRequests); // GET
 
 router.post(
   '/friend-requests/send-friend-request/:userReceivingId/:userSendingId',
@@ -25,7 +21,7 @@ router.post(
   controllers.acceptFriendRequest
 ); // POST (accept friend request)
 
-router.post('/friends/remove-friend/:id', controllers.unfriendUser); // POST (unfriend)
+router.post('/friends/unfriend-user', auth, controllers.unfriendUser); // POST (unfriend)
 
 router.get(
   '/friend-requests/check-friend-request-sent/:receiverId',
@@ -33,6 +29,6 @@ router.get(
   controllers.checkFriendRequestSent
 ); // POST
 
-router.get('friends/user-friends/:id', controllers.getUserFriends); // GET
+router.get('/friends/user-friends/:id', controllers.getUserFriends); // GET
 
 module.exports = router;

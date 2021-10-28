@@ -9,7 +9,7 @@ import Button from '@mui/material/Button';
 import Tooltip from '../shared/Tooltip';
 
 // services
-import { removeUserFriend } from './../../services/friends.services';
+import { unfriendUser } from './../../services/friends.services';
 
 // icons
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -38,10 +38,7 @@ export default function DeleteFriendButton({
 
     try {
       setButtonsDisabled(true);
-      const { userFriends } = await removeUserFriend(
-        currentUser?._id,
-        friendToDelete._id
-      );
+      const { userFriends } = await unfriendUser(friendToDelete._id);
 
       // change the state of friend's profile page as well on client side
       setFriend((prevState) => ({

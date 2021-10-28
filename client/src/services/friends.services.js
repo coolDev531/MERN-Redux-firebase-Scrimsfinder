@@ -9,7 +9,7 @@ import api from './apiConfig';
  */
 export const getUserFriends = async (userId) => {
   try {
-    const response = await api.get(`friends/user-friends/${userId}`);
+    const response = await api.get(`/friends/user-friends/${userId}`);
     return response.data;
   } catch (error) {
     throw error;
@@ -40,16 +40,15 @@ export const acceptFriendRequest = async (userId, newFriendId) => {
 };
 
 /**
- * @method removeUserFriend
+ * @method unfriendUser
  * @desc Unfriend a user
- * @access public
- * @param {String} userId current user id
+ * @access private
  * @param {String} friendUserId the friend that the current user is unfriending
  * @returns {Array<User>}
  */
-export const removeUserFriend = async (userId, friendUserId) => {
+export const unfriendUser = async (friendUserId) => {
   try {
-    const response = await api.post(`/friends/remove-friend/${userId}`, {
+    const response = await api.post('/friends/unfriend-user', {
       friendUserId,
     });
 
@@ -105,7 +104,7 @@ export const rejectFriendRequest = async (userId, requestId) => {
  */
 export const getUserFriendRequests = async () => {
   try {
-    const response = await api.get('/users/user-friend-requests/verifiedUser');
+    const response = await api.get('/friend-requests');
     return response.data;
   } catch (error) {
     throw error;
