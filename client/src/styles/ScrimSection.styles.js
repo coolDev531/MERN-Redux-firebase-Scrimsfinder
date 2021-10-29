@@ -30,6 +30,8 @@ export const useScrimSectionStyles = makeStyles((theme) => ({
 
     backdropFilter: ({ isBoxExpanded }) =>
       isBoxExpanded ? 'blur(8px)' : 'blur(2.5px)',
+
+    minHeight: '250px',
   },
 
   iconButton: {

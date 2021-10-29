@@ -222,9 +222,12 @@ export default function ScrimSectionHeader({
         )}
       </Grid>
 
-      <Grid container direction="column">
-        <Grid container direction="row" justifyContent="space-between">
-          {/*  casters text and buttons*/}
+      <Grid
+        container
+        direction="row"
+        justifyContent={scrim.isWithCasters ? 'space-between' : 'flex-end'}>
+        {/*  casters text and buttons*/}
+        {scrim.isWithCasters && (
           <CastersSection
             showCasters={isInDetail ? true : showPlayers || isBoxExpanded}
             casters={casters}
@@ -238,34 +241,34 @@ export default function ScrimSectionHeader({
               isBoxExpanded,
             }}
           />
+        )}
 
-          {/* dont show players in header if isBoxExpanded or smaller screen */}
-          {!isBoxExpanded && showPlayers && (
-            <Grid
-              item
-              container
-              xs={6}
-              spacing={2}
-              direction="row"
-              justifyContent="flex-end">
-              <OneTeam
-                teamName="teamOne"
-                winnerTeam={scrim?.teamWon || null}
-                teamArr={scrim.teamOne}
-                teamRoles={['Top', 'Jungle', 'Mid', 'ADC', 'Support']}
-                alignContent="flex-end"
-              />
+        {/* dont show players in header if isBoxExpanded or smaller screen */}
+        {!isBoxExpanded && showPlayers && (
+          <Grid
+            item
+            container
+            xs={6}
+            spacing={2}
+            direction="row"
+            justifyContent="flex-end">
+            <OneTeam
+              teamName="teamOne"
+              winnerTeam={scrim?.teamWon || null}
+              teamArr={scrim.teamOne}
+              teamRoles={['Top', 'Jungle', 'Mid', 'ADC', 'Support']}
+              alignContent="flex-end"
+            />
 
-              <OneTeam
-                teamName="teamTwo"
-                winnerTeam={scrim?.teamWon || null}
-                teamArr={scrim.teamTwo}
-                alignContent="flex-start"
-                teamRoles={['Top', 'Jungle', 'Mid', 'ADC', 'Support']}
-              />
-            </Grid>
-          )}
-        </Grid>
+            <OneTeam
+              teamName="teamTwo"
+              winnerTeam={scrim?.teamWon || null}
+              teamArr={scrim.teamTwo}
+              alignContent="flex-start"
+              teamRoles={['Top', 'Jungle', 'Mid', 'ADC', 'Support']}
+            />
+          </Grid>
+        )}
       </Grid>
     </Grid>
   );
