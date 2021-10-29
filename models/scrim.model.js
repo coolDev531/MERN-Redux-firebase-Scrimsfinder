@@ -68,10 +68,13 @@ const Scrim = new Schema(
       required: true,
       ref: 'User',
     },
-    teamWon: { type: 'String', default: null },
+    teamWon: { type: 'String', default: null }, // the winning team of the scrim, should've probably been named winnerTeamName (teamOne, teamTwo)
     postGameImage: { type: ImageSchema }, // image of the post-game lobby
     isPrivate: false, // if it's private, only people with share link can see.
+    isWithCasters: false, // allow players to cast the scrim?
+
     _conversation: {
+      // the chat room with all the messages related to the scrim
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Conversation',
     },

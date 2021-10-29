@@ -678,6 +678,13 @@ const insertCasterInScrim = async (req, res) => {
     }
 
     const scrim = await Scrim.findById(scrimId);
+
+    if (!scrim.isWithCasters) {
+      return res
+        .status(500)
+        .json({ error: 'Cannot join as caster, (scrim has casters disabled)' });
+    }
+
     const casterJoining = await User.findById(casterId);
 
     if (!casterJoining) {

@@ -58,6 +58,7 @@ export default function ScrimEdit() {
     previousLobbyHost: null,
     isPrivate: false,
     _lobbyHost: RANDOM_HOST_CODE, // _id
+    isWithCasters: false,
   });
 
   const [dateData, setDateData] = useState({
@@ -109,6 +110,7 @@ export default function ScrimEdit() {
         casters: oneScrim?.casters,
         isPrivate: oneScrim?.isPrivate ?? false,
         _lobbyHost: oneScrim?.lobbyHost?._id ?? RANDOM_HOST_CODE,
+        isWithCasters: oneScrim?.isWithCasters ?? false, // didn't exist in db in older versions
       });
     };
     prefillFormData();
@@ -546,6 +548,43 @@ export default function ScrimEdit() {
                             marginTop: '19px',
                           }}>
                           Private
+                        </p>
+                      }
+                      labelPlacement="top"
+                    />
+                  </Grid>
+
+                  <Grid item>
+                    <FormControlLabel
+                      control={
+                        <Tooltip
+                          title={
+                            scrimData.isWithCasters
+                              ? 'Disallow casting'
+                              : 'Allow casting'
+                          }
+                          placement="top">
+                          <Checkbox
+                            color="primary"
+                            checked={scrimData.isWithCasters}
+                            onChange={() => {
+                              setScrimData((prevState) => ({
+                                ...prevState,
+                                isWithCasters: !prevState.isWithCasters,
+                              }));
+                            }}
+                            name="isWithCasters"
+                          />
+                        </Tooltip>
+                      }
+                      label={
+                        <p
+                          style={{
+                            fontSize: '0.75rem',
+                            marginBottom: 0,
+                            marginTop: '19px',
+                          }}>
+                          With casters
                         </p>
                       }
                       labelPlacement="top"
