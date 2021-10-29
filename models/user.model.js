@@ -35,6 +35,9 @@ const User = new Schema(
 
     // can we send them an email?
     canSendEmailsToUser: { type: Boolean, default: false },
+
+    // when is the last time they signed in?
+    lastLoggedIn: { type: Date },
   },
   { timestamps: true }
 );

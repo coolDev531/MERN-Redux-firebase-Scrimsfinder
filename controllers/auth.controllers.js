@@ -1,12 +1,12 @@
-const KEYS = require('../config/keys');
-// jwt
+// utils
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const escape = require('escape-html');
+const { REGIONS } = require('../utils/constants');
+const KEYS = require('../config/keys');
 
 // models
 const User = require('../models/user.model');
-
-const { REGIONS } = require('../utils/constants');
 
 const divisionsWithNumbers = [
   'Iron',
@@ -79,41 +79,47 @@ const loginUser = async (req, res) => {
 
   if (!foundUser) {
     res.status(500).json({
-      error: `User not found with the email: ${email}, please sign up or try again.`,
+      error: `User not found with the email: ${escape(
+        email
+      )}, please sign up or try again.`,
     });
     return;
   }
 
-  // Check uid
   try {
+    // Check uid
     const isMatch = await bcrypt.compare(uid, foundUser.uid); // compare unhashed req.body.uid to hashed user uid in db.
 
-    if (isMatch) {
-      const payload = {
-        uid: foundUser.uid,
-        email: foundUser.email,
-        rank: foundUser.rank,
-        _id: foundUser._id,
-        region: foundUser.region,
-        discord: foundUser.discord,
-        adminKey: foundUser.adminKey,
-        isAdmin: foundUser.isAdmin,
-        name: foundUser.name,
-        notifications: foundUser.notifications,
-        friendRequests: foundUser.friendRequests,
-        friends: foundUser.friends,
-        canSendEmailsToUser: foundUser.canSendEmailsToUser ?? false, // didn't exist on db in older versions
-      };
-
-      // I don't even think we need to hash the uid...
-      const accessToken = jwt.sign(payload, KEYS.SECRET_OR_KEY, {
-        expiresIn: 31556926, // 1 year in seconds
-      });
-
-      return res.json({ success: true, token: `Bearer ${accessToken}` });
-    } else {
+    if (!isMatch) {
       return res.status(401).json({ error: 'Unauthorized', status: false });
     }
+
+    const payload = {
+      uid: foundUser.uid,
+      email: foundUser.email,
+      rank: foundUser.rank,
+      _id: foundUser._id,
+      region: foundUser.region,
+      discord: foundUser.discord,
+      adminKey: foundUser.adminKey,
+      isAdmin: foundUser.isAdmin,
+      name: foundUser.name,
+      notifications: foundUser.notifications,
+      friendRequests: foundUser.friendRequests,
+      friends: foundUser.friends,
+      canSendEmailsToUser: foundUser.canSendEmailsToUser ?? false, // didn't exist on db in older versions
+    };
+
+    // I don't even think we need to hash the uid...
+    const accessToken = jwt.sign(payload, KEYS.SECRET_OR_KEY, {
+      expiresIn: 31556926, // 1 year in seconds
+    });
+
+    // the user last logged in now, and save it in db.
+    foundUser.lastLoggedIn = Date.now();
+    await foundUser.save();
+
+    return res.json({ success: true, token: `Bearer ${accessToken}` });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
@@ -133,6 +139,7 @@ const registerUser = async (req, res) => {
       adminKey,
       email,
       region,
+      lastLoggedIn: Date.now(),
     };
 
     const userExists = await User.findOne({ email });
@@ -290,37 +297,41 @@ const verifyUser = async (req, res) => {
       uid: { $eq: user.uid },
     });
 
-    if (foundUser) {
-      const payload = {
-        uid: foundUser.uid,
-        email: foundUser.email,
-        rank: foundUser.rank,
-        _id: foundUser._id,
-        region: foundUser.region,
-        discord: foundUser.discord,
-        adminKey: foundUser.adminKey,
-        isAdmin: foundUser.isAdmin,
-        name: foundUser.name,
-        notifications: foundUser.notifications,
-        friendRequests: foundUser.friendRequests,
-        friends: foundUser.friends,
-      };
-
-      const accessToken = jwt.sign(payload, KEYS.SECRET_OR_KEY, {
-        expiresIn: 31556926, // 1 year in seconds
-        // expiresIn: new Date(new Date()).setDate(new Date().getDate() + 30), // 30 days from now, does this work?
-      });
-
-      return res.status(200).json({
-        success: true,
-        token: `Bearer ${accessToken}`,
-        user: foundUser,
-      });
-    } else {
+    if (!foundUser) {
       return res.status(500).json({
         message: 'User not found!',
       });
     }
+
+    const payload = {
+      uid: foundUser.uid,
+      email: foundUser.email,
+      rank: foundUser.rank,
+      _id: foundUser._id,
+      region: foundUser.region,
+      discord: foundUser.discord,
+      adminKey: foundUser.adminKey,
+      isAdmin: foundUser.isAdmin,
+      name: foundUser.name,
+      notifications: foundUser.notifications,
+      friendRequests: foundUser.friendRequests,
+      friends: foundUser.friends,
+    };
+
+    const accessToken = jwt.sign(payload, KEYS.SECRET_OR_KEY, {
+      expiresIn: 31556926, // 1 year in seconds
+      // expiresIn: new Date(new Date()).setDate(new Date().getDate() + 30), // 30 days from now, does this work?
+    });
+
+    // the user last logged in now, and save it in db.
+    foundUser.lastLoggedIn = Date.now();
+    await foundUser.save();
+
+    return res.status(200).json({
+      success: true,
+      token: `Bearer ${accessToken}`,
+      user: foundUser,
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: error.message });
