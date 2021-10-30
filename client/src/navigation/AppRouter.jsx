@@ -10,7 +10,6 @@ import NotFound from '../screens/NotFound';
 import ScrimEdit from '../screens/ScrimEdit';
 import Settings from '../screens/Settings';
 import UserProfile from '../screens/UserProfile';
-import Witch from './../components/events_components/halloween/Witch';
 
 const AppRouter = () => (
   <Switch>
@@ -21,7 +20,6 @@ const AppRouter = () => (
     <PrivateRoute exact path="/users/:name" component={UserProfile} />
     <Route exact path="/signup" component={SignUp} />
     <PrivateRoute exact path={['/', '/scrims']} component={Scrims} />
-    <Route path="/witch" component={Witch} />
     <Route component={NotFound} />
   </Switch>
 );

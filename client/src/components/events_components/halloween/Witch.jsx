@@ -18,7 +18,9 @@ export default function Witch() {
             <div className="witch__stick" />
           </div>
         </div>
+        <div className="witch__hand-right" />
       </div>
+
       <div className="witch__stick2" />
       <div className="witch__bubbles">
         <div className="witch__bubble1" />
@@ -35,15 +37,16 @@ export default function Witch() {
 }
 
 const Wrapper = styled.div`
-  position: absolute;
-  border: 1px solid white;
-  width: 330px;
-  height: 480px;
-  margin: auto;
-  left: 0;
+  position: relative;
+  /* position: absolute; */
+  /* left: 0;
   right: 0;
   top: 0;
-  bottom: 0;
+  bottom: 0; */
+  /* margin: auto; */
+
+  width: 330px;
+  height: 480px;
 
   .witch__container {
     position: absolute;
@@ -53,7 +56,7 @@ const Wrapper = styled.div`
 
   .witch__hair {
     height: 0;
-    width: 80px;
+    width: 118px;
     border-bottom: 80px solid #ff7903;
     border-left: 20px solid transparent;
     border-right: 20px solid transparent;
@@ -78,7 +81,7 @@ const Wrapper = styled.div`
       border-left: 50px solid transparent;
       border-right: 50px solid transparent;
       border-bottom: 100px solid #0b081b;
-      bottom: 95px;
+      bottom: 100px;
       left: 28px;
     }
 
@@ -92,7 +95,7 @@ const Wrapper = styled.div`
       border-left: 40px solid #0b081b;
       position: absolute;
       right: 45px;
-      bottom: 83px;
+      bottom: 85px;
       transform: rotate(20deg);
     }
   }
@@ -119,6 +122,7 @@ const Wrapper = styled.div`
   }
 
   .witch__mouth {
+    /* initial mouth line _) */
     height: 2px;
     background-color: #000;
     width: 40px;
@@ -150,7 +154,7 @@ const Wrapper = styled.div`
 
   .witch__cloak {
     height: 0;
-    width: 80px;
+    width: 160px;
     border-bottom: 180px solid #0e0c29;
     border-left: 40px solid transparent;
     border-right: 40px solid transparent;
@@ -166,7 +170,7 @@ const Wrapper = styled.div`
     right: 65px;
     bottom: 0;
     transform: rotate(20deg);
-    transform-origin: right;
+    transform-origin: right; // set the origin for an element's transformations.
     animation: wave 2s infinite;
 
     &:before {
@@ -181,6 +185,7 @@ const Wrapper = styled.div`
     }
 
     &:after {
+      /* the thumb for left hand */
       content: '';
       position: absolute;
       background-color: #ffcb9b;
@@ -356,6 +361,7 @@ const Wrapper = styled.div`
       left: 30px;
       border-radius: 0 0 30px 30px;
     }
+
     &:after {
       content: '';
       position: absolute;
@@ -365,6 +371,7 @@ const Wrapper = styled.div`
       bottom: 70px;
       right: 60px;
       border-radius: 25px 25px 0 0;
+      top: -16px;
     }
   }
 `;

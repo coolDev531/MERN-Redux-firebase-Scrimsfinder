@@ -4,6 +4,7 @@ import { useEffect, useState, useRef, useMemo } from 'react';
 import Typography from '@mui/material/Typography';
 import LoadingGif from '../../assets/images/loading.gif';
 import { PageContent } from './PageComponents';
+import Witch from '../events_components/halloween/Witch';
 
 export default function Loading({ text }) {
   const [isHerokuHibernating, setIsHerokuHibernating] = useState(false);
@@ -39,7 +40,11 @@ export default function Loading({ text }) {
               gutterBottom>
               {displayText}
             </Typography>
-            <img className="loading" src={LoadingGif} alt="loading" />
+            {/* witch for halloween loading */}
+            <Witch />
+
+            {/* default loading */}
+            {/* <img className="loading" src={LoadingGif} alt="loading" /> */}
           </div>
         </div>
       </div>
