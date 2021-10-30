@@ -18,6 +18,7 @@ import InfoIcon from '@mui/icons-material/Info';
 
 // utils
 import { makeStyles } from '@mui/styles';
+import { copyTextToClipboard } from './../../utils/copyToClipboard';
 import pluralize from 'pluralize';
 import { COLORS } from './../../appTheme';
 
@@ -95,10 +96,44 @@ export default function ScrimSectionMiddleAreaBox({
                         </Tooltip>
                       </Grid>
                       <Typography variant="h3">
-                        please make the lobby name: <br />"{scrim.lobbyName}"
+                        {/* the lobby name to make the custom game in LoL 
+                        (used to be randomly generated but now is just scrim.title + "Custom Game" + region)
+                        */}
+                        please make the lobby name: <br />
+                        &nbsp;
+                        <Tooltip title="Copy lobby name to clipboard">
+                          <span
+                            className="link"
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => {
+                              copyTextToClipboard(scrim.lobbyName);
+                              setCurrentAlert({
+                                type: 'Success',
+                                message: 'lobby name copied to clipboard',
+                              });
+                            }}>
+                            "{scrim.lobbyName}"
+                          </span>
+                        </Tooltip>
                       </Typography>
                       <Typography variant="h3">
-                        with the password: {scrim.lobbyPassword}
+                        {/* the lobby password to make the custom game in LoL 
+                        (randomly generated) */}
+                        with the password: &nbsp;
+                        <Tooltip title="Copy password to clipboard">
+                          <span
+                            className="link"
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => {
+                              copyTextToClipboard(scrim.lobbyPassword);
+                              setCurrentAlert({
+                                type: 'Success',
+                                message: 'password copied to clipboard',
+                              });
+                            }}>
+                            {scrim.lobbyPassword}
+                          </span>
+                        </Tooltip>
                       </Typography>
                     </>
                   ) : (

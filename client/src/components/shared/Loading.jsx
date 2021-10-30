@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, useMemo } from 'react';
 
 // components
 import Typography from '@mui/material/Typography';
-import LoadingGif from '../../assets/images/loading.gif';
+// import LoadingGif from '../../assets/images/loading.gif';
 import { PageContent } from './PageComponents';
 import Witch from '../events_components/halloween/Witch';
 
