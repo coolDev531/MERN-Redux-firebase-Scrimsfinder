@@ -2,12 +2,11 @@ import { useEffect, useState, useRef, useMemo } from 'react';
 
 // components
 import Typography from '@mui/material/Typography';
-// import LoadingGif from '../../assets/images/loading.gif';
+import LoadingGif from '../../assets/images/loading.gif';
 import { PageContent } from './PageComponents';
-import Witch from '../events_components/halloween/Witch';
 
 export default function Loading({ text }) {
-  const [isHerokuHibernating, setIsHerokuHibernating] = useState(false);
+  const [isHerokuHibernating, setIsHerokuHibernating] = useState(false); // heroku free plan hibernates when inactive
   let isMounted = useRef(true);
 
   const IS_SLEEPING_INTERVAL = 6000; // 6 seconds means heroku is hibernating
@@ -40,11 +39,8 @@ export default function Loading({ text }) {
               gutterBottom>
               {displayText}
             </Typography>
-            {/* witch for halloween loading */}
-            <Witch />
 
-            {/* default loading */}
-            {/* <img className="loading" src={LoadingGif} alt="loading" /> */}
+            <img className="loading" src={LoadingGif} alt="loading" />
           </div>
         </div>
       </div>

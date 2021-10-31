@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
 
 // learned from: https://www.instagram.com/coding.artist/
+
+// this was a loading decoration for the 2021 halloween event. Not currently used anymore
 export default function Witch() {
   return (
     <Wrapper>
