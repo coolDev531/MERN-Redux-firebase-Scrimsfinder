@@ -685,6 +685,12 @@ const insertCasterInScrim = async (req, res) => {
         .json({ error: 'Cannot join as caster, (scrim has casters disabled)' });
     }
 
+    if (scrim.casters.length >= scrim.maxCastersAllowedCount) {
+      return res
+        .status(500)
+        .json({ error: 'Cannot join as caster, (caster spots full)' });
+    }
+
     const casterJoining = await User.findById(casterId);
 
     if (!casterJoining) {

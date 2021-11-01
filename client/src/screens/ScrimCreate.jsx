@@ -43,6 +43,7 @@ export default function ScrimCreate() {
     title: '',
     isPrivate: false,
     isWithCasters: false,
+    maxCastersAllowedCount: 2,
   });
 
   const [createdScrim, setCreatedScrim] = useState(null);
@@ -73,6 +74,9 @@ export default function ScrimCreate() {
         ...scrimData,
         adminKey: currentUser?.adminKey ?? '', // to verify if is admin (authorize creation).
         lobbyHost: scrimData.lobbyHost === 'random' ? null : currentUser._id,
+        maxCastersAllowedCount: scrimData.isWithCasters
+          ? scrimData.maxCastersAllowedCount
+          : 0,
       };
 
       const newlyCreatedScrim = await createScrim(dataSending, setCurrentAlert);
@@ -316,6 +320,29 @@ export default function ScrimCreate() {
                     Lobby host
                   </FormHelperText>
                 </Grid>
+
+                {scrimData.isWithCasters && (
+                  <Grid item xs={12} sm={2} md={2}>
+                    <Select
+                      variant="standard"
+                      label="Max casters allowed"
+                      name="maxCastersAllowedCount"
+                      value={scrimData.maxCastersAllowedCount}
+                      className="text-white"
+                      onChange={handleChange}
+                      fullWidth>
+                      {[1, 2].map((value, key) => (
+                        <MenuItem value={value} key={key}>
+                          {value}
+                        </MenuItem>
+                      ))}
+                    </Select>
+
+                    <FormHelperText className="text-white">
+                      Max casters count
+                    </FormHelperText>
+                  </Grid>
+                )}
               </Grid>
 
               <Grid item>

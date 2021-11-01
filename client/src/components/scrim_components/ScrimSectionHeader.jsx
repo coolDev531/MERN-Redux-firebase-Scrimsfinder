@@ -29,8 +29,6 @@ import { ROLE_IMAGES } from './../../utils/imageMaps';
 // services
 import { findScrimConversation } from '../../services/conversations.services';
 
-const MAX_CASTER_AMOUNT = 2;
-
 export default function ScrimSectionHeader({
   // props passed from ScrimSection.jsx
   scrim,
@@ -147,6 +145,7 @@ export default function ScrimSectionHeader({
                 withDropdown={false}
                 onClick={handleOpenConversation}
                 tooltipTitle="Open scrim chat room"
+                tooltipType="secondary"
               />
             </Grid>
           )}
@@ -233,6 +232,7 @@ export default function ScrimSectionHeader({
             casters={casters}
             gameEnded={gameEnded}
             data={{
+              maxCastersAllowedCount: scrim.maxCastersAllowedCount ?? 2, // didn't exist in old versions of db
               casterEntered,
               casters,
               buttonsDisabled,
@@ -327,20 +327,27 @@ const CastersSection = memo(
 );
 
 const JoinCastButtons = memo(({ data, gameEnded }) => {
-  const { casterEntered, casters, buttonsDisabled, joinCast, leaveCast } = data;
+  const {
+    casterEntered,
+    casters,
+    buttonsDisabled,
+    joinCast,
+    leaveCast,
+    maxCastersAllowedCount,
+  } = data;
 
   // // don't show cast buttons if game ended or we have max casters or currentUser has joined cast
   if (gameEnded) return null;
 
   return (
     <Grid container alignItems="center" direction="row" spacing={2}>
-      {casters.length !== MAX_CASTER_AMOUNT && !casterEntered && (
+      {casters.length !== maxCastersAllowedCount && !casterEntered && (
         <Grid item>
           <Button
             variant="contained"
             color="primary"
             disabled={
-              casters.length === MAX_CASTER_AMOUNT ||
+              casters.length === maxCastersAllowedCount ||
               casterEntered ||
               buttonsDisabled
             }

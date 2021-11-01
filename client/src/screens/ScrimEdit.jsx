@@ -58,6 +58,7 @@ export default function ScrimEdit() {
     isPrivate: false,
     _lobbyHost: RANDOM_HOST_CODE, // _id
     isWithCasters: false,
+    maxCastersAllowedCount: 0,
   });
 
   const { id } = useParams();
@@ -94,6 +95,7 @@ export default function ScrimEdit() {
         isPrivate: oneScrim?.isPrivate ?? false,
         _lobbyHost: oneScrim?.lobbyHost?._id ?? RANDOM_HOST_CODE,
         isWithCasters: oneScrim?.isWithCasters ?? false, // didn't exist in db in older versions
+        maxCastersAllowedCount: oneScrim?.maxCastersAllowedCount ?? 2, // didn't exist in db in older versions
       });
     };
     prefillFormData();
@@ -208,6 +210,9 @@ export default function ScrimEdit() {
         // if user selected N//A send null for teamWon, else send the actual value and result to null if undefined
         teamWon:
           scrimData?.teamWon === 'N/A' ? null : scrimData?.teamWon ?? null,
+        maxCastersAllowedCount: scrimData.isWithCasters
+          ? scrimData?.maxCastersAllowedCount
+          : 0,
       };
 
       const updatedScrim = await updateScrim(id, dataSending, setCurrentAlert);
@@ -421,6 +426,29 @@ export default function ScrimEdit() {
                       Lobby host
                     </FormHelperText>
                   </Grid>
+
+                  {scrimData.isWithCasters && (
+                    <Grid item xs={12} sm={2} md={2}>
+                      <Select
+                        variant="standard"
+                        label="Max casters allowed"
+                        name="maxCastersAllowedCount"
+                        value={scrimData.maxCastersAllowedCount}
+                        className="text-white"
+                        onChange={handleChange}
+                        fullWidth>
+                        {[1, 2].map((value, key) => (
+                          <MenuItem value={value} key={key}>
+                            {value}
+                          </MenuItem>
+                        ))}
+                      </Select>
+
+                      <FormHelperText className="text-white">
+                        Max casters count
+                      </FormHelperText>
+                    </Grid>
+                  )}
                 </Grid>
 
                 <Grid

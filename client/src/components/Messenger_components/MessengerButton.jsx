@@ -7,6 +7,7 @@ import { makeStyles } from '@mui/styles';
 // components
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '../shared/Tooltip';
+import SecondaryTooltip from '@mui/material/Tooltip';
 
 // icons
 import MessengerIcon from '@mui/icons-material/Chat';
@@ -18,6 +19,7 @@ export default function MessengerButton({
   isMessengerDropdownOpen,
   setIsMessengerDropdownOpen,
   tooltipTitle = 'Messenger',
+  tooltipType = 'primary',
   isScrim = true,
 }) {
   const anchorRef = useRef(null);
@@ -26,7 +28,7 @@ export default function MessengerButton({
 
   return (
     <>
-      <Tooltip title={tooltipTitle}>
+      <TooltipComponent title={tooltipTitle} tooltipType={tooltipType}>
         <IconButton
           ref={anchorRef}
           onClick={onClick}
@@ -47,7 +49,7 @@ export default function MessengerButton({
           ) : null}
           <MessengerIcon fontSize="large" />
         </IconButton>
-      </Tooltip>
+      </TooltipComponent>
       {/* if withDropdown true (is true for navbar messenger button, show the dropdown) */}
       {withDropdown && (
         <MessengerDropdown
@@ -59,6 +61,15 @@ export default function MessengerButton({
     </>
   );
 }
+
+const TooltipComponent = ({ tooltipType, children, ...rest }) =>
+  tooltipType === 'primary' ? (
+    <Tooltip {...rest}>{children}</Tooltip>
+  ) : (
+    <SecondaryTooltip arrow placement="top" {...rest}>
+      {children}
+    </SecondaryTooltip>
+  );
 
 const useStyles = makeStyles({
   unseenMessagesCount: {

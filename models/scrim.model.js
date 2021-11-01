@@ -68,10 +68,11 @@ const Scrim = new Schema(
       required: true,
       ref: 'User',
     },
-    teamWon: { type: 'String', default: null }, // the winning team of the scrim, should've probably been named winnerTeamName (teamOne, teamTwo)
+    teamWon: { type: String, default: null }, // the winning team of the scrim, should've probably been named winnerTeamName (teamOne, teamTwo)
     postGameImage: { type: ImageSchema }, // image of the post-game lobby
     isPrivate: false, // if it's private, only people with share link can see.
     isWithCasters: false, // allow players to cast the scrim?
+    maxCastersAllowedCount: { type: Number, default: 2, min: 0, max: 2 }, // if the scrim allows casters, how many do we want?
 
     _conversation: {
       // the chat room with all the messages related to the scrim
