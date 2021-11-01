@@ -1,11 +1,10 @@
+import { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useScrimsActions } from '../../../hooks/useScrims';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import useTheme from '@mui/styles/useTheme';
 
 // components
 import Grid from '@mui/material/Grid';
-import TextField from '@mui/material/TextField';
 import FormHelperText from '@mui/material/FormHelperText';
 import Box from '@mui/material/Box';
 import MenuItem from '@mui/material/MenuItem';
@@ -14,15 +13,13 @@ import Select from '@mui/material/Select';
 import Hidden from '@mui/material/Hidden';
 
 // utils
-import moment from 'moment';
-import 'moment-timezone';
+import DatePicker from './../DatePicker';
 
+// the region and date filters
 export default function NavbarDropdowns() {
   const [{ currentUser }, { scrimsDate, scrimsRegion }] = useSelector(
     ({ auth, scrims }) => [auth, scrims]
   );
-
-  const { fetchScrims } = useScrimsActions();
 
   const theme = useTheme();
 
@@ -37,17 +34,21 @@ export default function NavbarDropdowns() {
     ...allRegions.filter((r) => r !== currentUser?.region),
   ];
 
-  const onSelectRegion = async (e) => {
+  const onSelectRegion = (e) => {
+    // this would trigger scrims/setFilteredScrims in the store (check useFilteredScrims inside useScrims.js)
     const region = e.target.value;
     dispatch({ type: 'scrims/setScrimsRegion', payload: region });
-    await fetchScrims(); // not necessary, trying to ping the server.
   };
 
-  const onSelectDate = async (e) => {
-    const newDateValue = moment(e.target.value);
-    dispatch({ type: 'scrims/setScrimsDate', payload: newDateValue });
-    await fetchScrims();
-  };
+  const onSelectDate = useCallback(
+    (newDateValue) => {
+      // this would trigger scrims/setFilteredScrims in the store (check useFilteredScrims inside useScrims.js)
+      dispatch({ type: 'scrims/setScrimsDate', payload: newDateValue });
+      // right now we're filtering through all existing scrims, maybe it would be better to just
+      // use a debounce and make an api call to get the scrims for this specific date (same thing for region)
+    },
+    [dispatch]
+  );
 
   return (
     <Grid
@@ -61,24 +62,18 @@ export default function NavbarDropdowns() {
       direction={matchesSm ? 'column' : 'row'}
       id="nav__selects--container">
       {/* date regions and filters */}
-      <Grid item>
-        <TextField
-          variant="standard"
-          id="date"
-          required
+      <Grid item xs={6}>
+        <DatePicker
           label="Scrims Date"
-          type="date"
           name="scrimsDate"
           InputLabelProps={{
             shrink: true,
+            style: { color: '#fff' },
           }}
-          value={
-            moment(new Date(scrimsDate)).format('yyyy-MM-DD') ||
-            moment().format('yyyy-MM-DD')
-          }
+          variant="standard"
+          value={scrimsDate}
           onChange={onSelectDate}
         />
-
         <FormHelperText className="text-white">
           Filter&nbsp;
           <Hidden lgDown>scrims&nbsp;</Hidden>by date

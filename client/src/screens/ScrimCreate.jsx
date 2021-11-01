@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useScrimsActions } from './../hooks/useScrims';
 import useAlerts from './../hooks/useAlerts';
 import useAuth from './../hooks/useAuth';
@@ -22,11 +22,11 @@ import {
   PageSection,
 } from './../components/shared/PageComponents';
 import Loading from '../components/shared/Loading';
+import DatePicker from '../components/shared/DatePicker';
+import TimePicker from '../components/shared/TimePicker';
 
 // utils and services
 import { createScrim } from '../services/scrims.services';
-import moment from 'moment';
-import 'moment-timezone';
 import devLog from './../utils/devLog';
 
 export default function ScrimCreate() {
@@ -44,69 +44,24 @@ export default function ScrimCreate() {
     isWithCasters: false,
   });
 
-  const [dateData, setDateData] = useState({
-    gameStartDate: new Date(),
-    gameStartHours: [new Date().getHours().toString(), new Date().getMinutes()],
-  });
-
   const [createdScrim, setCreatedScrim] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === 'gameStartHours' && value) {
-      let hoursResult = value?.split(':');
-      const [hours, minutes] = hoursResult;
-      let gameStartDate = scrimData['gameStartTime'];
-      let selectedDate = new Date(gameStartDate) ?? new Date();
-      selectedDate.setHours(hours, minutes);
-
-      setDateData((prevState) => ({
-        ...prevState,
-        gameStartDate: selectedDate.toISOString(),
-        gameStartHours: [hours, minutes],
-      }));
-    } else if (name === 'gameStartDate' && value) {
-      let date = new Date(value);
-      // we're setting minutes to 0, hours to 0 and milliseconds to 0
-      date.setMinutes(0, 0, 0);
-
-      // getTime() gives you the date's representation in milliseconds
-      /* we're using getTime and converting timezone offset to time, 1 minute has 60 seconds, 
-      to convert it to milliseconds you multiply it by a thousand */
-      date = new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000); // value doesn't get time zone offset so we're taking care of it here.
-      setDateData((prevState) => ({
-        ...prevState,
-        gameStartDate: date,
-      }));
-    } else {
-      setScrimData((prevState) => ({
-        ...prevState,
-        [name]: value,
-      }));
-    }
-  };
-
-  useEffect(() => {
-    let [hours, minutes] = dateData.gameStartHours;
-
-    let gameStartTime = dateData['gameStartDate'];
-
-    let selectedDate = new Date(gameStartTime) ?? new Date();
-    selectedDate.setHours(hours, minutes);
 
     setScrimData((prevState) => ({
       ...prevState,
-      gameStartTime: selectedDate.toISOString(),
+      [name]: value,
     }));
+  };
 
-    return () => {
-      setScrimData((prevState) => ({
-        ...prevState,
-        gameStartTime: createdScrim?.createdScrim?.gameStartTime,
-      }));
-    };
-  }, [dateData, createdScrim]);
+  const handleChangeDate = (newDateValue) => {
+    setScrimData((prevState) => ({
+      ...prevState,
+      gameStartTime: newDateValue,
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -279,37 +234,25 @@ export default function ScrimCreate() {
                 alignItems="center"
                 justifyContent="center"
                 spacing={2}>
-                <Grid item>
-                  <FormHelperText className="text-white">
-                    Game Start Date
-                  </FormHelperText>
-                  <TextField
+                <Grid item xs={3}>
+                  <DatePicker
+                    label={<span className="text-white">Game Start Date</span>}
                     variant="standard"
-                    onChange={handleChange}
-                    required
-                    type="date"
                     name="gameStartDate"
-                    value={moment(
-                      new Date(dateData.gameStartDate).toISOString()
-                    ).format('yyyy-MM-DD')}
+                    onChange={handleChangeDate}
+                    required
+                    value={scrimData.gameStartTime}
                   />
                 </Grid>
-                <Box marginRight={2} />
-                <Grid item>
-                  <FormHelperText className="text-white">
-                    Game Start Time
-                  </FormHelperText>
-
-                  <TextField
+                <Box marginRight={3} />
+                <Grid item xs={3}>
+                  <TimePicker
+                    label={<span className="text-white">Game Start Time</span>}
                     variant="standard"
-                    onChange={handleChange}
+                    onChange={handleChangeDate}
                     required
-                    type="time"
                     name="gameStartHours"
-                    value={
-                      moment(scrimData?.gameStartTime).format('HH:mm') ||
-                      moment().format('HH:mm')
-                    }
+                    value={scrimData.gameStartTime}
                   />
                 </Grid>
               </Grid>
