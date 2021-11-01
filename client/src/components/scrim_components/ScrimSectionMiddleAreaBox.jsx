@@ -160,45 +160,51 @@ export default function ScrimSectionMiddleAreaBox({
 
                     <Grid item container direction="row" spacing={2}>
                       {/* winner buttons (Who won?) */}
-                      {['teamOne', 'teamTwo'].map((teamName, idx) => (
-                        <Grid item key={idx}>
-                          <Tooltip title={`Select ${teamName} as winner`}>
-                            <Button
-                              style={{
-                                backgroundColor: idx === 0 ? 'blue' : 'red',
-                                color: '#fff',
-                              }}
-                              variant="contained"
-                              onClick={async () => {
-                                // set team won for scrim
-                                let yes =
-                                  window.confirm(`Are you sure ${teamName} won this game? \n 
+                      {['teamOne', 'teamTwo'].map((teamName, idx) => {
+                        const teamAliases = {
+                          teamOne: 'Team One (Blue Side)',
+                          teamTwo: 'Team Two (Red Side)',
+                        };
+
+                        return (
+                          <Grid item key={idx}>
+                            <Tooltip
+                              title={`Select ${teamAliases[teamName]} as winner`}>
+                              <Button
+                                style={{
+                                  backgroundColor: idx === 0 ? 'blue' : 'red',
+                                  color: '#fff',
+                                }}
+                                variant="contained"
+                                onClick={async () => {
+                                  // set team won for scrim
+                                  let yes =
+                                    window.confirm(`Are you sure ${teamName} won this game? \n 
                                   You cannot reverse this.
                                   `);
 
-                                if (!yes) return;
+                                  if (!yes) return;
 
-                                const updatedScrim = await setScrimWinner(
-                                  scrim._id,
-                                  teamName,
-                                  setCurrentAlert
-                                );
-
-                                if (updatedScrim?.createdBy) {
-                                  setScrim(updatedScrim);
-                                  socket?.emit(
-                                    'sendScrimTransaction',
-                                    updatedScrim
+                                  const updatedScrim = await setScrimWinner(
+                                    scrim._id,
+                                    teamName,
+                                    setCurrentAlert
                                   );
-                                }
-                              }}>
-                              {teamName === 'teamOne'
-                                ? 'Team 1 (Blue Side)'
-                                : 'Team 2 (Red Side)'}
-                            </Button>
-                          </Tooltip>
-                        </Grid>
-                      ))}
+
+                                  if (updatedScrim?.createdBy) {
+                                    setScrim(updatedScrim);
+                                    socket?.emit(
+                                      'sendScrimTransaction',
+                                      updatedScrim
+                                    );
+                                  }
+                                }}>
+                                {teamAliases[teamName]}
+                              </Button>
+                            </Tooltip>
+                          </Grid>
+                        );
+                      })}
                     </Grid>
                   </Grid>
                 )}
