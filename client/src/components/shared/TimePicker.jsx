@@ -4,14 +4,16 @@ import MomentDateAdapter from '@mui/lab/AdapterMoment';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import MuiTimePicker from '@mui/lab/TimePicker';
 
-function TimePicker({ value, onChange, variant, ...rest }) {
+function TimePicker({ value, onChange, variant, fullWidth, ...rest }) {
   return (
     <LocalizationProvider dateAdapter={MomentDateAdapter}>
       <MuiTimePicker
         value={value}
         {...rest}
         onChange={onChange}
-        renderInput={(params) => <TextField variant={variant} {...params} />}
+        renderInput={(params) => (
+          <TextField fullWidth={fullWidth} variant={variant} {...params} />
+        )}
       />
     </LocalizationProvider>
   );

@@ -14,6 +14,7 @@ import Button from '@mui/material/Button';
 import Select from '@mui/material/Select';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import Hidden from '@mui/material/Hidden';
 import Tooltip from './../components/shared/Tooltip';
 import { Redirect } from 'react-router-dom';
 import {
@@ -234,8 +235,9 @@ export default function ScrimCreate() {
                 alignItems="center"
                 justifyContent="center"
                 spacing={2}>
-                <Grid item xs={3}>
+                <Grid item xs={12} sm={3}>
                   <DatePicker
+                    fullWidth
                     label={<span className="text-white">Game Start Date</span>}
                     variant="standard"
                     name="gameStartDate"
@@ -244,9 +246,14 @@ export default function ScrimCreate() {
                     value={scrimData.gameStartTime}
                   />
                 </Grid>
-                <Box marginRight={3} />
-                <Grid item xs={3}>
+
+                <Hidden xsDown>
+                  <Box marginRight={3} />
+                </Hidden>
+
+                <Grid item xs={12} sm={3}>
                   <TimePicker
+                    fullWidth
                     label={<span className="text-white">Game Start Time</span>}
                     variant="standard"
                     onChange={handleChangeDate}
@@ -287,6 +294,7 @@ export default function ScrimCreate() {
 
                 <Grid item>
                   <Select
+                    fullWidth
                     variant="standard"
                     name="lobbyHost"
                     onChange={(e) =>

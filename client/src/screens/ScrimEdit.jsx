@@ -276,8 +276,9 @@ export default function ScrimEdit() {
                   justifyContent="center"
                   alignItems="center"
                   spacing={2}>
-                  <Grid item xs={2}>
+                  <Grid item xs={8} sm={3} md={2}>
                     <DatePicker
+                      fullWidth
                       label={
                         <span className="text-white">Game Start Date</span>
                       }
@@ -288,8 +289,9 @@ export default function ScrimEdit() {
                       value={scrimData.gameStartTime}
                     />
                   </Grid>
-                  <Grid item xs={2}>
+                  <Grid item xs={8} sm={3} md={2}>
                     <TimePicker
+                      fullWidth
                       label={
                         <span className="text-white">Game Start Time</span>
                       }
