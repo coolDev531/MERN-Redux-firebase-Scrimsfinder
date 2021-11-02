@@ -104,6 +104,20 @@ export default function ScrimEdit() {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
+    if (name === 'isWithCasters' && value) {
+      setScrimData((prevState) => {
+        const newIsWithCastersState = !prevState.isWithCasters;
+        // if is with casters enabled, set it to 2 so user doesn't see 0.
+        return {
+          ...prevState,
+          isWithCasters: newIsWithCastersState,
+          maxCastersAllowedCount: newIsWithCastersState ? 2 : 0,
+        };
+      });
+
+      return;
+    }
+
     setScrimData((prevState) => ({
       ...prevState,
       [name]: value,
@@ -526,12 +540,7 @@ export default function ScrimEdit() {
                           <Checkbox
                             color="primary"
                             checked={scrimData.isWithCasters}
-                            onChange={() => {
-                              setScrimData((prevState) => ({
-                                ...prevState,
-                                isWithCasters: !prevState.isWithCasters,
-                              }));
-                            }}
+                            onChange={handleChange}
                             name="isWithCasters"
                           />
                         </Tooltip>

@@ -19,6 +19,7 @@ const {
   getLobbyHost,
   populateOneScrim,
   onSpotTaken,
+  checkUnauthorized,
 } = require('../utils/scrimUtils');
 const capitalizeWord = require('../utils/capitalizeWord');
 const AWS = require('aws-sdk');
@@ -251,7 +252,7 @@ const deleteScrim = async (req, res) => {
 
 // @route   PATCH /api/scrims/:scrimId/insert-player/:userId
 // @desc    This is how a player joins a team in the scrim (is used in ScrimTeamList.jsx)
-// @access  Public
+// @access  Private
 const insertPlayerInScrim = async (req, res) => {
   // when player joins
   const session = await Scrim.startSession();
@@ -260,6 +261,8 @@ const insertPlayerInScrim = async (req, res) => {
   await session.withTransaction(async () => {
     const { scrimId, userId } = req.params;
     const { playerData } = req.body;
+
+    const currentUser = req.user; // from auth middleware
 
     let isValidUser = mongoose.Types.ObjectId.isValid(userId);
     let isValidScrim = mongoose.Types.ObjectId.isValid(scrimId);
@@ -270,6 +273,13 @@ const insertPlayerInScrim = async (req, res) => {
 
     if (!isValidScrim) {
       return res.status(500).json('invalid scrim id.');
+    }
+
+    const isUnauthorized = checkUnauthorized(currentUser, userId);
+
+    if (isUnauthorized) {
+      // if user isn't admin or isn't himself, that means he is not authorized to do this.
+      return res.status(401).send({ error: 'Unauthorized' });
     }
 
     if (!playerData) {
@@ -403,10 +413,12 @@ const insertPlayerInScrim = async (req, res) => {
 
 // @route   PATCH /api/scrims/:scrimId/remove-player/:userId
 // @desc    This is how a player leaves a team in the scrim or an admin kicks a player (is used in ScrimTeamList.jsx)
-// @access  Public
+// @access  Private
 const removePlayerFromScrim = async (req, res) => {
   // when player leaves or gets kicked
   const { userId, scrimId } = req.params;
+
+  const currentUser = req.user;
 
   let isValidUser = mongoose.Types.ObjectId.isValid(userId);
   let isValidScrim = mongoose.Types.ObjectId.isValid(scrimId);
@@ -417,6 +429,13 @@ const removePlayerFromScrim = async (req, res) => {
 
   if (!isValidScrim) {
     return res.status(500).json('invalid scrim id.');
+  }
+
+  const isUnauthorized = checkUnauthorized(currentUser, userId); // here it's important to use, because admins can kick players
+
+  if (isUnauthorized) {
+    // if user isn't admin or isn't himself, that means he is not authorized to do this.
+    return res.status(401).send({ error: 'Unauthorized' });
   }
 
   const scrim = await Scrim.findById(scrimId);
@@ -475,36 +494,46 @@ const removePlayerFromScrim = async (req, res) => {
 // @route   PATCH /api/scrims/:scrimId/move-player/:userId
 // @desc    This is how a player moves positions/roles and also may or may not change teams (is used in ScrimTeamList.jsx)
 // very similiar to insertPlayerInScrim, I used to have both of these in 1 function that would just know what to do, and I think maybe it was better, not sure.
-// @access  Public
+// @access  Private
 const movePlayerInScrim = async (req, res) => {
   // when player moves positions and/or teams
   const session = await Scrim.startSession();
 
   // beginning of session
   await session.withTransaction(async () => {
-    const { scrimId, userId } = req.params;
+    const { userId, scrimId } = req.params;
     const { playerData } = req.body;
 
+    const currentUser = req.user;
+
+    // check for invalid/malicious ids
     let isValidUser = mongoose.Types.ObjectId.isValid(userId);
     let isValidScrim = mongoose.Types.ObjectId.isValid(scrimId);
 
     if (!isValidUser) {
-      return res.status(500).json('invalid user id.');
+      return res.status(500).json({ error: 'invalid user id.' });
     }
 
     if (!isValidScrim) {
-      return res.status(500).json('invalid scrim id.');
+      return res.status(500).json({ error: 'invalid scrim id.' });
+    }
+
+    const isUnauthorized = checkUnauthorized(currentUser, userId);
+
+    if (isUnauthorized) {
+      // if user isn't admin or isn't himself, that means he is not authorized to do this.
+      return res.status(401).send({ error: 'Unauthorized' });
     }
 
     const scrim = await Scrim.findById(scrimId);
     const user = await User.findById(userId);
 
     if (!scrim) {
-      return res.status(500).send('Scrim not found');
+      return res.status(500).send({ error: 'Scrim not found' });
     }
 
     if (!user) {
-      return res.status(500).send('User not found');
+      return res.status(500).send({ error: 'User not found' });
     }
 
     const teamJoiningName = playerData.team.name;
@@ -660,14 +689,16 @@ const movePlayerInScrim = async (req, res) => {
 
 // @route   PATCH /api/scrims/:scrimId/insert-caster/:casterId
 // @desc    This is how a user can become a caster for a scrim (used in ScrimSectionHeader)
-// @access  Public
+// @access  Private
 const insertCasterInScrim = async (req, res) => {
   const session = await Scrim.startSession();
-  const { scrimId, casterId } = req.params;
 
   await session.withTransaction(async () => {
-    let isValidScrim = mongoose.Types.ObjectId.isValid(scrimId);
-    let isValidCaster = mongoose.Types.ObjectId.isValid(casterId);
+    const { scrimId, casterId } = req.params;
+    const currentUser = req.user;
+
+    const isValidScrim = mongoose.Types.ObjectId.isValid(scrimId);
+    const isValidCaster = mongoose.Types.ObjectId.isValid(casterId);
 
     if (!isValidCaster) {
       return res.status(500).json('invalid user id.');
@@ -675,6 +706,13 @@ const insertCasterInScrim = async (req, res) => {
 
     if (!isValidScrim) {
       return res.status(500).json('invalid scrim id.');
+    }
+
+    const isUnauthorized = checkUnauthorized(currentUser, casterId);
+
+    if (isUnauthorized) {
+      // if user isn't admin or isn't himself, that means he is not authorized to do this.
+      return res.status(401).send({ error: 'Unauthorized' });
     }
 
     const scrim = await Scrim.findById(scrimId);
@@ -761,19 +799,27 @@ const insertCasterInScrim = async (req, res) => {
 
 // @route   PATCH /api/scrims/:scrimId/remove-caster/:casterId
 // @desc    This is how a user can leave the caster list if he was one for a scrim (used in ScrimSectionHeader)
-// @access  Public
+// @access  Private
 const removeCasterFromScrim = async (req, res) => {
   const session = await Scrim.startSession();
 
   await session.withTransaction(async () => {
     const { scrimId, casterId } = req.params; // scrim id
+    const currentUser = req.user;
 
     const scrim = await Scrim.findOne({ _id: scrimId });
 
-    let isValid = mongoose.Types.ObjectId.isValid(casterId);
+    const isValid = mongoose.Types.ObjectId.isValid(casterId);
 
     if (!isValid) {
       return res.status(500).json('invalid response.');
+    }
+
+    const isUnauthorized = checkUnauthorized(currentUser, casterId);
+
+    if (isUnauthorized) {
+      // if user isn't admin or isn't himself, that means he is not authorized to do this.
+      return res.status(401).send({ error: 'Unauthorized' });
     }
 
     const casterLeaving = await User.findOne({ _id: casterId });

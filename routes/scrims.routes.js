@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const controllers = require('../controllers/scrims.controllers');
+const auth = require('../middleware/auth');
 
 const router = Router();
 
@@ -18,23 +19,28 @@ router.patch('/scrims/:id/remove-image', controllers.removeImageFromScrim); // P
 
 router.patch(
   '/scrims/:scrimId/insert-player/:userId',
+  auth,
   controllers.insertPlayerInScrim
 ); // PATCH
 router.patch(
   '/scrims/:scrimId/remove-player/:userId',
+  auth,
   controllers.removePlayerFromScrim
 ); // PATCH
 router.patch(
   '/scrims/:scrimId/move-player/:userId',
+  auth,
   controllers.movePlayerInScrim
 ); // PATCH
 
 router.patch(
   '/scrims/:scrimId/insert-caster/:casterId',
+  auth,
   controllers.insertCasterInScrim
 ); // PATCH
 router.patch(
   '/scrims/:scrimId/remove-caster/:casterId',
+  auth,
   controllers.removeCasterFromScrim
 ); // PATCH
 

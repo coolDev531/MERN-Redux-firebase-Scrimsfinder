@@ -1,5 +1,6 @@
 const Scrim = require('../models/scrim.model');
 const sample = require('./sample');
+const KEYS = require('../config/keys');
 
 // utils for scrims.controller.js
 
@@ -164,6 +165,20 @@ const onSpotTaken = async (scrim, res, spotsAvailable, teamJoiningName) => {
   });
 };
 
+// currentUser from jwt token, userId from request params
+// this is for when joining, leaving, moving teams in a game, or when kicking a player
+const checkUnauthorized = (currentUser, userId) => {
+  if (!currentUser?._id) {
+    return false;
+  }
+
+  // if user isn't admin or isn't himself, that means he is not authorized to do this.
+  const isUnauthorized =
+    userId !== currentUser._id && currentUser.adminKey !== KEYS.ADMIN_KEY;
+
+  return isUnauthorized;
+};
+
 module.exports = {
   compareArrays,
   isValidRole,
@@ -178,4 +193,5 @@ module.exports = {
   checkIfScrimIsToday,
   populateOneScrim,
   onSpotTaken,
+  checkUnauthorized,
 };
