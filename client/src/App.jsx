@@ -10,12 +10,10 @@ import useMessenger from './hooks/useMessenger';
 import { useCreateSocket } from './hooks/useSocket';
 
 // styles
-import { appTheme } from './appTheme';
 import { useAppStyles } from './styles/App.styles';
 
 // components
 import AppRouter from './navigation/AppRouter';
-import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Loading from './components/shared/Loading';
 import Footer from './components/shared/Footer';
@@ -58,32 +56,30 @@ function App() {
       </Helmet>
 
       <div className={classes.root} ref={appWrapperRef}>
-        <ThemeProvider theme={appTheme}>
-          <CssBaseline />
+        <CssBaseline />
 
-          {currentAlert && (
-            // if there is an alert in the context, show it
-            <Snackbar
-              anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-              autoHideDuration={6000} // autohide will set the current alert to null in the state.
-              open={currentAlert.message ? true : false}
+        {currentAlert && (
+          // if there is an alert in the context, show it
+          <Snackbar
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            autoHideDuration={6000} // autohide will set the current alert to null in the state.
+            open={currentAlert.message ? true : false}
+            onClose={closeAlert}
+            message={currentAlert.message}>
+            <Alert
+              variant="filled"
               onClose={closeAlert}
-              message={currentAlert.message}>
-              <Alert
-                variant="filled"
-                onClose={closeAlert}
-                severity={currentAlert.type.toLowerCase()}>
-                {/* example: success - scrim created successfully! */}
-                <strong>{currentAlert.type}</strong> - {currentAlert.message}
-              </Alert>
-            </Snackbar>
-          )}
+              severity={currentAlert.type.toLowerCase()}>
+              {/* example: success - scrim created successfully! */}
+              <strong>{currentAlert.type}</strong> - {currentAlert.message}
+            </Alert>
+          </Snackbar>
+        )}
 
-          <AppRouter />
-          <Footer />
+        <AppRouter />
+        <Footer />
 
-          <AppModals />
-        </ThemeProvider>
+        <AppModals />
       </div>
     </>
   );

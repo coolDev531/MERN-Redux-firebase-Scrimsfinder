@@ -13,6 +13,8 @@ import Logo from './assets/images/bootcamp_llc_media_kit/coin_logo_new2021shd.pn
 //  store
 import { Provider } from 'react-redux';
 import configureStore from './store'; // index.js
+import { ThemeProvider } from '@mui/material/styles';
+import { appTheme } from './appTheme';
 
 const store = configureStore();
 
@@ -24,7 +26,9 @@ ReactDOM.render(
       <Provider store={store}>
         {/* the only way I know to render a comment in react */}
         <ReactComment text={creditsComment} trim={false} />
-        <App />
+        <ThemeProvider theme={appTheme}>
+          <App />
+        </ThemeProvider>
       </Provider>
     </Router>
   </>,

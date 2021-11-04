@@ -19,7 +19,7 @@ const ChatInput = memo(({ value, onChange, onSubmit }) => {
       placeholder="new message"
       value={value}
       onKeyPress={(e) => {
-        let shiftKeyPressed = e.shiftKey;
+        const shiftKeyPressed = e.shiftKey;
         if (e.key !== 'Enter') return;
 
         // if key is enter but there is no value

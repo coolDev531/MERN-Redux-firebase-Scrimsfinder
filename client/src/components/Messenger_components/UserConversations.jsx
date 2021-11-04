@@ -1,9 +1,8 @@
-import { useCallback, memo, Fragment } from 'react';
+import { useCallback, memo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import useAuth from '../../hooks/useAuth';
 
 // components
-import Divider from '@mui/material/Divider';
 import Tooltip from '../shared/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import MenuList from '@mui/material/MenuList';
@@ -54,25 +53,13 @@ export default function UserConversations({ closeMenu }) {
     [currentUser._id]
   );
 
-  return (
-    <MenuList>
-      <ExistingConversations
-        conversations={conversations}
-        currentUser={currentUser}
-        onlineFriends={onlineFriends}
-        openChat={openChat}
-        unseenMessages={unseenMessages}
-      />
-    </MenuList>
-  );
-}
-
-const ExistingConversations = memo(
-  ({ conversations, currentUser, onlineFriends, openChat, unseenMessages }) => {
-    const classes = useStyles();
-
-    // returns the count of unseen messages from that friend user for current user, also returns a boolean for has unseen messages
-    const getFriendUnseenMessages = (friendUser) => {
+  /**
+   * @method getFriendUnseenMessages
+   * @desc  returns the count of unseen messages from that friend user for current user, also returns a boolean for has unseen messages
+   * @return {Array<[boolean, number]>} [hasUnseenMessages, unseenMessagesCount]
+   */
+  const getFriendUnseenMessages = useCallback(
+    (friendUser) => {
       let unseenMap = {};
 
       const hasUnseenMessages = unseenMessages.find(({ _sender }) => {
@@ -96,63 +83,84 @@ const ExistingConversations = memo(
       const unseenMessagesCount = unseenMap[friendUser?._id] ?? 0;
 
       return [hasUnseenMessages, unseenMessagesCount];
-    };
+    },
+    [unseenMessages]
+  );
+
+  return (
+    <MenuList>
+      {conversations.map((conversation, idx) => (
+        <OneConversation
+          currentUser={currentUser}
+          onlineFriends={onlineFriends}
+          conversation={conversation}
+          openChat={openChat}
+          getFriendUnseenMessages={getFriendUnseenMessages}
+          conversations={conversations}
+          key={idx}
+        />
+      ))}
+    </MenuList>
+  );
+}
+
+const OneConversation = memo(
+  ({
+    currentUser,
+    onlineFriends,
+    conversation,
+    openChat,
+    getFriendUnseenMessages,
+  }) => {
+    const classes = useStyles();
+    const userFriends = currentUser.friends.map(({ _id }) => _id);
+
+    // do it that way to get actual object
+    const friendUser = conversation.members.find(({ _id }) =>
+      userFriends.includes(_id)
+    );
+
+    const isOnline = onlineFriends.includes(friendUser?._id);
+
+    const [hasUnseenMessages, unseenMessagesCount] =
+      getFriendUnseenMessages(friendUser);
+
+    if (!friendUser) return null;
 
     return (
-      <Fragment>
-        {conversations.map((conversation, idx) => {
-          const userFriends = currentUser.friends.map(({ _id }) => _id);
+      <MenuItem onClick={() => openChat(friendUser)} key={friendUser._id}>
+        {/* ONE CONVERSATION */}
+        <Tooltip title="Open conversation">
+          <div className={classes.user}>
+            <div
+              // isOnline handled by socket
+              style={{
+                backgroundColor: isOnline ? '#AAFF00' : '#EE4B2B',
+              }}
+              className={classes.isOnlineCircle}></div>
+            <img
+              src={getRankImage(friendUser)}
+              alt={friendUser?.rank}
+              width="20px"
+              className={classes.userRank}
+            />
+            {truncate(friendUser.name, 12)}
 
-          // do it that way to get actual object
-          const friendUser = conversation.members.find(({ _id }) =>
-            userFriends.includes(_id)
-          );
-
-          const isOnline = onlineFriends.includes(friendUser?._id);
-
-          const [hasUnseenMessages, unseenMessagesCount] =
-            getFriendUnseenMessages(friendUser);
-
-          if (!friendUser) return null;
-
-          return (
-            <MenuItem onClick={() => openChat(friendUser)} key={friendUser._id}>
-              {/* ONE CONVERSATION */}
-              <Tooltip title="Open conversation">
-                <div className={classes.user}>
-                  <div
-                    // isOnline handled by socket
-                    style={{
-                      backgroundColor: isOnline ? '#AAFF00' : '#EE4B2B',
-                    }}
-                    className={classes.isOnlineCircle}></div>
-                  <img
-                    src={getRankImage(friendUser)}
-                    alt={friendUser?.rank}
-                    width="20px"
-                    className={classes.userRank}
-                  />
-                  {truncate(friendUser.name, 12)}
-
-                  <div style={{ position: 'absolute', right: '0', top: '0' }}>
-                    {hasUnseenMessages ? (
-                      <div>
-                        <div className={classes.unseenMessagesCount}>
-                          {unseenMessagesCount}
-                        </div>
-                        <ConversationAlertIcon />
-                      </div>
-                    ) : (
-                      <MsgIcon />
-                    )}
+            <div style={{ position: 'absolute', right: '0', top: '0' }}>
+              {hasUnseenMessages ? (
+                <div>
+                  <div className={classes.unseenMessagesCount}>
+                    {unseenMessagesCount}
                   </div>
-                  {idx !== conversations.length - 1 ? <Divider /> : null}
+                  <ConversationAlertIcon />
                 </div>
-              </Tooltip>
-            </MenuItem>
-          );
-        })}
-      </Fragment>
+              ) : (
+                <MsgIcon />
+              )}
+            </div>
+          </div>
+        </Tooltip>
+      </MenuItem>
     );
   }
 );
