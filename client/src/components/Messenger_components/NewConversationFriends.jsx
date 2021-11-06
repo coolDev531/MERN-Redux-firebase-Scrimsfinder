@@ -16,7 +16,7 @@ import { truncate } from './../../utils/truncate';
 
 import CreateIcon from '@mui/icons-material/Create';
 
-// a list of friends that the user doesn't have a conversation with yet.
+// a list of friends that the user doesn't have a conversation with yet. (on messenger dropdown)
 const NewConversationFriends = () => {
   const classes = useStyles();
   const { allUsers } = useUsers();
@@ -36,7 +36,7 @@ const NewConversationFriends = () => {
   const { currentUser } = useAuth();
 
   const getFriendUserId = (arr) => {
-    let friend = arr.find(({ _id }) => _id !== currentUser?._id);
+    const friend = arr.find(({ _id }) => _id !== currentUser?._id);
     return friend?._id;
   };
 

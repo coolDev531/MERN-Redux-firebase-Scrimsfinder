@@ -28,6 +28,8 @@ export default function useMessenger() {
 
   useEffect(() => {
     const fetchUserConversations = async () => {
+      if (!currentUser?._id) return;
+
       const conversations = await getUserConversations();
 
       const unseenMessages = await getUserUnseenMessages();
@@ -43,7 +45,7 @@ export default function useMessenger() {
       });
     };
     fetchUserConversations();
-  }, [dispatch]);
+  }, [currentUser?._id, dispatch]);
 
   useEffect(() => {
     if (!currentUser?._id) return;
@@ -164,4 +166,6 @@ export const useScrimChat = (open, scrimId, userId) => {
       });
     }
   }, [open, socket, scrimId, userId]);
+
+  return null;
 };
