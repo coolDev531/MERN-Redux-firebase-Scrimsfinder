@@ -148,12 +148,14 @@ const createScrim = async (req, res) => {
         .json({ error: 'Cannot create scrim: unauthorized' });
     }
 
-    let requestBody = {
+    const requestBody = {
       ...req.body,
-      lobbyName: getLobbyName(
-        req.body.title ?? `${createdByUser?.name}'s Scrim`,
-        req.body?.region ?? 'NA'
-      ),
+      lobbyName:
+        req.body.lobbyName ??
+        getLobbyName(
+          req.body.title ?? `${createdByUser?.name}'s Scrim`,
+          req.body?.region ?? 'NA'
+        ),
       lobbyPassword: generatePassword(),
       createdBy: createdByUser,
     };
@@ -171,7 +173,7 @@ const createScrim = async (req, res) => {
 
     await scrim.save(); // save scrim
 
-    let savedConversation = await scrimConversation.save(); // save conv
+    const savedConversation = await scrimConversation.save(); // save conv
 
     console.log('Scrim created: ', scrim);
     console.log('conversation created for scirm: ', savedConversation);

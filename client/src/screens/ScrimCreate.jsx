@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useScrimsActions } from './../hooks/useScrims';
 import useAlerts from './../hooks/useAlerts';
 import useAuth from './../hooks/useAuth';
@@ -29,6 +29,11 @@ import TimePicker from '../components/shared/TimePicker';
 // utils and services
 import { createScrim } from '../services/scrims.services';
 import devLog from './../utils/devLog';
+import { generateRandomLobbyName } from './../services/wordsApi';
+
+// icons
+import DiceIcon from '@mui/icons-material/Casino';
+import LoadingSpinner from '../components/shared/LoadingSpinner';
 
 export default function ScrimCreate() {
   const { fetchScrims } = useScrimsActions();
@@ -44,10 +49,12 @@ export default function ScrimCreate() {
     isPrivate: false,
     isWithCasters: false,
     maxCastersAllowedCount: 2,
+    lobbyName: '',
   });
 
   const [createdScrim, setCreatedScrim] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isFetchingLobbyName, setIsFetchingLobbyName] = useState(true);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -106,6 +113,29 @@ export default function ScrimCreate() {
       setIsSubmitting(false);
     }
   };
+
+  const generateLobbyName = useCallback(async () => {
+    setIsFetchingLobbyName(true);
+
+    try {
+      const randomLobbyName = await generateRandomLobbyName();
+      setScrimData((prevState) => ({
+        ...prevState,
+        lobbyName: randomLobbyName,
+      }));
+      setIsFetchingLobbyName(false);
+    } catch (error) {
+      setCurrentAlert({
+        type: 'Error',
+        message: 'error generating random lobby name',
+      });
+      setIsFetchingLobbyName(false);
+    }
+  }, [setScrimData, setCurrentAlert]);
+
+  useEffect(() => {
+    generateLobbyName();
+  }, [generateLobbyName]);
 
   if (!isCurrentUserAdmin) {
     return <Redirect to="/" />;
@@ -345,6 +375,37 @@ export default function ScrimCreate() {
                 )}
               </Grid>
 
+              <Grid item sx={{ marginTop: 1 }}>
+                <Tooltip title="Manually enter lobby name">
+                  <TextField
+                    sx={{ marginRight: 2 }}
+                    variant="standard"
+                    name="lobbyName"
+                    onChange={handleChange}
+                    label="Lobby name"
+                    value={scrimData.lobbyName || scrimData.title || ''}
+                  />
+                </Tooltip>
+                <Tooltip title="Generate a random name for the custom lobby">
+                  <span>
+                    <Button
+                      variant="outlined"
+                      disabled={isFetchingLobbyName}
+                      sx={{
+                        marginTop: '10px',
+                        textTransform: 'none',
+                        minWidth: 50,
+                        maxWidth: 300,
+                      }}
+                      startIcon={
+                        isFetchingLobbyName ? <LoadingSpinner /> : <DiceIcon />
+                      }
+                      onClick={generateLobbyName}>
+                      Generate Lobby Name
+                    </Button>
+                  </span>
+                </Tooltip>
+              </Grid>
               <Grid item>
                 <div className="page-break" />
                 <Button variant="contained" color="primary" type="submit">
