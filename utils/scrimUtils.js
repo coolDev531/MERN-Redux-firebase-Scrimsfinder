@@ -1,4 +1,6 @@
 const Scrim = require('../models/scrim.model');
+const User = require('../models/user.model');
+
 const sample = require('./sample');
 const KEYS = require('../config/keys');
 
