@@ -135,6 +135,10 @@ export default function ScrimCreate() {
 
   useEffect(() => {
     generateLobbyName();
+
+    return () => {
+      generateLobbyName();
+    };
   }, [generateLobbyName]);
 
   if (!isCurrentUserAdmin) {
@@ -180,9 +184,11 @@ export default function ScrimCreate() {
                 direction="row"
                 spacing={2}>
                 <Grid item>
-                  <FormHelperText className="text-white">
-                    Scrim Title {`(example: ${currentUser?.name}'s Scrim)`}
-                  </FormHelperText>
+                  <Tooltip title="The title for the scrim (everyone can see this)">
+                    <FormHelperText className="text-white">
+                      Scrim Title {`(example: ${currentUser?.name}'s Scrim)`}
+                    </FormHelperText>
+                  </Tooltip>
                   <TextField
                     variant="standard"
                     onChange={handleChange}
@@ -305,7 +311,7 @@ export default function ScrimCreate() {
                 alignItems="center"
                 justifyContent="center"
                 spacing={2}>
-                <Grid item xs={12} sm={2} md={2}>
+                <Grid item sx={{ marginRight: 4 }} xs={12} sm={3}>
                   <Select
                     variant="standard"
                     label="region"
@@ -326,7 +332,7 @@ export default function ScrimCreate() {
                   </FormHelperText>
                 </Grid>
 
-                <Grid item>
+                <Grid item md={3}>
                   <Select
                     fullWidth
                     variant="standard"
@@ -386,7 +392,7 @@ export default function ScrimCreate() {
                     value={scrimData.lobbyName || scrimData.title || ''}
                   />
                 </Tooltip>
-                <Tooltip title="Generate a random name for the custom lobby">
+                <Tooltip title="Generate a random name for the custom lobby (only participants can see it)">
                   <span>
                     <Button
                       variant="outlined"
