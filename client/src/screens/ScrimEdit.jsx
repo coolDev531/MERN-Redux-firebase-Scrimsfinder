@@ -22,12 +22,12 @@ import Checkbox from '@mui/material/Checkbox';
 import Tooltip from './../components/shared/Tooltip';
 import Loading from './../components/shared/Loading';
 import LobbyNameField from './../components/shared/Form_components/LobbyNameField';
+import DatePicker from '../components/shared/DatePicker';
+import TimePicker from '../components/shared/TimePicker';
 
 // utils // services
 import devLog from '../utils/devLog';
 import { updateScrim, getScrimById } from '../services/scrims.services';
-import DatePicker from '../components/shared/DatePicker';
-import TimePicker from '../components/shared/TimePicker';
 import { sample } from '../utils/sample';
 
 const RANDOM_HOST_CODE = '_$random'; // because input doesn't want value to be null, if lobbyhost is equal to this, send it as null in the back end
