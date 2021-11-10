@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { useScrimsActions } from './../hooks/useScrims';
 import useAlerts from './../hooks/useAlerts';
 import useAuth from './../hooks/useAuth';
@@ -25,16 +25,11 @@ import {
 import Loading from '../components/shared/Loading';
 import DatePicker from '../components/shared/DatePicker';
 import TimePicker from '../components/shared/TimePicker';
+import LobbyNameField from '../components/shared/Form_components/LobbyNameField';
 
 // utils and services
 import { createScrim } from '../services/scrims.services';
 import devLog from './../utils/devLog';
-import { generateRandomLobbyName } from './../services/wordsApi';
-
-// icons
-import DiceIcon from '@mui/icons-material/Casino';
-import LoadingSpinner from '../components/shared/LoadingSpinner';
-import LobbyNameField from '../components/shared/Form_components/LobbyNameField';
 
 export default function ScrimCreate() {
   const { fetchScrims } = useScrimsActions();
@@ -114,33 +109,6 @@ export default function ScrimCreate() {
       setIsSubmitting(false);
     }
   };
-
-  const generateLobbyName = useCallback(async () => {
-    setIsFetchingLobbyName(true);
-
-    try {
-      const randomLobbyName = await generateRandomLobbyName();
-      setScrimData((prevState) => ({
-        ...prevState,
-        lobbyName: randomLobbyName,
-      }));
-      setIsFetchingLobbyName(false);
-    } catch (error) {
-      setCurrentAlert({
-        type: 'Error',
-        message: 'error generating random lobby name',
-      });
-      setIsFetchingLobbyName(false);
-    }
-  }, [setScrimData, setCurrentAlert]);
-
-  useEffect(() => {
-    generateLobbyName();
-
-    return () => {
-      generateLobbyName();
-    };
-  }, [generateLobbyName]);
 
   if (!isCurrentUserAdmin) {
     return <Redirect to="/" />;
@@ -385,9 +353,8 @@ export default function ScrimCreate() {
               <Grid item sx={{ marginTop: 1 }}>
                 <LobbyNameField
                   value={scrimData.lobbyName || scrimData.title || ''}
-                  onButtonClick={generateLobbyName}
                   onInputChange={handleChange}
-                  isFetchingLobbyName={isFetchingLobbyName}
+                  setScrimData={setScrimData}
                 />
               </Grid>
 

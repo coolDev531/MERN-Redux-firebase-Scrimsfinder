@@ -1,18 +1,58 @@
-import { memo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import useAlerts from '../../../hooks/useAlerts';
+
+// components
 import LoadingSpinner from '../LoadingSpinner';
-import DiceIcon from '@mui/icons-material/Casino';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Tooltip from './../Tooltip';
+import Stack from '@mui/material/Stack';
 
-function LobbyNameField({
-  isFetchingLobbyName,
+// icons
+import DiceIcon from '@mui/icons-material/Casino';
+
+// services
+import { generateRandomLobbyName } from './../../../services/wordsApi';
+
+export default function LobbyNameField({
   value,
   onInputChange,
-  onButtonClick,
+  setScrimData,
+  direction = 'row',
+  buttonText = 'Generate Lobby Name',
 }) {
+  const [isFetchingLobbyName, setIsFetchingLobbyName] = useState(false);
+  const { setCurrentAlert } = useAlerts();
+
+  const generateLobbyName = useCallback(async () => {
+    setIsFetchingLobbyName(true);
+
+    try {
+      const randomLobbyName = await generateRandomLobbyName();
+      setScrimData((prevState) => ({
+        ...prevState,
+        lobbyName: randomLobbyName,
+      }));
+      setIsFetchingLobbyName(false);
+    } catch (error) {
+      setCurrentAlert({
+        type: 'Error',
+        message: 'error generating random lobby name',
+      });
+      setIsFetchingLobbyName(false);
+    }
+  }, [setScrimData, setCurrentAlert]);
+
+  useEffect(() => {
+    generateLobbyName();
+
+    return () => {
+      generateLobbyName();
+    };
+  }, [generateLobbyName]);
+
   return (
-    <>
+    <Stack alignItems="center" direction={direction}>
       <Tooltip title="Manually enter lobby name">
         <TextField
           sx={{ marginRight: 2 }}
@@ -24,7 +64,7 @@ function LobbyNameField({
         />
       </Tooltip>
       <Tooltip title="Generate a random name for the custom lobby">
-        <span>
+        <span onMouseOver={(e) => e.preventDefault()}>
           <Button
             variant="outlined"
             disabled={isFetchingLobbyName}
@@ -35,13 +75,11 @@ function LobbyNameField({
               maxWidth: 300,
             }}
             startIcon={isFetchingLobbyName ? <LoadingSpinner /> : <DiceIcon />}
-            onClick={onButtonClick}>
-            Generate Lobby Name
+            onClick={generateLobbyName}>
+            {buttonText}
           </Button>
         </span>
       </Tooltip>
-    </>
+    </Stack>
   );
 }
-
-export default memo(LobbyNameField);

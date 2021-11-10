@@ -21,19 +21,14 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Tooltip from './../components/shared/Tooltip';
 import Loading from './../components/shared/Loading';
+import LobbyNameField from './../components/shared/Form_components/LobbyNameField';
 
 // utils // services
 import devLog from '../utils/devLog';
 import { updateScrim, getScrimById } from '../services/scrims.services';
 import DatePicker from '../components/shared/DatePicker';
 import TimePicker from '../components/shared/TimePicker';
-
-/**
- * @method sample
- * @param {Array} array of users
- * @return {Object} takes an array of objects and returns a random element, the random element being a object.
- */
-const sample = (array) => array[Math.floor(Math.random() * array.length)];
+import { sample } from '../utils/sample';
 
 const RANDOM_HOST_CODE = '_$random'; // because input doesn't want value to be null, if lobbyhost is equal to this, send it as null in the back end
 
@@ -347,20 +342,6 @@ export default function ScrimEdit() {
 
                   <Grid item>
                     <FormHelperText className="text-white">
-                      Lobby Name
-                    </FormHelperText>
-                    <TextField
-                      onChange={handleChange}
-                      required
-                      type="text"
-                      name="lobbyName"
-                      variant="standard"
-                      value={scrimData.lobbyName}
-                    />
-                  </Grid>
-
-                  <Grid item>
-                    <FormHelperText className="text-white">
                       Lobby Password
                     </FormHelperText>
                     <TextField
@@ -372,6 +353,15 @@ export default function ScrimEdit() {
                       value={scrimData.lobbyPassword}
                     />
                   </Grid>
+                </Grid>
+
+                <Grid item>
+                  <LobbyNameField
+                    buttonText="Random"
+                    value={scrimData.lobbyName || scrimData.title || ''}
+                    onInputChange={handleChange}
+                    setScrimData={setScrimData}
+                  />
                 </Grid>
 
                 <Grid
