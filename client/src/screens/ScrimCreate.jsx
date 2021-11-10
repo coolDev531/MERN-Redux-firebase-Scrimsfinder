@@ -34,6 +34,7 @@ import { generateRandomLobbyName } from './../services/wordsApi';
 // icons
 import DiceIcon from '@mui/icons-material/Casino';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
+import LobbyNameField from '../components/shared/Form_components/LobbyNameField';
 
 export default function ScrimCreate() {
   const { fetchScrims } = useScrimsActions();
@@ -382,36 +383,14 @@ export default function ScrimCreate() {
               </Grid>
 
               <Grid item sx={{ marginTop: 1 }}>
-                <Tooltip title="Manually enter lobby name">
-                  <TextField
-                    sx={{ marginRight: 2 }}
-                    variant="standard"
-                    name="lobbyName"
-                    onChange={handleChange}
-                    label="Lobby name"
-                    value={scrimData.lobbyName || scrimData.title || ''}
-                  />
-                </Tooltip>
-                <Tooltip title="Generate a random name for the custom lobby">
-                  <span>
-                    <Button
-                      variant="outlined"
-                      disabled={isFetchingLobbyName}
-                      sx={{
-                        marginTop: '10px',
-                        textTransform: 'none',
-                        minWidth: 50,
-                        maxWidth: 300,
-                      }}
-                      startIcon={
-                        isFetchingLobbyName ? <LoadingSpinner /> : <DiceIcon />
-                      }
-                      onClick={generateLobbyName}>
-                      Generate Lobby Name
-                    </Button>
-                  </span>
-                </Tooltip>
+                <LobbyNameField
+                  value={scrimData.lobbyName || scrimData.title || ''}
+                  onButtonClick={generateLobbyName}
+                  onInputChange={handleChange}
+                  isFetchingLobbyName={isFetchingLobbyName}
+                />
               </Grid>
+
               <Grid item>
                 <div className="page-break" />
                 <Button variant="contained" color="primary" type="submit">
