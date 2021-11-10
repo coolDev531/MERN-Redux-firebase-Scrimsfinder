@@ -392,7 +392,7 @@ export default function ScrimCreate() {
                     value={scrimData.lobbyName || scrimData.title || ''}
                   />
                 </Tooltip>
-                <Tooltip title="Generate a random name for the custom lobby (only participants can see it)">
+                <Tooltip title="Generate a random name for the custom lobby">
                   <span>
                     <Button
                       variant="outlined"
