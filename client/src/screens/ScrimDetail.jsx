@@ -57,7 +57,9 @@ export default function ScrimDetail() {
         </title>
         <meta
           name="description"
-          content="Visit this scrim at LoL Scrims Finder!"
+          content={`Visit ${
+            scrim?.title ?? 'this scrim'
+          } at Bootcamp LoL Scrim Gym!`}
         />
       </Helmet>
 
