@@ -52,8 +52,8 @@ export default function ScrimDetail() {
       <Helmet>
         <meta charSet="utf-8" />
         <title>
-          Bootcamp LoL Scrim Gym |{' '}
-          {scrim?.title ?? `${scrim.createdBy.name}'s Scrim`}
+          {scrim?.title ?? `${scrim.createdBy.name}'s Scrim`} | Bootcamp LoL
+          Scrim Gym
         </title>
         <meta
           name="description"
