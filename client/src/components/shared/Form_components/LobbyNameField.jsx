@@ -20,6 +20,7 @@ export default function LobbyNameField({
   setScrimData,
   direction = 'row',
   buttonText = 'Generate Lobby Name',
+  isGenerateOnMount = true,
 }) {
   const [isFetchingLobbyName, setIsFetchingLobbyName] = useState(false);
   const { setCurrentAlert } = useAlerts();
@@ -44,12 +45,16 @@ export default function LobbyNameField({
   }, [setScrimData, setCurrentAlert]);
 
   useEffect(() => {
-    generateLobbyName();
+    if (isGenerateOnMount) {
+      generateLobbyName();
+    }
 
     return () => {
-      generateLobbyName();
+      if (isGenerateOnMount) {
+        generateLobbyName();
+      }
     };
-  }, [generateLobbyName]);
+  }, [generateLobbyName, isGenerateOnMount]);
 
   return (
     <Stack alignItems="center" direction={direction}>

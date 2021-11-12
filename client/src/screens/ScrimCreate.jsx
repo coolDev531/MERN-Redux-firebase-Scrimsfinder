@@ -50,7 +50,6 @@ export default function ScrimCreate() {
 
   const [createdScrim, setCreatedScrim] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isFetchingLobbyName, setIsFetchingLobbyName] = useState(true);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

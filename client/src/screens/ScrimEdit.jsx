@@ -64,36 +64,47 @@ export default function ScrimEdit() {
 
   useEffect(() => {
     const prefillFormData = async () => {
-      const oneScrim = await getScrimById(id);
+      try {
+        const oneScrim = await getScrimById(id);
 
-      const {
-        region,
-        lobbyName,
-        lobbyPassword,
-        gameStartTime,
-        teamOne,
-        teamTwo,
-      } = oneScrim;
+        const {
+          region,
+          lobbyName,
+          lobbyPassword,
+          gameStartTime,
+          teamOne,
+          teamTwo,
+        } = oneScrim;
 
-      setScrimData({
-        region,
-        title: oneScrim?.title ?? `${oneScrim.createdBy.name}'s Scrim`, // default to this if no title exists in scrim
-        lobbyName,
-        lobbyPassword,
-        teamWon: oneScrim?.teamWon ?? null,
-        gameStartTime,
-        teamOne,
-        teamTwo,
-        previousLobbyHost: oneScrim?.lobbyHost ?? null,
-        createdBy: oneScrim?.createdBy,
-        casters: oneScrim?.casters,
-        isPrivate: oneScrim?.isPrivate ?? false,
-        _lobbyHost: oneScrim?.lobbyHost?._id ?? RANDOM_HOST_CODE,
-        isWithCasters: oneScrim?.isWithCasters ?? false, // didn't exist in db in older versions
-        maxCastersAllowedCount: oneScrim?.maxCastersAllowedCount ?? 2, // didn't exist in db in older versions
-      });
+        setScrimData({
+          region,
+          title: oneScrim?.title ?? `${oneScrim.createdBy.name}'s Scrim`, // default to this if no title exists in scrim
+          lobbyName,
+          lobbyPassword,
+          teamWon: oneScrim?.teamWon ?? null,
+          gameStartTime,
+          teamOne,
+          teamTwo,
+          previousLobbyHost: oneScrim?.lobbyHost ?? null,
+          createdBy: oneScrim?.createdBy,
+          casters: oneScrim?.casters,
+          isPrivate: oneScrim?.isPrivate ?? false,
+          _lobbyHost: oneScrim?.lobbyHost?._id ?? RANDOM_HOST_CODE,
+          isWithCasters: oneScrim?.isWithCasters ?? false, // didn't exist in db in older versions
+          maxCastersAllowedCount: oneScrim?.maxCastersAllowedCount ?? 2, // didn't exist in db in older versions
+        });
+      } catch (error) {
+        history.push('/');
+
+        setCurrentAlert({
+          type: 'Error',
+          message: 'Error finding scrim, returning to home page',
+        });
+      }
     };
     prefillFormData();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [history, id]);
 
   const handleChange = (e) => {
@@ -361,6 +372,7 @@ export default function ScrimEdit() {
                     value={scrimData.lobbyName || scrimData.title || ''}
                     onInputChange={handleChange}
                     setScrimData={setScrimData}
+                    isGenerateOnMount={false}
                   />
                 </Grid>
 
