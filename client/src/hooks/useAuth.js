@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -14,8 +14,13 @@ import devLog from '../utils/devLog';
 export default function useAuth() {
   const auth = useSelector(({ auth }) => auth);
 
-  const isCurrentUserAdmin =
-    auth?.currentUser?.adminKey === process.env.REACT_APP_ADMIN_KEY;
+  const isCurrentUserAdmin = useMemo(
+    () =>
+      auth?.currentUser?.isAdmin ??
+      auth?.currentUser?.adminKey === process.env.REACT_APP_ADMIN_KEY,
+    [auth?.currentUser?.adminKey, auth?.currentUser?.isAdmin]
+  );
+
   return { ...auth, isCurrentUserAdmin };
 }
 

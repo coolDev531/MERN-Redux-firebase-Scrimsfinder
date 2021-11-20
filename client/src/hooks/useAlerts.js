@@ -6,12 +6,21 @@ export default function useAlerts() {
   const currentAlert = useSelector(({ alerts }) => alerts.currentAlert);
 
   const setCurrentAlert = useCallback(
-    (newCurrentAlertValue) =>
+    (newCurrentAlertValue) => {
+      // remove existing alert (for when spamming to copy link to clipboard)
       dispatch({
         type: 'alerts/setCurrentAlert',
-        payload: newCurrentAlertValue,
-      }),
+        payload: null,
+      });
 
+      // send the new alert
+      setTimeout(() => {
+        dispatch({
+          type: 'alerts/setCurrentAlert',
+          payload: newCurrentAlertValue,
+        });
+      }, 1);
+    },
     // eslint-disable-next-line
     []
   );
