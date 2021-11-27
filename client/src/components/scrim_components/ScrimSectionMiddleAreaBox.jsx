@@ -216,7 +216,8 @@ export default function ScrimSectionMiddleAreaBox({
               {(scrim.lobbyHost?._id === currentUser?._id ||
                 isCurrentUserAdmin) && (
                 <>
-                  <Box marginTop={2} />
+                  {/* uncomment this box out when bringing back images */}
+                  {/* <Box marginTop={2} /> */}
 
                   {/* UPLOAD OR DELETE IMAGE */}
                   <UploadPostGameImage

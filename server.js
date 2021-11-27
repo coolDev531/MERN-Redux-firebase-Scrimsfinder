@@ -17,14 +17,17 @@ const notificationRoutes = require('./routes/notification.routes');
 function createServer() {
   const app = express();
 
-  const allowedOrigins = ['https://lol-scrims-finder.netlify.app'];
+  const allowedOrigins = [
+    'http://localhost:3001',
+    'https://lol-scrims-finder.netlify.app',
+  ];
 
   const corsOptions = {
     origin: function (origin, callback) {
       // allow requests with no origin
       // (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
-      if (!allowedOrigins.includes(origin)) {
+      if (allowedOrigins.indexOf(origin) === -1) {
         const msg =
           'The CORS policy for this site does not ' +
           'allow access from the specified Origin.';
