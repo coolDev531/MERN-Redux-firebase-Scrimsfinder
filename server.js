@@ -17,7 +17,7 @@ const notificationRoutes = require('./routes/notification.routes');
 function createServer() {
   const app = express();
 
-  // const allowedOrigins = ['https://lol-scrims-finder.netlify.app'];
+  // const allowedOrigins = ['https://lol-scrims-finder.netlify.app', "http://localhost:3001"];
 
   // const corsOptions = {
   //   origin: function (origin, callback) {
