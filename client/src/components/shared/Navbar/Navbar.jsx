@@ -48,7 +48,7 @@ export default function Navbar({
   showDropdowns,
   showLess,
   showCheckboxes,
-  noLogin,
+  noLogin = false,
 }) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
