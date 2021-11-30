@@ -6,7 +6,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 // if it's not, redirects to an error page
 export default function useServerStatus() {
   const history = useHistory();
-  const pathname = useLocation();
+  const { pathname } = useLocation();
 
   useEffect(() => {
     const checkServerStatus = async () => {
