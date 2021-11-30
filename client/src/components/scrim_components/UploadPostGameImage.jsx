@@ -168,73 +168,70 @@ export default function UploadPostGameImage({
     }
   };
 
-  // don't allow image uploading for now (costs money)
-  return <></>;
-  // only show this if image hasn't been uploaded
-  // return !isUploaded ? (
-  //   <Grid
-  //     item
-  //     container
-  //     direction="column"
-  //     alignItems="flex-start"
-  //     justifyContent="center"
-  //     xs={12}
-  //     spacing={1}>
-  //     <Grid item>
-  //       <FormHelperText style={{ userSelect: 'none' }}>
-  //         Upload post-game lobby image
-  //       </FormHelperText>
-  //     </Grid>
-  //     <Grid item>
-  //       <Tooltip
-  //         title={
-  //           <Typography
-  //             style={{
-  //               fontSize: 'clamp(0.8rem, 4vw, 1rem)',
-  //               fontWeight: 700,
-  //             }}
-  //             variant="body2">
-  //             Validate winner by uploading end of game results. <br />
-  //             <strong style={{ color: 'red' }}>* image format only</strong>
-  //           </Typography>
-  //         }
-  //         placement="top">
-  //         <Button
-  //           variant="contained"
-  //           color="primary"
-  //           startIcon={<UploadIcon />}
-  //           disabled={buttonDisabled}
-  //           component="label">
-  //           Upload
-  //           <input
-  //             accept="image/*"
-  //             ref={fileInputRef}
-  //             hidden
-  //             type="file"
-  //             onChange={handleUpload}
-  //           />
-  //         </Button>
-  //       </Tooltip>
-  //     </Grid>
-  //   </Grid>
-  // ) : (
-  //   // if is uploaded
-  //   // admin only, re-upload image
-  //   <AdminArea>
-  //     <Grid item container direction="row" xs={12}>
-  //       <Grid item>
-  //         <Tooltip title="Delete post-game image (admin only)" placement="top">
-  //           <Button
-  //             disabled={buttonDisabled}
-  //             variant="contained"
-  //             color="secondary"
-  //             startIcon={<DeleteIcon />}
-  //             onClick={handleDeleteImage}>
-  //             Delete Image
-  //           </Button>
-  //         </Tooltip>
-  //       </Grid>
-  //     </Grid>
-  //   </AdminArea>
-  // );
+  return !isUploaded ? (
+    <Grid
+      item
+      container
+      direction="column"
+      alignItems="flex-start"
+      justifyContent="center"
+      xs={12}
+      spacing={1}>
+      <Grid item>
+        <FormHelperText style={{ userSelect: 'none' }}>
+          Upload post-game lobby image
+        </FormHelperText>
+      </Grid>
+      <Grid item>
+        <Tooltip
+          title={
+            <Typography
+              style={{
+                fontSize: 'clamp(0.8rem, 4vw, 1rem)',
+                fontWeight: 700,
+              }}
+              variant="body2">
+              Validate winner by uploading end of game results. <br />
+              <strong style={{ color: 'red' }}>* image format only</strong>
+            </Typography>
+          }
+          placement="top">
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<UploadIcon />}
+            disabled={buttonDisabled}
+            component="label">
+            Upload
+            <input
+              accept="image/*"
+              ref={fileInputRef}
+              hidden
+              type="file"
+              onChange={handleUpload}
+            />
+          </Button>
+        </Tooltip>
+      </Grid>
+    </Grid>
+  ) : (
+    // if is uploaded
+    // admin only, re-upload image
+    <AdminArea>
+      <Grid item container direction="row" xs={12}>
+        <Grid item>
+          <Tooltip title="Delete post-game image (admin only)" placement="top">
+            <Button
+              disabled={buttonDisabled}
+              variant="contained"
+              color="secondary"
+              startIcon={<DeleteIcon />}
+              onClick={handleDeleteImage}>
+              Delete Image
+            </Button>
+          </Tooltip>
+        </Grid>
+      </Grid>
+    </AdminArea>
+  );
 }
