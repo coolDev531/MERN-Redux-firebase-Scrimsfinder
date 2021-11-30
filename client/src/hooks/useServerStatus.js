@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
 import api from '../services/apiConfig';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 
 // pings server and checks if it's healthy
 // if it's not, redirects to an error page
 export default function useServerStatus() {
   const history = useHistory();
+  const pathname = useLocation();
 
   useEffect(() => {
     const checkServerStatus = async () => {
@@ -24,7 +25,7 @@ export default function useServerStatus() {
     };
 
     checkServerStatus();
-  }, [history]);
+  }, [history, pathname]);
 
   return null;
 }

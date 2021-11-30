@@ -44,7 +44,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Navbar({ showDropdowns, showLess, showCheckboxes }) {
+export default function Navbar({
+  showDropdowns,
+  showLess,
+  showCheckboxes,
+  noLogin,
+}) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMessengerDropdownOpen, setIsMessengerDropdownOpen] = useState(false);
@@ -173,7 +178,7 @@ export default function Navbar({ showDropdowns, showLess, showCheckboxes }) {
                     direction="row"
                     justifyContent="flex-end">
                     {/* if no user, show log in button */}
-                    {!currentUser?.uid && (
+                    {!currentUser?.uid && !noLogin && (
                       <Grid item>
                         <Button
                           onClick={handleLogin}
