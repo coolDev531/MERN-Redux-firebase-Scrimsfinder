@@ -17,26 +17,12 @@ const notificationRoutes = require('./routes/notification.routes');
 function createServer() {
   const app = express();
 
-  // const allowedOrigins = ['https://lol-scrims-finder.netlify.app'];
+  const corsOptions = {
+    origin: 'https://lol-scrims-finder.netlify.app',
+    optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+  };
 
-  // const corsOptions = {
-  //   origin: function (origin, callback) {
-  //     // allow requests with no origin
-  //     // (like mobile apps or curl requests)
-  //     if (!origin) return callback(null, true);
-  //     if (!allowedOrigins.includes(origin)) {
-  //       const msg =
-  //         'The CORS policy for this site does not ' +
-  //         'allow access from the specified Origin.';
-  //       return callback(new Error(msg), false);
-  //     }
-  //     return callback(null, true);
-  //   },
-  //   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-  // };
-
-  // app.use(cors(corsOptions));
-  app.use(cors());
+  app.use(cors(corsOptions));
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
 
