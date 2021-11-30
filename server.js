@@ -63,6 +63,15 @@ function createServer() {
   app.use(apiKey);
   app.use('/api', scrimRoutes);
 
+  app.get('/api/server-status', async (_req, res) => {
+    try {
+      res.status(200).send({ isServerUp: true, success: true });
+      return;
+    } catch (error) {
+      res.status(503).send({ isServerUp: false, success: false });
+    }
+  });
+
   // Passport config
   require('./config/passport')(passport);
 

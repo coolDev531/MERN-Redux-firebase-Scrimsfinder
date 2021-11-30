@@ -10,6 +10,7 @@ import NotFound from '../screens/NotFound';
 import ScrimEdit from '../screens/ScrimEdit';
 import Settings from '../screens/Settings';
 import UserProfile from '../screens/UserProfile';
+import ServerError from '../screens/ServerError';
 
 const AppRouter = () => (
   <Switch>
@@ -19,6 +20,7 @@ const AppRouter = () => (
     <PrivateRoute exact path="/settings" component={Settings} />
     <PrivateRoute exact path="/users/:name" component={UserProfile} />
     <Route exact path="/signup" component={SignUp} />
+    <Route exact path="/server-error" component={ServerError} />
     <PrivateRoute exact path={['/', '/scrims']} component={Scrims} />
     <Route component={NotFound} />
   </Switch>

@@ -22,6 +22,7 @@ import Alert from '@mui/material/Alert';
 import AppModals from './components/modals/AppModals';
 import { Helmet } from 'react-helmet';
 import useNotifications from './hooks/useNotifications';
+import useServerStatus from './hooks/useServerStatus';
 
 function App() {
   const classes = useAppStyles();
@@ -38,6 +39,7 @@ function App() {
   useFetchScrims(); // fetch scrims on mount or path change
   useMessenger(); // listen for messenger socket events
   useNotifications(); // reload user notifications on socket events
+  useServerStatus(); // check if server is online, if it's not redirects to error page.
 
   if (isVerifyingUser) {
     return (
