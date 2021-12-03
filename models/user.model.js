@@ -3,15 +3,6 @@ const Schema = mongoose.Schema;
 const { Friend, FriendRequest } = require('./friend.model');
 const Notification = require('./notification.model');
 
-const Achievement = new Schema(
-  {
-    title: { type: String },
-    description: { type: String },
-    image: { type: String },
-  },
-  { timestamps: true }
-);
-
 const User = new Schema(
   {
     name: {
