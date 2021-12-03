@@ -3,6 +3,15 @@ const Schema = mongoose.Schema;
 const { Friend, FriendRequest } = require('./friend.model');
 const Notification = require('./notification.model');
 
+const Achievement = new Schema(
+  {
+    title: { type: String },
+    description: { type: String },
+    image: { type: String },
+  },
+  { timestamps: true }
+);
+
 const User = new Schema(
   {
     name: {
@@ -38,6 +47,19 @@ const User = new Schema(
 
     // when is the last time they signed in?
     lastLoggedIn: { type: Date },
+
+    isDonator: { type: Boolean, default: false }, // is this user a donator?
+
+    // list all the donations of that user
+    donations: {
+      type: [
+        {
+          date: {
+            type: Date,
+          },
+        },
+      ],
+    },
   },
   { timestamps: true }
 );

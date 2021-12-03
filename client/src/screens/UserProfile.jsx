@@ -5,6 +5,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import useQuery from '../hooks/useQuery';
 import useAlerts from './../hooks/useAlerts';
+import useUsers from './../hooks/useUsers';
 
 // components
 import Navbar from '../components/shared/Navbar/Navbar';
@@ -14,6 +15,7 @@ import Loading from '../components/shared/Loading';
 import { InnerColumn } from '../components/shared/PageComponents';
 import Tooltip from '../components/shared/Tooltip';
 import ScrollToTopOnMount from './../components/shared/ScrollToTopOnMount';
+import Sparkles from './../components/shared/effects/Sparkles';
 import { Helmet } from 'react-helmet';
 
 // sections
@@ -34,8 +36,8 @@ import {
 import { makeStyles } from '@mui/styles';
 
 // icons
-import VerifiedAdminIcon from '@mui/icons-material/VerifiedUser';
-import useUsers from './../hooks/useUsers';
+import VerifiedAdminIcon from '@mui/icons-material/Verified';
+import HonorIcon from '@mui/icons-material/MilitaryTech';
 
 export default function UserProfile() {
   const { currentUser, isCurrentUserAdmin } = useAuth();
@@ -175,9 +177,23 @@ export default function UserProfile() {
                 href={`https://${userData?.region}.op.gg/summoner/userName=${userData?.name}`}
                 target="_blank"
                 rel="noopener noreferrer">
-                {`${userData?.name}'s Profile`}
+                {userData?.isDonator ? (
+                  <Sparkles>{userData?.name}</Sparkles>
+                ) : (
+                  userData?.name
+                )}
               </a>
             </Tooltip>
+            {userData?.isDonator && (
+              <Tooltip
+                placement="top"
+                title={`${userData?.name} helped keep this app alive!`}>
+                <span style={{ cursor: 'help', marginLeft: '8px' }}>
+                  <HonorIcon />
+                </span>
+              </Tooltip>
+            )}
+
             {userData?.isAdmin && (
               <Tooltip
                 placement="top"
