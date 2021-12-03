@@ -4,6 +4,7 @@ import React, { Fragment, useState, useEffect, useMemo, useRef } from 'react';
 import Typography from '@mui/material/Typography';
 import LinearProgress from '@mui/material/LinearProgress';
 import Grid from '@mui/material/Grid';
+import Sparkles from '../shared/effects/Sparkles';
 
 // utils
 import { makeStyles } from '@mui/styles';
@@ -41,7 +42,11 @@ export default function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
     };
 
     if (scrim.teamWon)
-      return `${winnerAliases[scrim.teamWon]} Won!`.toUpperCase();
+      return (
+        <Sparkles>
+          {`${winnerAliases[scrim.teamWon]} Won!`.toUpperCase()}
+        </Sparkles>
+      );
 
     return 'GAME IN PROGRESS';
   }, [scrim.teamWon, teamsFilled]);

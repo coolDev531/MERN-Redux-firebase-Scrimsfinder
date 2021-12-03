@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from '@emotion/styled';
+import { keyframes } from '@emotion/react';
+
 import useRandomInterval from '../../../hooks/useRandomInterval';
 import usePrefersReducedMotion from '../../../hooks/usePrefersReducedMotion';
 
@@ -131,7 +133,7 @@ const SparkleSvg = styled.svg`
   }
 `;
 
-const ChildWrapper = styled.strong`
+const ChildWrapper = styled.span`
   position: relative;
   z-index: 1;
   /* font-weight: bold; */

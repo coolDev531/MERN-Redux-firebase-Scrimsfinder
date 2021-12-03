@@ -91,6 +91,7 @@ const getOneUser = async (req, res) => {
       'profileBackgroundImg',
       'profileBackgroundBlur',
       'friends',
+      'isDonator',
     ]);
 
     if (!user)

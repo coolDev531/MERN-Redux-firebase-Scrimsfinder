@@ -49,9 +49,17 @@ const User = new Schema(
     lastLoggedIn: { type: Date },
 
     isDonator: { type: Boolean, default: false }, // is this user a donator?
-    donationCount: { type: Number }, // how many times did he donate?
 
-    achievements: { type: [Achievement], default: [] },
+    // list all the donations of that user
+    donations: {
+      type: [
+        {
+          date: {
+            type: Date,
+          },
+        },
+      ],
+    },
   },
   { timestamps: true }
 );
