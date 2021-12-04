@@ -863,6 +863,7 @@ const removeCasterFromScrim = async (req, res) => {
   });
   session.endSession();
 };
+
 // @route   PATCH /api/scrims/:id/add-image
 // @desc    This is how a lobbyHost or an admin can upload an image to the scrim to verify the winner (more uploading func is in UploadPostGameImage.jsx)
 // @access  Private
