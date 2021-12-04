@@ -14,7 +14,7 @@ router.put('/scrims/:id', controllers.updateScrim); // PUT
 // PATCH => Partially update an existing resource (not all attributes required).
 // patch because these routes add a subsidiary resource instead of completely replacing whatever is available.
 
-router.patch('/scrims/:id/add-image', controllers.addImageToScrim); // PATCH
+router.patch('/scrims/:id/add-image', auth, controllers.addImageToScrim); // PATCH
 router.patch('/scrims/:id/remove-image', controllers.removeImageFromScrim); // PATCH
 
 router.patch(

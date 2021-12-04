@@ -865,11 +865,25 @@ const removeCasterFromScrim = async (req, res) => {
 };
 // @route   PATCH /api/scrims/:id/add-image
 // @desc    This is how a lobbyHost or an admin can upload an image to the scrim to verify the winner (more uploading func is in UploadPostGameImage.jsx)
-// @access  Public
+// @access  Private
 const addImageToScrim = async (req, res) => {
   // client uplaods to s3 bucket, back-end saves endpoints
   const { id } = req.params;
   const { bucket, key, location, result, uploadedBy } = req.body;
+
+  const scrim = await Scrim.findById(id);
+
+  const isLobbyHost =
+    String(scrim._doc.lobbyHost?._id) === String(req.user?._id);
+
+  if (!isLobbyHost) {
+    if (req.user.adminKey !== KEYS.ADMIN_KEY) {
+      return res.status(401).json({
+        error:
+          'You cannot upload an image (you are not a lobby host or an admin)',
+      });
+    }
+  }
 
   let dataSending = {
     postGameImage: {
