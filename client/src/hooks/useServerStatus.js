@@ -18,6 +18,11 @@ export default function useServerStatus() {
         if (!isServerUp) {
           history.push('/server-error');
         }
+
+        // if server is up and user is in that path push him back to home
+        if (isServerUp && pathname.match(/^\/server-error/)) {
+          history.push('/');
+        }
       } catch (error) {
         // redirect to error page
         history.push('/server-error');
