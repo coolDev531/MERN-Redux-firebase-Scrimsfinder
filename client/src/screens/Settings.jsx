@@ -20,6 +20,12 @@ import {
   InnerColumn,
   PageContent,
 } from './../components/shared/PageComponents';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+
+// icons
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 // services & utils
 import { makeStyles } from '@mui/styles';
@@ -50,6 +56,8 @@ export default function Settings() {
   const { currentUser } = useAuth();
   const { setCurrentUser } = useAuthActions();
   const { allUsers } = useUsers();
+
+  const [isAdminKeyHidden, setIsAdminKeyHidden] = useState(true);
 
   const [userData, setUserData] = useState({
     name: currentUser?.name, // LoL summoner name
@@ -293,12 +301,30 @@ export default function Settings() {
                 <Grid item>
                   <TextField
                     variant="filled"
-                    type="text"
+                    type={isAdminKeyHidden ? 'password' : 'text'}
                     name="adminKey"
                     style={{ width: 230 }}
                     value={userData.adminKey || ''}
                     onChange={handleChange}
                     label="Admin key (not required)"
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle admin key visibility"
+                            onClick={() =>
+                              setIsAdminKeyHidden((prevState) => !prevState)
+                            }
+                            onMouseDown={(e) => e.preventDefault()}>
+                            {isAdminKeyHidden ? (
+                              <Visibility />
+                            ) : (
+                              <VisibilityOff />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
                   />
                 </Grid>
               </Grid>
