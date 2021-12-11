@@ -11,6 +11,16 @@ export default function Guide() {
         <meta charSet="utf-8" />
         <title>Guide | Bootcamp LoL Scrim Gym</title>
         <meta name="description" content="Scrim Gym Simplified!" />
+        <meta
+          property="og:title"
+          content="Guide | Bootcamp LoL Scrim Gym"
+          data-rh="true"
+        />
+        <meta
+          property="og:description"
+          content="Scrim Gym Simplified!"
+          data-rh="true"
+        />
       </Helmet>
       <Navbar showLess noGuide />
       <iframe
