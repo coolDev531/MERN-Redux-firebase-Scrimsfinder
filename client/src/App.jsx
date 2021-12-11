@@ -7,6 +7,8 @@ import useAuth, { useAuthVerify } from './hooks/useAuth';
 import { useFetchScrims, useSetScrimsRegion } from './hooks/useScrims';
 import { useFetchUsers } from './hooks/useUsers';
 import useMessenger from './hooks/useMessenger';
+import useNotifications from './hooks/useNotifications';
+import useServerStatus from './hooks/useServerStatus';
 import { useCreateSocket } from './hooks/useSocket';
 
 // styles
@@ -21,8 +23,6 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import AppModals from './components/modals/AppModals';
 import { Helmet } from 'react-helmet';
-import useNotifications from './hooks/useNotifications';
-import useServerStatus from './hooks/useServerStatus';
 
 function App() {
   const classes = useAppStyles();

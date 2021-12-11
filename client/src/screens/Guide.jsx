@@ -1,4 +1,5 @@
 import Navbar from '../components/shared/Navbar/Navbar';
+import { Helmet } from 'react-helmet';
 
 const SIMPLIFIED_URL =
   'https://docs.google.com/presentation/d/17Z_2pNYBwbtSaqNVpl7QQHnf0AHossIabcjQbSkF-lA/edit#slide=id.gfb1f477382_0_151';
@@ -6,6 +7,11 @@ const SIMPLIFIED_URL =
 export default function Guide() {
   return (
     <>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Guide | Bootcamp LoL Scrim Gym</title>
+        <meta name="description" content="Scrim Gym Simplified!" />
+      </Helmet>
       <Navbar showLess noGuide />
       <iframe
         style={{
