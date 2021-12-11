@@ -89,7 +89,7 @@ export default function MoreOptionsModal() {
 
         <IconGroup
           tooltipTitle="Scrim Gym Simplified"
-          title="Tutorial"
+          title="Guide"
           Icon={SchoolIcon}
           onClick={() => {
             onClose();
