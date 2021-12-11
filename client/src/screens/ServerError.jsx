@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 export default function ServerError() {
   return (
     <PageContent>
-      <Navbar showless noLogin />
+      <Navbar showless noLogin noGuide />
 
       <div className="centered" style={{ width: 'auto' }}>
         <Typography variant="h1" textAlign="center" gutterBottom>

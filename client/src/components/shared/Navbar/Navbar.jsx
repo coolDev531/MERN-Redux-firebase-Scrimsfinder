@@ -33,6 +33,7 @@ import MessengerButton from '../../Messenger_components/MessengerButton';
 import Logo from '../../../assets/images/bootcamp_llc_media_kit/coin_logo_new2021.png';
 import KeyIcon from '@mui/icons-material/VpnKey';
 import MenuIcon from '@mui/icons-material/Menu'; // burger icon
+import SchoolIcon from '@mui/icons-material/School';
 
 const useStyles = makeStyles((theme) => ({
   offset: theme.mixins.offset,
@@ -49,6 +50,8 @@ export default function Navbar({
   showLess,
   showCheckboxes,
   noLogin = false,
+  noSpacer = false,
+  noGuide = false,
 }) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -177,6 +180,21 @@ export default function Navbar({
                     spacing={2}
                     direction="row"
                     justifyContent="flex-end">
+                    {!currentUser?.uid && !noGuide && (
+                      <Grid item>
+                        <Tooltip title="Scrim Gym Simplified">
+                          <Button
+                            component={Link}
+                            to="/guide"
+                            variant="contained"
+                            startIcon={<SchoolIcon />}
+                            color="primary">
+                            Guide
+                          </Button>
+                        </Tooltip>
+                      </Grid>
+                    )}
+
                     {/* if no user, show log in button */}
                     {!currentUser?.uid && !noLogin && (
                       <Grid item>
@@ -255,7 +273,7 @@ export default function Navbar({
       />
 
       <div className={classes.offset} />
-      <div className={classes.toolbarDistance} />
+      {!noSpacer && <div className={classes.toolbarDistance} />}
     </>
   );
 }

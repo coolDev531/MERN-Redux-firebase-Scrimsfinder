@@ -16,6 +16,7 @@ import Tooltip from '../shared/Tooltip';
 import FriendsIcon from '@mui/icons-material/SupervisorAccount';
 import FriendRequestsIcon from '@mui/icons-material/AddReaction';
 import CreateIcon from '@mui/icons-material/BorderColor';
+import SchoolIcon from '@mui/icons-material/School';
 
 export default function MoreOptionsModal() {
   const { currentUser } = useAuth();
@@ -58,7 +59,7 @@ export default function MoreOptionsModal() {
         container
         direction="row"
         flexWrap="wrap"
-        justifyContent="space-evenly">
+        justifyContent="flex-start">
         <IconGroup
           tooltipTitle="Open friends"
           title="Friends"
@@ -85,6 +86,16 @@ export default function MoreOptionsModal() {
             }}
           />
         </AdminArea>
+
+        <IconGroup
+          tooltipTitle="Scrim Gym Simplified"
+          title="Tutorial"
+          Icon={SchoolIcon}
+          onClick={() => {
+            onClose();
+            history.push('/guide');
+          }}
+        />
       </Grid>
     </Modal>
   );
