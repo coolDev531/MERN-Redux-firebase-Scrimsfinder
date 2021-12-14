@@ -17,12 +17,12 @@ const notificationRoutes = require('./routes/notification.routes');
 function createServer() {
   const app = express();
 
-  const corsOptions = {
-    origin: 'https://lol-scrims-finder.netlify.app',
-    optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-  };
+  // const corsOptions = {
+  //   origin: 'https://lol-scrims-finder.netlify.app',
+  //   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+  // };
 
-  app.use(cors(corsOptions));
+  app.use(cors());
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
 
