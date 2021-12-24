@@ -306,7 +306,7 @@ export default function Settings() {
                     style={{ width: 230 }}
                     value={userData.adminKey || ''}
                     onChange={handleChange}
-                    label="Admin key (not required)"
+                    label="Admin key"
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
@@ -414,7 +414,7 @@ export default function Settings() {
                       checked={userData.canSendEmailsToUser}
                     />
                   }
-                  label="Send me emails regarding app updates"
+                  label="Send me emails regarding app updates and/or notifications"
                 />
               </Grid>
 
