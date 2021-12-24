@@ -14,6 +14,7 @@ import { updateUser } from './../../services/auth.services';
 // this modal was created to ask users if they would be interested in receiving emails.
 // this boolean is stored in the db as canSendEmailsToUser.
 // This modal will probably only be used for 1 day until users know about this feature and then they will just access it in settings (will default to false in db)
+// DISCONTINUED THIS MODAL IS NOT USED
 export default function CanSendEmailsModal() {
   const [submitDisabled, setSubmitDisabled] = useState(false);
   const { currentUser } = useAuth();
