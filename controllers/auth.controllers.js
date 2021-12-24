@@ -127,7 +127,16 @@ const loginUser = async (req, res) => {
 
 const registerUser = async (req, res) => {
   try {
-    const { uid, name, discord, rank, adminKey = '', email, region } = req.body;
+    const {
+      uid,
+      name,
+      discord,
+      rank,
+      adminKey = '',
+      email,
+      region,
+      canSendEmailsToUser = false,
+    } = req.body;
 
     const noSpacesDiscord = removeSpacesBeforeHashTag(discord);
 
@@ -140,6 +149,7 @@ const registerUser = async (req, res) => {
       email,
       region,
       lastLoggedIn: Date.now(),
+      canSendEmailsToUser,
     };
 
     const userExists = await User.findOne({ email });
@@ -252,6 +262,7 @@ const registerUser = async (req, res) => {
           region: newUser.region,
           discord: newUser.discord,
           adminKey: newUser.adminKey,
+          canSendEmailsToUser: newUser.canSendEmailsToUser ?? false,
           isAdmin: false,
           name: newUser.name,
           notifications: [],

@@ -44,6 +44,7 @@ export default function SignUp() {
     rank: '',
     region: 'NA',
     discord: '',
+    canSendEmailsToUser: false,
   });
   const [rankData, setRankData] = useState({
     rankDivision: 'Iron',
@@ -143,6 +144,7 @@ export default function SignUp() {
           name: userData.name,
           region: userData.region,
           discord: userData.discord,
+          canSendEmailsToUser: userData.canSendEmailsToUser,
           rank: userData.rank,
           email: result.user.email,
           // refreshToken: result.user.refreshToken, // prob don't need.

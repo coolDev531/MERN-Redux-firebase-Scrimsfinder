@@ -7,6 +7,8 @@ import Grid from '@mui/material/Grid';
 import FormHelperText from '@mui/material/FormHelperText';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 export default function SignUpForms({
   handleChange,
@@ -136,13 +138,33 @@ export default function SignUpForms({
         <Typography variant="h1">Account details:</Typography>
       </Box>
 
-      {Object.entries(userData).map(([k, v], idx) => (
-        <Box key={idx}>
-          <Typography variant="h3">
-            {k.charAt(0).toUpperCase() + k.substring(1)}: {v}
-          </Typography>
-        </Box>
-      ))}
+      {Object.entries(userData).map(
+        ([k, v], idx) =>
+          k !== 'canSendEmailsToUser' && (
+            <Box key={idx}>
+              <Typography variant="h3">
+                {k.charAt(0).toUpperCase() + k.substring(1)}: {v}
+              </Typography>
+            </Box>
+          )
+      )}
+
+      <Box mt={-1} mb={1}>
+        <FormControlLabel
+          control={
+            <Checkbox
+              onChange={() =>
+                setUserData((prevState) => ({
+                  ...prevState,
+                  canSendEmailsToUser: !userData.canSendEmailsToUser,
+                }))
+              }
+              checked={userData.canSendEmailsToUser}
+            />
+          }
+          label="Send me emails regarding app updates and/or notifications"
+        />
+      </Box>
 
       <Box>
         <Typography variant="body2">
