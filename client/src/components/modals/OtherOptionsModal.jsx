@@ -96,6 +96,18 @@ export default function MoreOptionsModal() {
             history.push('/guide');
           }}
         />
+
+        <AdminArea>
+          <IconGroup
+            tooltipTitle="Check bans history"
+            title="Bans"
+            Icon={CreateIcon}
+            onClick={() => {
+              onClose();
+              history.push('/bans');
+            }}
+          />
+        </AdminArea>
       </Grid>
     </Modal>
   );
