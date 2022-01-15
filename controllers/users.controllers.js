@@ -92,6 +92,7 @@ const getOneUser = async (req, res) => {
       'profileBackgroundBlur',
       'friends',
       'isDonator',
+      'currentBan',
     ]);
 
     if (!user)

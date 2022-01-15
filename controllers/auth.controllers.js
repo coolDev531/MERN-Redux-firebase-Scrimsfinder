@@ -4,9 +4,10 @@ const jwt = require('jsonwebtoken');
 const escape = require('escape-html');
 const { REGIONS } = require('../utils/constants');
 const KEYS = require('../config/keys');
-
+const { unbanUser, banDateExpired } = require('../utils/adminUtils');
 // models
 const User = require('../models/user.model');
+const Ban = require('../models/ban.model');
 
 const divisionsWithNumbers = [
   'Iron',
@@ -94,6 +95,23 @@ const loginUser = async (req, res) => {
       return res.status(401).json({ error: 'Unauthorized', status: false });
     }
 
+    if (foundUser.currentBan.isActive) {
+      // unban user if date passed
+      if (banDateExpired(foundUser.currentBan.dateTo)) {
+        await unbanUser(foundUser);
+      } else {
+        const foundBan = await Ban.findById(foundUser.currentBan?._ban);
+
+        return res.status(401).json({
+          error: `You are banned until ${new Date(
+            foundUser.currentBan.dateTo
+          ).toLocaleDateString()}. ${
+            foundBan.reason ? `\nReason: ${foundBan.reason}` : ''
+          }`,
+        });
+      }
+    }
+
     const payload = {
       uid: foundUser.uid,
       email: foundUser.email,
@@ -102,7 +120,7 @@ const loginUser = async (req, res) => {
       region: foundUser.region,
       discord: foundUser.discord,
       adminKey: foundUser.adminKey,
-      isAdmin: foundUser.isAdmin,
+      isAdmin: foundUser.adminKey === KEYS.ADMIN_KEY,
       name: foundUser.name,
       notifications: foundUser.notifications,
       friendRequests: foundUser.friendRequests,
@@ -322,7 +340,7 @@ const verifyUser = async (req, res) => {
       region: foundUser.region,
       discord: foundUser.discord,
       adminKey: foundUser.adminKey,
-      isAdmin: foundUser.isAdmin,
+      isAdmin: foundUser.adminKey === KEYS.ADMIN_KEY,
       name: foundUser.name,
       notifications: foundUser.notifications,
       friendRequests: foundUser.friendRequests,

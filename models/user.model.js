@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const { Friend, FriendRequest } = require('./friend.model');
 const Notification = require('./notification.model');
+const Ban = require('./ban.model').schema;
 
 const User = new Schema(
   {
@@ -39,7 +40,36 @@ const User = new Schema(
     // when is the last time they signed in?
     lastLoggedIn: { type: Date },
 
+    currentBan: {
+      isActive: {
+        type: Boolean,
+        default: false,
+      },
+      dateFrom: {
+        type: Date,
+        default: null,
+        required: false,
+      },
+      dateTo: {
+        type: Date,
+        default: null,
+        required: false,
+      },
+      _bannedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: false,
+      },
+      _ban: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Ban',
+        required: false,
+      },
+    },
+
     isDonator: { type: Boolean, default: false }, // is this user a donator?
+
+    bansHistory: { type: [Ban], default: [] },
 
     // list all the donations of that user
     donations: {
