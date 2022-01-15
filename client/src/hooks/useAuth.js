@@ -15,8 +15,10 @@ export default function useAuth() {
   const auth = useSelector(({ auth }) => auth);
 
   const isCurrentUserAdmin = useMemo(
-    () => auth?.currentUser?.adminKey === process.env.REACT_APP_ADMIN_KEY,
-    [auth?.currentUser?.adminKey]
+    () =>
+      auth?.currentUser?.isAdmin ??
+      auth?.currentUser?.adminKey === process.env.REACT_APP_ADMIN_KEY,
+    [auth?.currentUser?.adminKey, auth?.currentUser?.isAdmin]
   );
 
   return { ...auth, isCurrentUserAdmin };
