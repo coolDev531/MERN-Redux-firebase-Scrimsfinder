@@ -75,6 +75,7 @@ export default function DeleteFriendButton({
     <Tooltip title={`Unfriend ${friendToDelete?.name}`}>
       <Button
         style={{
+          width: '100%',
           height: '50px',
           alignSelf: 'center',
           marginLeft: !matchesSm ? '0' : '20px',
