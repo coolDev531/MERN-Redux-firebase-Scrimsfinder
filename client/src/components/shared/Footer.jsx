@@ -17,14 +17,14 @@ const Footer = () => (
     <StyledFooter className="page-section site-footer">
       <InnerColumn>
         <Grid container justifyContent="space-between">
-          &copy; 2021 GitCat
-          <a
+          &copy; 2021 GitCat#9811
+          {/* <a
             target="_blank"
             rel="noreferrer"
             className="link"
             href="https://github.com/DannyMichaels/LoL-scrims-finder">
             Source
-          </a>
+          </a> */}
         </Grid>
       </InnerColumn>
     </StyledFooter>

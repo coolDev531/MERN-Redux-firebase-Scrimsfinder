@@ -15,7 +15,7 @@ import Loading from '../components/shared/Loading';
 import { InnerColumn } from '../components/shared/PageComponents';
 import Tooltip from '../components/shared/Tooltip';
 import ScrollToTopOnMount from './../components/shared/ScrollToTopOnMount';
-import Sparkles from './../components/shared/effects/Sparkles';
+import Sparkles from '../components/shared/effects/Sparkles';
 import { Helmet } from 'react-helmet';
 
 // sections
@@ -24,6 +24,7 @@ import ProfileAccountDetails from '../components/UserProfile_components/ProfileA
 import MyCreatedScrims from './../components/UserProfile_components/MyCreatedScrims';
 import UserParticipatedScrims from './../components/UserProfile_components/UserParticipatedScrims';
 import SendFriendRequest from './../components/UserProfile_components/SendFriendRequest';
+import BanUser from '../components/UserProfile_components/BanUser';
 
 // services
 import {
@@ -205,15 +206,21 @@ export default function UserProfile() {
             )}
           </Typography>
 
-          {isCurrentUser ? (
-            <ChangeBackground
-              userBg={userBg}
-              userId={userData?._id}
-              setUserBg={setUserBg}
-            />
-          ) : (
-            <SendFriendRequest setUser={setUserData} user={userData} />
-          )}
+          <Grid item alignItems="center" direction="column">
+            {isCurrentUser ? (
+              <ChangeBackground
+                userBg={userBg}
+                userId={userData?._id}
+                setUserBg={setUserBg}
+              />
+            ) : (
+              <SendFriendRequest setUser={setUserData} user={userData} />
+            )}
+
+            {!isCurrentUser && (
+              <BanUser setUser={setUserData} user={userData} />
+            )}
+          </Grid>
         </Grid>
 
         {/* User Details: name, discord, rank, exp, etc. */}
