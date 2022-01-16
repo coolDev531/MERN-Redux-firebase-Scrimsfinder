@@ -3,9 +3,9 @@ import Input from '@mui/material/Input';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import { debounce } from '../utils/debounce';
+import { debounce } from '../../utils/debounce';
+import styled from '@emotion/styled';
 
-// css for this is in index.css
 function AutoComplete({
   fullWidth,
   setFilterValue,
@@ -68,7 +68,7 @@ function AutoComplete({
 
   return (
     <>
-      <div className="autocomplete search">
+      <Container className="autocomplete search">
         <Input
           fullWidth={fullWidth ? true : false}
           type="text"
@@ -90,10 +90,55 @@ function AutoComplete({
             ) : null
           }
         />
-      </div>
-      {autoCompleteJSX}
+        {autoCompleteJSX}
+      </Container>
     </>
   );
 }
+
+const Container = styled.div`
+  position: relative;
+
+  .options {
+    list-style: none;
+    border: 1px solid #979797;
+    box-shadow: 0 3px 11px 0 rgb(0 0 0 / 29%);
+    border-radius: 8px;
+    box-sizing: border-box;
+    min-height: fit-content;
+    max-height: 300px;
+    width: auto;
+    overflow-y: auto;
+    color: #545454;
+    font-family: Roboto;
+    font-size: 1.3rem;
+    line-height: 18px;
+    font-weight: 300;
+    text-align: left;
+
+    position: absolute;
+    background: #fff;
+    top: 39px;
+    width: 240px;
+    padding: 0;
+    margin: 0;
+  }
+
+  .option {
+    cursor: pointer;
+    margin: 20px 10px;
+    width: 90%;
+    transition: all 250ms ease-in-out;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    padding-left: 5px;
+
+    &:hover {
+      background: #cccc;
+      color: #000;
+      font-weight: 700;
+    }
+  }
+`;
 
 export default memo(AutoComplete); // optimize rerender when props change with memo

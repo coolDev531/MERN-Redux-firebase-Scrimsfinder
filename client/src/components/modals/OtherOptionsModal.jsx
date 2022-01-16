@@ -17,6 +17,7 @@ import FriendsIcon from '@mui/icons-material/SupervisorAccount';
 import FriendRequestsIcon from '@mui/icons-material/AddReaction';
 import CreateIcon from '@mui/icons-material/BorderColor';
 import SchoolIcon from '@mui/icons-material/School';
+import BanIcon from '@mui/icons-material/Hardware';
 
 export default function MoreOptionsModal() {
   const { currentUser } = useAuth();
@@ -101,7 +102,7 @@ export default function MoreOptionsModal() {
           <IconGroup
             tooltipTitle="Check bans history"
             title="Bans"
-            Icon={CreateIcon}
+            Icon={BanIcon}
             onClick={() => {
               onClose();
               history.push('/bans');

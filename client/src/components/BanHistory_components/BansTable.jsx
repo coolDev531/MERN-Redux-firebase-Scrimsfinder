@@ -4,8 +4,9 @@ import {
   usePagination,
   useFilters,
   useGlobalFilter,
+  useExpanded,
 } from 'react-table';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 // utils
 import { makeStyles } from '@mui/styles';
@@ -20,23 +21,26 @@ import TableRow from '@mui/material/TableRow';
 import TableFooter from '@mui/material/TableFooter';
 import TablePagination from '@mui/material/TablePagination';
 import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
 import Grid from '@mui/material/Grid';
 import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import AutoComplete from '../BanHistory_components/Autocomplete';
+import Tooltip from '../shared/Tooltip';
+import { Link } from 'react-router-dom';
+import Moment from 'react-moment';
+import moment from 'moment';
 
 // icons
 import FirstPageIcon from '@mui/icons-material/FirstPage';
 import LastPageIcon from '@mui/icons-material/LastPage';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
-import AutoComplete from './AutoComplete';
 
 const useStyles = makeStyles((theme) => ({
   tableRoot: {
     width: '100%',
+    maxWidth: '600px',
   },
   tableContainer: {
     maxHeight: 500,
@@ -54,12 +58,13 @@ const useStyles = makeStyles((theme) => ({
       flexShrink: 1, // direction buttons in a column in small screen
     },
   },
+  tableHeader: { maxWidth: '200px', width: '250px' },
 }));
 
 const DateFilter = ({ column, allDateTos, allDateFroms }) => {
-  const { filterValue, setFilter, accessor } = column;
+  const { filterValue, setFilter, Header } = column;
 
-  const dateData = accessor === 'dateTo' ? allDateTos : allDateFroms;
+  const dateData = Header === 'Date To' ? allDateTos : allDateFroms;
 
   const handleChange = (event) => {
     setFilter(event.target.value);
@@ -67,11 +72,11 @@ const DateFilter = ({ column, allDateTos, allDateFroms }) => {
 
   return (
     <FormControl fullWidth>
-      <InputLabel>Select year</InputLabel>
       <Select
-        style={{ width: '120px' }}
+        style={{ maxWidth: '200px', width: '80%' }}
         value={filterValue || ''}
-        label="Filter by yearId"
+        label="Filter by dateFrom"
+        fullWidth
         onChange={handleChange}>
         <MenuItem value={''}>All</MenuItem>
         {[...dateData]
@@ -79,9 +84,33 @@ const DateFilter = ({ column, allDateTos, allDateFroms }) => {
           .sort((a, b) => b - a)
           .map((dateId, idx) => (
             <MenuItem value={dateId} key={idx}>
-              {dateId}
+              <Moment format="MM/DD/YYYY">{dateId}</Moment>
             </MenuItem>
           ))}
+      </Select>
+    </FormControl>
+  );
+};
+
+const StatusFilter = ({ column }) => {
+  const [status, setStatus] = useState(true);
+  const { filterValue, setFilter } = column;
+
+  const handleChange = (event) => {
+    setFilter(event.target.value);
+    setStatus(event.target.value);
+  };
+
+  return (
+    <FormControl fullWidth>
+      <Select
+        style={{ maxWidth: '200px', width: '80%' }}
+        value={filterValue || status}
+        label="Filter by status"
+        fullWidth
+        onChange={handleChange}>
+        <MenuItem value={true}>Active</MenuItem>
+        <MenuItem value={false}>Inactive/Expired</MenuItem>
       </Select>
     </FormControl>
   );
@@ -92,7 +121,7 @@ const UserNameFilter = ({ column }) => {
 
   // new set for repeating player IDs...
   const filteredOptions = useMemo(
-    () => [...new Set(filteredRows.map(({ original }) => original._user._id))],
+    () => [...new Set(filteredRows.map(({ original }) => original._user.name))],
     [filteredRows]
   );
 
@@ -112,7 +141,7 @@ const UserNameFilter = ({ column }) => {
       valueProp={filterValue}
       setFilterValue={handleChange} // passing the handleChange as props.
       fullWidth
-      placeholder={'Filter by playerId'}
+      placeholder="Filter by name"
     />
   );
 };
@@ -127,12 +156,20 @@ export default function BansTable({ bans }) {
   );
 
   const allDateFroms = useMemo(
-    () => [...new Set([...bans].map(({ dateFrom }) => dateFrom))],
+    () => [
+      ...new Set(
+        [...bans].map(({ dateFrom }) => moment(dateFrom).format('MM/DD/YYYY'))
+      ),
+    ],
     [bans]
   );
 
   const allDateTos = useMemo(
-    () => [...new Set([...bans].map(({ dateTo }) => dateTo))],
+    () => [
+      ...new Set(
+        [...bans].map(({ dateTo }) => moment(dateTo).format('MM/DD/YYYY'))
+      ),
+    ],
     [bans]
   );
 
@@ -144,18 +181,44 @@ export default function BansTable({ bans }) {
     () => [
       {
         Header: 'Summoner Name',
-        accessor: 'name',
+        accessor: (r) => {
+          return r._user.name;
+        },
         Filter: UserNameFilter,
+        Cell: (r) => {
+          const _user = r.row.original._user;
+
+          return (
+            <Tooltip title="Go to user profile">
+              <Link
+                className="link"
+                to={`/users/${_user.name}?region=${_user.region}`}>
+                {_user.name}
+              </Link>
+            </Tooltip>
+          );
+        },
       },
       {
         Header: 'Date From',
-        accessor: 'dateFrom', // when filters will look for yearID to change.
+        accessor: (r) => moment(r.dateFrom).format('MM/DD/YYYY'),
         Filter: DateFilter,
       },
       {
         Header: 'Date To',
-        accessor: 'dateTo',
+        accessor: (r) => moment(r.dateTo).format('MM/DD/YYYY'),
         Filter: DateFilter,
+      },
+
+      {
+        Header: 'Status',
+        accessor: 'isActive',
+        Filter: StatusFilter,
+      },
+
+      {
+        Header: 'Reason',
+        accessor: 'reason',
       },
     ],
 
@@ -179,12 +242,20 @@ export default function BansTable({ bans }) {
     {
       defaultColumn,
       columns,
-      data: bans, // passing the players as data for the table
-      initialState: { pageIndex: 0, pageSize: 20 },
+      autoResetPage: false, // When making changes to the external data you want to disable automatic resets to the state of the table
+      data: bans.sort(
+        (a, b) =>
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      ), // passing the players as data for the table
+      initialState: {
+        pageIndex: 0,
+        pageSize: 20,
+        filters: [{ id: 'isActive', value: true }],
+      },
     },
     useFilters,
-
     useGlobalFilter,
+    useExpanded,
     usePagination
   ); // react-table hooks
 
@@ -229,17 +300,14 @@ export default function BansTable({ bans }) {
               return (
                 <TableRow {...row.getRowProps()} hover key={idx}>
                   {row.cells.map((cell, idx) => {
-                    let user = row.original;
                     return (
                       // cell of row.
-                      <Tooltip arrow key={idx} placement="top">
-                        <TableCell
-                          click={() => console.log({ user })}
-                          style={{ cursor: 'pointer' }}
-                          {...cell.getCellProps()}>
-                          {cell.render('Cell')}
-                        </TableCell>
-                      </Tooltip>
+                      <TableCell
+                        key={idx}
+                        style={{ maxWidth: '200px' }}
+                        {...cell.getCellProps()}>
+                        {cell.render('Cell')}
+                      </TableCell>
                     );
                   })}
                 </TableRow>
