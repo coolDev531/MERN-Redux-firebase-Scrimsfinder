@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { useScrimsActions } from './../hooks/useScrims';
-import useAlerts from './../hooks/useAlerts';
-import useAuth from './../hooks/useAuth';
+import { useScrimsActions } from '../../hooks/useScrims';
+import useAlerts from '../../hooks/useAlerts';
+import useAuth from '../../hooks/useAuth';
 
 // components
-import Navbar from '../components/shared/Navbar/Navbar';
+import Navbar from '../../components/shared/Navbar/Navbar';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
@@ -15,25 +15,26 @@ import Select from '@mui/material/Select';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Hidden from '@mui/material/Hidden';
-import Tooltip from './../components/shared/Tooltip';
+import Tooltip from '../../components/shared/Tooltip';
 import { Redirect } from 'react-router-dom';
 import {
   InnerColumn,
   PageContent,
   PageSection,
-} from './../components/shared/PageComponents';
-import Loading from '../components/shared/Loading';
-import DatePicker from '../components/shared/DatePicker';
-import TimePicker from '../components/shared/TimePicker';
-import LobbyNameField from '../components/shared/Form_components/LobbyNameField';
+} from '../../components/shared/PageComponents';
+import Loading from '../../components/shared/Loading';
+import DatePicker from '../../components/shared/DatePicker';
+import TimePicker from '../../components/shared/TimePicker';
+import LobbyNameField from '../../components/shared/Form_components/LobbyNameField';
 
 // utils and services
-import { createScrim } from '../services/scrims.services';
-import devLog from './../utils/devLog';
+import { createScrim } from '../../services/scrims.services';
+import devLog from '../../utils/devLog';
+import withAdminRoute from '../../utils/withAdminRoute';
 
-export default function ScrimCreate() {
+function ScrimCreate() {
   const { fetchScrims } = useScrimsActions();
-  const { currentUser, isCurrentUserAdmin } = useAuth();
+  const { currentUser } = useAuth();
   const { setCurrentAlert } = useAlerts();
 
   const [scrimData, setScrimData] = useState({
@@ -108,10 +109,6 @@ export default function ScrimCreate() {
       setIsSubmitting(false);
     }
   };
-
-  if (!isCurrentUserAdmin) {
-    return <Redirect to="/" />;
-  }
 
   if (createdScrim) {
     return (
@@ -370,3 +367,5 @@ export default function ScrimCreate() {
     </>
   );
 }
+
+export default withAdminRoute(ScrimCreate);

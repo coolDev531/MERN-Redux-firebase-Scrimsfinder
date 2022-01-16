@@ -26,3 +26,12 @@ export const unbanUser = async (userId) => {
     throw error;
   }
 };
+
+export const getAllBans = async () => {
+  try {
+    const response = await api.get(`/admin/all-bans-history`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

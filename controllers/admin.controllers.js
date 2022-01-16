@@ -139,7 +139,29 @@ const unbanUser = async (req, res) => {
   }
 };
 
+
+const getAllBans = async (req, res) => {
+  try {
+    const populateUser = ['name', 'discord', 'region'];
+
+    const _allBans = await Ban.find()
+      .populate('_bannedBy', populateUser)
+      .populate('_unbannedBy', populateUser)
+      .populate('_user', populateUser)
+      .exec((err, data) => {
+        if (err) {
+          console.log(err);
+          return res.status(400).end();
+        }
+        return res.json(data);
+      });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   banUser,
   unbanUser,
+  getAllBans,
 };

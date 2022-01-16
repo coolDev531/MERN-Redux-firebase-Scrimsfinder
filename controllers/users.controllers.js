@@ -3,6 +3,7 @@ const Scrim = require('../models/scrim.model');
 const mongoose = require('mongoose');
 const escape = require('escape-html'); // sanitize request params
 const { REGIONS } = require('../utils/constants');
+const KEYS = require('../config/keys');
 
 // @route   GET /api/users
 // @desc    get all users for the app
@@ -78,6 +79,11 @@ const getOneUser = async (req, res) => {
 
     const nameRegex = `^${name}$`;
 
+    const userAdminKey = await User.findOne({
+      name: { $regex: nameRegex, $options: 'i' }, // case insensitive name matching
+      region,
+    }).select(['adminKey']);
+
     let user = await User.findOne({
       name: { $regex: nameRegex, $options: 'i' }, // case insensitive name matching
       region,
@@ -86,7 +92,6 @@ const getOneUser = async (req, res) => {
       'name',
       'region',
       'rank',
-      'isAdmin',
       'createdAt',
       'profileBackgroundImg',
       'profileBackgroundBlur',
@@ -100,7 +105,9 @@ const getOneUser = async (req, res) => {
         .status(404)
         .json({ message: `User not found in region: ${escape(region)}` });
 
-    return res.status(200).json(user);
+    const isAdmin = userAdminKey.adminKey === KEYS.ADMIN_KEY;
+
+    return res.status(200).json({ ...user._doc, isAdmin });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }

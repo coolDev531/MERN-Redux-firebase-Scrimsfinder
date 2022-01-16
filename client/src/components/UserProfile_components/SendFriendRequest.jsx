@@ -106,6 +106,7 @@ export default function SendFriendRequest({ user, setUser }) {
       {!isFriend ? (
         <Button
           style={{
+            width: '100%',
             height: '50px',
             alignSelf: 'center',
             marginLeft: !matchesSm ? '0' : '20px',

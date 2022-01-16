@@ -4,6 +4,7 @@
   "private": true,
   "license": "ISC",
   "dependencies": {
+    "react-table": "^7.7.0",
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
     "@material-ui/lab": "^4.0.0-alpha.60",
