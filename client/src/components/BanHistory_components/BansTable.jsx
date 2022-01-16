@@ -6,7 +6,7 @@ import {
   useGlobalFilter,
   useExpanded,
 } from 'react-table';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 
 // utils
 import { makeStyles } from '@mui/styles';
@@ -25,12 +25,13 @@ import Grid from '@mui/material/Grid';
 import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import AutoComplete from '../BanHistory_components/Autocomplete';
 import Tooltip from '../shared/Tooltip';
 import { Link } from 'react-router-dom';
 import Moment from 'react-moment';
 import moment from 'moment';
 import Paper from '@mui/material/Paper';
+import AutoComplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
 
 // icons
 import FirstPageIcon from '@mui/icons-material/FirstPage';
@@ -88,6 +89,7 @@ const DateFilter = ({ column, allDateTos, allDateFroms }) => {
         value={filterValue || ''}
         label="Filter by dateFrom"
         fullWidth
+        displayEmpty
         onChange={handleChange}>
         <MenuItem value={''}>All</MenuItem>
         {[...dateData]
@@ -104,22 +106,22 @@ const DateFilter = ({ column, allDateTos, allDateFroms }) => {
 };
 
 const StatusFilter = ({ column }) => {
-  const [status, setStatus] = useState(true);
   const { filterValue, setFilter } = column;
 
   const handleChange = (event) => {
-    setFilter(event.target.value);
-    setStatus(event.target.value);
+    setFilter(event.target.value || '');
   };
 
   return (
     <FormControl fullWidth>
       <Select
+        displayEmpty
         style={{ maxWidth: '200px', width: '80%' }}
-        value={filterValue || status}
+        value={filterValue || ''}
         label="Filter by status"
         fullWidth
         onChange={handleChange}>
+        <MenuItem value={''}>All</MenuItem>
         <MenuItem value={'true'}>Active</MenuItem>
         <MenuItem value={'false'}>Expired</MenuItem>
       </Select>
@@ -148,11 +150,16 @@ const UserNameFilter = ({ column }) => {
 
   return (
     <AutoComplete
-      filteredOptions={filteredOptions}
-      valueProp={filterValue}
-      setFilterValue={handleChange} // passing the handleChange as props.
-      fullWidth
-      placeholder="Filter by name"
+      disablePortal
+      onChange={(_event, newValue) => {
+        handleChange(newValue);
+      }}
+      inputValue={filterValue}
+      onInputChange={(_event, newInputValue) => {
+        handleChange(newInputValue);
+      }}
+      options={filteredOptions}
+      renderInput={(params) => <TextField {...params} />}
     />
   );
 };
@@ -259,7 +266,7 @@ export default function BansTable({ bans }) {
     {
       defaultColumn,
       columns,
-      autoResetPage: true, // When making changes to the external data you want to disable automatic resets to the state of the table
+      autoResetPage: true,
       data: bans.sort(
         (a, b) =>
           new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
@@ -267,7 +274,7 @@ export default function BansTable({ bans }) {
       initialState: {
         pageIndex: 0,
         pageSize: 20,
-        filters: [{ id: 'isActive', value: true }],
+        // filters: [{ id: 'isActive', value: true }],
       },
     },
     useFilters,
