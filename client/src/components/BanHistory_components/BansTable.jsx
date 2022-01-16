@@ -120,8 +120,8 @@ const StatusFilter = ({ column }) => {
         label="Filter by status"
         fullWidth
         onChange={handleChange}>
-        <MenuItem value={true}>Active</MenuItem>
-        <MenuItem value={false}>Expired</MenuItem>
+        <MenuItem value={'true'}>Active</MenuItem>
+        <MenuItem value={'false'}>Expired</MenuItem>
       </Select>
     </FormControl>
   );
@@ -222,9 +222,12 @@ export default function BansTable({ bans }) {
       },
 
       {
+        id: 'isActive',
         Header: 'Status',
-        accessor: 'isActive',
+        accessor: (r) => r.isActive.toString(),
         Filter: StatusFilter,
+        Cell: (r) =>
+          r.value.toString() === 'true' ? 'Active' : 'Inactive/Expired',
       },
 
       {
