@@ -30,6 +30,7 @@ import Tooltip from '../shared/Tooltip';
 import { Link } from 'react-router-dom';
 import Moment from 'react-moment';
 import moment from 'moment';
+import Paper from '@mui/material/Paper';
 
 // icons
 import FirstPageIcon from '@mui/icons-material/FirstPage';
@@ -41,10 +42,13 @@ import { truncate } from '../../utils/truncate';
 const useStyles = makeStyles((theme) => ({
   tableRoot: {
     width: '100%',
-    maxWidth: '600px',
+    maxWidth: '1100px',
   },
   tableContainer: {
     maxHeight: 500,
+  },
+  tableBody: {
+    // maxHeight: 500,
   },
   paginationSpacer: {
     flex: '1 1 100%',
@@ -60,6 +64,9 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   tableHeader: { maxWidth: '200px', width: '250px' },
+  tableHead: {
+    background: theme.palette.background.paper,
+  },
 }));
 
 const DateFilter = ({ column, allDateTos, allDateFroms }) => {
@@ -246,7 +253,7 @@ export default function BansTable({ bans }) {
     {
       defaultColumn,
       columns,
-      autoResetPage: false, // When making changes to the external data you want to disable automatic resets to the state of the table
+      autoResetPage: true, // When making changes to the external data you want to disable automatic resets to the state of the table
       data: bans.sort(
         (a, b) =>
           new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
@@ -266,10 +273,10 @@ export default function BansTable({ bans }) {
   const classes = useStyles();
 
   return (
-    <>
+    <Paper sx={{ width: '100%' }}>
       <TableContainer className={classes.tableContainer}>
         <Table stickyHeader className={classes.table} {...getTableProps()}>
-          <TableHead>
+          <TableHead className={classes.tableHead}>
             {/* COLUMN HEADERS */}
             {headerGroups.map((headerGroup) => (
               <TableRow {...headerGroup.getHeaderGroupProps()}>
@@ -297,12 +304,12 @@ export default function BansTable({ bans }) {
             ))}
           </TableHead>
 
-          <TableBody {...getTableBodyProps()}>
+          <TableBody {...getTableBodyProps()} className={classes.tableBody}>
             {rows.map((row, idx) => {
               prepareRow(row);
               // table rows
               return (
-                <TableRow {...row.getRowProps()} hover key={idx}>
+                <TableRow tabIndex={-1} {...row.getRowProps()} hover key={idx}>
                   {row.cells.map((cell, idx) => {
                     return (
                       // cell of row.
@@ -407,6 +414,6 @@ export default function BansTable({ bans }) {
           </TableRow>
         </TableFooter>
       </Table>
-    </>
+    </Paper>
   );
 }
