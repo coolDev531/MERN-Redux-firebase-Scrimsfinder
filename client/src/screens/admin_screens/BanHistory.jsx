@@ -4,6 +4,7 @@ import Navbar from '../../components/shared/Navbar/Navbar';
 import { getAllBans } from './../../services/admin.services';
 import BansTable from '../../components/BanHistory_components/BansTable';
 import withAdminRoute from './../../utils/withAdminRoute';
+import Loading from '../../components/shared/Loading';
 
 function BanHistory() {
   const [allBans, setAllBans] = useState([]);
@@ -22,6 +23,10 @@ function BanHistory() {
     };
     fetchBans();
   }, []);
+
+  if (!isLoaded) {
+    return <Loading text="Loading Data..." />;
+  }
 
   return (
     <>
