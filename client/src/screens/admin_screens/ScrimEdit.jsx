@@ -1,11 +1,11 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useScrimsActions } from './../hooks/useScrims';
+import { useScrimsActions } from '../../hooks/useScrims';
 import { Redirect, useParams, useHistory } from 'react-router-dom';
-import useAlerts from '../hooks/useAlerts';
-import useAuth from './../hooks/useAuth';
+import useAlerts from '../../hooks/useAlerts';
+import useAuth from '../../hooks/useAuth';
 
 // components
-import Navbar from '../components/shared/Navbar/Navbar';
+import Navbar from '../../components/shared/Navbar/Navbar';
 import Button from '@mui/material/Button';
 import FormHelperText from '@mui/material/FormHelperText';
 import Grid from '@mui/material/Grid';
@@ -16,19 +16,19 @@ import {
   PageContent,
   PageSection,
   InnerColumn,
-} from '../components/shared/PageComponents';
+} from '../../components/shared/PageComponents';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import Tooltip from './../components/shared/Tooltip';
-import Loading from './../components/shared/Loading';
-import LobbyNameField from './../components/shared/Form_components/LobbyNameField';
-import DatePicker from '../components/shared/DatePicker';
-import TimePicker from '../components/shared/TimePicker';
+import Tooltip from '../../components/shared/Tooltip';
+import Loading from '../../components/shared/Loading';
+import LobbyNameField from './../../components/shared/Form_components/LobbyNameField';
+import DatePicker from '../../components/shared/DatePicker';
+import TimePicker from '../../components/shared/TimePicker';
 
 // utils // services
-import devLog from '../utils/devLog';
-import { updateScrim, getScrimById } from '../services/scrims.services';
-import { sample } from '../utils/sample';
+import devLog from '../../utils/devLog';
+import { updateScrim, getScrimById } from '../../services/scrims.services';
+import { sample } from '../../utils/sample';
 
 const RANDOM_HOST_CODE = '_$random'; // because input doesn't want value to be null, if lobbyhost is equal to this, send it as null in the back end
 
