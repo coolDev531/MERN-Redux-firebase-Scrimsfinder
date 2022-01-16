@@ -6,11 +6,7 @@ import {
   useGlobalFilter,
   useExpanded,
 } from 'react-table';
-<<<<<<< HEAD
 import { useCallback, useMemo } from 'react';
-=======
-import { useCallback, useMemo, useState } from 'react';
->>>>>>> d344858ef4c6b512bfd4de035c637280bec42ffc
 
 // utils
 import { makeStyles } from '@mui/styles';
@@ -29,20 +25,13 @@ import Grid from '@mui/material/Grid';
 import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-<<<<<<< HEAD
-=======
-import AutoComplete from '../BanHistory_components/Autocomplete';
->>>>>>> d344858ef4c6b512bfd4de035c637280bec42ffc
 import Tooltip from '../shared/Tooltip';
 import { Link } from 'react-router-dom';
 import Moment from 'react-moment';
 import moment from 'moment';
 import Paper from '@mui/material/Paper';
-<<<<<<< HEAD
 import AutoComplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-=======
->>>>>>> d344858ef4c6b512bfd4de035c637280bec42ffc
 
 // icons
 import FirstPageIcon from '@mui/icons-material/FirstPage';
@@ -100,10 +89,7 @@ const DateFilter = ({ column, allDateTos, allDateFroms }) => {
         value={filterValue || ''}
         label="Filter by dateFrom"
         fullWidth
-<<<<<<< HEAD
         displayEmpty
-=======
->>>>>>> d344858ef4c6b512bfd4de035c637280bec42ffc
         onChange={handleChange}>
         <MenuItem value={''}>All</MenuItem>
         {[...dateData]
@@ -120,25 +106,15 @@ const DateFilter = ({ column, allDateTos, allDateFroms }) => {
 };
 
 const StatusFilter = ({ column }) => {
-<<<<<<< HEAD
   const { filterValue, setFilter } = column;
 
   const handleChange = (event) => {
     setFilter(event.target.value || '');
-=======
-  const [status, setStatus] = useState(true);
-  const { filterValue, setFilter } = column;
-
-  const handleChange = (event) => {
-    setFilter(event.target.value);
-    setStatus(event.target.value);
->>>>>>> d344858ef4c6b512bfd4de035c637280bec42ffc
   };
 
   return (
     <FormControl fullWidth>
       <Select
-<<<<<<< HEAD
         displayEmpty
         style={{ maxWidth: '200px', width: '80%' }}
         value={filterValue || ''}
@@ -148,15 +124,6 @@ const StatusFilter = ({ column }) => {
         <MenuItem value={''}>All</MenuItem>
         <MenuItem value={'true'}>Active</MenuItem>
         <MenuItem value={'false'}>Expired</MenuItem>
-=======
-        style={{ maxWidth: '200px', width: '80%' }}
-        value={filterValue || status}
-        label="Filter by status"
-        fullWidth
-        onChange={handleChange}>
-        <MenuItem value={true}>Active</MenuItem>
-        <MenuItem value={false}>Expired</MenuItem>
->>>>>>> d344858ef4c6b512bfd4de035c637280bec42ffc
       </Select>
     </FormControl>
   );
@@ -183,7 +150,6 @@ const UserNameFilter = ({ column }) => {
 
   return (
     <AutoComplete
-<<<<<<< HEAD
       disablePortal
       onChange={(_event, newValue) => {
         handleChange(newValue);
@@ -194,13 +160,6 @@ const UserNameFilter = ({ column }) => {
       }}
       options={filteredOptions}
       renderInput={(params) => <TextField {...params} />}
-=======
-      filteredOptions={filteredOptions}
-      valueProp={filterValue}
-      setFilterValue={handleChange} // passing the handleChange as props.
-      fullWidth
-      placeholder="Filter by name"
->>>>>>> d344858ef4c6b512bfd4de035c637280bec42ffc
     />
   );
 };
@@ -270,18 +229,12 @@ export default function BansTable({ bans }) {
       },
 
       {
-<<<<<<< HEAD
         id: 'isActive',
         Header: 'Status',
         accessor: (r) => r.isActive.toString(),
         Filter: StatusFilter,
         Cell: (r) =>
           r.value.toString() === 'true' ? 'Active' : 'Inactive/Expired',
-=======
-        Header: 'Status',
-        accessor: 'isActive',
-        Filter: StatusFilter,
->>>>>>> d344858ef4c6b512bfd4de035c637280bec42ffc
       },
 
       {
@@ -313,11 +266,7 @@ export default function BansTable({ bans }) {
     {
       defaultColumn,
       columns,
-<<<<<<< HEAD
       autoResetPage: true,
-=======
-      autoResetPage: true, // When making changes to the external data you want to disable automatic resets to the state of the table
->>>>>>> d344858ef4c6b512bfd4de035c637280bec42ffc
       data: bans.sort(
         (a, b) =>
           new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
@@ -325,11 +274,7 @@ export default function BansTable({ bans }) {
       initialState: {
         pageIndex: 0,
         pageSize: 20,
-<<<<<<< HEAD
         // filters: [{ id: 'isActive', value: true }],
-=======
-        filters: [{ id: 'isActive', value: true }],
->>>>>>> d344858ef4c6b512bfd4de035c637280bec42ffc
       },
     },
     useFilters,
