@@ -36,6 +36,7 @@ import FirstPageIcon from '@mui/icons-material/FirstPage';
 import LastPageIcon from '@mui/icons-material/LastPage';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
+import { truncate } from '../../utils/truncate';
 
 const useStyles = makeStyles((theme) => ({
   tableRoot: {
@@ -110,7 +111,7 @@ const StatusFilter = ({ column }) => {
         fullWidth
         onChange={handleChange}>
         <MenuItem value={true}>Active</MenuItem>
-        <MenuItem value={false}>Inactive/Expired</MenuItem>
+        <MenuItem value={false}>Expired</MenuItem>
       </Select>
     </FormControl>
   );
@@ -219,6 +220,11 @@ export default function BansTable({ bans }) {
       {
         Header: 'Reason',
         accessor: 'reason',
+        Cell: (r) => (
+          <div style={{ width: '95%', wordBreak: 'break-word' }}>
+            {truncate(r.value, 32)}
+          </div>
+        ),
       },
     ],
 
@@ -228,9 +234,7 @@ export default function BansTable({ bans }) {
   const {
     gotoPage,
     setPageSize,
-    canPreviousPage,
     pageOptions,
-    canNextPage,
     state: { pageIndex, pageSize },
     getTableProps,
     getTableBodyProps,
@@ -323,7 +327,7 @@ export default function BansTable({ bans }) {
 
             {/* Material UI TablePagination component */}
             <TablePagination
-              rowsPerPageOptions={[10, 20, 30, 40, 50]}
+              rowsPerPageOptions={[10, 20, 30, 40, 50, 100]}
               colSpan={0}
               className={classes.pagination}
               count={pageOptions.length}
@@ -332,29 +336,40 @@ export default function BansTable({ bans }) {
               page={pageIndex}
               classes={{ spacer: classes.paginationSpacer }}
               onRowsPerPageChange={(e) => setPageSize(Number(e.target.value))}
+              labelDisplayedRows={() =>
+                `${pageIndex + 1}-${pageOptions?.length} of ${
+                  pageOptions?.length
+                }`
+              }
               ActionsComponent={(props) => {
-                const { count, page, rowsPerPage, onPageChange } = props;
+                const { page, onPageChange } = props;
+
+                const canGoNext = page < pageOptions?.length - 1;
+                const canGoBack = page > 0;
 
                 const handleFirstPageButtonClick = () => {
                   onPageChange(0);
                 };
 
                 const handleBackButtonClick = () => {
-                  if (!canPreviousPage) return;
+                  // if (!canPreviousPage) return;
+                  if (!canGoBack) return;
 
                   const previousPage = page - 1;
                   onPageChange(previousPage);
                 };
 
                 const handleNextButtonClick = () => {
-                  if (!canNextPage) return;
+                  // if (!canNextPage) return;
+                  if (!canGoNext) return;
 
                   const nextPage = page + 1;
                   onPageChange(nextPage);
                 };
 
                 const handleLastPageButtonClick = () => {
-                  onPageChange(Math.max(0, Math.ceil(count / rowsPerPage) - 1));
+                  // onPageChange(Math.max(0, Math.ceil(count / rowsPerPage) - 1));
+                  onPageChange(pageOptions?.length - 1);
                 };
 
                 return (
@@ -373,13 +388,15 @@ export default function BansTable({ bans }) {
                     </IconButton>
                     <IconButton
                       onClick={handleNextButtonClick}
-                      disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+                      // disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+                      disabled={!canGoNext}
                       aria-label="next page">
                       <KeyboardArrowRight />
                     </IconButton>
                     <IconButton
                       onClick={handleLastPageButtonClick}
-                      disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+                      // disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+                      disabled={!canGoNext}
                       aria-label="last page">
                       <LastPageIcon />
                     </IconButton>
