@@ -139,6 +139,7 @@ const unbanUser = async (req, res) => {
   }
 };
 
+
 const getAllBans = async (req, res) => {
   try {
     const populateUser = ['name', 'discord', 'region'];
