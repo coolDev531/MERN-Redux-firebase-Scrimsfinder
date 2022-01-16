@@ -5,6 +5,8 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { debounce } from '../../utils/debounce';
 import styled from '@emotion/styled';
+import ListItem from '@mui/material/ListItem';
+import List from '@mui/material/List';
 
 function AutoComplete({
   fullWidth,
@@ -42,17 +44,17 @@ function AutoComplete({
       // if the user typed and we have filtered options, that means we should show the options
       if (filteredOptions.length) {
         return (
-          <ul className="autocomplete options">
+          <List className="autocomplete options">
             {filteredOptions.map((option, key) => (
-              <li
+              <ListItem
                 key={key}
                 aria-label={option}
                 className="autocomplete option"
                 onClick={handleClickOption}>
                 {option}
-              </li>
+              </ListItem>
             ))}
-          </ul>
+          </List>
         );
       } else {
         // else if the user typed and we have no options

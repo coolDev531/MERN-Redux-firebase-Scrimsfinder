@@ -48,7 +48,10 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: 500,
   },
   tableBody: {
-    // maxHeight: 500,
+    background: theme.palette.background.paper,
+  },
+  pagination: {
+    background: theme.palette.background.paper,
   },
   paginationSpacer: {
     flex: '1 1 100%',
