@@ -44,6 +44,7 @@ const getAllScrims = async (req, res) => {
     try {
       // might have to use populate on this, not necessary now.
       return await Scrim.find({ region: region })
+        .select('-editHistory')
         .populate('createdBy', populateUser)
         .populate('casters', populateUser)
         .populate('lobbyHost', populateUser)
@@ -65,6 +66,7 @@ const getAllScrims = async (req, res) => {
     // this is what we use in the app to get all scrims.
     try {
       return await Scrim.find()
+        .select('-editHistory')
         .populate('createdBy', populateUser)
         .populate('casters', populateUser)
         .populate('lobbyHost', populateUser)
@@ -88,7 +90,7 @@ const getAllScrims = async (req, res) => {
 // @access  Public
 const getTodaysScrims = async (_req, res) => {
   try {
-    const scrims = await Scrim.find();
+    const scrims = await Scrim.find().select('-editHistory');
     const todaysScrims = scrims.filter(checkIfScrimIsToday);
     return res.json(todaysScrims);
   } catch (error) {
@@ -108,7 +110,7 @@ const getScrimById = async (req, res) => {
       return res.status(500).json({ error: 'invalid id' });
     }
 
-    let scrim = Scrim.findOne({ _id: { $eq: id } });
+    let scrim = Scrim.findOne({ _id: { $eq: id } }).select('-editHistory');
 
     if (!scrim) return res.status(404).json({ message: 'Scrim not found!' });
 
@@ -197,13 +199,44 @@ const updateScrim = async (req, res) => {
     return res.status(500).json({ error: 'invalid id' });
   }
 
-  // if adminkey isn't provided or is incorrect, throw an error
-  // it would probably be better to use discord and just give people admin roles instead of entering a key.
-  if (!req.body.adminKey || req.body.adminKey !== KEYS.ADMIN_KEY) {
-    return res.status(401).json({ error: 'Cannot update scrim: unauthorized' });
+  const oneScrim = await Scrim.findById(id).select([
+    '-teamOne',
+    '-teamTwo',
+    '-casters',
+    '-lobbyHost',
+  ]);
+
+  if (!oneScrim) {
+    return res.status(500).json({ error: 'scrim not found' });
   }
 
-  await Scrim.findByIdAndUpdate(id, req.body, { new: true }, (error, scrim) => {
+  let editHistory;
+
+  if (oneScrim._doc.editHistory?.length) {
+    editHistory = [
+      {
+        ...oneScrim._doc.editHistory,
+        previousTitle: oneScrim._doc.title,
+        payload: JSON.stringify(req.body),
+        _user: req.user,
+      },
+    ];
+  } else {
+    editHistory = [
+      {
+        payload: JSON.stringify(req.body),
+        _user: req.user,
+        previousTitle: oneScrim._doc.title,
+      },
+    ];
+  }
+
+  const payload = {
+    ...req.body,
+    editHistory,
+  };
+
+  await Scrim.findByIdAndUpdate(id, payload, { new: true }, (error, scrim) => {
     if (error) {
       return res.status(500).json({ error: error.message });
     }
@@ -232,14 +265,6 @@ const deleteScrim = async (req, res) => {
 
     if (!isValid) {
       return res.status(500).json({ error: 'invalid id' });
-    }
-
-    // if adminkey isn't provided or is incorrect, throw an error
-    // it would probably be better to use discord and just give people admin roles instead of entering a key.
-    if (!req.body.adminKey || req.body.adminKey !== KEYS.ADMIN_KEY) {
-      return res
-        .status(401)
-        .json({ error: 'Cannot delete scrim: unauthorized' });
     }
 
     const deleted = await Scrim.findByIdAndDelete(id);
@@ -934,14 +959,6 @@ const removeImageFromScrim = async (req, res) => {
 
     if (scrim.postGameImage === null) {
       return res.status(500).send('Image does not exist!');
-    }
-
-    // if adminkey isn't provided or is incorrect, throw an error
-    // it would probably be better to use discord and just give people admin roles instead of entering a key.
-    if (!req.body.adminKey || req.body.adminKey !== KEYS.ADMIN_KEY) {
-      return res
-        .status(401)
-        .json({ error: 'Cannot remove image from scrim: unauthorized' });
     }
 
     const params = {

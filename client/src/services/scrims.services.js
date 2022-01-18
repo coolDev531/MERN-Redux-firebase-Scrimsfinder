@@ -211,11 +211,9 @@ export const addImageToScrim = async (id, data, setAlert) => {
   }
 };
 
-export const removeImageFromScrim = async (id, adminKey) => {
+export const removeImageFromScrim = async (id) => {
   try {
-    const response = await api.patch(`/scrims/${id}/remove-image`, {
-      adminKey,
-    });
+    const response = await api.patch(`/scrims/${id}/remove-image`);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -223,13 +221,9 @@ export const removeImageFromScrim = async (id, adminKey) => {
   }
 };
 
-export const deleteScrim = async (id, adminKey) => {
+export const deleteScrim = async (id) => {
   try {
-    const response = await api.delete(`/scrims/${id}`, {
-      data: {
-        adminKey,
-      },
-    });
+    const response = await api.delete(`/scrims/${id}`);
     return response.data;
   } catch (error) {
     throw error;

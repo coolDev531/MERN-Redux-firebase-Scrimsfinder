@@ -28,6 +28,18 @@ const PlayerSchema = new Schema({
   },
 });
 
+const EditHistory = new Schema(
+  {
+    payload: { type: String },
+    previousTitle: { type: String },
+    _user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+  },
+  { timestamps: true }
+);
+
 const Scrim = new Schema(
   {
     teamOne: { type: [PlayerSchema], default: [] }, // an array of players
@@ -79,6 +91,9 @@ const Scrim = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Conversation',
     },
+
+    // track edits for the scrim
+    editHistory: { type: [EditHistory], default: [] },
   },
   { timestamps: true, optimisticConcurrency: true, versionKey: 'version' }
 );

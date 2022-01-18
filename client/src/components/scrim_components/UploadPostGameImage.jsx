@@ -70,10 +70,7 @@ export default function UploadPostGameImage({
 
       setButtonDisabled(true);
 
-      let updatedScrim = await removeImageFromScrim(
-        scrim._id,
-        currentUser?.adminKey ?? ''
-      );
+      let updatedScrim = await removeImageFromScrim(scrim._id);
 
       if (updatedScrim?.createdBy) {
         setCurrentAlert({
