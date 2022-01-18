@@ -180,10 +180,7 @@ export default function ScrimSection({ scrimData, isInDetail }) {
       let yes = window.confirm('Are you sure you want to close this scrim?');
       if (!yes) return;
 
-      let deletedScrim = await deleteScrim(
-        scrim._id,
-        currentUser.adminKey ?? ''
-      );
+      let deletedScrim = await deleteScrim(scrim._id);
 
       if (deletedScrim) {
         dispatch({ type: 'scrims/deleteScrim', payload: scrim });

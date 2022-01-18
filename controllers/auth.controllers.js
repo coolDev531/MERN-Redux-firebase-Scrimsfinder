@@ -130,7 +130,7 @@ const loginUser = async (req, res) => {
 
     // I don't even think we need to hash the uid...
     const accessToken = jwt.sign(payload, KEYS.SECRET_OR_KEY, {
-      expiresIn: 31556926, // 1 year in seconds
+      expiresIn: '24h',
     });
 
     // the user last logged in now, and save it in db.
@@ -289,8 +289,7 @@ const registerUser = async (req, res) => {
         };
 
         const accessToken = jwt.sign(payload, KEYS.SECRET_OR_KEY, {
-          expiresIn: 31556926, // 1 year in seconds
-          // expiresIn: new Date(new Date()).setDate(new Date().getDate() + 30), // 30 days from now, does this work?
+          expiresIn: '24h',
         });
 
         newUser.save();
@@ -348,8 +347,7 @@ const verifyUser = async (req, res) => {
     };
 
     const accessToken = jwt.sign(payload, KEYS.SECRET_OR_KEY, {
-      expiresIn: 31556926, // 1 year in seconds
-      // expiresIn: new Date(new Date()).setDate(new Date().getDate() + 30), // 30 days from now, does this work?
+      expiresIn: '24h',
     });
 
     // the user last logged in now, and save it in db.
@@ -487,7 +485,7 @@ const updateUser = async (req, res) => {
     };
 
     const accessToken = jwt.sign(payload, KEYS.SECRET_OR_KEY, {
-      expiresIn: 31556926, // 1 year in seconds
+      expiresIn: '24h',
     });
 
     await User.findByIdAndUpdate(
