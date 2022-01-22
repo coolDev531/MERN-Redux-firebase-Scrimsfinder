@@ -52,12 +52,12 @@ function setDimensions(image) {
   return { width, height };
 }
 
-function getBase64(image, removeMive = false) {
+function getBase64(image, removeMime = false) {
   const { width, height } = setDimensions(image);
   const canvas = createCanvas(image, width, height);
   const dataUrl = canvas.toDataURL();
 
-  return removeMive ? dataUrl.split(',')[1] : dataUrl;
+  return removeMime ? dataUrl.split(',')[1] : dataUrl;
 }
 
 export function resize(file, removeMime = false) {
