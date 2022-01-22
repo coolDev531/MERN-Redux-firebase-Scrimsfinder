@@ -75,14 +75,21 @@ export default function UploadPostGameImage({
 
     if (!isImage) return;
 
-    // const isValidSize = await FileManipulator.checkFileSize({
-    //   file,
-    //   fileInputRef,
-    //   setCurrentAlert,
-    //   maxFileSizeMib: 0.953674,
-    // });
+    const isValidSize = await FileManipulator.checkFileSize({
+      file,
+      fileInputRef,
+      maxFileSizeMib: 1.9073500003815,
+    });
 
-    // if (!isValidSize) return;
+    if (!isValidSize) {
+      if (setCurrentAlert) {
+        setCurrentAlert({
+          type: 'Error',
+          message: `File ${file.name} is too big! \nmax allowed size: 2 MB.`,
+        });
+      }
+      return;
+    }
 
     let yes = window.confirm('Are you sure you want to upload this image?');
 
@@ -93,16 +100,9 @@ export default function UploadPostGameImage({
     }
 
     try {
-      // const reader = new FileReader();
-
       setButtonDisabled(true);
 
       const base64 = await ImageManipulator.resize(file);
-
-      // send base64 string from client to back-end.
-      // reader.addEventListener('loadend', async () => {
-      //   const base64 = reader.result;
-      //   const resizedImage = await FileManipulator.resizeImage({maxWidth: 1, maxHeight: 1});
 
       const requestBody = {
         timestampNow: Date.now(),
