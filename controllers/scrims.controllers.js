@@ -22,10 +22,10 @@ const {
   checkUnauthorized,
 } = require('../utils/scrimUtils');
 const capitalizeWord = require('../utils/capitalizeWord');
-const AWS = require('aws-sdk');
 const KEYS = require('../config/keys');
 const escape = require('escape-html');
 const createS3 = require('../utils/createS3');
+const uploadToBucket = require('../utils/uploadToBucket');
 
 // for post-game lobby image upload
 let s3Bucket = createS3();
@@ -278,15 +278,176 @@ const deleteScrim = async (req, res) => {
 // @desc    This is how a player joins a team in the scrim (is used in ScrimTeamList.jsx)
 // @access  Private
 const insertPlayerInScrim = async (req, res) => {
-  // when player joins
-  const session = await Scrim.startSession();
+  try {
+    // when player joins
+    const session = await Scrim.startSession();
 
-  // beginning of session
-  await session.withTransaction(async () => {
-    const { scrimId, userId } = req.params;
-    const { playerData } = req.body;
+    // beginning of session
+    await session.withTransaction(async () => {
+      const { scrimId, userId } = req.params;
+      const { playerData } = req.body;
 
-    const currentUser = req.user; // from auth middleware
+      const currentUser = req.user; // from auth middleware
+
+      let isValidUser = mongoose.Types.ObjectId.isValid(userId);
+      let isValidScrim = mongoose.Types.ObjectId.isValid(scrimId);
+
+      if (!isValidUser) {
+        return res.status(500).json('invalid user id.');
+      }
+
+      if (!isValidScrim) {
+        return res.status(500).json('invalid scrim id.');
+      }
+
+      const isUnauthorized = checkUnauthorized(currentUser, userId);
+
+      if (isUnauthorized) {
+        // if user isn't admin or isn't himself, that means he is not authorized to do this.
+        return res.status(401).send({ error: 'Unauthorized' });
+      }
+
+      if (!playerData) {
+        return res.status(500).json({
+          error:
+            'playerData object not provided, looks like this: playerData: { team: {name: String}, role: String }',
+        });
+      }
+
+      // if req.body has no team name
+      if (!playerData.team?.name) {
+        return res.status(500).json({
+          error:
+            'team object not provided! looks like this: playerData: { {team: {name: String}} }',
+        });
+      }
+
+      if (!playerData?.role) {
+        return res.status(500).json({
+          error:
+            'role string not provided! looks like this: playerData {role: String}',
+        });
+      }
+
+      let roleIsValid = isValidRole(playerData.role);
+
+      if (!roleIsValid) {
+        return res.status(500).json({
+          error: 'role not valid: has to match: Top, Jungle, Mid, ADC, Support',
+        });
+      }
+
+      const scrim = await Scrim.findById(scrimId);
+      const user = await User.findById(userId);
+
+      if (!scrim) {
+        return res.status(500).send('Scrim not found');
+      }
+
+      if (!user) {
+        return res.status(500).send('User not found');
+      }
+
+      const playerExists = [...scrim._doc.teamOne, ...scrim._doc.teamTwo].find(
+        (player) => String(player._user) === String(user._id)
+      );
+
+      const casterExists = scrim._doc.casters.find(
+        (caster) => String(caster._id) === String(user._id)
+      );
+
+      // when somebody makes an api call for /insert-player but actually meant to move the player.
+      if (playerExists) {
+        return res.status(500).json({
+          error:
+            'Player already exists in game. Did you mean to move the player? use the /move-player endpoint instead.',
+        });
+      }
+
+      if (casterExists) {
+        return res.status(500).json({
+          error:
+            'User already is a caster. you cannot be a caster and a player in the same game!.',
+        });
+      }
+
+      const teamJoiningName = playerData.team.name;
+
+      const playerInTransaction = {
+        // if role is adc make it all uppercase, else just capitalize first letter of role.
+        role: /adc/gi.test(playerData.role)
+          ? playerData.role.toUpperCase()
+          : capitalizeWord(playerData.role),
+        team: playerData.team,
+
+        _user: {
+          ...user._doc,
+        },
+      };
+
+      const teamJoiningArr =
+        teamJoiningName === 'teamOne' ? scrim._doc.teamOne : scrim._doc.teamTwo;
+
+      const spotsAvailable = getAvailableRoles(teamJoiningArr);
+
+      let reqBody = {
+        [teamJoiningName]: [...teamJoiningArr, playerInTransaction],
+      };
+
+      const spotTaken = scrim._doc[teamJoiningName].find(
+        (player) => player.role === playerInTransaction.role
+      );
+
+      if (spotTaken) {
+        onSpotTaken(scrim._doc, res, spotsAvailable, teamJoiningName);
+        return;
+      }
+
+      await Scrim.findByIdAndUpdate(
+        scrimId,
+        reqBody,
+        { new: true },
+        async (error, scrim) => {
+          if (error) {
+            return res.status(500).json({ error: error.message });
+          }
+
+          if (!scrim) {
+            return res.status(500).send('Scrim not found');
+          }
+
+          // check for lobby host / captain everytime player joins
+          const lobbyHost = await getLobbyHost(scrim);
+          scrim.lobbyHost = lobbyHost;
+
+          await scrim.save();
+          return res.status(200).json(scrim);
+        }
+      )
+        .populate('createdBy', populateUser)
+        .populate('casters', populateUser)
+        .populate('lobbyHost', populateUser)
+        .populate(populateTeam('teamOne'))
+        .populate(populateTeam('teamTwo'))
+        .exec();
+    });
+
+    // end of session
+    session.endSession();
+  } catch (err) {
+    return res.status(500).json({ error: err });
+  }
+};
+
+// @route   PATCH /api/scrims/:scrimId/remove-player/:userId
+// @desc    This is how a player leaves a team in the scrim or an admin kicks a player (is used in ScrimTeamList.jsx)
+// @access  Private
+const removePlayerFromScrim = async (req, res) => {
+  try {
+    // when player leaves or gets kicked
+    const { userId, scrimId } = req.params;
+
+    const currentUser = req.user;
 
     let isValidUser = mongoose.Types.ObjectId.isValid(userId);
     let isValidScrim = mongoose.Types.ObjectId.isValid(scrimId);
@@ -299,127 +460,55 @@ const insertPlayerInScrim = async (req, res) => {
       return res.status(500).json('invalid scrim id.');
     }
 
-    const isUnauthorized = checkUnauthorized(currentUser, userId);
+    const isUnauthorized = checkUnauthorized(currentUser, userId); // here it's important to use, because admins can kick players
 
     if (isUnauthorized) {
       // if user isn't admin or isn't himself, that means he is not authorized to do this.
       return res.status(401).send({ error: 'Unauthorized' });
     }
 
-    if (!playerData) {
-      return res.status(500).json({
-        error:
-          'playerData object not provided, looks like this: playerData: { team: {name: String}, role: String }',
-      });
-    }
-
-    // if req.body has no team name
-    if (!playerData.team?.name) {
-      return res.status(500).json({
-        error:
-          'team object not provided! looks like this: playerData: { {team: {name: String}} }',
-      });
-    }
-
-    if (!playerData?.role) {
-      return res.status(500).json({
-        error:
-          'role string not provided! looks like this: playerData {role: String}',
-      });
-    }
-
-    let roleIsValid = isValidRole(playerData.role);
-
-    if (!roleIsValid) {
-      return res.status(500).json({
-        error: 'role not valid: has to match: Top, Jungle, Mid, ADC, Support',
-      });
-    }
-
     const scrim = await Scrim.findById(scrimId);
-    const user = await User.findById(userId);
+    const _user = await User.findById(userId); // user leaving or being kicked
 
     if (!scrim) {
       return res.status(500).send('Scrim not found');
     }
 
-    if (!user) {
-      return res.status(500).send('User not found');
+    if (!_user) {
+      return res.status(500).json('user not found!');
     }
 
-    const playerExists = [...scrim._doc.teamOne, ...scrim._doc.teamTwo].find(
-      (player) => String(player._user) === String(user._id)
-    );
+    const teamLeavingName = [...scrim._doc.teamOne, ...scrim._doc.teamTwo].find(
+      (player) => String(player._user) === String(userId)
+    ).team.name;
 
-    const casterExists = scrim._doc.casters.find(
-      (caster) => String(caster._id) === String(user._id)
-    );
+    const teamLeavingArr =
+      teamLeavingName === 'teamOne' ? scrim._doc.teamOne : scrim._doc.teamTwo;
 
-    // when somebody makes an api call for /insert-player but actually meant to move the player.
-    if (playerExists) {
-      return res.status(500).json({
-        error:
-          'Player already exists in game. Did you mean to move the player? use the /move-player endpoint instead.',
-      });
-    }
+    let isLobbyHost = String(scrim._doc.lobbyHost?._id) === String(_user?._id);
 
-    if (casterExists) {
-      return res.status(500).json({
-        error:
-          'User already is a caster. you cannot be a caster and a player in the same game!.',
-      });
-    }
-
-    const teamJoiningName = playerData.team.name;
-
-    const playerInTransaction = {
-      // if role is adc make it all uppercase, else just capitalize first letter of role.
-      role: /adc/gi.test(playerData.role)
-        ? playerData.role.toUpperCase()
-        : capitalizeWord(playerData.role),
-      team: playerData.team,
-
-      _user: {
-        ...user._doc,
-      },
+    const scrimData = {
+      // filter array to remove player leaving
+      [teamLeavingName]: teamLeavingArr.filter(
+        (player) =>
+          //  we didn't populate here so player._user is actually just user._id
+          String(player._user) !== String(_user?._id)
+      ),
+      lobbyHost: isLobbyHost ? null : scrim?._doc?.lobbyHost ?? null, // if player leaving is hosting, reset the host to null
     };
-
-    const teamJoiningArr =
-      teamJoiningName === 'teamOne' ? scrim._doc.teamOne : scrim._doc.teamTwo;
-
-    const spotsAvailable = getAvailableRoles(teamJoiningArr);
-
-    let reqBody = {
-      [teamJoiningName]: [...teamJoiningArr, playerInTransaction],
-    };
-
-    const spotTaken = scrim._doc[teamJoiningName].find(
-      (player) => player.role === playerInTransaction.role
-    );
-
-    if (spotTaken) {
-      onSpotTaken(scrim._doc, res, spotsAvailable, teamJoiningName);
-      return;
-    }
 
     await Scrim.findByIdAndUpdate(
       scrimId,
-      reqBody,
+      scrimData,
       { new: true },
-      async (error, scrim) => {
+      (error, scrim) => {
         if (error) {
           return res.status(500).json({ error: error.message });
         }
-
         if (!scrim) {
           return res.status(500).send('Scrim not found');
         }
 
-        // check for lobby host / captain everytime player joins
-        const lobbyHost = await getLobbyHost(scrim);
-        scrim.lobbyHost = lobbyHost;
-
-        await scrim.save();
         return res.status(200).json(scrim);
       }
     )
@@ -429,90 +518,9 @@ const insertPlayerInScrim = async (req, res) => {
       .populate(populateTeam('teamOne'))
       .populate(populateTeam('teamTwo'))
       .exec();
-  });
-
-  // end of session
-  session.endSession();
-};
-
-// @route   PATCH /api/scrims/:scrimId/remove-player/:userId
-// @desc    This is how a player leaves a team in the scrim or an admin kicks a player (is used in ScrimTeamList.jsx)
-// @access  Private
-const removePlayerFromScrim = async (req, res) => {
-  // when player leaves or gets kicked
-  const { userId, scrimId } = req.params;
-
-  const currentUser = req.user;
-
-  let isValidUser = mongoose.Types.ObjectId.isValid(userId);
-  let isValidScrim = mongoose.Types.ObjectId.isValid(scrimId);
-
-  if (!isValidUser) {
-    return res.status(500).json('invalid user id.');
+  } catch (err) {
+    return res.status(500).json({ error: err });
   }
-
-  if (!isValidScrim) {
-    return res.status(500).json('invalid scrim id.');
-  }
-
-  const isUnauthorized = checkUnauthorized(currentUser, userId); // here it's important to use, because admins can kick players
-
-  if (isUnauthorized) {
-    // if user isn't admin or isn't himself, that means he is not authorized to do this.
-    return res.status(401).send({ error: 'Unauthorized' });
-  }
-
-  const scrim = await Scrim.findById(scrimId);
-  const _user = await User.findById(userId); // user leaving or being kicked
-
-  if (!scrim) {
-    return res.status(500).send('Scrim not found');
-  }
-
-  if (!_user) {
-    return res.status(500).json('user not found!');
-  }
-
-  const teamLeavingName = [...scrim._doc.teamOne, ...scrim._doc.teamTwo].find(
-    (player) => String(player._user) === String(userId)
-  ).team.name;
-
-  const teamLeavingArr =
-    teamLeavingName === 'teamOne' ? scrim._doc.teamOne : scrim._doc.teamTwo;
-
-  let isLobbyHost = String(scrim._doc.lobbyHost?._id) === String(_user?._id);
-
-  const scrimData = {
-    // filter array to remove player leaving
-    [teamLeavingName]: teamLeavingArr.filter(
-      (player) =>
-        //  we didn't populate here so player._user is actually just user._id
-        String(player._user) !== String(_user?._id)
-    ),
-    lobbyHost: isLobbyHost ? null : scrim?._doc?.lobbyHost ?? null, // if player leaving is hosting, reset the host to null
-  };
-
-  await Scrim.findByIdAndUpdate(
-    scrimId,
-    scrimData,
-    { new: true },
-    (error, scrim) => {
-      if (error) {
-        return res.status(500).json({ error: error.message });
-      }
-      if (!scrim) {
-        return res.status(500).send('Scrim not found');
-      }
-
-      return res.status(200).json(scrim);
-    }
-  )
-    .populate('createdBy', populateUser)
-    .populate('casters', populateUser)
-    .populate('lobbyHost', populateUser)
-    .populate(populateTeam('teamOne'))
-    .populate(populateTeam('teamTwo'))
-    .exec();
 };
 
 // @route   PATCH /api/scrims/:scrimId/move-player/:userId
@@ -520,276 +528,358 @@ const removePlayerFromScrim = async (req, res) => {
 // very similiar to insertPlayerInScrim, I used to have both of these in 1 function that would just know what to do, and I think maybe it was better, not sure.
 // @access  Private
 const movePlayerInScrim = async (req, res) => {
-  // when player moves positions and/or teams
-  const session = await Scrim.startSession();
+  try {
+    // when player moves positions and/or teams
+    const session = await Scrim.startSession();
 
-  // beginning of session
-  await session.withTransaction(async () => {
-    const { userId, scrimId } = req.params;
-    const { playerData } = req.body;
+    // beginning of session
+    await session.withTransaction(async () => {
+      const { userId, scrimId } = req.params;
+      const { playerData } = req.body;
 
-    const currentUser = req.user;
+      const currentUser = req.user;
 
-    // check for invalid/malicious ids
-    let isValidUser = mongoose.Types.ObjectId.isValid(userId);
-    let isValidScrim = mongoose.Types.ObjectId.isValid(scrimId);
+      // check for invalid/malicious ids
+      let isValidUser = mongoose.Types.ObjectId.isValid(userId);
+      let isValidScrim = mongoose.Types.ObjectId.isValid(scrimId);
 
-    if (!isValidUser) {
-      return res.status(500).json({ error: 'invalid user id.' });
-    }
+      if (!isValidUser) {
+        return res.status(500).json({ error: 'invalid user id.' });
+      }
 
-    if (!isValidScrim) {
-      return res.status(500).json({ error: 'invalid scrim id.' });
-    }
+      if (!isValidScrim) {
+        return res.status(500).json({ error: 'invalid scrim id.' });
+      }
 
-    const isUnauthorized = checkUnauthorized(currentUser, userId);
+      const isUnauthorized = checkUnauthorized(currentUser, userId);
 
-    if (isUnauthorized) {
-      // if user isn't admin or isn't himself, that means he is not authorized to do this.
-      return res.status(401).send({ error: 'Unauthorized' });
-    }
+      if (isUnauthorized) {
+        // if user isn't admin or isn't himself, that means he is not authorized to do this.
+        return res.status(401).send({ error: 'Unauthorized' });
+      }
 
-    const scrim = await Scrim.findById(scrimId);
-    const user = await User.findById(userId);
+      const scrim = await Scrim.findById(scrimId);
+      const user = await User.findById(userId);
 
-    if (!scrim) {
-      return res.status(500).send({ error: 'Scrim not found' });
-    }
+      if (!scrim) {
+        return res.status(500).send({ error: 'Scrim not found' });
+      }
 
-    if (!user) {
-      return res.status(500).send({ error: 'User not found' });
-    }
+      if (!user) {
+        return res.status(500).send({ error: 'User not found' });
+      }
 
-    const teamJoiningName = playerData.team.name;
+      const teamJoiningName = playerData.team.name;
 
-    const teamJoiningArr =
-      teamJoiningName === 'teamOne' ? scrim._doc.teamOne : scrim._doc.teamTwo;
+      const teamJoiningArr =
+        teamJoiningName === 'teamOne' ? scrim._doc.teamOne : scrim._doc.teamTwo;
 
-    const playerFound = [...scrim._doc.teamOne, ...scrim._doc.teamTwo].find(
-      (player) => String(player._user) === String(user._id)
-    );
+      const playerFound = [...scrim._doc.teamOne, ...scrim._doc.teamTwo].find(
+        (player) => String(player._user) === String(user._id)
+      );
 
-    if (!playerData?.role) {
-      return res.status(500).json({
-        error:
-          'role string not provided! looks like this: playerData {role: String}',
-      });
-    }
+      if (!playerData?.role) {
+        return res.status(500).json({
+          error:
+            'role string not provided! looks like this: playerData {role: String}',
+        });
+      }
 
-    let roleIsValid = isValidRole(playerData.role);
+      let roleIsValid = isValidRole(playerData.role);
 
-    if (!roleIsValid) {
-      return res.status(500).json({
-        error: 'role not valid: has to match: Top, Jungle, Mid, ADC, Support',
-      });
-    }
+      if (!roleIsValid) {
+        return res.status(500).json({
+          error: 'role not valid: has to match: Top, Jungle, Mid, ADC, Support',
+        });
+      }
 
-    // when somebody makes an api call for /insert-player but actually meant to move the player.
-    if (!playerFound) {
-      return res.status(500).json({
-        error:
-          'Player does not exist in game. Did you mean to join or insert the player? use the /insert-player endpoint instead.',
-      });
-    }
+      // when somebody makes an api call for /insert-player but actually meant to move the player.
+      if (!playerFound) {
+        return res.status(500).json({
+          error:
+            'Player does not exist in game. Did you mean to join or insert the player? use the /insert-player endpoint instead.',
+        });
+      }
 
-    // the player state before the transaction
-    const previousPlayerState = [
-      ...scrim._doc.teamOne,
-      ...scrim._doc.teamTwo,
-    ].find((player) => String(player._user) === String(user._id));
+      // the player state before the transaction
+      const previousPlayerState = [
+        ...scrim._doc.teamOne,
+        ...scrim._doc.teamTwo,
+      ].find((player) => String(player._user) === String(user._id));
 
-    let previousTeamArr =
-      previousPlayerState.team.name === 'teamOne'
-        ? scrim._doc.teamOne
-        : scrim._doc.teamTwo;
-
-    const isChangingTeams =
-      compareArrays(previousTeamArr, teamJoiningArr) === false;
-
-    const playerInTransaction = {
-      // if it's adc, make it all uppercase, else capitalize it.
-      // this is just if someone is using postman and is misspelling the casing.
-      role: /adc/gi.test(playerData.role)
-        ? playerData.role.toUpperCase()
-        : capitalizeWord(playerData.role),
-      team: playerData.team,
-
-      _user: {
-        ...user._doc,
-      },
-    };
-
-    const spotTaken = scrim._doc[teamJoiningName].find(
-      (player) => player.role === playerInTransaction.role
-    );
-
-    const spotsAvailable = getAvailableRoles(teamJoiningArr);
-
-    let newBody = {};
-
-    if (isChangingTeams) {
-      // if player is changing teams
-
-      const teamChangingToName = playerData.team.name,
-        teamLeavingName = previousPlayerState.team.name;
-
-      const teamLeavingArray =
-        teamLeavingName === 'teamOne' ? scrim._doc.teamOne : scrim._doc.teamTwo;
-
-      const teamChangingToArray =
-        teamChangingToName === 'teamOne'
+      let previousTeamArr =
+        previousPlayerState.team.name === 'teamOne'
           ? scrim._doc.teamOne
           : scrim._doc.teamTwo;
 
-      let [teamLeft, teamJoined] = swapPlayer(
-        teamLeavingArray,
-        teamChangingToArray,
-        playerInTransaction
+      const isChangingTeams =
+        compareArrays(previousTeamArr, teamJoiningArr) === false;
+
+      const playerInTransaction = {
+        // if it's adc, make it all uppercase, else capitalize it.
+        // this is just if someone is using postman and is misspelling the casing.
+        role: /adc/gi.test(playerData.role)
+          ? playerData.role.toUpperCase()
+          : capitalizeWord(playerData.role),
+        team: playerData.team,
+
+        _user: {
+          ...user._doc,
+        },
+      };
+
+      const spotTaken = scrim._doc[teamJoiningName].find(
+        (player) => player.role === playerInTransaction.role
       );
 
-      newBody = {
-        // team left array state after swap player function
-        [teamLeavingName]: teamLeft,
-        [teamJoiningName]: [
-          ...teamJoined.map((player) =>
-            // ._user is just an id here because of no populate
-            player._user === playerInTransaction._user._id
-              ? playerInTransaction
-              : player
-          ),
-        ],
-      };
-    } else {
-      // if moving but not changing teams
+      const spotsAvailable = getAvailableRoles(teamJoiningArr);
 
-      // remove the player from the team
-      let restOfTeam = [...teamJoiningArr].filter(
-        (player) => String(player._user) !== String(user._id)
-      );
+      let newBody = {};
 
-      // re-insert him in the same team in his new role.
-      newBody = {
-        [teamJoiningName]: [...restOfTeam, playerInTransaction],
-      };
-    }
+      if (isChangingTeams) {
+        // if player is changing teams
 
-    if (spotTaken) {
-      onSpotTaken(scrim._doc, res, spotsAvailable, teamJoiningName);
-      return;
-    }
+        const teamChangingToName = playerData.team.name,
+          teamLeavingName = previousPlayerState.team.name;
 
-    await Scrim.findByIdAndUpdate(
-      scrimId,
-      newBody,
-      { new: true },
-      async (error, scrim) => {
-        if (error) {
-          return res.status(500).json({ error: error.message });
-        }
+        const teamLeavingArray =
+          teamLeavingName === 'teamOne'
+            ? scrim._doc.teamOne
+            : scrim._doc.teamTwo;
 
-        if (!scrim) {
-          return res.status(500).send('Scrim not found');
-        }
+        const teamChangingToArray =
+          teamChangingToName === 'teamOne'
+            ? scrim._doc.teamOne
+            : scrim._doc.teamTwo;
 
-        // check to select lobby host / captain for the scrim everytime someone moves
-        const lobbyHost = await getLobbyHost(scrim);
-        scrim.lobbyHost = lobbyHost;
+        let [teamLeft, teamJoined] = swapPlayer(
+          teamLeavingArray,
+          teamChangingToArray,
+          playerInTransaction
+        );
 
-        await scrim.save();
-        return res.status(200).json(scrim);
+        newBody = {
+          // team left array state after swap player function
+          [teamLeavingName]: teamLeft,
+          [teamJoiningName]: [
+            ...teamJoined.map((player) =>
+              // ._user is just an id here because of no populate
+              player._user === playerInTransaction._user._id
+                ? playerInTransaction
+                : player
+            ),
+          ],
+        };
+      } else {
+        // if moving but not changing teams
+
+        // remove the player from the team
+        let restOfTeam = [...teamJoiningArr].filter(
+          (player) => String(player._user) !== String(user._id)
+        );
+
+        // re-insert him in the same team in his new role.
+        newBody = {
+          [teamJoiningName]: [...restOfTeam, playerInTransaction],
+        };
       }
-    )
-      .populate('createdBy', populateUser)
-      .populate('casters', populateUser)
-      .populate('lobbyHost', populateUser)
-      .populate(populateTeam('teamOne'))
-      .populate(populateTeam('teamTwo'))
-      .exec();
-  });
 
-  // end of session
-  session.endSession();
+      if (spotTaken) {
+        onSpotTaken(scrim._doc, res, spotsAvailable, teamJoiningName);
+        return;
+      }
+
+      await Scrim.findByIdAndUpdate(
+        scrimId,
+        newBody,
+        { new: true },
+        async (error, scrim) => {
+          if (error) {
+            return res.status(500).json({ error: error.message });
+          }
+
+          if (!scrim) {
+            return res.status(500).send('Scrim not found');
+          }
+
+          // check to select lobby host / captain for the scrim everytime someone moves
+          const lobbyHost = await getLobbyHost(scrim);
+          scrim.lobbyHost = lobbyHost;
+
+          await scrim.save();
+          return res.status(200).json(scrim);
+        }
+      )
+        .populate('createdBy', populateUser)
+        .populate('casters', populateUser)
+        .populate('lobbyHost', populateUser)
+        .populate(populateTeam('teamOne'))
+        .populate(populateTeam('teamTwo'))
+        .exec();
+    });
+
+    // end of session
+    session.endSession();
+  } catch (err) {
+    return res.status(500).json({ error: err });
+  }
 };
 
 // @route   PATCH /api/scrims/:scrimId/insert-caster/:casterId
 // @desc    This is how a user can become a caster for a scrim (used in ScrimSectionHeader)
 // @access  Private
 const insertCasterInScrim = async (req, res) => {
-  const session = await Scrim.startSession();
+  try {
+    const session = await Scrim.startSession();
 
-  await session.withTransaction(async () => {
-    const { scrimId, casterId } = req.params;
-    const currentUser = req.user;
+    await session.withTransaction(async () => {
+      const { scrimId, casterId } = req.params;
+      const currentUser = req.user;
 
-    const isValidScrim = mongoose.Types.ObjectId.isValid(scrimId);
-    const isValidCaster = mongoose.Types.ObjectId.isValid(casterId);
+      const isValidScrim = mongoose.Types.ObjectId.isValid(scrimId);
+      const isValidCaster = mongoose.Types.ObjectId.isValid(casterId);
 
-    if (!isValidCaster) {
-      return res.status(500).json('invalid user id.');
-    }
+      if (!isValidCaster) {
+        return res.status(500).json('invalid user id.');
+      }
 
-    if (!isValidScrim) {
-      return res.status(500).json('invalid scrim id.');
-    }
+      if (!isValidScrim) {
+        return res.status(500).json('invalid scrim id.');
+      }
 
-    const isUnauthorized = checkUnauthorized(currentUser, casterId);
+      const isUnauthorized = checkUnauthorized(currentUser, casterId);
 
-    if (isUnauthorized) {
-      // if user isn't admin or isn't himself, that means he is not authorized to do this.
-      return res.status(401).send({ error: 'Unauthorized' });
-    }
+      if (isUnauthorized) {
+        // if user isn't admin or isn't himself, that means he is not authorized to do this.
+        return res.status(401).send({ error: 'Unauthorized' });
+      }
 
-    const scrim = await Scrim.findById(scrimId);
+      const scrim = await Scrim.findById(scrimId);
 
-    if (!scrim.isWithCasters) {
-      return res
-        .status(500)
-        .json({ error: 'Cannot join as caster, (scrim has casters disabled)' });
-    }
+      if (!scrim.isWithCasters) {
+        return res.status(500).json({
+          error: 'Cannot join as caster, (scrim has casters disabled)',
+        });
+      }
 
-    if (scrim.casters.length >= scrim.maxCastersAllowedCount) {
-      return res
-        .status(500)
-        .json({ error: 'Cannot join as caster, (caster spots full)' });
-    }
+      if (scrim.casters.length >= scrim.maxCastersAllowedCount) {
+        return res
+          .status(500)
+          .json({ error: 'Cannot join as caster, (caster spots full)' });
+      }
 
-    const casterJoining = await User.findById(casterId);
+      const casterJoining = await User.findById(casterId);
 
-    if (!casterJoining) {
-      return res.status(500).json('user not found');
-    }
+      if (!casterJoining) {
+        return res.status(500).json('user not found');
+      }
 
-    const casterFound = scrim._doc.casters.find(
-      (caster) => String(caster._id) === String(casterId)
-    );
+      const casterFound = scrim._doc.casters.find(
+        (caster) => String(caster._id) === String(casterId)
+      );
 
-    if (casterFound) {
-      return res
-        .status(500)
-        .json(
-          `caster ${casterJoining.name} is already a caster for this game!.`
-        );
-    }
+      if (casterFound) {
+        return res
+          .status(500)
+          .json(
+            `caster ${casterJoining.name} is already a caster for this game!.`
+          );
+      }
 
-    const teams = [...scrim._doc.teamOne, ...scrim._doc.teamTwo];
+      const teams = [...scrim._doc.teamOne, ...scrim._doc.teamTwo];
 
-    const playerFound = teams.find(
-      (player) => String(player?._user) === String(casterJoining._id)
-    );
+      const playerFound = teams.find(
+        (player) => String(player?._user) === String(casterJoining._id)
+      );
 
-    if (playerFound) {
-      return res
-        .status(500)
-        .json(
-          `player ${casterJoining.name} (team: ${playerFound.team.name}, role: ${playerFound.role}) cannot be a player and a caster at the same time!.`
-        );
-    }
+      if (playerFound) {
+        return res
+          .status(500)
+          .json(
+            `player ${casterJoining.name} (team: ${playerFound.team.name}, role: ${playerFound.role}) cannot be a player and a caster at the same time!.`
+          );
+      }
 
-    let bodyData = {
-      casters: [...scrim._doc.casters, casterJoining],
-    };
+      let bodyData = {
+        casters: [...scrim._doc.casters, casterJoining],
+      };
 
-    if (scrim._doc.casters.length < 2) {
+      if (scrim._doc.casters.length < 2) {
+        await Scrim.findByIdAndUpdate(
+          scrimId,
+          bodyData,
+          { new: true },
+          (error, scrim) => {
+            if (error) {
+              return res.status(500).json({ error: error.message });
+            }
+            if (!scrim) {
+              return res.status(500).send('Scrim not found');
+            }
+
+            return res.status(200).json(scrim);
+          }
+        )
+          .populate('createdBy', populateUser)
+          .populate('casters', populateUser)
+          .populate('lobbyHost', populateUser)
+          .populate(populateTeam('teamOne'))
+          .populate(populateTeam('teamTwo'))
+          .exec();
+      } else {
+        return res.status(500).json({
+          error: 'Caster spots full!',
+          scrim: await populateOneScrim(scrimId),
+        });
+      }
+    });
+    session.endSession();
+  } catch (err) {
+    return res.status(500).json({ error: err });
+  }
+};
+
+// @route   PATCH /api/scrims/:scrimId/remove-caster/:casterId
+// @desc    This is how a user can leave the caster list if he was one for a scrim (used in ScrimSectionHeader)
+// @access  Private
+const removeCasterFromScrim = async (req, res) => {
+  try {
+    const session = await Scrim.startSession();
+
+    await session.withTransaction(async () => {
+      const { scrimId, casterId } = req.params; // scrim id
+      const currentUser = req.user;
+
+      const scrim = await Scrim.findOne({ _id: scrimId });
+
+      const isValid = mongoose.Types.ObjectId.isValid(casterId);
+
+      if (!isValid) {
+        return res.status(500).json('invalid response.');
+      }
+
+      const isUnauthorized = checkUnauthorized(currentUser, casterId);
+
+      if (isUnauthorized) {
+        // if user isn't admin or isn't himself, that means he is not authorized to do this.
+        return res.status(401).send({ error: 'Unauthorized' });
+      }
+
+      const casterLeaving = await User.findOne({ _id: casterId });
+
+      if (!casterLeaving) {
+        return res.status(500).json(`caster not found in scrim ${scrimId}`);
+      }
+
+      const { casters } = scrim;
+
+      // without populate the only data is the id's.
+      const bodyData = {
+        casters: [...casters].filter(
+          (casterId) => String(casterId) !== String(casterLeaving._id)
+        ),
+      };
+
       await Scrim.findByIdAndUpdate(
         scrimId,
         bodyData,
@@ -811,59 +901,60 @@ const insertCasterInScrim = async (req, res) => {
         .populate(populateTeam('teamOne'))
         .populate(populateTeam('teamTwo'))
         .exec();
-    } else {
-      return res.status(500).json({
-        error: 'Caster spots full!',
-        scrim: await populateOneScrim(scrimId),
-      });
-    }
-  });
-  session.endSession();
+    });
+    session.endSession();
+  } catch (err) {
+    return res.status(500).json({ error: err });
+  }
 };
 
-// @route   PATCH /api/scrims/:scrimId/remove-caster/:casterId
-// @desc    This is how a user can leave the caster list if he was one for a scrim (used in ScrimSectionHeader)
+// @route   PATCH /api/scrims/:id/add-image
+// @desc    This is how a lobbyHost or an admin can upload an image to the scrim to verify the winner (more uploading func is in UploadPostGameImage.jsx)
 // @access  Private
-const removeCasterFromScrim = async (req, res) => {
-  const session = await Scrim.startSession();
+const addImageToScrim = async (req, res) => {
+  try {
+    // client uplaods to s3 bucket, back-end saves endpoints
+    const { id } = req.params;
+    const { timestampNow = Date.now(), uploadedBy, base64 } = req.body;
 
-  await session.withTransaction(async () => {
-    const { scrimId, casterId } = req.params; // scrim id
-    const currentUser = req.user;
+    const scrim = await Scrim.findById(id);
 
-    const scrim = await Scrim.findOne({ _id: scrimId });
+    const isLobbyHost =
+      String(scrim._doc.lobbyHost?._id) === String(req.user?._id);
 
-    const isValid = mongoose.Types.ObjectId.isValid(casterId);
-
-    if (!isValid) {
-      return res.status(500).json('invalid response.');
+    if (!base64) {
+      return res.status(500).json({
+        error: 'base64 string required',
+      });
     }
 
-    const isUnauthorized = checkUnauthorized(currentUser, casterId);
-
-    if (isUnauthorized) {
-      // if user isn't admin or isn't himself, that means he is not authorized to do this.
-      return res.status(401).send({ error: 'Unauthorized' });
+    if (!isLobbyHost) {
+      if (req.user.adminKey !== KEYS.ADMIN_KEY) {
+        return res.status(401).json({
+          error:
+            'You cannot upload an image (you are not a lobby host or an admin)',
+        });
+      }
     }
 
-    const casterLeaving = await User.findOne({ _id: casterId });
+    const { bucket, key, location } = await uploadToBucket({
+      fileName: `${scrim._id}-${timestampNow}`,
+      dirName: `postGameLobbyImages/${scrim._id}`,
+      base64,
+    });
 
-    if (!casterLeaving) {
-      return res.status(500).json(`caster not found in scrim ${scrimId}`);
-    }
-
-    const { casters } = scrim;
-
-    // without populate the only data is the id's.
-    const bodyData = {
-      casters: [...casters].filter(
-        (casterId) => String(casterId) !== String(casterLeaving._id)
-      ),
+    let dataSending = {
+      postGameImage: {
+        bucket,
+        key,
+        location,
+        uploadedBy,
+      },
     };
 
     await Scrim.findByIdAndUpdate(
-      scrimId,
-      bodyData,
+      id,
+      dataSending,
       { new: true },
       (error, scrim) => {
         if (error) {
@@ -882,63 +973,10 @@ const removeCasterFromScrim = async (req, res) => {
       .populate(populateTeam('teamOne'))
       .populate(populateTeam('teamTwo'))
       .exec();
-  });
-  session.endSession();
-};
-
-// @route   PATCH /api/scrims/:id/add-image
-// @desc    This is how a lobbyHost or an admin can upload an image to the scrim to verify the winner (more uploading func is in UploadPostGameImage.jsx)
-// @access  Private
-const addImageToScrim = async (req, res) => {
-  // client uplaods to s3 bucket, back-end saves endpoints
-  const { id } = req.params;
-  const { bucket, key, location, result, uploadedBy } = req.body;
-
-  const scrim = await Scrim.findById(id);
-
-  const isLobbyHost =
-    String(scrim._doc.lobbyHost?._id) === String(req.user?._id);
-
-  if (!isLobbyHost) {
-    if (req.user.adminKey !== KEYS.ADMIN_KEY) {
-      return res.status(401).json({
-        error:
-          'You cannot upload an image (you are not a lobby host or an admin)',
-      });
-    }
+  } catch (err) {
+    console.log('error uploading image', err);
+    return res.status(500).json({ error: err });
   }
-
-  let dataSending = {
-    postGameImage: {
-      bucket,
-      key,
-      location,
-      result,
-      uploadedBy,
-    },
-  };
-
-  await Scrim.findByIdAndUpdate(
-    id,
-    dataSending,
-    { new: true },
-    (error, scrim) => {
-      if (error) {
-        return res.status(500).json({ error: error.message });
-      }
-      if (!scrim) {
-        return res.status(500).send('Scrim not found');
-      }
-
-      return res.status(200).json(scrim);
-    }
-  )
-    .populate('createdBy', populateUser)
-    .populate('casters', populateUser)
-    .populate('lobbyHost', populateUser)
-    .populate(populateTeam('teamOne'))
-    .populate(populateTeam('teamTwo'))
-    .exec();
 };
 
 // @route   PATCH /api/scrims/:id/remove-image
@@ -1001,31 +1039,35 @@ const removeImageFromScrim = async (req, res) => {
 // @desc    select a winner for the scrim, only an admin or a lobby host can select a winner
 // @access  Public
 const setScrimWinner = async (req, res) => {
-  const { id } = req.params;
-  const winnerTeamName = escape(req.body.winnerTeamName) ?? ''; // we don't need escape anymore because we use sanitize in server.js
+  try {
+    const { id } = req.params;
+    const winnerTeamName = escape(req.body.winnerTeamName) ?? ''; // we don't need escape anymore because we use sanitize in server.js
 
-  let isValid = mongoose.Types.ObjectId.isValid(id);
+    let isValid = mongoose.Types.ObjectId.isValid(id);
 
-  if (!isValid) {
-    return res.status(500).json({ error: 'invalid id' });
+    if (!isValid) {
+      return res.status(500).json({ error: 'invalid id' });
+    }
+
+    let scrim = await Scrim.findOne({ _id: { $eq: id } });
+
+    if (!scrim) return res.status(404).json({ message: 'Scrim not found!' });
+
+    // 1: blueside, 2: redside
+    if (!['teamOne', 'teamTwo'].includes(winnerTeamName)) {
+      return res.status(404).json({ message: 'Invalid team name' });
+    }
+
+    scrim.teamWon = winnerTeamName;
+
+    await scrim.save();
+
+    let populatedScrim = await populateOneScrim(scrim._id);
+
+    return res.status(200).send(populatedScrim);
+  } catch (err) {
+    return res.status(500).json({ error: err });
   }
-
-  let scrim = await Scrim.findOne({ _id: { $eq: id } });
-
-  if (!scrim) return res.status(404).json({ message: 'Scrim not found!' });
-
-  // 1: blueside, 2: redside
-  if (!['teamOne', 'teamTwo'].includes(winnerTeamName)) {
-    return res.status(404).json({ message: 'Invalid team name' });
-  }
-
-  scrim.teamWon = winnerTeamName;
-
-  await scrim.save();
-
-  let populatedScrim = await populateOneScrim(scrim._id);
-
-  return res.status(200).send(populatedScrim);
 };
 
 module.exports = {

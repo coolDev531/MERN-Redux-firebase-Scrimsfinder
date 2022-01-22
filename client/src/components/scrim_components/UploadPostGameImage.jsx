@@ -15,20 +15,13 @@ import {
   addImageToScrim,
   removeImageFromScrim,
 } from '../../services/scrims.services';
-import uploadToBucket from '../../utils/uploadToBucket';
-import FileManipulator from '../../models/FileManipulator';
+
+import * as FileManipulator from '../../models/FileManipulator';
+import * as ImageManipulator from '../../models/ImageManipulator';
 
 // icons
 import UploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteIcon from '@mui/icons-material/DeleteForever';
-
-// constants
-const MAX_FILE_SIZE_MIB = 0.953674; // 1 megabyte (in Memibyte format)
-
-const changeFileName = async (file, scrimId) => {
-  let newFileName = `${scrimId}-${Date.now()}`; // make a new name: scrim._id, current time, and extension
-  return await FileManipulator.renameFile(file, newFileName);
-};
 
 // can also delete image here... maybe needs renaming
 export default function UploadPostGameImage({
@@ -75,26 +68,22 @@ export default function UploadPostGameImage({
     if (e.target.files.length === 0) return;
     let file = e.target.files[0];
 
-    const fileSize = file.size / 1024 / 1024; // in MiB
+    const isImage = await FileManipulator.checkIsImage({
+      file,
+      fileInputRef,
+      setCurrentAlert,
+    });
 
-    if (!/^image\//.test(file.type)) {
-      // if file type isn't an image, return
-      fileInputRef.current.value = '';
-      setCurrentAlert({
-        type: 'Error',
-        message: `File ${file.name} is not an image! \nonly images are allowed.`,
-      });
-      return;
-    }
+    if (!isImage) return;
 
-    if (fileSize > MAX_FILE_SIZE_MIB) {
-      fileInputRef.current.value = '';
-      setCurrentAlert({
-        type: 'Error',
-        message: `File ${file.name} is too big! \nmax allowed size: 1 MB.`,
-      });
-      return;
-    }
+    // const isValidSize = await FileManipulator.checkFileSize({
+    //   file,
+    //   fileInputRef,
+    //   setCurrentAlert,
+    //   maxFileSizeMib: 0.953674,
+    // });
+
+    // if (!isValidSize) return;
 
     let yes = window.confirm('Are you sure you want to upload this image?');
 
@@ -107,26 +96,17 @@ export default function UploadPostGameImage({
     try {
       setButtonDisabled(true);
 
-      // does this have to be a promise?
-      await changeFileName(file, scrim._id); // change the file name to something more traceable.
-
-      // upload the image to S3
-      // const bucketData = await S3FileUpload.uploadFile(file, config);
-      const bucketData = await uploadToBucket({
-        fileName: file.name,
-        dirName: `postGameLobbyImages/${scrim._id}`,
-        file: file,
-      });
-
-      // after it has been successfully uploaded to S3, put the new image data in the back-end
-      let newImage = {
-        ...bucketData,
-        uploadedBy: { ...currentUser },
+      const base64 = await ImageManipulator.resize(file);
+   
+      const requestBody = {
+        timestampNow: Date.now(),
+        base64,
+        uploadedBy: currentUser._id,
       };
 
       const updatedScrim = await addImageToScrim(
         scrim._id,
-        newImage,
+        requestBody,
         setCurrentAlert
       );
 
@@ -142,12 +122,15 @@ export default function UploadPostGameImage({
       }
 
       setButtonDisabled(false);
-    } catch (err) {
+      // });
+      // reader.readAsDataURL(file);
+    } catch (error) {
       setButtonDisabled(false);
+      const errorMsg = error?.response?.data?.error ?? JSON.stringify(error);
 
       setCurrentAlert({
         type: 'Error',
-        message: JSON.stringify(err),
+        message: errorMsg.toString(),
       });
     }
   };
