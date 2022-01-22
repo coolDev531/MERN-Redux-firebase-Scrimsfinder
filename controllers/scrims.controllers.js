@@ -924,7 +924,7 @@ const addImageToScrim = async (req, res) => {
 
     if (!base64) {
       return res.status(500).json({
-        error: 'base64 string required',
+        error: 'image not provided',
       });
     }
 
