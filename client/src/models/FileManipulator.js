@@ -25,7 +25,6 @@ export const renameFile = async (file, newName) => {
 // 1 megabyte (in Memibyte format)
 export const checkFileSize = async ({
   file,
-  setCurrentAlert,
   maxFileSizeMib = 0.953674,
   fileInputRef,
 }) => {
@@ -34,13 +33,6 @@ export const checkFileSize = async ({
   if (fileSize > maxFileSizeMib) {
     if (fileInputRef && fileInputRef.current !== undefined) {
       fileInputRef.current.value = '';
-    }
-
-    if (setCurrentAlert) {
-      setCurrentAlert({
-        type: 'Error',
-        message: `File ${file.name} is too big! \nmax allowed size: 1 MB.`,
-      });
     }
 
     return false;

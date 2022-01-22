@@ -14,7 +14,6 @@ const ImageSchema = new Schema({
   bucket: { type: String },
   key: { type: String },
   location: { type: String },
-  result: { type: Object },
   uploadedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // will only show up as user._id if not populated
 });
 

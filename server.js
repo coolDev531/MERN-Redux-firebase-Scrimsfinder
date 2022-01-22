@@ -24,8 +24,8 @@ function createServer() {
   };
 
   app.use(cors(corsOptions));
-  app.use(bodyParser.urlencoded({ extended: true }));
-  app.use(bodyParser.json());
+  app.use(bodyParser.json({ limit: '2mb' }));
+  app.use(bodyParser.urlencoded({ extended: true, limit: '2mb' }));
 
   // to prohibited characters with _ (mongoSanitize)
   app.use(
