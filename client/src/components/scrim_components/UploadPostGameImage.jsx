@@ -16,6 +16,7 @@ import {
   removeImageFromScrim,
 } from '../../services/scrims.services';
 import * as FileManipulator from '../../models/FileManipulator';
+import * as ImageManipulator from '../../models/ImageManipulator';
 
 // icons
 import UploadIcon from '@mui/icons-material/CloudUpload';
@@ -74,14 +75,14 @@ export default function UploadPostGameImage({
 
     if (!isImage) return;
 
-    const isValidSize = await FileManipulator.checkFileSize({
-      file,
-      fileInputRef,
-      setCurrentAlert,
-      maxFileSizeMib: 0.953674,
-    });
+    // const isValidSize = await FileManipulator.checkFileSize({
+    //   file,
+    //   fileInputRef,
+    //   setCurrentAlert,
+    //   maxFileSizeMib: 0.953674,
+    // });
 
-    if (!isValidSize) return;
+    // if (!isValidSize) return;
 
     let yes = window.confirm('Are you sure you want to upload this image?');
 
@@ -92,41 +93,43 @@ export default function UploadPostGameImage({
     }
 
     try {
-      const reader = new FileReader();
+      // const reader = new FileReader();
 
       setButtonDisabled(true);
 
+      const base64 = await ImageManipulator.resize(file);
+
       // send base64 string from client to back-end.
-      reader.addEventListener('loadend', async () => {
-        const base64 = reader.result;
+      // reader.addEventListener('loadend', async () => {
+      //   const base64 = reader.result;
+      //   const resizedImage = await FileManipulator.resizeImage({maxWidth: 1, maxHeight: 1});
 
-        // after it has been successfully uploaded to S3, put the new image data in the back-end
-        let requestBody = {
-          timestampNow: Date.now(),
-          base64,
-          uploadedBy: currentUser._id,
-        };
+      const requestBody = {
+        timestampNow: Date.now(),
+        base64,
+        uploadedBy: currentUser._id,
+      };
 
-        const updatedScrim = await addImageToScrim(
-          scrim._id,
-          requestBody,
-          setCurrentAlert
-        );
+      const updatedScrim = await addImageToScrim(
+        scrim._id,
+        requestBody,
+        setCurrentAlert
+      );
 
-        if (updatedScrim?.createdBy) {
-          setCurrentAlert({
-            type: 'Success',
-            message: 'image uploaded successfully',
-          });
+      if (updatedScrim?.createdBy) {
+        setCurrentAlert({
+          type: 'Success',
+          message: 'image uploaded successfully',
+        });
 
-          setScrim(updatedScrim);
+        setScrim(updatedScrim);
 
-          socket?.emit('sendScrimTransaction', updatedScrim);
-        }
+        socket?.emit('sendScrimTransaction', updatedScrim);
+      }
 
-        setButtonDisabled(false);
-      });
-      reader.readAsDataURL(file);
+      setButtonDisabled(false);
+      // });
+      // reader.readAsDataURL(file);
     } catch (error) {
       setButtonDisabled(false);
       const errorMsg = error?.response?.data?.error ?? JSON.stringify(error);
