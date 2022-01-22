@@ -135,12 +135,13 @@ export default function UploadPostGameImage({
       }
 
       setButtonDisabled(false);
-    } catch (err) {
+    } catch (error) {
       setButtonDisabled(false);
+      const errorMsg = error?.response?.data?.error ?? JSON.stringify(error);
 
       setCurrentAlert({
         type: 'Error',
-        message: JSON.stringify(err),
+        message: errorMsg.toString(),
       });
     }
   };
