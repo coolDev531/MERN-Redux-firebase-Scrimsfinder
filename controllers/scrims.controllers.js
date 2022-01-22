@@ -22,10 +22,10 @@ const {
   checkUnauthorized,
 } = require('../utils/scrimUtils');
 const capitalizeWord = require('../utils/capitalizeWord');
-const AWS = require('aws-sdk');
 const KEYS = require('../config/keys');
 const escape = require('escape-html');
 const createS3 = require('../utils/createS3');
+const uploadToBucket = require('../utils/uploadToBucket');
 
 // for post-game lobby image upload
 let s3Bucket = createS3();
@@ -915,12 +915,18 @@ const addImageToScrim = async (req, res) => {
   try {
     // client uplaods to s3 bucket, back-end saves endpoints
     const { id } = req.params;
-    const { bucket, key, location, result, uploadedBy } = req.body;
+    const { timestampNow = Date.now(), uploadedBy, base64 } = req.body;
 
     const scrim = await Scrim.findById(id);
 
     const isLobbyHost =
       String(scrim._doc.lobbyHost?._id) === String(req.user?._id);
+
+    if (!base64) {
+      return res.status(500).json({
+        error: 'base64 string required',
+      });
+    }
 
     if (!isLobbyHost) {
       if (req.user.adminKey !== KEYS.ADMIN_KEY) {
@@ -931,12 +937,17 @@ const addImageToScrim = async (req, res) => {
       }
     }
 
+    const { bucket, key, location } = await uploadToBucket({
+      fileName: `${scrim._id}-${timestampNow}`,
+      dirName: `postGameLobbyImages/${scrim._id}`,
+      base64,
+    });
+
     let dataSending = {
       postGameImage: {
         bucket,
         key,
         location,
-        result,
         uploadedBy,
       },
     };

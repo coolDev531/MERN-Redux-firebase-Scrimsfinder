@@ -15,17 +15,11 @@ import {
   addImageToScrim,
   removeImageFromScrim,
 } from '../../services/scrims.services';
-import uploadToBucket from '../../utils/uploadToBucket';
 import * as FileManipulator from '../../models/FileManipulator';
 
 // icons
 import UploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteIcon from '@mui/icons-material/DeleteForever';
-
-const changeFileName = async (file, scrimId) => {
-  let newFileName = `${scrimId}-${Date.now()}`; // make a new name: scrim._id, current time, and extension
-  return await FileManipulator.renameFile(file, newFileName);
-};
 
 // can also delete image here... maybe needs renaming
 export default function UploadPostGameImage({
@@ -98,43 +92,41 @@ export default function UploadPostGameImage({
     }
 
     try {
+      const reader = new FileReader();
+
       setButtonDisabled(true);
 
-      // does this have to be a promise?
-      await changeFileName(file, scrim._id); // change the file name to something more traceable.
+      // send base64 string from client to back-end.
+      reader.addEventListener('loadend', async () => {
+        const base64 = reader.result;
 
-      // upload the image to S3
-      // const bucketData = await S3FileUpload.uploadFile(file, config);
-      const bucketData = await uploadToBucket({
-        fileName: file.name,
-        dirName: `postGameLobbyImages/${scrim._id}`,
-        file: file,
+        // after it has been successfully uploaded to S3, put the new image data in the back-end
+        let requestBody = {
+          timestampNow: Date.now(),
+          base64,
+          uploadedBy: currentUser._id,
+        };
+
+        const updatedScrim = await addImageToScrim(
+          scrim._id,
+          requestBody,
+          setCurrentAlert
+        );
+
+        if (updatedScrim?.createdBy) {
+          setCurrentAlert({
+            type: 'Success',
+            message: 'image uploaded successfully',
+          });
+
+          setScrim(updatedScrim);
+
+          socket?.emit('sendScrimTransaction', updatedScrim);
+        }
+
+        setButtonDisabled(false);
       });
-
-      // after it has been successfully uploaded to S3, put the new image data in the back-end
-      let newImage = {
-        ...bucketData,
-        uploadedBy: { ...currentUser },
-      };
-
-      const updatedScrim = await addImageToScrim(
-        scrim._id,
-        newImage,
-        setCurrentAlert
-      );
-
-      if (updatedScrim?.createdBy) {
-        setCurrentAlert({
-          type: 'Success',
-          message: 'image uploaded successfully',
-        });
-
-        setScrim(updatedScrim);
-
-        socket?.emit('sendScrimTransaction', updatedScrim);
-      }
-
-      setButtonDisabled(false);
+      reader.readAsDataURL(file);
     } catch (error) {
       setButtonDisabled(false);
       const errorMsg = error?.response?.data?.error ?? JSON.stringify(error);
