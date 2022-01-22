@@ -13,7 +13,7 @@ function dataURItoBlob(dataURI) {
   const ia = new Uint8Array(ab);
 
   // set the bytes of the buffer to the correct values
-  for (const i = 0; i < byteString.length; i++) {
+  for (let i = 0; i < byteString.length; i++) {
     ia[i] = byteString.charCodeAt(i);
   }
 

@@ -15,6 +15,8 @@ import {
   addImageToScrim,
   removeImageFromScrim,
 } from '../../services/scrims.services';
+import * as FileManipulator from '../../models/FileManipulator';
+import * as ImageManipulator from '../../models/ImageManipulator';
 
 import * as FileManipulator from '../../models/FileManipulator';
 import * as ImageManipulator from '../../models/ImageManipulator';
@@ -76,14 +78,23 @@ export default function UploadPostGameImage({
 
     if (!isImage) return;
 
-    // const isValidSize = await FileManipulator.checkFileSize({
-    //   file,
-    //   fileInputRef,
-    //   setCurrentAlert,
-    //   maxFileSizeMib: 0.953674,
-    // });
 
-    // if (!isValidSize) return;
+    const isValidSize = await FileManipulator.checkFileSize({
+      file,
+      fileInputRef,
+      maxFileSizeMib: 1.9073500003815,
+    });
+
+    if (!isValidSize) {
+      if (setCurrentAlert) {
+        setCurrentAlert({
+          type: 'Error',
+          message: `File ${file.name} is too big! \nmax allowed size: 2 MB.`,
+        });
+      }
+      return;
+    }
+
 
     let yes = window.confirm('Are you sure you want to upload this image?');
 
@@ -97,7 +108,7 @@ export default function UploadPostGameImage({
       setButtonDisabled(true);
 
       const base64 = await ImageManipulator.resize(file);
-   
+
       const requestBody = {
         timestampNow: Date.now(),
         base64,
