@@ -11,11 +11,12 @@ import Typography from '@mui/material/Typography';
 import FormHelperText from '@mui/material/FormHelperText';
 
 // utils
-import S3FileUpload from 'react-s3';
 import {
   addImageToScrim,
   removeImageFromScrim,
 } from '../../services/scrims.services';
+import uploadToBucket from '../../utils/uploadToBucket';
+import FileManipulator from '../../models/FileManipulator';
 
 // icons
 import UploadIcon from '@mui/icons-material/CloudUpload';
@@ -24,22 +25,9 @@ import DeleteIcon from '@mui/icons-material/DeleteForever';
 // constants
 const MAX_FILE_SIZE_MIB = 0.953674; // 1 megabyte (in Memibyte format)
 
-/**
- * @method changeFileName
- * takes a file and changes its name
- * @param {File} file the file that is going to have it's name changes
- * @param {String} scrimId {scrim._id}
- */
 const changeFileName = async (file, scrimId) => {
-  // does this have to be async?
-  let fileExtension = file.name.substring(file.name.lastIndexOf('.')); // .jpg, .png, etc...
-  let newFileName = `${scrimId}-${Date.now()}${fileExtension}`; // make a new name: scrim._id, current time, and extension
-
-  // change name of file to something more traceable (I don't want users random names).
-  return Object.defineProperty(file, 'name', {
-    writable: true,
-    value: newFileName, // file extension isn't necessary with this approach.
-  });
+  let newFileName = `${scrimId}-${Date.now()}`; // make a new name: scrim._id, current time, and extension
+  return await FileManipulator.renameFile(file, newFileName);
 };
 
 // can also delete image here... maybe needs renaming
@@ -53,14 +41,6 @@ export default function UploadPostGameImage({
   const fileInputRef = useRef();
   const { setCurrentAlert } = useAlerts();
   const [buttonDisabled, setButtonDisabled] = useState(false); // disable when uploading / deleting img
-
-  const config = {
-    bucketName: 'lol-scrimsfinder-bucket',
-    dirName: `postGameLobbyImages/${scrim._id}` /* optional */,
-    region: 'us-east-1',
-    accessKeyId: process.env.REACT_APP_S3_ACCESS_KEY_ID,
-    secretAccessKey: process.env.REACT_APP_S3_SECRET_ACCESS_KEY,
-  };
 
   const handleDeleteImage = async () => {
     try {
@@ -87,7 +67,7 @@ export default function UploadPostGameImage({
       setButtonDisabled(false);
 
       const errorMsg = error?.response?.data?.error ?? 'error removing image';
-      setCurrentAlert({ type: 'Error', message: errorMsg });
+      setCurrentAlert({ type: 'Error', message: JSON.stringify(errorMsg) });
     }
   };
 
@@ -131,7 +111,12 @@ export default function UploadPostGameImage({
       await changeFileName(file, scrim._id); // change the file name to something more traceable.
 
       // upload the image to S3
-      const bucketData = await S3FileUpload.uploadFile(file, config);
+      // const bucketData = await S3FileUpload.uploadFile(file, config);
+      const bucketData = await uploadToBucket({
+        fileName: file.name,
+        dirName: `postGameLobbyImages/${scrim._id}`,
+        file: file,
+      });
 
       // after it has been successfully uploaded to S3, put the new image data in the back-end
       let newImage = {
@@ -162,7 +147,7 @@ export default function UploadPostGameImage({
 
       setCurrentAlert({
         type: 'Error',
-        message: err,
+        message: JSON.stringify(err),
       });
     }
   };
