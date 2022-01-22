@@ -25,13 +25,10 @@ const capitalizeWord = require('../utils/capitalizeWord');
 const AWS = require('aws-sdk');
 const KEYS = require('../config/keys');
 const escape = require('escape-html');
+const createS3 = require('../utils/createS3');
 
 // for post-game lobby image upload
-let s3Bucket = new AWS.S3({
-  Bucket: 'lol-scrimsfinder-bucket',
-  accessKeyId: KEYS.S3_ACCESS_KEY_ID,
-  secretAccessKey: KEYS.S3_SECRET_ACCESS_KEY,
-});
+let s3Bucket = createS3();
 
 // @route   GET /api/scrims
 // @desc    Get all scrims / games.
@@ -962,7 +959,7 @@ const removeImageFromScrim = async (req, res) => {
     }
 
     const params = {
-      Bucket: 'lol-scrimsfinder-bucket',
+      Bucket: KEYS.S3_BUCKET_NAME,
       Key: scrim.postGameImage.key,
     };
 

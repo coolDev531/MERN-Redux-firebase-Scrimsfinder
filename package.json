@@ -19,7 +19,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@emotion/react": "^11.7.0",
     "aws-sdk": "^2.987.0",
     "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
