@@ -25,7 +25,7 @@ module.exports = async function (req, res, next) {
         //  check if user is banned
         const foundUser = await User.findById(req.user._id);
 
-        if (foundUser?.currentBan && foundUser?.currentBan?.isActive) {
+        if (foundUser?.currentBan?.isActive) {
           // unban user if date passed
           if (banDateExpired(foundUser?.currentBan?.dateTo)) {
             await unbanUser(foundUser);
