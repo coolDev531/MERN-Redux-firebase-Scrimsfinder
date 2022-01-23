@@ -4,6 +4,7 @@
  * @param {File} file the file that is going to have it's name changes
  * @param {String} newName
  */
+
 export const renameFile = async (file, newName) => {
   // does this have to be async?
   let fileExtension = file.name.substring(file.name.lastIndexOf('.')); // .jpg, .png, etc...
