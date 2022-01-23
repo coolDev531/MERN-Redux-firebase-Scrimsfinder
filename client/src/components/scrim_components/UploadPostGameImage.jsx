@@ -177,7 +177,7 @@ export default function UploadPostGameImage({
             component="label">
             Upload
             <input
-              accept="image/*"
+              accept="image/jpeg, image/png"
               ref={fileInputRef}
               hidden
               type="file"
