@@ -128,8 +128,6 @@ export default function UploadPostGameImage({
       }
 
       setButtonDisabled(false);
-      // });
-      // reader.readAsDataURL(file);
     } catch (error) {
       setButtonDisabled(false);
       const errorMsg = error?.response?.data?.error ?? JSON.stringify(error);
