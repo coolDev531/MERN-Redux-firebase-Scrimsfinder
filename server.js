@@ -14,6 +14,7 @@ const messageRoutes = require('./routes/messages.routes');
 const friendRoutes = require('./routes/friends.routes');
 const notificationRoutes = require('./routes/notification.routes');
 const adminRoutes = require('./routes/admin.routes');
+const helmet = require('helmet');
 
 function createServer() {
   const app = express();
@@ -24,6 +25,8 @@ function createServer() {
   };
 
   app.use(cors(corsOptions));
+  app.use(helmet()); // security with express-helmet
+
   app.use(bodyParser.json({ limit: '2mb' }));
   app.use(bodyParser.urlencoded({ extended: true, limit: '2mb' }));
 

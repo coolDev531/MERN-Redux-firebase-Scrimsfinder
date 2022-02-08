@@ -32,6 +32,7 @@ function App() {
 
   const appWrapperRef = useAppBackground(); // change the background image and blur whenever appBackground or appBgBlur change in the redux store
 
+  useServerStatus(); // check if server is online, if it's not redirects to error page.
   useCreateSocket(); // create socket for messenger
   useAuthVerify(); // verify user is authenticated.
   useFetchUsers(); // fetch all users (for search and settings page)
@@ -39,7 +40,6 @@ function App() {
   useFetchScrims(); // fetch scrims on mount or path change
   useMessenger(); // listen for messenger socket events
   useNotifications(); // reload user notifications on socket events
-  useServerStatus(); // check if server is online, if it's not redirects to error page.
 
   if (isVerifyingUser) {
     return (
