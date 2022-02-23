@@ -12,7 +12,7 @@ import Stack from '@mui/material/Stack';
 import DiceIcon from '@mui/icons-material/Casino';
 
 // services
-import { generateRandomLobbyName } from './../../../services/wordsApi';
+import { generateRandomLobbyName } from '../../../services/wordsApi';
 
 export default function LobbyNameField({
   value,
