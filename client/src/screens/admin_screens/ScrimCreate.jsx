@@ -346,7 +346,14 @@ function ScrimCreate() {
                 )}
               </Grid>
 
-              <Grid item sx={{ marginTop: 1 }}>
+              <Grid
+                item
+                container
+                spacing={2}
+                justifyContent="center"
+                alignItems="center"
+                sx={{ marginLeft: 'auto', marginRight: 'auto', marginTop: 2 }}
+                xs={12}>
                 <LobbyNameField
                   value={scrimData.lobbyName || scrimData.title || ''}
                   onInputChange={handleChange}
