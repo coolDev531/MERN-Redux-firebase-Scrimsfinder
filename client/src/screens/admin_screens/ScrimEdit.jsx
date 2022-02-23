@@ -29,11 +29,12 @@ import TimePicker from '../../components/shared/TimePicker';
 import devLog from '../../utils/devLog';
 import { updateScrim, getScrimById } from '../../services/scrims.services';
 import { sample } from '../../utils/sample';
+import withAdminRoute from './../../utils/withAdminRoute';
 
 const RANDOM_HOST_CODE = '_$random'; // because input doesn't want value to be null, if lobbyhost is equal to this, send it as null in the back end
 
-export default function ScrimEdit() {
-  const { currentUser, isCurrentUserAdmin } = useAuth();
+function ScrimEdit() {
+  const { currentUser } = useAuth();
   const { fetchScrims } = useScrimsActions();
   const { setCurrentAlert } = useAlerts();
 
@@ -256,11 +257,6 @@ export default function ScrimEdit() {
       return;
     }
   };
-
-  //  if user doesn't have admin key, push to '/'
-  if (!isCurrentUserAdmin) {
-    return <Redirect to="/" />;
-  }
 
   if (isUpdated) {
     return <Redirect to={`/scrims/${id}`} />;
@@ -575,3 +571,5 @@ export default function ScrimEdit() {
     </>
   );
 }
+
+export default withAdminRoute(ScrimEdit);

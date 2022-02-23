@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect, useMemo, useRef } from 'react';
+import React, { Fragment, useMemo, useCallback } from 'react';
 
 // components
 import Typography from '@mui/material/Typography';
@@ -8,25 +8,18 @@ import Sparkles from '../shared/effects/Sparkles';
 
 // utils
 import { makeStyles } from '@mui/styles';
-
-/* The total number of seconds in a day is 60 * 60 * 24 and if we want to get the milliseconds, 
-  we need to multiply it by 1000 so the number 1000 * 60 * 60 * 24 is the total number of milliseconds in a day. */
-const SECONDS_IN_DAY = 60 * 60 * 24; // not in MS
-
-// time variables in milliseconds for CountdownTimer calculations.
-const ONE_DAY_IN_MS = 1000 * SECONDS_IN_DAY; // one day in milliseconds
-const ONE_HOUR_IN_MS = 1000 * 60 * 60; // one hour in milliseconds
-const ONE_MINUTE_IN_MS = 1000 * 60; // one minute in milliseconds
-const ONE_SECOND_IN_MS = 1000; // one second in milliseconds
+import useCountdown from '../../hooks/useCountdown';
+import { twoDigitsFormat as formatNum } from '../../utils/twoDigitsFormat';
 
 export default function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
-  const classes = useStyles(); // useStyles defined below component
+  const onTimerComplete = useCallback(() => {
+    setGameStarted(scrim?._id);
+  }, [scrim?._id, setGameStarted]);
 
-  const [isTimerStarted, setIsTimerStarted] = useState(false);
-  const [timerDays, setTimerDays] = useState('00');
-  const [timerHours, setTimerHours] = useState('00');
-  const [timerMinutes, setTimerMinutes] = useState('00');
-  const [timerSeconds, setTimerSeconds] = useState('00');
+  const { timerDays, timerHours, timerMinutes, timerSeconds, isTimerStarted } =
+    useCountdown(scrim?.gameStartTime, onTimerComplete);
+
+  const classes = useStyles(); // useStyles defined below component
 
   const teamsFilled = useMemo(
     () => scrim.teamOne.length === 5 && scrim.teamTwo.length === 5,
@@ -50,78 +43,6 @@ export default function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
 
     return 'GAME IN PROGRESS';
   }, [scrim.teamWon, teamsFilled]);
-
-  // preserve the interval id between renders
-  let intervalRef = useRef(null);
-
-  const startTimer = () => {
-    const countdownDate = new Date(scrim?.gameStartTime).getTime(); // milliseconds
-
-    intervalRef.current = setInterval(() => {
-      setIsTimerStarted(true);
-
-      const now = new Date().getTime(); // now in milliseconds.
-      const difference = countdownDate - now; // difference in milliseconds
-
-      // Dividing the difference (difference) by ONE_DAY_IN_MS and discarding the values after the decimal, we get the number of days.
-      const days = Math.floor(difference / ONE_DAY_IN_MS);
-
-      /* The first operation (%) is used to basically discard the part of the difference representing days 
-      (% returns the remainder of the division so the days portion of the difference is taken out. 
-        In the next step (division), ONE_HOUR_IN_MS is the total number of milliseconds in an hour. 
-        So dividing the remainder of the difference by this number will give us the number of hours. */
-      const hours = Math.floor((difference % ONE_DAY_IN_MS) / ONE_HOUR_IN_MS);
-
-      /* The first operation (%) takes out the hours portion from difference 
-        and the division (ONE_MINUTE_IN_MS) returns the minutes (as ONE_MINUTE_IN_MS is the number of milliseconds in a minute) */
-      const minutes = Math.floor(
-        (difference % ONE_HOUR_IN_MS) / ONE_MINUTE_IN_MS
-      );
-
-      /* Here the first operation (%) takes out the minutes part
-       and the second operation (division) returns the number of seconds. */
-      const seconds = Math.floor(
-        (difference % ONE_MINUTE_IN_MS) / ONE_SECOND_IN_MS
-      );
-
-      if (difference < 0) {
-        // stop timer
-
-        clearInterval(intervalRef.current);
-      } else {
-        setTimerDays(days);
-        setTimerHours(hours);
-        setTimerMinutes(minutes);
-        setTimerSeconds(seconds);
-      }
-    }, 1000);
-  };
-
-  useEffect(() => {
-    startTimer();
-    return () => {
-      clearInterval(intervalRef.current);
-    };
-  });
-
-  /* eslint eqeqeq: 0 */
-  // disable == warning in react.
-  useEffect(() => {
-    if (
-      isTimerStarted &&
-      timerDays == '00' &&
-      timerHours == '00' &&
-      timerMinutes == '00' &&
-      timerSeconds == '00'
-    ) {
-      // when timer reaches 0 (game starts), run the following code.
-      clearInterval(intervalRef.current);
-      setGameStarted(scrim._id);
-      setIsTimerStarted(false);
-    }
-    //disabling dependency array warning, can't add the other dependencies it's yelling at me to add without breaking the functionality.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timerSeconds]);
 
   if (!isTimerStarted) {
     return (
@@ -149,10 +70,10 @@ export default function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
   return (
     <Fragment>
       <div className={classes.timer}>
-        {timerDays != '00' && (
+        {timerDays !== 0 && (
           <>
             <section aria-label="timer-days">
-              <TimerText>{timerDays}</TimerText>
+              <TimerText>{formatNum(timerDays)}</TimerText>
               <TimerText>
                 <small>Days</small>
               </TimerText>
@@ -160,10 +81,10 @@ export default function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
             <TimerText>:</TimerText>
           </>
         )}
-        {timerHours != '00' && (
+        {timerHours !== 0 && (
           <>
             <section aria-label="timer-hours">
-              <TimerText>{timerHours}</TimerText>
+              <TimerText>{formatNum(timerHours)}</TimerText>
               <TimerText>
                 <small>Hours</small>
               </TimerText>
@@ -171,10 +92,10 @@ export default function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
             <TimerText>:</TimerText>
           </>
         )}
-        {timerMinutes != '00' && (
+        {timerMinutes !== 0 && (
           <>
             <section aria-label="timer-minutes">
-              <TimerText>{timerMinutes}</TimerText>
+              <TimerText>{formatNum(timerMinutes)}</TimerText>
               <TimerText>
                 <small>Minutes</small>
               </TimerText>
@@ -183,7 +104,7 @@ export default function CountdownTimer({ scrim, setGameStarted, gameStarted }) {
           </>
         )}
         <section aria-label="timer-seconds">
-          <TimerText>{timerSeconds}</TimerText>
+          <TimerText>{formatNum(timerSeconds)}</TimerText>
           <TimerText>
             <small>Seconds</small>
           </TimerText>
