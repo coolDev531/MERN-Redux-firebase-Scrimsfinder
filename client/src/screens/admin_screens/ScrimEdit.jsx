@@ -21,9 +21,9 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Tooltip from '../../components/shared/Tooltip';
 import Loading from '../../components/shared/Loading';
-import LobbyNameField from './../../components/shared/Form_components/LobbyNameField';
 import DatePicker from '../../components/shared/DatePicker';
 import TimePicker from '../../components/shared/TimePicker';
+import LobbyNameFieldOld from './../../components/shared/Form_components/LobbyNameField__Old';
 
 // utils // services
 import devLog from '../../utils/devLog';
@@ -362,7 +362,7 @@ function ScrimEdit() {
                 </Grid>
 
                 <Grid item>
-                  <LobbyNameField
+                  <LobbyNameFieldOld
                     buttonText="Random"
                     value={scrimData.lobbyName || scrimData.title || ''}
                     onInputChange={handleChange}
