@@ -1045,6 +1045,18 @@ const setScrimWinner = async (req, res) => {
 
     if (!scrim) return res.status(404).json({ message: 'Scrim not found!' });
 
+    const isLobbyHost =
+      String(scrim._doc.lobbyHost?._id) === String(req.user?._id);
+
+    if (!isLobbyHost) {
+      if (req.user.adminKey !== KEYS.ADMIN_KEY) {
+        return res.status(401).json({
+          error:
+            'You cannot upload an image (you are not a lobby host or an admin)',
+        });
+      }
+    }
+
     // 1: blueside, 2: redside
     if (!['teamOne', 'teamTwo'].includes(winnerTeamName)) {
       return res.status(404).json({ message: 'Invalid team name' });

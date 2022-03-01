@@ -73,6 +73,7 @@ router.patch(
 
 router.patch(
   '/scrims/:id/set-winner',
+  auth,
   passport.authenticate('jwt', { session: false }),
   controllers.setScrimWinner
 ); // PATCH
