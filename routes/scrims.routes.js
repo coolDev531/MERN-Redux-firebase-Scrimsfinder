@@ -14,7 +14,12 @@ router.post(
   controllers.createScrim
 ); // POST
 router.get('/scrims/:id', controllers.getScrimById); // GET
-router.put('/scrims/:id', admin, controllers.updateScrim); // PUT
+router.put(
+  '/scrims/:id',
+  passport.authenticate('jwt', { session: false }),
+  admin,
+  controllers.updateScrim
+); // PUT
 
 // PUT => Set all new attributes for an existing resource.
 // PATCH => Partially update an existing resource (not all attributes required).
