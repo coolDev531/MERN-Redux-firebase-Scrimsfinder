@@ -51,7 +51,12 @@ function createServer() {
 
   // require an api key for these routes
   app.use(apiKey);
-  app.use('/api', scrimRoutes);
+
+  // Passport middleware
+  app.use(passport.initialize());
+
+  // Passport config
+  require('./config/passport')(passport);
 
   app.get('/api/server-status', async (_req, res) => {
     try {
@@ -62,9 +67,7 @@ function createServer() {
     }
   });
 
-  // Passport config
-  require('./config/passport')(passport);
-
+  app.use('/api', scrimRoutes);
   app.use('/api', userRoutes);
   app.use('/api', authRoutes);
   app.use('/api', conversationRoutes);

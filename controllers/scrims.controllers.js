@@ -139,14 +139,6 @@ const createScrim = async (req, res) => {
       _id: { $eq: req.body.createdBy._id },
     });
 
-    // if adminkey isn't provided or is incorrect, throw an error
-    // it would probably be better to use discord and just give people admin roles instead of entering a key.
-    if (!req.body.adminKey || req.body.adminKey !== KEYS.ADMIN_KEY) {
-      return res
-        .status(401)
-        .json({ error: 'Cannot create scrim: unauthorized' });
-    }
-
     const requestBody = {
       ...req.body,
       lobbyName:
