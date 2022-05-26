@@ -57,6 +57,7 @@ export default function ScrimTeamList({
   setButtonsDisabled,
   setScrim,
   socket,
+  setSwapPlayers,
 }) {
   const { currentUser, isCurrentUserAdmin } = useAuth();
   const { setCurrentAlert } = useAlerts();
@@ -175,8 +176,37 @@ export default function ScrimTeamList({
 
     setButtonsDisabled(false);
   };
-  const winnerTeam = scrim?.teamWon ?? null;
 
+  const onDrag = (e) => {
+    if (!isCurrentUserAdmin) {
+      e.preventDefault();
+      return;
+    }
+
+    const userId = e.target.closest('li').dataset._user;
+
+    setSwapPlayers((prevState) => ({
+      ...prevState,
+      playerOneId: userId,
+    }));
+  };
+
+  const onDrop = (e) => {
+    if (!isCurrentUserAdmin) {
+      e.preventDefault();
+      return;
+    }
+
+    e.preventDefault();
+    const userId = e.target.closest('li').dataset._user;
+
+    setSwapPlayers((prevState) => ({
+      ...prevState,
+      playerTwoId: userId,
+    }));
+  };
+
+  const winnerTeam = scrim?.teamWon ?? null;
   const background = getTeamBackgroundColor(teamName, winnerTeam);
 
   return (
@@ -212,6 +242,13 @@ export default function ScrimTeamList({
                 {/* top divider */}
                 {idx !== 0 ? <Divider component="div" /> : null}
                 <ListItem
+                  // onDrag={onDrag}
+                  onDrop={onDrop}
+                  onDragStart={onDrag}
+                  onDragEnter={(e) => e.preventDefault()}
+                  onDragOver={(e) => e.preventDefault()}
+                  draggable={true}
+                  data-_user={userInfo?._id}
                   alignItems="center"
                   className={classes.teamListItem}
                   style={{
