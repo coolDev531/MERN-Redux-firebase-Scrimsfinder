@@ -91,6 +91,10 @@ If you have an admin key, you can host a scrim/lobby. Then players just have to 
 
 - Added live socket new message notifications.
 
+### 5/26/2022
+
+- Admins can now swap between 2 players using drag and drop
+
 ---
 
 <br />
