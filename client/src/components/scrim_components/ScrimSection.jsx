@@ -48,8 +48,8 @@ export default function ScrimSection({ scrimData, isInDetail }) {
 
   const [scrim, setScrim] = useScrimSocket(scrimData, isBoxExpanded);
   const [swapPlayers, setSwapPlayers] = useState({
-    playerOneId: '',
-    playerTwoId: '',
+    playerOne: null,
+    playerTwo: null,
   });
 
   const scrimBoxRef = useRef(null); // element container
@@ -128,7 +128,8 @@ export default function ScrimSection({ scrimData, isInDetail }) {
 
   useEffect(() => {
     const checkSwap = async () => {
-      if (swapPlayers.playerOneId && swapPlayers.playerTwoId) {
+      if (swapPlayers?.playerOne?.role && swapPlayers?.playerTwo?.role) {
+        console.log({ swapPlayers });
         const updatedScrim = await swapPlayersInScrim({
           scrimId: scrim._id,
           swapPlayers,
@@ -139,7 +140,7 @@ export default function ScrimSection({ scrimData, isInDetail }) {
 
         socket?.emit('sendScrimTransaction', updatedScrim);
 
-        setSwapPlayers({ playerOneId: '', playerTwoId: '' });
+        setSwapPlayers({ playerOne: null, playerTwo: null });
       }
     };
     checkSwap();
