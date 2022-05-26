@@ -717,6 +717,76 @@ const movePlayerInScrim = async (req, res) => {
   }
 };
 
+const swapPlayersInScrim = async (req, res) => {
+  try {
+    const session = await Scrim.startSession();
+
+    // beginning of session
+    await session.withTransaction(async () => {
+      const { playerOneId, playerTwoId } = req.body;
+
+      const scrimId = req.params.scrimId;
+      let scrim = await Scrim.findOne({ _id: scrimId });
+      const teams = [...scrim.teamOne, ...scrim.teamTwo];
+
+      let updatedTeamOne = [];
+      let updatedTeamTwo = [];
+
+      for await (player of scrim.teamOne) {
+        if (String(player._user) === String(playerOneId)) {
+          const swappedPlayer = {
+            ...player._doc,
+            _user: playerTwoId,
+          };
+
+          updatedTeamOne.push(swappedPlayer);
+        } else if (String(player._user) === String(playerTwoId)) {
+          const swappedPlayer = {
+            ...player._doc,
+            _user: playerOneId,
+          };
+
+          updatedTeamOne.push(swappedPlayer);
+        } else {
+          updatedTeamOne.push(player);
+        }
+      }
+
+      for await (player of scrim.teamTwo) {
+        if (String(player._user) === String(playerOneId)) {
+          const swappedPlayer = {
+            ...player._doc,
+            _user: playerTwoId,
+          };
+
+          updatedTeamTwo.push(swappedPlayer);
+        } else if (String(player._user) === String(playerTwoId)) {
+          const swappedPlayer = {
+            ...player._doc,
+            _user: playerOneId,
+          };
+
+          updatedTeamTwo.push(swappedPlayer);
+        } else {
+          updatedTeamTwo.push(player);
+        }
+      }
+
+      scrim.teamOne = updatedTeamOne;
+      scrim.teamTwo = updatedTeamTwo;
+
+      let savedScrim = await scrim.save();
+      const populatedScrim = await populateOneScrim(scrimId);
+
+      return res.status(200).json(populatedScrim);
+    });
+
+    session.endSession();
+  } catch (err) {
+    return res.status(500).json({ error: err });
+  }
+};
+
 // @route   PATCH /api/scrims/:scrimId/insert-caster/:casterId
 // @desc    This is how a user can become a caster for a scrim (used in ScrimSectionHeader)
 // @access  Private
@@ -1089,4 +1159,5 @@ module.exports = {
   movePlayerInScrim,
   removeImageFromScrim,
   setScrimWinner,
+  swapPlayersInScrim,
 };

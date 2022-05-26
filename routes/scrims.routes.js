@@ -85,4 +85,11 @@ router.delete(
   controllers.deleteScrim
 ); // DELETE
 
+router.post(
+  '/scrims/:scrimId/swap-players',
+  passport.authenticate('jwt', { session: false }),
+  admin,
+  controllers.swapPlayersInScrim
+); // POST
+
 module.exports = router;
