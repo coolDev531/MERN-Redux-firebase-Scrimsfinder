@@ -244,3 +244,34 @@ export const setScrimWinner = async (id, winnerTeamName, setAlert) => {
     setAlert({ type: 'Error', message: errorMsg });
   }
 };
+
+export const swapPlayersInScrim = async ({
+  scrimId,
+  swapPlayers,
+  setButtonsDisabled,
+  setAlert,
+  setScrim,
+}) => {
+  // sending the role joining and the team name inside playerData in the req.body.
+  try {
+    const response = await api.patch(
+      `/scrims/${scrimId}/swap-players`,
+      swapPlayers
+    );
+    return response.data;
+  } catch (error) {
+    const errorMsg =
+      error?.response?.data?.error ?? error?.message ?? JSON.stringify(error);
+    const scrim = error.response.data.scrim ?? null;
+
+    setAlert({ type: 'Error', message: errorMsg });
+
+    if (scrim) {
+      setScrim(scrim);
+    }
+
+    setButtonsDisabled(false);
+
+    return;
+  }
+};

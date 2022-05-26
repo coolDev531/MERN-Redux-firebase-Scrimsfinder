@@ -19,6 +19,7 @@ import {
   deleteScrim,
   getScrimById,
   removeCasterFromScrim,
+  swapPlayersInScrim,
 } from '../../services/scrims.services';
 import { insertCasterInScrim } from '../../services/scrims.services';
 
@@ -46,6 +47,10 @@ export default function ScrimSection({ scrimData, isInDetail }) {
   const [buttonsDisabled, setButtonsDisabled] = useState(false); // for when players spam joining or leaving.
 
   const [scrim, setScrim] = useScrimSocket(scrimData, isBoxExpanded);
+  const [swapPlayers, setSwapPlayers] = useState({
+    playerOneId: '',
+    playerTwoId: '',
+  });
 
   const scrimBoxRef = useRef(null); // element container
 
@@ -120,6 +125,27 @@ export default function ScrimSection({ scrimData, isInDetail }) {
       setImageUploaded(false);
     }
   }, [scrim]);
+
+  useEffect(() => {
+    const checkSwap = async () => {
+      if (swapPlayers.playerOneId && swapPlayers.playerTwoId) {
+        const updatedScrim = await swapPlayersInScrim({
+          scrimId: scrim._id,
+          swapPlayers,
+          setButtonsDisabled,
+          setAlert: setCurrentAlert,
+          setScrim,
+        });
+
+        socket?.emit('sendScrimTransaction', updatedScrim);
+
+        setSwapPlayers({ playerOneId: '', playerTwoId: '' });
+      }
+    };
+    checkSwap();
+
+    // eslint-disable-next-line
+  }, [swapPlayers, scrim?._id]);
 
   const joinCast = async () => {
     if (playerEntered) {
@@ -241,6 +267,7 @@ export default function ScrimSection({ scrimData, isInDetail }) {
               buttonsDisabled={buttonsDisabled}
               setButtonsDisabled={setButtonsDisabled}
               socket={socket}
+              setSwapPlayers={setSwapPlayers}
             />
 
             {/* the middle box that contains the countdown timer and other details. */}
@@ -272,6 +299,7 @@ export default function ScrimSection({ scrimData, isInDetail }) {
               buttonsDisabled={buttonsDisabled}
               setButtonsDisabled={setButtonsDisabled}
               socket={socket}
+              setSwapPlayers={setSwapPlayers}
             />
           </div>
         )}
