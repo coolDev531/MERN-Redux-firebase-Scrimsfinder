@@ -258,6 +258,7 @@ export const swapPlayersInScrim = async ({
       `/scrims/${scrimId}/swap-players`,
       swapPlayers
     );
+    setAlert({ type: 'Success', message: 'Players swapped!' });
     return response.data;
   } catch (error) {
     const errorMsg =
