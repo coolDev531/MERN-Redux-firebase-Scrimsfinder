@@ -93,7 +93,7 @@ If you have an admin key, you can host a scrim/lobby. Then players just have to 
 
 ### 5/26/2022
 
-- Admins can now swap between 2 players using drag and drop
+- Admins can now swap between 2 players / 1 player and 1 empty spot using drag and drop
 
 ---
 
