@@ -723,7 +723,8 @@ const swapPlayersInScrim = async (req, res) => {
 
     // beginning of session
     await session.withTransaction(async () => {
-      const { playerOneId, playerTwoId } = req.body;
+
+      const { playerOne, playerTwo } = req.body;
 
       const scrimId = req.params.scrimId;
       let scrim = await Scrim.findOne({ _id: scrimId });
@@ -732,44 +733,63 @@ const swapPlayersInScrim = async (req, res) => {
       let updatedTeamOne = [];
       let updatedTeamTwo = [];
 
-      for await (player of scrim.teamOne) {
-        if (String(player._user) === String(playerOneId)) {
-          const swappedPlayer = {
-            ...player._doc,
-            _user: playerTwoId,
-          };
+      if (!!playerOne._user && !!playerTwo._user) {
+        for await (player of scrim.teamOne) {
+          if (String(player._user) === String(playerOne._user)) {
+            const swappedPlayer = {
+              ...player._doc,
+              _user: playerTwo._user,
+            };
 
-          updatedTeamOne.push(swappedPlayer);
-        } else if (String(player._user) === String(playerTwoId)) {
-          const swappedPlayer = {
-            ...player._doc,
-            _user: playerOneId,
-          };
+            updatedTeamOne.push(swappedPlayer);
+          } else if (String(player._user) === String(playerTwo._user)) {
+            const swappedPlayer = {
+              ...player._doc,
+              _user: playerOne._user,
+            };
 
-          updatedTeamOne.push(swappedPlayer);
-        } else {
-          updatedTeamOne.push(player);
+            updatedTeamOne.push(swappedPlayer);
+          } else {
+            updatedTeamOne.push(player);
+          }
         }
-      }
 
-      for await (player of scrim.teamTwo) {
-        if (String(player._user) === String(playerOneId)) {
-          const swappedPlayer = {
-            ...player._doc,
-            _user: playerTwoId,
-          };
+        for await (player of scrim.teamTwo) {
+          if (String(player._user) === String(playerOne._user)) {
+            const swappedPlayer = {
+              ...player._doc,
+              _user: playerTwo._user,
+            };
 
-          updatedTeamTwo.push(swappedPlayer);
-        } else if (String(player._user) === String(playerTwoId)) {
-          const swappedPlayer = {
-            ...player._doc,
-            _user: playerOneId,
-          };
+            updatedTeamTwo.push(swappedPlayer);
+          } else if (String(player._user) === String(playerTwo._user)) {
+            const swappedPlayer = {
+              ...player._doc,
+              _user: playerOne._user,
+            };
 
-          updatedTeamTwo.push(swappedPlayer);
-        } else {
-          updatedTeamTwo.push(player);
+            updatedTeamTwo.push(swappedPlayer);
+          } else {
+            updatedTeamTwo.push(player);
+          }
         }
+      } else {
+        return await movePlayerInScrim(
+          {
+            ...req,
+            params: {
+              ...req.params,
+              userId: playerOne._user,
+            },
+            body: {
+              playerData: {
+                role: playerTwo.role,
+                team: { name: playerTwo.team },
+              },
+            },
+          },
+          res
+        );
       }
 
       scrim.teamOne = updatedTeamOne;

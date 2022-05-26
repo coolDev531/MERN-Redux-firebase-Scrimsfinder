@@ -178,16 +178,23 @@ export default function ScrimTeamList({
   };
 
   const onDrag = (e) => {
-    if (!isCurrentUserAdmin) {
+    const userId = e.target.closest('li').dataset?._user;
+
+    if (!isCurrentUserAdmin || !userId) {
       e.preventDefault();
       return;
     }
 
-    const userId = e.target.closest('li').dataset._user;
+    const role = e.target.closest('li').dataset.role;
+    const team = e.target.closest('li').dataset.teamname;
 
     setSwapPlayers((prevState) => ({
       ...prevState,
-      playerOneId: userId,
+      playerOne: {
+        _user: userId,
+        role,
+        team,
+      },
     }));
   };
 
@@ -198,11 +205,18 @@ export default function ScrimTeamList({
     }
 
     e.preventDefault();
+
     const userId = e.target.closest('li').dataset._user;
+    const role = e.target.closest('li').dataset.role;
+    const team = e.target.closest('li').dataset.teamname;
 
     setSwapPlayers((prevState) => ({
       ...prevState,
-      playerTwoId: userId,
+      playerTwo: {
+        _user: userId,
+        role,
+        team,
+      },
     }));
   };
 
@@ -249,6 +263,8 @@ export default function ScrimTeamList({
                   onDragOver={(e) => e.preventDefault()}
                   draggable={true}
                   data-_user={userInfo?._id}
+                  data-role={teamRole}
+                  data-teamName={teamData.teamName}
                   alignItems="center"
                   className={classes.teamListItem}
                   style={{
@@ -423,7 +439,15 @@ export default function ScrimTeamList({
               <Fragment key={idx}>
                 {idx !== 0 ? <Divider component="div" /> : null}
 
-                <ListItem alignItems="center" className={classes.teamListItem}>
+                <ListItem
+                  alignItems="center"
+                  className={classes.teamListItem}
+                  data-role={teamRole}
+                  data-teamName={teamData.teamName}
+                  onDragEnter={(e) => e.preventDefault()}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={onDrop}
+                  draggable={true}>
                   <ListItemAvatar>
                     <Avatar alt={teamRole} src={ROLE_IMAGES[teamRole]} />
                   </ListItemAvatar>
