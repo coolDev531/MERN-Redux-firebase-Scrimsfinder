@@ -723,6 +723,7 @@ const swapPlayersInScrim = async (req, res) => {
 
     // beginning of session
     await session.withTransaction(async () => {
+
       const { playerOne, playerTwo } = req.body;
 
       const scrimId = req.params.scrimId;
