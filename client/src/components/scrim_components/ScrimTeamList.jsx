@@ -180,7 +180,7 @@ export default function ScrimTeamList({
   const onDrag = (e) => {
     const userId = e.target.closest('li').dataset?._user;
 
-    if (!isCurrentUserAdmin || !userId) {
+    if (!isCurrentUserAdmin && !userId) {
       e.preventDefault();
       return;
     }
