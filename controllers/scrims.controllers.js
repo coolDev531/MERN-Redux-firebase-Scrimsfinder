@@ -734,7 +734,6 @@ const swapPlayersInScrim = async (req, res) => {
 
       if (!!playerOne._user && !!playerTwo._user) {
         // if swapping between two players
-
         for await (player of scrim.teamOne) {
           if (String(player._user) === String(playerOne._user)) {
             const swappedPlayer = {
