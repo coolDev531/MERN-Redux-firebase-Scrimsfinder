@@ -128,11 +128,6 @@ export default function ScrimSection({ scrimData, isInDetail }) {
 
   useEffect(() => {
     const checkSwap = async () => {
-      if (swapPlayers?.playerOne?._user === swapPlayers?.playerTwo?._user) {
-        setSwapPlayers({ playerOne: null, playerTwo: null });
-        return;
-      }
-
       if (swapPlayers?.playerOne?.role && swapPlayers?.playerTwo?.role) {
         const updatedScrim = await swapPlayersInScrim({
           scrimId: scrim._id,
