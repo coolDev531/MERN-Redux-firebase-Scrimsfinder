@@ -447,7 +447,7 @@ export default function ScrimTeamList({
                   onDragEnter={(e) => e.preventDefault()}
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={onDrop}
-                  draggable={true}>
+                  draggable={false}>
                   <ListItemAvatar>
                     <Avatar alt={teamRole} src={ROLE_IMAGES[teamRole]} />
                   </ListItemAvatar>
