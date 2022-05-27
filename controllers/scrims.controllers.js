@@ -723,7 +723,6 @@ const swapPlayersInScrim = async (req, res) => {
 
     // beginning of session
     await session.withTransaction(async () => {
-
       const { playerOne, playerTwo } = req.body;
 
       const scrimId = req.params.scrimId;
@@ -734,6 +733,8 @@ const swapPlayersInScrim = async (req, res) => {
       let updatedTeamTwo = [];
 
       if (!!playerOne._user && !!playerTwo._user) {
+        // if swapping between two players
+
         for await (player of scrim.teamOne) {
           if (String(player._user) === String(playerOne._user)) {
             const swappedPlayer = {
@@ -774,6 +775,7 @@ const swapPlayersInScrim = async (req, res) => {
           }
         }
       } else {
+        // if only moving 1 player to empty spot (not swapping between two players)
         return await movePlayerInScrim(
           {
             ...req,
