@@ -3,7 +3,7 @@ const PORT = process.env.PORT || 8900;
 
 const io = require('socket.io')(PORT, {
   cors: {
-    origin: 'https://lol-scrims-finder.netlify.app',
+    origin: process.env.NODE_ENV === 'production' ? 'https://lol-scrims-finder.netlify.app' : '*',
     credentials: true,
   },
 });
