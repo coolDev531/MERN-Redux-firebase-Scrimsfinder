@@ -60,17 +60,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function TableDesktop({
+export default function TableDesktop({
   columns,
   data,
   autoResetPage = true,
-  initialState = {
+  initialStateDesktop = {
     pageIndex: 0,
     pageSize: 10,
     // filters: [{ id: 'isActive', value: true }],
   },
   filterColumnProps,
-  rowsPerPageOptions = [10, 20, 30, 40, 50, 100],
+  rowsPerPageOptionsDesktop = [10, 20, 30, 40, 50, 100],
 }) {
   // react-table requires a default column when using filters.
   const defaultColumn = useMemo(
@@ -96,8 +96,8 @@ function TableDesktop({
       defaultColumn,
       columns,
       autoResetPage,
-      data, // passing the players as data for the table
-      initialState,
+      data,
+      initialState: initialStateDesktop,
     },
     useFilters,
     useGlobalFilter,
@@ -166,7 +166,7 @@ function TableDesktop({
 
             {/* Material UI TablePagination component */}
             <TablePagination
-              rowsPerPageOptions={rowsPerPageOptions}
+              rowsPerPageOptions={rowsPerPageOptionsDesktop}
               colSpan={0}
               className={classes.pagination}
               count={pageOptions.length}
@@ -249,5 +249,3 @@ function TableDesktop({
     </Paper>
   );
 }
-
-export default TableDesktop;
