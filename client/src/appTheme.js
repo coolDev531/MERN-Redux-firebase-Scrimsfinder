@@ -31,11 +31,13 @@ export const appTheme = createTheme({
     primary: {
       main: COLORS.EGGSHELL_WHITE,
       contrastText: COLORS.BROWN,
+      linkColor: '#fff',
     },
 
     secondary: {
       main: COLORS.BROWN,
-      constrastText: '#fff',
+      linkColor: COLORS.DARK,
+      contrastText: '#fff',
     },
 
     background: {

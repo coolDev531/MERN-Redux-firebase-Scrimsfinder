@@ -173,6 +173,7 @@ export default function TableDesktop({
               rowsPerPage={pageSize}
               onPageChange={gotoPage}
               page={pageIndex}
+              labelRowsPerPage="Results per page:"
               classes={{ spacer: classes.paginationSpacer }}
               onRowsPerPageChange={(e) => setPageSize(Number(e.target.value))}
               labelDisplayedRows={() =>
