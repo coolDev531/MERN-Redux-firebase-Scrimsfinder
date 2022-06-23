@@ -37,7 +37,7 @@ export const appTheme = createTheme({
     secondary: {
       main: COLORS.BROWN,
       linkColor: COLORS.DARK,
-      constrastText: '#fff',
+      contrastText: '#fff',
     },
 
     background: {
