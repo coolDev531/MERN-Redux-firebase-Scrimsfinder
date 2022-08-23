@@ -171,7 +171,7 @@ export default function BansTable({ bans }) {
         Header: 'Reason',
         accessor: 'reason',
         Cell: (r) => (
-          <div style={{ width: '95%', wordBreak: 'break-word' }}>
+          <div style={{ width: '100%', wordBreak: 'break-word' }}>
             {truncate(r.value, 32)}
           </div>
         ),
