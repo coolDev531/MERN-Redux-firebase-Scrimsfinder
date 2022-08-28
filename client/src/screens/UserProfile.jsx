@@ -244,7 +244,7 @@ export default function UserProfile() {
         <MyCreatedScrims
           isCurrentUser={isCurrentUser}
           isCurrentUserAdmin={isCurrentUserAdmin}
-          userName={userData?.name}
+          user={userData}
           scrims={userCreatedScrims}
         />
 
