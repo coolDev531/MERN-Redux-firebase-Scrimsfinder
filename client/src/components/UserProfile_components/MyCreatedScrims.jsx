@@ -22,7 +22,12 @@ import {
   showLatestFirst,
 } from '../../utils/getSortedScrims';
 
-export default function MyCreatedScrims({ isCurrentUser, scrims }) {
+export default function MyCreatedScrims({
+  isCurrentUser,
+  isCurrentUserAdmin,
+  scrims,
+  userName,
+}) {
   const [sortType, setSortType] = useState('date-descending');
   const [filterType, setFilterType] = useState('none');
 
@@ -56,8 +61,8 @@ export default function MyCreatedScrims({ isCurrentUser, scrims }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortType, filterType, sortedCreatedScrims]);
 
-  if (!isCurrentUser) return null;
-  if (!scrims.length) return null;
+  if (!isCurrentUser && !isCurrentUserAdmin) return null;
+  // if (!scrims.length) return null;
 
   return (
     <>
@@ -73,7 +78,9 @@ export default function MyCreatedScrims({ isCurrentUser, scrims }) {
         <Grid item>
           <CustomTooltip placement="top" title="Scrims that you have created">
             <Typography style={{ cursor: 'help' }} variant="h1">
-              My Created Scrims
+              {isCurrentUser
+                ? 'My Created Scrims'
+                : `${userName}'s Created Scrims`}
             </Typography>
           </CustomTooltip>
         </Grid>

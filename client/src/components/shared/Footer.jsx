@@ -17,7 +17,9 @@ const Footer = () => (
     <StyledFooter className="page-section site-footer">
       <InnerColumn>
         <Grid container justifyContent="space-between">
-          &copy; 2021 GitCat#9811
+          <a target="_blank" rel="noreferrer" href="https://discordapp.com/users/233703630140604416" className="link">
+            &copy; 2021 GitCat#9811
+          </a>
           {/* <a
             target="_blank"
             rel="noreferrer"
