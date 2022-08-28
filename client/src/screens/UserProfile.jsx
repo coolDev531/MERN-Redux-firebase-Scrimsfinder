@@ -236,6 +236,7 @@ export default function UserProfile() {
         {/* User Details: name, discord, rank, exp, etc. */}
         <ProfileAccountDetails
           user={userData}
+          setUser={setUserData}
           userParticipatedScrims={userParticipatedScrims}
         />
 

@@ -35,3 +35,19 @@ export const getAllBans = async () => {
     throw error;
   }
 };
+
+export const updateUserAsAdmin = async (userId, body, setAlert) => {
+  try {
+    const response = await api.post(`/admin/updateUser/${userId}`, body);
+
+    setAlert({ type: 'Success', message: 'User successfuly updated!' });
+
+    return response.data;
+  } catch (error) {
+    const errorMsg = error.response.data?.error ?? error;
+
+    setAlert({ type: 'Error', message: errorMsg });
+
+    return;
+  }
+};
