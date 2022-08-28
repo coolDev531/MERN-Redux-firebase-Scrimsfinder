@@ -89,7 +89,7 @@ export default function UserProfile() {
         });
 
         // don't fetch userCreatedScrims if user isn't himself
-        if (isCurrentUser) {
+        if (isCurrentUser || isCurrentUserAdmin) {
           const userCreatedScrims = await getUserCreatedScrims(userId);
 
           setUserCreatedScrims(userCreatedScrims);
@@ -239,9 +239,11 @@ export default function UserProfile() {
           userParticipatedScrims={userParticipatedScrims}
         />
 
-        {/* My Scrims (will only render if is current user) */}
+        {/* My Scrims (will only render if is current user or is admin) */}
         <MyCreatedScrims
           isCurrentUser={isCurrentUser}
+          isCurrentUserAdmin={isCurrentUserAdmin}
+          userName={userData?.name}
           scrims={userCreatedScrims}
         />
 
