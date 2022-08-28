@@ -76,7 +76,11 @@ export default function MyCreatedScrims({
         direction="row"
         marginTop={2}>
         <Grid item>
-          <CustomTooltip placement="top" title="Scrims that you have created">
+          <CustomTooltip
+            placement="top"
+            title={`Scrims that ${
+              isCurrentUser ? 'you have' : `${user?.name} has`
+            } created`}>
             <Typography style={{ cursor: 'help' }} variant="h1">
               {isCurrentUser
                 ? 'My Created Scrims'
