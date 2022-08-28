@@ -236,6 +236,7 @@ export default function UserProfile() {
         {/* User Details: name, discord, rank, exp, etc. */}
         <ProfileAccountDetails
           user={userData}
+          setUser={setUserData}
           userParticipatedScrims={userParticipatedScrims}
         />
 
@@ -243,7 +244,7 @@ export default function UserProfile() {
         <MyCreatedScrims
           isCurrentUser={isCurrentUser}
           isCurrentUserAdmin={isCurrentUserAdmin}
-          userName={userData?.name}
+          user={userData}
           scrims={userCreatedScrims}
         />
 

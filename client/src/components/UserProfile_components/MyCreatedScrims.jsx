@@ -26,7 +26,7 @@ export default function MyCreatedScrims({
   isCurrentUser,
   isCurrentUserAdmin,
   scrims,
-  userName,
+  user,
 }) {
   const [sortType, setSortType] = useState('date-descending');
   const [filterType, setFilterType] = useState('none');
@@ -62,7 +62,7 @@ export default function MyCreatedScrims({
   }, [sortType, filterType, sortedCreatedScrims]);
 
   if (!isCurrentUser && !isCurrentUserAdmin) return null;
-  // if (!scrims.length) return null;
+  if (!user?.isAdmin) return null;
 
   return (
     <>
@@ -80,7 +80,7 @@ export default function MyCreatedScrims({
             <Typography style={{ cursor: 'help' }} variant="h1">
               {isCurrentUser
                 ? 'My Created Scrims'
-                : `${userName}'s Created Scrims`}
+                : `${user?.name}'s Created Scrims`}
             </Typography>
           </CustomTooltip>
         </Grid>

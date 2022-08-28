@@ -2,6 +2,7 @@ const KEYS = require('../config/keys');
 const User = require('../models/user.model');
 const Ban = require('../models/ban.model');
 const { unbanUser: utilUnbanUser } = require('../utils/adminUtils');
+const { validateRank } = require('../utils/validators');
 
 const banUser = async (req, res) => {
   try {
@@ -159,8 +160,47 @@ const getAllBans = async (req, res) => {
   }
 };
 
+const updateUserAsAdmin = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // check for valid rank
+    if (req.body.rank) {
+      const isValidRank = await validateRank({
+        rank: req.body.rank,
+        req,
+        res,
+      });
+
+      if (!isValidRank) return;
+    }
+
+    return await User.findByIdAndUpdate(
+      userId,
+      req.body,
+      { new: true },
+      async (error, user) => {
+        if (error) {
+          return res.status(500).json({ error: error.message });
+        }
+
+        if (!user) {
+          return res.status(500).send('User not found');
+        }
+
+        user.save();
+
+        return res.status(200).json(user);
+      }
+    );
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   banUser,
   unbanUser,
   getAllBans,
+  updateUserAsAdmin,
 };

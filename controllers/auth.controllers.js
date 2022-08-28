@@ -5,6 +5,7 @@ const escape = require('escape-html');
 const { REGIONS } = require('../utils/constants');
 const KEYS = require('../config/keys');
 const { unbanUser, banDateExpired } = require('../utils/adminUtils');
+const { validateRank } = require('../utils/validators');
 
 // models
 const User = require('../models/user.model');
@@ -43,19 +44,6 @@ const checkSummonerNameValid = (summonerName) => {
   // dont allow special characters
   return format.test(summonerName);
 };
-
-const allowedRanks = [
-  'Unranked',
-  'Iron',
-  'Bronze',
-  'Silver',
-  'Gold',
-  'Platinum',
-  'Diamond',
-  'Master',
-  'Grandmaster',
-  'Challenger',
-];
 
 // get google uid and email by using google auth firebase, then give rest of user data hosted in database.
 // same as verify user but with more edge-cases.
@@ -184,55 +172,13 @@ const registerUser = async (req, res) => {
 
     const regionInvalid = !REGIONS.includes(region);
 
-    const rankDivision = rank.replace(/[0-9]/g, '').trim();
+    const isValidRank = await validateRank({
+      rank,
+      req,
+      res,
+    });
 
-    const isDivisionWithNumber = divisionsWithNumbers.includes(rankDivision);
-
-    const rankInvalid = !allowedRanks.includes(rankDivision);
-
-    if (rankInvalid) {
-      return res.status(500).json({
-        status: false,
-        error: 'Invalid rank provided.',
-      });
-    }
-
-    if (isDivisionWithNumber) {
-      const rankNumber = rank.replace(/[a-z]/gi, '').trim();
-
-      // check if rank has digits
-      if (!/\d/.test(rank)) {
-        return res.status(500).json({
-          status: false,
-          error: 'Rank number not provided',
-        });
-      }
-
-      // check that rankNumber is only 1 digit
-      if (!/^\d{1,1}$/.test(rankNumber)) {
-        return res.status(500).json({
-          status: false,
-          error: 'Rank number invalid',
-        });
-      }
-
-      // check that rankNumber is a digit in range from one to four
-      if (!/[1-4]/.test(rankNumber)) {
-        return res.status(500).json({
-          status: false,
-          error:
-            'Rank number invalid! (should only contain one digit from 1-4)',
-        });
-      }
-    } else if (!isDivisionWithNumber) {
-      // if the rank division doesn't have a number (aka challenger, master, etc), check that it doesn't have digits
-      if (/\d/.test(rank)) {
-        return res.status(500).json({
-          status: false,
-          error: 'The provided rank should not have a number',
-        });
-      }
-    }
+    if (!isValidRank) return;
 
     if (regionInvalid) {
       return res.status(500).json({
@@ -382,56 +328,13 @@ const updateUser = async (req, res) => {
 
     // check for valid rank
     if (req.body.rank) {
-      let rankDivision = req.body.rank.replace(/[0-9]/g, '').trim();
+      const isValidRank = await validateRank({
+        rank: req.body.rank,
+        req,
+        res,
+      });
 
-      let isDivisionWithNumber = divisionsWithNumbers.includes(rankDivision);
-
-      const rankInvalid = !allowedRanks.includes(rankDivision);
-
-      if (rankInvalid) {
-        return res.status(500).json({
-          status: false,
-          error: 'Invalid rank provided.',
-        });
-      }
-
-      if (isDivisionWithNumber) {
-        const rankNumber = req.body.rank.replace(/[a-z]/gi, '').trim();
-
-        // check that rank has digits
-        if (!/\d/.test(req.body.rank)) {
-          return res.status(500).json({
-            status: false,
-            error: 'Rank number not provided',
-          });
-        }
-
-        // check that rankNumber is only 1 digit
-        if (!/^\d{1,1}$/.test(rankNumber)) {
-          return res.status(500).json({
-            status: false,
-            error:
-              'Rank number invalid: should only contain one digit from 1-4.',
-          });
-        }
-
-        // check that rankNumber is a digit in range from one to four
-        if (!/[1-4]/.test(rankNumber)) {
-          return res.status(500).json({
-            status: false,
-            error:
-              'Rank number is invalid! (should only contain one digit from 1-4)',
-          });
-        }
-      } else if (!isDivisionWithNumber) {
-        // if the rank division doesn't have a number (aka challenger, master, etc), check that it doesn't have digits
-        if (/\d/.test(req.body.rank)) {
-          return res.status(500).json({
-            status: false,
-            error: 'The provided rank should not have a number',
-          });
-        }
-      }
+      if (!isValidRank) return;
     }
 
     // check for valid region

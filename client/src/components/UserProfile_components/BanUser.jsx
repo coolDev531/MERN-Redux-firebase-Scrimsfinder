@@ -7,12 +7,12 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import FormGroup from '@mui/material/FormGroup';
 import Button from '@mui/material/Button';
 import AdminArea from './../shared/AdminArea';
+import BanUserModal from '../modals/BanUserModal';
 
 // services
 import { banUser, unbanUser } from '../../services/admin.services.js';
 
 // icons
-import BanUserModal from '../modals/BanUserModal';
 import BanIcon from '@mui/icons-material/Gavel';
 import UnbanIcon from '@mui/icons-material/AccessibilityNew';
 
