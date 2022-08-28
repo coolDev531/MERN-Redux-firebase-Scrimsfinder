@@ -11,14 +11,20 @@ const StyledFooter = styled('footer')({
   scrollMarginTop: '2em',
 });
 
+const currentYear = new Date().getFullYear();
+
 const Footer = () => (
   <>
     <div className="footer-spacer" />
     <StyledFooter className="page-section site-footer">
       <InnerColumn>
         <Grid container justifyContent="space-between">
-          <a target="_blank" rel="noreferrer" href="https://discordapp.com/users/233703630140604416" className="link">
-            &copy; 2021 GitCat#9811
+          <a
+            target="_blank"
+            rel="noreferrer"
+            href="https://discordapp.com/users/233703630140604416"
+            className="link">
+            &copy; {currentYear} GitCat#9811
           </a>
           {/* <a
             target="_blank"
