@@ -20,7 +20,7 @@ If you have an admin key, you can host a scrim/lobby. Then players just have to 
 
 - Authentication (Maybe, trying to keep it plug and play...) ✔️
 - Profile pages, notifications, friends ✔️
-- Use the Riot Live Client API for summoner data. 
+- Use the Riot Live Client API for summoner data.
 - Discord validation
 - Be able to host tournaments with classic tourney-style functionality and interface.
 - Mobile media queries
@@ -95,6 +95,10 @@ If you have an admin key, you can host a scrim/lobby. Then players just have to 
 
 - Admins can now swap between 2 players / 1 player and 1 empty spot using drag and drop
 
+### 9/11/2022
+
+- userAgent data now gets saved in the DB when logging in, that is for security purposes.
+
 ---
 
 <br />
@@ -141,7 +145,7 @@ src
   |__ store.dev.js
   |__ store.prod.js
   |__ index.js
-  
+
 |__ reducers
   |__ auth.reducer.js
   |__ scrims.reducer.js
