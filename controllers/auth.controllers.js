@@ -40,10 +40,16 @@ const checkSummonerNameValid = (summonerName) => {
   return format.test(summonerName);
 };
 
+const parseIp = (req) =>
+  req.headers['x-forwarded-for']?.split(',').shift() ||
+  req.socket?.remoteAddress;
+
 // get google uid and email by using google auth firebase, then give rest of user data hosted in database.
 // same as verify user but with more edge-cases.
 const loginUser = async (req, res) => {
   const { email, uid } = req.body;
+
+  const ip = parseIp(req);
 
   let error;
 
@@ -146,7 +152,12 @@ const loginUser = async (req, res) => {
 
     await foundUser.save();
 
-    return res.json({ success: true, token: `Bearer ${accessToken}`, error });
+    return res.json({
+      success: true,
+      token: `Bearer ${accessToken}`,
+      error,
+      ip,
+    });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
