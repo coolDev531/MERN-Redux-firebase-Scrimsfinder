@@ -119,6 +119,8 @@ const loginUser = async (req, res) => {
           } else {
             foundUser.loginHistory.push(loginInfo);
           }
+
+          await loginInfo.save();
         }
       } catch (error) {
         error = error;
