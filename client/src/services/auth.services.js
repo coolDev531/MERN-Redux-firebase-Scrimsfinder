@@ -1,6 +1,7 @@
 import api from './apiConfig';
 import devLog from '../utils/devLog';
 import jwt_decode from 'jwt-decode';
+import axios from 'axios';
 
 export const setAuthToken = (token) => {
   if (token) {
@@ -12,11 +13,12 @@ export const setAuthToken = (token) => {
   }
 };
 
-export const loginUser = async (googleParams) => {
+export const loginUser = async (googleParams, ip) => {
   try {
     const response = await api.post('/auth/login', {
       email: googleParams.email,
       uid: googleParams.uid,
+      ip,
     });
 
     if (response.data?.token) {
@@ -86,6 +88,17 @@ export const updateUser = async (userData) => {
   try {
     const response = await api.put(`/auth/update-user`, userData);
     return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getIp = async () => {
+  try {
+    const response = await axios.get(
+      'https://gitcat-cors-anywhere-proxy.herokuapp.com/api.ipify.org/?format=json'
+    );
+    return response.data?.ip;
   } catch (error) {
     throw error;
   }

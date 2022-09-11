@@ -6,19 +6,14 @@ const { REGIONS } = require('../utils/constants');
 const KEYS = require('../config/keys');
 const { unbanUser, banDateExpired } = require('../utils/adminUtils');
 const { validateRank } = require('../utils/validators');
+const axios = require('axios');
 
 // models
 const User = require('../models/user.model');
 const Ban = require('../models/ban.model');
+const LoginInfo = require('../models/login-info.model');
 
-const divisionsWithNumbers = [
-  'Iron',
-  'Bronze',
-  'Silver',
-  'Gold',
-  'Platinum',
-  'Diamond',
-];
+require('dotenv').config();
 
 /**
  * @method removeSpacesBeforeHashTag
@@ -124,6 +119,32 @@ const loginUser = async (req, res) => {
 
     // the user last logged in now, and save it in db.
     foundUser.lastLoggedIn = Date.now();
+
+    // get login info for security purposes.
+    try {
+      const { data: ipData } = await axios.get(
+        `https://api.ipdata.co/${req.body.ip}/?api-key=${process.env.IPDATA_API_KEY}`
+      );
+
+      if (ipData) {
+        const loginInfo = new LoginInfo({
+          _user: foundUser._id,
+          ...ipData,
+        });
+
+        if (!foundUser.loginHistory) {
+          foundUser.loginHistory = [loginInfo];
+        } else {
+          foundUser.loginHistory.push(loginInfo);
+        }
+      }
+    } catch (error) {
+      console.log(
+        `IPDATA ERR:: Error logging ip data for userId: ${foundUser._id}`,
+        JSON.stringify(error)
+      );
+    }
+
     await foundUser.save();
 
     return res.json({ success: true, token: `Bearer ${accessToken}` });

@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 const { Friend, FriendRequest } = require('./friend.model');
 const Notification = require('./notification.model');
 const Ban = require('./ban.model').schema;
+const LoginInfo = require('./login-info.model').schema;
 
 const User = new Schema(
   {
@@ -70,6 +71,7 @@ const User = new Schema(
     isDonator: { type: Boolean, default: false }, // is this user a donator?
 
     bansHistory: { type: [Ban], default: [] },
+    loginHistory: { type: [LoginInfo], default: [] },
 
     // list all the donations of that user
     donations: {
