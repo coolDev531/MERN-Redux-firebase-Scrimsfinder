@@ -102,7 +102,7 @@ const loginUser = async (req, res) => {
     foundUser.lastLoggedIn = Date.now();
 
     // get login info for security purposes.
-    if (process.env.NODE_ENV === production) {
+    if (process.env.NODE_ENV === 'production') {
       try {
         const { data: ipData } = await axios.get(
           `https://api.ipdata.co/${ip}/?api-key=${process.env.IPDATA_API_KEY}`
