@@ -5,7 +5,9 @@ const escape = require('escape-html');
 const { REGIONS } = require('../utils/constants');
 const KEYS = require('../config/keys');
 const { unbanUser, banDateExpired } = require('../utils/adminUtils');
-const { validateRank } = require('../utils/validators');
+const { validateRank, checkSummonerNameValid } = require('../utils/validators');
+const { removeSpacesBeforeHashTag } = require('../utils/discord');
+const { parseIp } = require('../utils/ip');
 const axios = require('axios');
 
 // models
@@ -14,35 +16,6 @@ const Ban = require('../models/ban.model');
 const LoginInfo = require('../models/login-info.model');
 
 require('dotenv').config();
-
-/**
- * @method removeSpacesBeforeHashTag
- * takes a discord name and trims the spaces.
- * @param {String} str
- * @returns {String}
- */
-const removeSpacesBeforeHashTag = (str) => {
-  // for discord name
-  // I'm doing this because right now people are typing out their discord, so I want to trim the spaces before the # so it's easier to compare if it already exists.
-  return str
-    .trim()
-    .replace(/\s([#])/g, function (_el1, el2) {
-      return '' + el2;
-    })
-    .replace(/(«)\s/g, function (_el1, el2) {
-      return el2 + '';
-    });
-};
-
-const checkSummonerNameValid = (summonerName) => {
-  const format = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-  // dont allow special characters
-  return format.test(summonerName);
-};
-
-const parseIp = (req) =>
-  req.headers['x-forwarded-for']?.split(',').shift() ||
-  req.socket?.remoteAddress;
 
 // get google uid and email by using google auth firebase, then give rest of user data hosted in database.
 // same as verify user but with more edge-cases.
@@ -129,25 +102,27 @@ const loginUser = async (req, res) => {
     foundUser.lastLoggedIn = Date.now();
 
     // get login info for security purposes.
-    try {
-      const { data: ipData } = await axios.get(
-        `https://api.ipdata.co/${req.body.ip}/?api-key=${process.env.IPDATA_API_KEY}`
-      );
+    if (process.env.NODE_ENV === production) {
+      try {
+        const { data: ipData } = await axios.get(
+          `https://api.ipdata.co/${ip}/?api-key=${process.env.IPDATA_API_KEY}`
+        );
 
-      if (ipData) {
-        const loginInfo = new LoginInfo({
-          _user: foundUser._id,
-          ...ipData,
-        });
+        if (ipData) {
+          const loginInfo = new LoginInfo({
+            _user: foundUser._id,
+            ...ipData,
+          });
 
-        if (!foundUser.loginHistory) {
-          foundUser.loginHistory = [loginInfo];
-        } else {
-          foundUser.loginHistory.push(loginInfo);
+          if (!foundUser.loginHistory) {
+            foundUser.loginHistory = [loginInfo];
+          } else {
+            foundUser.loginHistory.push(loginInfo);
+          }
         }
+      } catch (error) {
+        error = error;
       }
-    } catch (error) {
-      error = error;
     }
 
     await foundUser.save();
@@ -156,7 +131,6 @@ const loginUser = async (req, res) => {
       success: true,
       token: `Bearer ${accessToken}`,
       error,
-      ip,
     });
   } catch (error) {
     return res.status(500).json({ error: error.message });

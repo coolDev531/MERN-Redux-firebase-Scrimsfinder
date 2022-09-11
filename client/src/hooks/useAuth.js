@@ -4,12 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 // services
 import { auth, provider } from '../firebase';
-import {
-  loginUser,
-  verifyUser,
-  setAuthToken,
-  getIp,
-} from '../services/auth.services';
+import { loginUser, verifyUser, setAuthToken } from '../services/auth.services';
 import { removeToken } from '../services/auth.services';
 
 // utils
@@ -60,8 +55,7 @@ export function useAuthActions() {
 
       // token = `Bearer ${bcryptHash}`
       try {
-        const ip = await getIp();
-        const decodedUser = await loginUser(googleParams, ip); // get the jwt token from backend with params
+        const decodedUser = await loginUser(googleParams); // get the jwt token from backend with params
 
         if (decodedUser) {
           setCurrentUser(decodedUser);
