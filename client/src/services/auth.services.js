@@ -96,7 +96,7 @@ export const updateUser = async (userData) => {
 export const getIp = async () => {
   try {
     const response = await axios.get(
-      'https://gitcat-cors-anywhere-proxy.herokuapp.com/api.ipify.org/?format=json'
+      'https://gitcat-cors-anywhere-proxy.herokuapp.com/https://api.ipify.org/?format=json'
     );
     return response.data?.ip;
   } catch (error) {
