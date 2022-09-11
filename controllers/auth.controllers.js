@@ -45,6 +45,8 @@ const checkSummonerNameValid = (summonerName) => {
 const loginUser = async (req, res) => {
   const { email, uid } = req.body;
 
+  let error;
+
   if (!email) {
     res.status(401).json({
       error: 'Unauthorized',
@@ -139,15 +141,12 @@ const loginUser = async (req, res) => {
         }
       }
     } catch (error) {
-      console.log(
-        `IPDATA ERR:: Error logging ip data for userId: ${foundUser._id}`,
-        JSON.stringify(error)
-      );
+      error = error;
     }
 
     await foundUser.save();
 
-    return res.json({ success: true, token: `Bearer ${accessToken}` });
+    return res.json({ success: true, token: `Bearer ${accessToken}`, error });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
