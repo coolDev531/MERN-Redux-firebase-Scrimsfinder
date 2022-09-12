@@ -7,13 +7,14 @@ const KEYS = require('../config/keys');
 const { unbanUser, banDateExpired } = require('../utils/adminUtils');
 const { validateRank, checkSummonerNameValid } = require('../utils/validators');
 const { removeSpacesBeforeHashTag } = require('../utils/discord');
-const { parseIp } = require('../utils/ip');
 const axios = require('axios');
 
 // models
 const User = require('../models/user.model');
 const Ban = require('../models/ban.model');
-const LoginInfo = require('../models/login-info.model');
+const {
+  createLoginHistory,
+} = require('../services/createLoginHistory.services');
 
 require('dotenv').config();
 
@@ -21,8 +22,6 @@ require('dotenv').config();
 // same as verify user but with more edge-cases.
 const loginUser = async (req, res) => {
   const { email, uid } = req.body;
-
-  const ip = parseIp(req);
 
   let error;
 
@@ -104,24 +103,7 @@ const loginUser = async (req, res) => {
     // get login info for security purposes.
     if (process.env.NODE_ENV === 'production') {
       try {
-        const { data: ipData } = await axios.get(
-          `https://api.ipdata.co/${ip}/?api-key=${process.env.IPDATA_API_KEY}`
-        );
-
-        if (ipData) {
-          const loginInfo = new LoginInfo({
-            _user: foundUser._id,
-            ...ipData,
-          });
-
-          if (!foundUser.loginHistory) {
-            foundUser.loginHistory = [loginInfo];
-          } else {
-            foundUser.loginHistory.push(loginInfo);
-          }
-
-          await loginInfo.save();
-        }
+        await createLoginHistory(req, foundUser);
       } catch (error) {
         error = error;
       }
@@ -140,6 +122,8 @@ const loginUser = async (req, res) => {
 };
 
 const registerUser = async (req, res) => {
+  let error;
+
   try {
     const {
       uid,
@@ -221,39 +205,50 @@ const registerUser = async (req, res) => {
 
     const newUser = new User(userData);
 
-    bcrypt.genSalt(10, (err, salt) => {
-      bcrypt.hash(newUser.uid, salt, (err, hash) => {
-        if (err) throw err;
-        newUser.uid = hash; // hash google uid to use as token, maybe there's something better that google provides as token.
+    const salt = await bcrypt.genSalt(10);
 
-        const payload = {
-          uid: newUser.uid,
-          email: newUser.email,
-          rank: newUser.rank,
-          _id: newUser._id,
-          region: newUser.region,
-          discord: newUser.discord,
-          adminKey: newUser.adminKey,
-          canSendEmailsToUser: newUser.canSendEmailsToUser ?? false,
-          isAdmin: false,
-          name: newUser.name,
-          notifications: [],
-          friendRequests: [],
-          friends: [],
-        };
+    bcrypt.hash(newUser.uid, salt, async (err, hash) => {
+      if (err) throw err;
 
-        const accessToken = jwt.sign(payload, KEYS.SECRET_OR_KEY, {
-          expiresIn: KEYS.JWT_EXPIRATION,
-        });
+      newUser.uid = hash; // hash google uid to use as token, maybe there's something better that google provides as token.
 
-        newUser.save();
+      const payload = {
+        uid: newUser.uid,
+        email: newUser.email,
+        rank: newUser.rank,
+        _id: newUser._id,
+        region: newUser.region,
+        discord: newUser.discord,
+        adminKey: newUser.adminKey,
+        canSendEmailsToUser: newUser.canSendEmailsToUser ?? false,
+        isAdmin: false,
+        name: newUser.name,
+        notifications: [],
+        friendRequests: [],
+        friends: [],
+      };
 
-        console.log('User created: ', newUser);
-        return res.status(201).json({
-          success: true,
-          token: `Bearer ${accessToken}`,
-          user: newUser,
-        });
+      const accessToken = jwt.sign(payload, KEYS.SECRET_OR_KEY, {
+        expiresIn: KEYS.JWT_EXPIRATION,
+      });
+
+      // get login info for security purposes.
+      if (process.env.NODE_ENV === 'production') {
+        try {
+          await createLoginHistory(req, newUser);
+        } catch (error) {
+          error = error;
+        }
+      }
+
+      await newUser.save();
+
+      console.log('User created: ', newUser);
+      return res.status(201).json({
+        success: true,
+        token: `Bearer ${accessToken}`,
+        user: newUser,
+        error,
       });
     });
   } catch (error) {
