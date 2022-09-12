@@ -39,6 +39,7 @@ export default function SignUp() {
   const { currentUser } = useAuth();
   const { setCurrentUser } = useAuthActions();
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [userData, setUserData] = useState({
     name: '',
     rank: '',
@@ -160,25 +161,36 @@ export default function SignUp() {
 
   const handleSubmit = useCallback(
     async (e) => {
-      e.preventDefault();
+      try {
+        if (isSubmitting) return;
+        setIsSubmitting(true);
 
-      let userCredentials = await createGoogleAccount(); // google pop up verify acc
+        e.preventDefault();
 
-      if (userCredentials) {
-        // HANDLE SIGN UP.
-        let createdUser = await registerUser(userCredentials, setCurrentAlert);
-        if (createdUser) {
-          setCurrentUser(createdUser);
+        let userCredentials = await createGoogleAccount(); // google pop up verify acc
 
-          setCurrentAlert({
-            type: 'Success',
-            message: 'Account created successfully, welcome!',
-          });
-          return createdUser;
+        if (userCredentials) {
+          // HANDLE SIGN UP.
+          let createdUser = await registerUser(
+            userCredentials,
+            setCurrentAlert
+          );
+          if (createdUser) {
+            setCurrentUser(createdUser);
+
+            setCurrentAlert({
+              type: 'Success',
+              message: 'Account created successfully, welcome!',
+            });
+            return createdUser;
+          }
         }
+      } catch (err) {
+      } finally {
+        setIsSubmitting(false);
       }
     },
-    [createGoogleAccount, setCurrentUser, setCurrentAlert]
+    [createGoogleAccount, setCurrentUser, setCurrentAlert, isSubmitting]
   );
 
   useEffect(() => {
@@ -275,6 +287,7 @@ export default function SignUp() {
                 </Grid>
                 <Grid item>
                   <Button
+                    disabled={isSubmitting}
                     onClick={(e) => {
                       if (isLastStep) {
                         return handleSubmit(e);
