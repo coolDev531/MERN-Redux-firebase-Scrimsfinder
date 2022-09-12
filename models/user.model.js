@@ -12,7 +12,7 @@ const User = new Schema(
       type: String,
       required: true,
     },
-    discord: { type: String, required: true, unique: false },
+    discord: { type: String, required: true, unique: true },
     rank: {
       type: String,
       required: true,
