@@ -84,6 +84,13 @@ const validateRank = async ({ rank, req, res }) => {
   return true;
 };
 
+const checkSummonerNameValid = (summonerName) => {
+  const format = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+  // dont allow special characters
+  return format.test(summonerName);
+};
+
 module.exports = {
   validateRank,
+  checkSummonerNameValid,
 };
