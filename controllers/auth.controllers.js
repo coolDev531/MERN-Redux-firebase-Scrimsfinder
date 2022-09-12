@@ -7,7 +7,6 @@ const KEYS = require('../config/keys');
 const { unbanUser, banDateExpired } = require('../utils/adminUtils');
 const { validateRank, checkSummonerNameValid } = require('../utils/validators');
 const { removeSpacesBeforeHashTag } = require('../utils/discord');
-const axios = require('axios');
 
 // models
 const User = require('../models/user.model');
