@@ -1,37 +1,47 @@
-// const { parseIp } = require('../utils/ip');
-// const axios = require('axios');
-// const LoginInfo = require('../models/login-info.model');
+const { parseIp } = require('../utils/ip');
+const axios = require('axios');
+const LoginInfo = require('../models/login-info.model');
 require('dotenv').config();
+
+function checkIfValidIP(str) {
+  // Regular expression to check if string is a IP address
+  const regexExp =
+    /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/gi;
+
+  return regexExp.test(str);
+}
 
 const createLoginHistory = async (req, user) => {
   try {
-    return true;
-    // const ip = parseIp(req);
+    const ip = parseIp(req);
+    const isValidIp = checkIfValidIP(ip);
 
-    // const { data: ipData } = await axios.get(
-    //   `https://api.ipdata.co/${ip}/?api-key=${process.env.IPDATA_API_KEY}`
-    // );
+    if (!isValidIp) return false;
 
-    // if (ipData) {
-    //   const loginInfo = new LoginInfo({
-    //     _user: user._id,
-    //     ...ipData,
-    //   });
+    const { data: ipData } = await axios.get(
+      `https://api.ipdata.co/${ip}/?api-key=${process.env.IPDATA_API_KEY}`
+    );
 
-    //   if (!user.loginHistory) {
-    //     user.loginHistory = [loginInfo];
-    //   } else {
-    //     user.loginHistory.push(loginInfo);
-    //   }
+    if (ipData) {
+      const loginInfo = new LoginInfo({
+        _user: user._id,
+        ...ipData,
+      });
 
-    //   await loginInfo.save();
+      if (!user.loginHistory) {
+        user.loginHistory = [loginInfo];
+      } else {
+        user.loginHistory.push(loginInfo);
+      }
 
-    //   return true;
-    // }
+      await loginInfo.save();
 
-    // return false;
+      return true;
+    }
+
+    return false;
   } catch (error) {
-    throw error;
+    return false;
   }
 };
 
