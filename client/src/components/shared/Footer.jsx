@@ -33,6 +33,14 @@ const Footer = () => (
             href="https://github.com/DannyMichaels/LoL-scrims-finder">
             Source
           </a> */}
+
+          <a
+            target="_blank"
+            rel="noreferrer"
+            className="link"
+            href="https://www.danielmichaelmusic.com">
+            Support my music
+          </a>
         </Grid>
       </InnerColumn>
     </StyledFooter>
