@@ -1,9 +1,13 @@
 // index.js socket
 const PORT = process.env.PORT || 8900;
+require('dotenv').config();
 
 const io = require('socket.io')(PORT, {
   cors: {
-    origin: process.env.NODE_ENV === 'production' ? 'https://lol-scrims-finder.netlify.app' : '*',
+    origin:
+      process.env.NODE_ENV === 'production'
+        ? 'https://lol-scrims-finder.netlify.app'
+        : '*',
     credentials: true,
   },
 });
