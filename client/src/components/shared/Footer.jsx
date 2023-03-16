@@ -36,7 +36,7 @@ const Footer = ({ location }) => (
             rel="noreferrer"
             href="https://discordapp.com/users/233703630140604416"
             className="link">
-            &copy; {currentYear} GitCat#9811
+            &copy; {currentYear} GitCat
           </a>
           {/* <a
             target="_blank"
