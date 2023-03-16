@@ -55,7 +55,7 @@ export default function Scrims() {
   }, [scrimsDate]);
 
   if (!scrimsLoaded) {
-    return <Loading text="Loading Scrims..." />;
+    return <Loading text="Loading Scrims" />;
   }
 
   return (

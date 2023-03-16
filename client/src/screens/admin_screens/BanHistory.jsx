@@ -25,7 +25,7 @@ function BanHistory() {
   }, []);
 
   if (!isLoaded) {
-    return <Loading text="Loading Data..." />;
+    return <Loading text="Loading Data" />;
   }
 
   return (

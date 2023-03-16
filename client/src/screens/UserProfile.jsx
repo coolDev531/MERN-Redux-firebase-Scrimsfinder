@@ -145,7 +145,7 @@ export default function UserProfile() {
   }, []);
 
   if (!isLoaded) {
-    return <Loading text="Loading..." />;
+    return <Loading text="Loading" />;
   }
 
   return (

@@ -264,7 +264,7 @@ function ScrimEdit() {
 
   // if scrim isn't loaded, return loading component
   if (!scrimData?.createdBy || isUpdating) {
-    return <Loading text={isUpdating ? 'Updating scrim...' : 'Loading...'} />;
+    return <Loading text={isUpdating ? 'Updating scrim' : 'Loading'} />;
   }
 
   return (

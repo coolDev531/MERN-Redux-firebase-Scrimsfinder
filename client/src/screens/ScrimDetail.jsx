@@ -45,7 +45,7 @@ export default function ScrimDetail() {
     // eslint-disable-next-line
   }, [id, scrims, history]);
 
-  if (!scrim) return <Loading text="Loading Scrim Data..." />;
+  if (!scrim) return <Loading text="Loading Scrim Data" />;
 
   return (
     <div>

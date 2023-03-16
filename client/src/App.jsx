@@ -41,7 +41,7 @@ function App() {
   if (isVerifyingUser) {
     return (
       <div ref={appWrapperRef} className={classes.root}>
-        <Loading text="Verifying user..." />;
+        <Loading text="Verifying user" />;
       </div>
     );
   }

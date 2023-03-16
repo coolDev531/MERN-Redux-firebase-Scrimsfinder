@@ -122,7 +122,7 @@ function ScrimCreate() {
   }
 
   if (isSubmitting) {
-    return <Loading text="Creating new scrim..." />;
+    return <Loading text="Creating new scrim" />;
   }
 
   return (
