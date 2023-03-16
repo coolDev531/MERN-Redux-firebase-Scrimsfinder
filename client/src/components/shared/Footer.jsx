@@ -23,6 +23,8 @@ const currentYear = new Date().getFullYear();
 
 const blacklist = ['/scrims', '/'];
 
+const gitcatDiscordId = 1045871493587939379;
+
 const Footer = ({ location }) => (
   <>
     {!blacklist.includes(location.pathname) && <div className="page-break" />}
@@ -34,7 +36,7 @@ const Footer = ({ location }) => (
           <a
             target="_blank"
             rel="noreferrer"
-            href="https://discordapp.com/users/233703630140604416"
+            href={`https://discordapp.com/users/${gitcatDiscordId}`}
             className="link">
             &copy; {currentYear} GitCat
           </a>
