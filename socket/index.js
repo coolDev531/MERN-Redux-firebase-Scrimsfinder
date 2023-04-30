@@ -1,6 +1,8 @@
 const { sendMessage } = require('./events/sendMessage');
 const { sendNotification } = require('./events/sendNotification');
 const { addUser, removeUser, getUser } = require('./_helpers');
+const { sendConversation } = require('./events/sendConversation');
+const { sendScrimMessage } = require('./events/sendScrimMessage');
 
 require('dotenv').config();
 
@@ -32,27 +34,9 @@ const createSocket = (server) => {
       sendMessage(io, data);
     });
 
-    socket.on(
-      'sendConversation',
-      async ({ conversationId, senderId, receiverId }) => {
-        const receiverUser = getUser(receiverId); // send message to receiver from sender client
-
-        // don't emit if there isn't a receiverUser
-        if (!receiverUser) {
-          return;
-        }
-
-        console.log('receiverUser! ', receiverUser);
-
-        io.to(receiverUser.socketId).emit('getConversation', {
-          senderId,
-          receiverId,
-          conversationId,
-        });
-
-        return;
-      }
-    );
+    socket.on('sendConversation', (data) => {
+      sendConversation(io, data);
+    });
 
     // for friend requests or conversation starts
     socket.on('sendNotification', (data) => {
@@ -70,23 +54,9 @@ const createSocket = (server) => {
     });
 
     // send scrim to scrim chat box
-    socket.on(
-      'sendScrimMessage',
-      async ({ senderId, text, messageId, createdAt, _conversation }) => {
-        console.log('sendScrimMessage');
-        // don't emit if there isn't a receiverUser
-
-        io.emit('getScrimMessage', {
-          senderId,
-          text,
-          messageId,
-          createdAt,
-          _conversation, // make sure that it's only being sent to that specific scrim chat box.
-        });
-
-        return;
-      }
-    );
+    socket.on('sendScrimMessage', (data) => {
+      sendScrimMessage(io, data);
+    });
 
     // scrim team list socket here:
     socket.on('sendScrimTransaction', async (updatedScrim) => {
