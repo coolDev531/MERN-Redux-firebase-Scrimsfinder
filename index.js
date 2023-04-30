@@ -1,14 +1,17 @@
 const createServer = require('./server');
 const mongooseConnect = require('./db/connection');
 const { MONGODB_URI } = require('./utils/constants');
+const createSocket = require('./socket');
 
 const PORT = process.env.PORT || 3000;
 
 const app = createServer();
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Express server listening on port ${PORT}`);
 });
+
+createSocket(server);
 
 const connection = mongooseConnect.dbConnect(MONGODB_URI);
 

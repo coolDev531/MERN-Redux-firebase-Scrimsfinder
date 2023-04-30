@@ -20,7 +20,10 @@ function createServer() {
   const app = express();
 
   const corsOptions = {
-    origin: process.env.NODE_ENV === 'production' ? 'https://lol-scrims-finder.netlify.app' : '*',
+    origin:
+      process.env.NODE_ENV === 'production'
+        ? 'https://lol-scrims-finder.netlify.app'
+        : '*',
     optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
   };
 

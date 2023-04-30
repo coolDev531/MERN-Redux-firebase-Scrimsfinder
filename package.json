@@ -39,6 +39,7 @@
     "nodemon": "^2.0.13",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
+    "socket.io": "^4.6.1",
     "uuidv4": "^6.2.12",
     "yarn": "^1.22.11"
   },
