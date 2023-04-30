@@ -7,6 +7,10 @@
  */
 // this is made specifically for MenuItem text overflow in ScrimTeamList.jsx.
 export const truncate = (str, n) => {
+  if (!str) {
+    return '';
+  }
+
   if (typeof str === 'string') {
     return str?.length > n ? `${str?.substr(0, n - 1)} ...` : str ?? '';
   }
