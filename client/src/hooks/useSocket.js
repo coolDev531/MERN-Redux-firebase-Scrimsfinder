@@ -8,7 +8,7 @@ export default function useSocket() {
 
 const socketServerUrl =
   process.env.NODE_ENV === 'production'
-    ? process.env.REACT_APP_API_URL
+    ? process.env.REACT_APP_PROD_SOCKET_URL
     : 'http://localhost:3000';
 
 export const useCreateSocket = () => {
