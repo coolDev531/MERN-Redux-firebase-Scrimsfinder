@@ -11,6 +11,7 @@ import MenuList from '@mui/material/MenuList';
 import makeStyles from '@mui/styles/makeStyles';
 import { getRankImage } from '../../utils/getRankImage';
 import { truncate } from './../../utils/truncate';
+import devLog from '../../utils/devLog';
 
 // services
 import { findOneConversation } from '../../services/conversations.services';
@@ -87,9 +88,46 @@ export default function UserConversations({ closeMenu }) {
     [unseenMessages]
   );
 
+  const sortConvos = useCallback(
+    (conversations) => {
+      if (!conversations?.length) return [];
+
+      // sort by unseen messages, then by online status
+      return conversations.sort((a, b) => {
+        const friendUserOfConversation = a.members.find(
+          ({ _id }) => _id !== currentUser._id
+        );
+        const friendUserOfConversation2 = b.members.find(
+          ({ _id }) => _id !== currentUser._id
+        );
+
+        const isOnline = onlineFriends.includes(friendUserOfConversation?._id);
+        const isOnline2 = onlineFriends.includes(
+          friendUserOfConversation2?._id
+        );
+
+        const [, unseenMessagesCount1] = getFriendUnseenMessages(
+          friendUserOfConversation
+        );
+        const [, unseenMessagesCount2] = getFriendUnseenMessages(
+          friendUserOfConversation2
+        );
+
+        if (unseenMessagesCount1 > unseenMessagesCount2) return -1;
+        if (unseenMessagesCount1 < unseenMessagesCount2) return 1;
+
+        if (isOnline && !isOnline2) return -1;
+        if (!isOnline && isOnline2) return 1;
+
+        return 0;
+      });
+    },
+    [currentUser._id, onlineFriends, unseenMessages]
+  );
+
   return (
     <MenuList>
-      {conversations.map((conversation, idx) => (
+      {sortConvos(conversations).map((conversation, idx) => (
         <OneConversation
           currentUser={currentUser}
           onlineFriends={onlineFriends}
@@ -97,7 +135,7 @@ export default function UserConversations({ closeMenu }) {
           openChat={openChat}
           getFriendUnseenMessages={getFriendUnseenMessages}
           conversations={conversations}
-          key={idx}
+          key={conversation._id}
         />
       ))}
     </MenuList>
@@ -144,7 +182,7 @@ const OneConversation = memo(
               width="20px"
               className={classes.userRank}
             />
-            {truncate(friendUser.name, 12)}
+            {truncate(friendUser?.name, 12)}
 
             <div style={{ position: 'absolute', right: '0', top: '0' }}>
               {hasUnseenMessages ? (

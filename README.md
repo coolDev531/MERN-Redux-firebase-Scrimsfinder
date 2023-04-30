@@ -101,7 +101,7 @@ If you have an admin key, you can host a scrim/lobby. Then players just have to 
 
 # 4/30/2023
 - socket is now hosted with the server, instead of a different hierarchy
-
+- conversations on the messenger dropdown are now sorted by unseen messages, then by online status
 ---
 
 <br />
