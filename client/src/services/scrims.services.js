@@ -180,7 +180,9 @@ export const removeCasterFromScrim = async ({
     return response.data;
   } catch (error) {
     const errorMsg =
-      error.response.data?.error ?? error?.message ?? JSON.stringify(error);
+      JSON.stringify(error.response.data?.error) ??
+      error?.message ??
+      JSON.stringify(error);
 
     if (typeof setAlert === 'function') {
       return setAlert({ type: 'Error', message: errorMsg });
@@ -198,7 +200,9 @@ export const addImageToScrim = async (id, data, setAlert) => {
     return response.data;
   } catch (error) {
     const errorMsg =
-      error.response.data?.error ?? error?.message ?? JSON.stringify(error);
+      error.response.data?.error.message ??
+      JSON.stringify(error?.message) ??
+      JSON.stringify(error);
 
     if (typeof setAlert === 'function') {
       return setAlert({

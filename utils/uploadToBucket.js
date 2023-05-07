@@ -25,7 +25,7 @@ async function uploadToBucket({
     Body: base64Data,
     Bucket: KEYS.S3_BUCKET_NAME,
     Key: dirName ? `${dirName}/${fileName}` : fileName,
-    ACL: 'public-read',
+    // ACL: 'public-read',
     ContentType: 'image/jpeg',
   };
 

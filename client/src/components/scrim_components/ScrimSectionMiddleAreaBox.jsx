@@ -4,7 +4,7 @@ import useAlerts from './../../hooks/useAlerts';
 
 // components
 import CountdownTimer from './CountdownTimer';
-// import UploadPostGameImage from './UploadPostGameImage';
+import UploadPostGameImage from './UploadPostGameImage';
 import Tooltip from '../shared/Tooltip';
 
 // Mui components
@@ -49,7 +49,7 @@ export default function ScrimSectionMiddleAreaBox({
   const { currentUser, isCurrentUserAdmin } = useAuth();
   const { setCurrentAlert } = useAlerts();
 
-  const classes = useStyles({ gameStarted, imageUploaded });
+  const classes = useStyles();
 
   const { teamOne, teamTwo } = scrim;
 
@@ -217,15 +217,15 @@ export default function ScrimSectionMiddleAreaBox({
                 isCurrentUserAdmin) && (
                 <>
                   {/* disabled for now until we get money for another image hosting solution... */}
-                  {/* <Box marginTop={2} /> */}
+                  <Box marginTop={2} />
 
                   {/* UPLOAD OR DELETE IMAGE */}
-                  {/* <UploadPostGameImage
+                  <UploadPostGameImage
                     isUploaded={imageUploaded}
                     scrim={scrim}
                     socket={socket}
                     setScrim={setScrim}
-                  /> */}
+                  />
                 </>
               )}
               {imageUploaded && (
