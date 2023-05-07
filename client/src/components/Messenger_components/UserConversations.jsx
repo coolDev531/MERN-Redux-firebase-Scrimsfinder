@@ -11,7 +11,6 @@ import MenuList from '@mui/material/MenuList';
 import makeStyles from '@mui/styles/makeStyles';
 import { getRankImage } from '../../utils/getRankImage';
 import { truncate } from './../../utils/truncate';
-import devLog from '../../utils/devLog';
 
 // services
 import { findOneConversation } from '../../services/conversations.services';
@@ -122,6 +121,7 @@ export default function UserConversations({ closeMenu }) {
         return 0;
       });
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [currentUser._id, onlineFriends, unseenMessages]
   );
 
